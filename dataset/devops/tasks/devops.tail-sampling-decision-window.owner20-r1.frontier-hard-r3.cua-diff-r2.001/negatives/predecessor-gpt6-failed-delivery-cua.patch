@@ -1,0 +1,86 @@
+diff --git a/src/config/collectorSettings.js b/src/config/collectorSettings.js
+index c34e22f93da5c70973f28d08047527363eeabbfd..d38cc5d60babcedb283e199e0fddec94cd3d14d1 100644
+--- a/src/config/collectorSettings.js
++++ b/src/config/collectorSettings.js
+@@ -2,5 +2,8 @@ import { SAMPLING_POLICIES } from "./samplingPolicies.js";
+ 
+ export const COLLECTOR_SETTINGS = Object.freeze({
+   decisionWaitMs: 250,
++  // Reconcile each received window (including replay) before publishing decisions.
++  // A fixed long wait would violate the SLO for early-arrival windows.
++  decisionTiming: Object.freeze({ mode: "delivery", marginMs: 100 }),
+   policies: SAMPLING_POLICIES,
+ });
+diff --git a/src/config/compilePolicyPlan.js b/src/config/compilePolicyPlan.js
+index 2a7047203072cbf1dea505637b50f5c6cb5121cd..0e874af79eea1509cf38044a5c5923298f1be11d 100644
+--- a/src/config/compilePolicyPlan.js
++++ b/src/config/compilePolicyPlan.js
+@@ -11,9 +11,26 @@ function compilePolicy(policy) {
+   }
+ }
+ 
+-export function compilePolicyPlan(collector) {
++function decisionWaitMs(collector, snapshot) {
++  if (collector.decisionTiming?.mode !== "delivery" || !snapshot?.timeline?.length) {
++    return Number(collector.decisionWaitMs);
++  }
++  // Use the unfiltered receiver timeline, not selected traces or sampling results.
++  // Delivery offsets are relative to each trace's first receipt, not wall time.
++  const slowestDeliveryMs = snapshot.timeline.reduce(
++    (slowest, trace) => Math.max(slowest, trace.completedAtMs - trace.firstArrivalMs),
++    0,
++  );
++  const marginMs = Math.min(
++    collector.decisionTiming.marginMs,
++    snapshot.diagnostics.decisionMarginMs,
++  );
++  return Math.ceil(slowestDeliveryMs + marginMs);
++}
++
++export function compilePolicyPlan(collector, snapshot) {
+   return {
+-    decisionWaitMs: Number(collector.decisionWaitMs),
++    decisionWaitMs: decisionWaitMs(collector, snapshot),
+     policies: collector.policies.map(compilePolicy),
+   };
+ }
+diff --git a/src/controllers/console.js b/src/controllers/console.js
+index 3fb22364ab15c4ba24a8fadd7e4ed40b0adf846b..6f7061a68e36e5eac2cf32ea94289d454c2f9828 100644
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -5,19 +5,23 @@ import { store } from "../state/store.js";
+ 
+ const refresh = async () => store.set({ snapshot: await samplerClient.snapshot() });
+ 
++async function reconcileWindow() {
++  const received = await samplerClient.snapshot();
++  const plan = compilePolicyPlan(COLLECTOR_SETTINGS, received);
++  await samplerClient.configure(plan);
++  await refresh();
++}
++
+ export async function initialize() {
+   const catalog = await samplerClient.catalog();
+-  await samplerClient.configure(
+-    compilePolicyPlan(COLLECTOR_SETTINGS),
+-  );
+   store.set({ catalog });
+   await samplerClient.scenario(catalog.scenarios[0].id);
+-  await refresh();
++  await reconcileWindow();
+ }
+ 
+ export async function chooseScenario(id) {
+   await samplerClient.scenario(id);
+-  await refresh();
++  await reconcileWindow();
+ }
+ export async function chooseTrace(id) {
+   await samplerClient.select(id);
+@@ -37,5 +41,5 @@ export async function runProbe(id) {
+ }
+ export async function replay() {
+   await samplerClient.replay();
+-  await refresh();
++  await reconcileWindow();
+ }

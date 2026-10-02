@@ -1,0 +1,59 @@
+id: gameqa.captain-callisto-goal-transition.006
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.captain-callisto-goal-transition.006/repo
+  ref: captain-callisto-level6-staged-goal-transition-explicit-neutral-v1
+instruction: >-
+  In the deterministic Level 6 castle stair, collecting every coin and entering
+  the transporter while holding forward and boost briefly shows the cleared-level
+  screen. When both approach controls return to neutral, the cleared state is
+  lost. Fix the gameplay regression and replay that same hold-then-release route
+  to verify that completion remains active after the controls are released.
+setup:
+  install:
+    - npm ci
+    - npm run build
+  reset: []
+  launch:
+    - npm run dev -- --host 127.0.0.1 --port 42731
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:42731/?benchmark=1&level=6
+  viewport_or_device: desktop-1280x720
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 240
+  max_gui_actions: 200
+  max_test_runs: 20
+verifiers:
+  build:
+    - npm run build
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - '"${CUA_SWE_PYTHON:-python3}" verifiers/replay_state.py --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:42731/?benchmark=1&level=6}"'
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: 06_captaincallisto
+  state_api: window.gameAPI
+  seed: 47
+  level: 6
+schema_version: 1

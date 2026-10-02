@@ -1,0 +1,15 @@
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,8 @@
+-import {severityAdapters} from './severityAdapters.js';
++import {fromJson, fromOtel, fromText} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
+-  const decode = severityAdapters[format];
+-  return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
++  if (receiver.source.format === 'syslog') return fromText(record.severityText);
++  if (receiver.output.format === 'otlp') return fromOtel(record);
++  if (receiver.output.format === 'json') return fromJson(record);
++  return {number:0, band:'UNSPECIFIED'};
+ }

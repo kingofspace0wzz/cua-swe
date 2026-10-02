@@ -1,0 +1,139 @@
+diff --git a/js/Game.js b/js/Game.js
+index 32f40bc..a221114 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -240,7 +240,7 @@
+         };
+         this.retry = function(retry){
+             this.resumeGame(retry);
+-            this.player.respawn();
++            this.player.respawn(false,this.levelMap);
+             this.levelMap.showGuide(this.player.spawnGuide);
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+@@ -345,7 +345,7 @@
+             this.jumpHeld = false;
+             this.levelMap.motionTime = 0;
+             this.levelMap.cameraProgress = 0;
+-            this.player.respawn(true);
++            this.player.respawn(true,this.levelMap);
+             this.autoStartPending = false;
+             this.setView(2, 1);
+             this.gamePaused = false;
+diff --git a/js/LevelMap.js b/js/LevelMap.js
+index b57a6f9..ad28ae6 100644
+--- a/js/LevelMap.js
++++ b/js/LevelMap.js
+@@ -229,6 +229,18 @@
+             this.guideView = guide;
+             this.guideRemaining = 4200;
+         };
++        this.restoreGuideFrame = function(frame,playerX){
++            var support = frame == null ? null : this.getSupport(frame.id);
++            var recoveredTime = support == null
++                ? null
++                : support.timeAtLocalYBefore(frame.y,this.motionTime);
++            if (recoveredTime != null) this.motionTime = recoveredTime;
++            for (var i=0; i<this.movingSupports.length; i++){
++                this.movingSupports[i].update(this.motionTime);
++            }
++            this.cameraProgress = isFinite(playerX) ? playerX : 0;
++            this.x = -this.cameraProgress;
++        };
+         this.findSupportLanding = function(x,y1,y2,width,height){
+             if (y2 < y1) return null;
+             var left = x-(width/2);
+@@ -285,6 +297,8 @@
+         this.init();
+ 
+         function MovingSupport(map,row,startCol,length){
++            this.period = 2800;
++            this.travel = 30;
+             this.id = row+":"+startCol;
+             this.left = startCol*map.box;
+             this.right = (startCol+length)*map.box;
+@@ -308,11 +322,35 @@
+             this.view.x = this.left;
+             this.view.y = this.baseY;
+             this.update = function(time){
+-                var phase = (time%2800)/2800*Math.PI*2;
+-                this.offsetY = -30*(1-Math.cos(phase));
++                var phase = (time%this.period)/this.period*Math.PI*2;
++                this.offsetY = -this.travel*(1-Math.cos(phase));
+                 this.top = map.y+this.baseY+this.offsetY;
+                 this.view.y = this.baseY+this.offsetY;
+             };
++            this.timeAtLocalYBefore = function(localY,beforeTime){
++                localY = Number(localY);
++                beforeTime = Number(beforeTime);
++                if (!isFinite(localY) || !isFinite(beforeTime)) return null;
++                var cosine = 1+(localY-this.baseY)/this.travel;
++                cosine = Math.max(-1,Math.min(1,cosine));
++                var angle = Math.acos(cosine);
++                var offsets = [
++                    angle/(Math.PI*2)*this.period,
++                    (Math.PI*2-angle)/(Math.PI*2)*this.period
++                ];
++                var cycle = Math.floor(beforeTime/this.period);
++                var best = null;
++                for (var c=cycle-1; c<=cycle; c++){
++                    for (var i=0; i<offsets.length; i++){
++                        var candidate = c*this.period+offsets[i];
++                        if (candidate < 0 || candidate > beforeTime+0.5) continue;
++                        if (best == null || beforeTime-candidate < beforeTime-best){
++                            best = candidate;
++                        }
++                    }
++                }
++                return best;
++            };
+         }
+ 	}
+ }(window));
+diff --git a/js/Player.js b/js/Player.js
+index 7a23504..002eece 100644
+--- a/js/Player.js
++++ b/js/Player.js
+@@ -206,7 +206,7 @@
+                     this.deathTimer -= delta;
+                     if (this.deathTimer <= 0){
+                         this.playerState = 0;
+-                        this.respawn();
++                        this.respawn(false,map);
+                     }
+                 }
+             }
+@@ -228,16 +228,22 @@
+             }
+         };
+         this.stop = function() { this.gravity.stop(this.y); };
+-        this.respawn = function(resetNewSpawn) {
++        this.respawn = function(resetNewSpawn,map) {
+             if (resetNewSpawn == true){
+                 this.newSpawn = false;
+                 this.spawnSupportId = null;
+                 this.spawnGuide = null;
+             }
+             if (this.newSpawn == true){
++                if (map == null && window.Game != null) map = window.Game.levelMap;
++                if (map != null) map.restoreGuideFrame(this.spawnGuide,this.spawnX);
+                 this.xPos = this.spawnX;
+-                this.y = this.spawnY;
+                 this.supportOffset = this.spawnSupportOffset;
++                this.supportId = this.spawnSupportId;
++                var restoredSupport = map != null ? map.getSupport(this.supportId) : null;
++                this.y = restoredSupport != null
++                    ? restoredSupport.top+this.supportOffset
++                    : this.spawnY;
+             }
+             else { //set to origin
+                 this.setSpeed(1); //reset player speed multiplier
+@@ -289,7 +295,7 @@
+         this.checkTileAction = function(){
+             for (var i=0; i < this.hitBox.length-2; i++){ //no need to check gap checking points
+                 if (this.hitBox[i].type == 2 && (i == 0 || i == 1) && Math.abs(this.hitBox[i].slope) > 1){ /* tip tile disabled */ }
+-                else if (this.hitBox[i].type == 3){ //set respawn points
++                else if (this.hitBox[i].type == 3 && this.spawnSupportId == null){ //set respawn points
+                     this.spawnX = this.hitBox[i].x - this.x; 
+                     this.spawnY = this.hitBox[i].y; this.newSpawn = true; 
+                     window.Game.particles.addParticles(this.x,this.y,this.scaleX/2,window.Game.theme.main_color4,1,25,true);

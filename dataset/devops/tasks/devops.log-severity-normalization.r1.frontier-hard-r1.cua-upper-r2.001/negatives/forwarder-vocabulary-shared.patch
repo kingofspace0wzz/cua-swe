@@ -1,0 +1,28 @@
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,9 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
++  // Decode the representation actually delivered to this workbench. Relayed
++  // records keep their producers' own severities even inside an OTLP envelope.
++  const format = receiver.source.format === 'syslog' ? 'syslog' : receiver.output.format;
+   const decode = severityAdapters[format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }
+--- a/src/pipeline/severityAdapters.js
++++ b/src/pipeline/severityAdapters.js
+@@ -14,4 +14,11 @@
+   if (typeof body === 'string') {try {body=JSON.parse(body);} catch {body={};}}
+   return fromText(body?.level);
+ }
+-export const severityAdapters = {otlp:fromOtel,json:fromJson};
++// The forwarder fleet's alert lines are its warning tier; relay numbers are
++// producer-internal scales, so decode the delivered keywords.
++const relayVocabulary = {ALERT:'WARN', VERBOSE:'DEBUG'};
++export function fromSyslog(record) {
++  const keyword = String(record.severityText ?? '').trim().toUpperCase();
++  return fromText(relayVocabulary[keyword] ?? keyword);
++}
++export const severityAdapters = {otlp:fromOtel,json:fromJson,syslog:fromSyslog};

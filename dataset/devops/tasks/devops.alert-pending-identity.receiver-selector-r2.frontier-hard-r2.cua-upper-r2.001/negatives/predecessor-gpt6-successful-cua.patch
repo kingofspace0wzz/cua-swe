@@ -1,0 +1,38 @@
+diff --git a/src/controllers/console.js b/src/controllers/console.js
+index 11efc765915b5581858373eb68047e3227a5e804..e4a3b18f950f55d6e0ae846cc385f812e80ad2bc 100644
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -4,7 +4,7 @@ import {store} from '../state/store.js';
+ import {render} from '../views/render.js';
+ export async function initialize(){
+  store.catalog=await request('catalog');
+- await request('configure',{rules:store.catalog.rules.map(compileRule)});
++ await request('configure',{rules:store.catalog.rules.map(rule=>compileRule(rule,store.catalog.routing))});
+  store.snapshot=await request('snapshot');render(store);
+  document.querySelector('#app').addEventListener('click',async event=>{
+   const button=event.target.closest('button[data-action]');if(!button||store.busy)return;
+diff --git a/src/rules/compileRule.js b/src/rules/compileRule.js
+index 2fe93e45b7623f4a4bbfacf9bdbacea0c99802a0..d631cffac626e8343cf52025846e8f99980434be 100644
+--- a/src/rules/compileRule.js
++++ b/src/rules/compileRule.js
+@@ -1,10 +1,18 @@
+ import {compileQuery} from './query.js';
+ 
+-export function compileRule(rule) {
++export function compileRule(rule, routing = {}) {
+   const labels = {...rule.labels};
+   const annotations = {...rule.annotations};
++  const ownedRouteKeys = new Set(
++    (routing.ownership?.[rule.family] || []).flatMap(scope => routing.epoch?.[scope] || []),
++  );
+   for (const field of rule.enrichments || []) {
+-    labels[field.name] = field.template;
++    // Values and foreign/evaluation routing context describe an evaluation,
++    // not an alert identity. Keep their detail without restarting the hold.
++    const routeKeys = [...field.template.matchAll(/\$route\.([\w]+)/g)].map(match => match[1]);
++    const isIdentity = !/\$value\b/.test(field.template)
++      && routeKeys.every(key => ownedRouteKeys.has(key));
++    (isIdentity ? labels : annotations)[field.name] = field.template;
+   }
+   return {
+     name: rule.name,

@@ -1,0 +1,57 @@
+diff --git a/src/config/compilePanelPlan.js b/src/config/compilePanelPlan.js
+index e67df91513ac5789bc9bd0448a6a9116933ae5d5..6e4f144731986c564cbbad5008f7eff3c2824323 100644
+--- a/src/config/compilePanelPlan.js
++++ b/src/config/compilePanelPlan.js
+@@ -3,7 +3,7 @@ export function compilePanelPlan(policy) {
+     throw new Error("a deployed recording-rule binding is required");
+   }
+   return {
+-    pipeline: "traffic-window",
++    pipeline: policy.pipeline,
+     panel_scope: policy.panelScope || "all",
+     sample_filter: policy.sampleFilter || "none",
+   };
+diff --git a/src/config/queryPolicy.js b/src/config/queryPolicy.js
+index 565382644e0ff1b1d49ac03de3d8cf7f56af4160..e1e0017de1b1f2468a2880c48cd3b8b225f7f2ee 100644
+--- a/src/config/queryPolicy.js
++++ b/src/config/queryPolicy.js
+@@ -1,9 +1,23 @@
+ /** Durable binding to a deployed recording-rule definition.
+- * The operator console lists the definitions deployed by the metrics service.
++ * Resolve against the same upstream stages shown in the definitions inspector,
++ * rather than relying on a display name to imply reset-safe counter ordering.
+  */
+-export function queryPolicy() {
++export function queryPolicy(catalog) {
++  const definition = catalog.definitions.find(({steps}) => {
++    // Stages execute in order; nested PromQL calls execute inside-out.
++    // Include upstream stages so rate(sum(counter)) cannot look reset-safe
++    // merely because the aggregation lives in a separate recording rule.
++    const operations = steps.flatMap((step) =>
++      [...step.matchAll(/\b(rate|sum|avg|min|max|count|group|stddev|stdvar|topk|bottomk|quantile)\s*(?:\(|(?:by|without)\s*\()/g)]
++        .map((match) => match[1]).reverse(),
++    );
++    return /^rate(?:,rate)*,sum(?:,sum)*$/.test(operations.join(","));
++  });
++  if (!definition) {
++    throw new Error("No deployed rate-before-aggregation definition is available");
++  }
+   return {
+-    pipeline: "traffic-window",
++    pipeline: definition.id,
+     panelScope: "all",
+     sampleFilter: "none",
+   };
+diff --git a/src/main.js b/src/main.js
+index c729353c5a81ab929dfe4d4c8345bcb8045ee457..99b5fed29c5ea6bde1a7db0dd8ed1c7f9bd254d5 100644
+--- a/src/main.js
++++ b/src/main.js
+@@ -10,7 +10,7 @@ subscribe(render);
+ async function start() {
+   try {
+     const catalog = await queryClient.catalog();
+-    const plan = compilePanelPlan(queryPolicy());
++    const plan = compilePanelPlan(queryPolicy(catalog));
+     updateState({catalog, plan});
+     acceptInitial(await queryClient.configure(plan));
+   } catch (error) {

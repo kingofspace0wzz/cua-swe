@@ -1,0 +1,106 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile A
+    --form batched-valid-lines
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/service.mjs
+  fixture: repo/verifiers/profiles.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults:
+    application: 57152
+    service: OS-assigned
+    native_udp: same numeric service port, UDP
+    producer_udp: service port+1 through service port+4, UDP, one socket per
+      provisioned fleet endpoint (a stable four-endpoint fleet whose active
+      channels change at a deterministic rollout epoch)
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants:
+  - A
+  - B
+  - C
+  oracle: Independent declarative writer bytes/intent per provisioned fleet endpoint
+    and per deterministic rollout epoch, plus protected UDP native receipts,
+    distinguish transport infrastructure from submitted decoder, event loss,
+    attribution and state errors. Every expected received update checked in order,
+    identity, producer attribution, multiplicity and native value under the
+    evaluator-owned epoch-scoped per-endpoint update-mode provisioning within1s,
+    including per-endpoint channel-check calibration predicates (every endpoint
+    opens every graded epoch with two identically signed pulses and one unsigned
+    settle equal to its own resulting register, before its ordinary traffic), a
+    neutral-inventory wording predicate, a per-endpoint mode-consistency predicate
+    over all four provisioned endpoints in every graded epoch and a deterministic
+    post-rollout replay predicate across two post-rollout epochs. No retransmission.
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - alternates/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - Select affected gauge
+  - Read the provisioning bulletin and each endpoint's opening channel check
+  - Open update history
+  - Replay traffic into the post-rollout epoch and re-read the checks, inventory and history
+  decisive_paths:
+  - native signed raw datagrams with per-datagram producer attribution, including
+    each endpoint's epoch-opening channel self-check (two identically signed
+    pulses then one unsigned settle equal to the endpoint's own resulting
+    register)
+  - the left-rail provisioning bulletin describing the channel check, served only
+    with the runtime session, together with the session epoch shown in the
+    console footer
+  - preserved parser token/type/value
+  - actual gauge sink before/stored values including the check-register
+    transitions, repeated identical signed readings on the currently-absolute
+    channels and repeated identical signed deltas on the currently-additive
+    channels, observed both before and after the rollout epoch on the same
+    stable endpoint identities
+hidden_runtime_variants:
+  - payload profiles A, B and C with distinct identities, values and check pulses
+  - batched-valid-lines and split-whole-lines transport forms
+  - epoch-scoped per-endpoint update-mode provisioning served only with the
+    receiver runtime state; neither the mode mapping nor the rollout schedule
+    appears in the agent-visible repository, and the fleet inventory carries only
+    neutral lane/firmware channel designations that never imply the mode
+  - a deterministic collector rollout at epoch3 moves two stable endpoint
+    identities across channel conventions in opposite directions
+    (gatehouse-counters lane G2->lane C4, yard-station lane S9->lane G2) while
+    cabinet-agents and basin-level keep their channels, so static per-endpoint
+    tables, source-name matching, lexical sign handling, inventory keyword
+    classification and first-seen source-to-mode caching each corrupt at least
+    one endpoint-epoch
+  - evaluator-owned sender and payload transitions per epoch (epoch-opening
+    channel self-checks per endpoint under the epoch-active convention, unsigned
+    baselines, signed deltas repeated within a batch and across datagrams,
+    unsigned rebase after deltas, first signed delta from implicit zero, signed
+    and plus-signed absolute readings repeated across shifts including a
+    plus-signed re-report equal to its unsigned baseline within one batch, and
+    unaffected control streams)

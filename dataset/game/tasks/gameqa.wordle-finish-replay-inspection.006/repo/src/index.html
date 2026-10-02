@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>Letter Arc</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell" aria-labelledby="game-title">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Five-letter daily</p>
+          <h1 id="game-title">Letter Arc</h1>
+        </div>
+        <button id="restart" class="restart" type="button">Restart round</button>
+      </header>
+
+      <nav class="mode-tabs" aria-label="Puzzle mode">
+        <button type="button" data-mode="daily">Daily</button>
+        <button type="button" data-mode="practice">Practice</button>
+      </nav>
+
+      <section class="challenge-bar" aria-label="Current puzzle">
+        <strong id="mode-name">Loading puzzle…</strong>
+        <span id="round-label">Round 1</span>
+      </section>
+
+      <section id="notice" class="notice" role="status" aria-live="polite">
+        Preparing the board…
+      </section>
+
+      <section class="guidance-bar">
+        <label>
+          <input id="hard-mode" type="checkbox" checked>
+          Hard guidance
+        </label>
+        <div id="guidance" class="guidance" aria-live="polite">
+          <span class="guidance-empty">No active clues</span>
+        </div>
+      </section>
+
+      <section id="board" class="board" aria-label="Guess board"></section>
+
+      <section id="result" class="result" aria-live="polite" hidden>
+        <div class="result-copy">
+          <strong>Pattern complete</strong>
+          <span>The daily row is recorded.</span>
+        </div>
+        <div class="finish-playback" aria-label="Finish playback">
+          <button id="replay-finish" type="button" disabled>Replay finish</button>
+          <button id="continue-finish" type="button" hidden>Continue</button>
+          <span id="finish-playback-status">Ready to replay.</span>
+        </div>
+      </section>
+
+      <section id="keyboard" class="keyboard" aria-label="On-screen keyboard"></section>
+
+      <footer>
+        <span>Type or use the visible keys.</span>
+        <span id="mode-label">Daily puzzle</span>
+      </footer>
+    </main>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

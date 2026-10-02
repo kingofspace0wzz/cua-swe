@@ -1,0 +1,14 @@
+diff --git a/src/views/spans.js b/src/views/spans.js
+--- a/src/views/spans.js
++++ b/src/views/spans.js
+@@ -2,7 +2,9 @@ import { clear, element } from "./components.js";
+ 
+ export function renderSpans(snapshot) {
+   const host = clear(document.querySelector('[data-test="spans"]'));
+-  for (const span of snapshot.spans) {
++  for (const span of snapshot.spans.filter(
++    (item) => item.parentId || item.kind === "operation",
++  )) {
+     const card = element("article", "span-card");
+     card.dataset.test = `span-${span.id}`;
+     card.append(

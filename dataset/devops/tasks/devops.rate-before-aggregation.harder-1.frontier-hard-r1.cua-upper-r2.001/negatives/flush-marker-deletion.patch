@@ -1,0 +1,12 @@
+diff --git a/src/views/markers.js b/src/views/markers.js
+--- a/src/views/markers.js
++++ b/src/views/markers.js
+@@ -3,7 +3,7 @@ import {clear, element} from "./components.js";
+ export function renderMarkers(snapshot) {
+   const root = document.querySelector('[data-test="markers"]');
+   clear(root);
+-  for (const marker of snapshot.markers) {
++  for (const marker of snapshot.markers.filter((item) => item.kind !== "flush")) {
+     const item = element("li", `marker marker-${marker.kind}`);
+     item.dataset.markerId = marker.id;
+     item.dataset.markerTime = String(marker.time);

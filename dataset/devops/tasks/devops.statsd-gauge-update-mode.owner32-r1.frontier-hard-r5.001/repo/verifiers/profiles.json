@@ -1,0 +1,857 @@
+{
+ "schema_version": 1,
+ "status": "fixed_before_native_proof_and_any_model",
+ "dialect": "classic StatsD gauge lines; bare ASCII names, |g, LF multiline, no tags/sample rate; site relay announce batches lead with the relay sync register and restate authoritative unsigned current readings",
+ "profiles": [
+  {
+   "id": "A",
+   "convention": "signed-delta",
+   "identities": [
+    "workers.north.headroom",
+    "workers.south.headroom",
+    "pool.capacity"
+   ],
+   "relays": [
+    {
+     "id": "north-bay",
+     "port_offset": 1
+    },
+    {
+     "id": "south-bay",
+     "port_offset": 2
+    }
+   ],
+   "groups": [
+    {
+     "source": "north-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "north-bay.sync",
+       "token": "1"
+      },
+      {
+       "identity": "workers.north.headroom",
+       "token": "40"
+      },
+      {
+       "identity": "pool.capacity",
+       "token": "100"
+      }
+     ]
+    },
+    {
+     "source": "south-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "south-bay.sync",
+       "token": "1"
+      },
+      {
+       "identity": "workers.south.headroom",
+       "token": "12"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.north.headroom",
+       "token": "+6"
+      }
+     ]
+    },
+    {
+     "source": "south-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.south.headroom",
+       "token": "-3"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.north.headroom",
+       "token": "+6"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.north.headroom",
+       "token": "+0"
+      },
+      {
+       "identity": "pool.capacity",
+       "token": "80.5"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.north.headroom",
+       "token": "18"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "north-bay.sync",
+       "token": "2"
+      },
+      {
+       "identity": "workers.north.headroom",
+       "token": "18"
+      },
+      {
+       "identity": "pool.capacity",
+       "token": "80.5"
+      }
+     ]
+    },
+    {
+     "source": "south-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "south-bay.sync",
+       "token": "2"
+      },
+      {
+       "identity": "workers.south.headroom",
+       "token": "9"
+      }
+     ]
+    },
+    {
+     "source": "south-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.south.headroom",
+       "token": "0"
+      },
+      {
+       "identity": "workers.south.headroom",
+       "token": "-7"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.north.headroom",
+       "token": "+3"
+      },
+      {
+       "identity": "workers.north.headroom",
+       "token": "+3"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.north.headroom",
+       "token": "+3"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.north.headroom",
+       "token": "+3"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.north.headroom",
+       "token": "-4"
+      },
+      {
+       "identity": "pool.capacity",
+       "token": "91"
+      }
+     ]
+    },
+    {
+     "source": "south-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.south.headroom",
+       "token": "+2"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "depot.dock.headroom",
+       "token": "-1.5"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "depot.dock.headroom",
+       "token": "+2.5"
+      }
+     ]
+    },
+    {
+     "source": "north-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "north-bay.sync",
+       "token": "3"
+      },
+      {
+       "identity": "workers.north.headroom",
+       "token": "26"
+      },
+      {
+       "identity": "pool.capacity",
+       "token": "91"
+      },
+      {
+       "identity": "depot.dock.headroom",
+       "token": "1"
+      }
+     ]
+    },
+    {
+     "source": "south-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "south-bay.sync",
+       "token": "3"
+      },
+      {
+       "identity": "workers.south.headroom",
+       "token": "-5"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "convention": "absolute-reading",
+   "identities": [
+    "workers.east.headroom",
+    "workers.west.headroom",
+    "fleet.capacity"
+   ],
+   "relays": [
+    {
+     "id": "east-bay",
+     "port_offset": 1
+    },
+    {
+     "id": "west-bay",
+     "port_offset": 2
+    }
+   ],
+   "groups": [
+    {
+     "source": "east-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "east-bay.sync",
+       "token": "1"
+      },
+      {
+       "identity": "workers.east.headroom",
+       "token": "125"
+      },
+      {
+       "identity": "fleet.capacity",
+       "token": "240"
+      }
+     ]
+    },
+    {
+     "source": "west-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "west-bay.sync",
+       "token": "1"
+      },
+      {
+       "identity": "workers.west.headroom",
+       "token": "31"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.east.headroom",
+       "token": "+136"
+      }
+     ]
+    },
+    {
+     "source": "west-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.west.headroom",
+       "token": "-9"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.east.headroom",
+       "token": "+147"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.east.headroom",
+       "token": "+147"
+      },
+      {
+       "identity": "fleet.capacity",
+       "token": "198.5"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.east.headroom",
+       "token": "52"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "east-bay.sync",
+       "token": "2"
+      },
+      {
+       "identity": "workers.east.headroom",
+       "token": "52"
+      },
+      {
+       "identity": "fleet.capacity",
+       "token": "198.5"
+      }
+     ]
+    },
+    {
+     "source": "west-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "west-bay.sync",
+       "token": "2"
+      },
+      {
+       "identity": "workers.west.headroom",
+       "token": "-9"
+      }
+     ]
+    },
+    {
+     "source": "west-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.west.headroom",
+       "token": "+0"
+      },
+      {
+       "identity": "workers.west.headroom",
+       "token": "-6"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.east.headroom",
+       "token": "+55"
+      },
+      {
+       "identity": "workers.east.headroom",
+       "token": "+55"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.east.headroom",
+       "token": "+58"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.east.headroom",
+       "token": "+58"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.east.headroom",
+       "token": "-13"
+      },
+      {
+       "identity": "fleet.capacity",
+       "token": "212"
+      }
+     ]
+    },
+    {
+     "source": "west-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "workers.west.headroom",
+       "token": "+11"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "depot.pier.headroom",
+       "token": "-1.5"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "depot.pier.headroom",
+       "token": "+2.5"
+      }
+     ]
+    },
+    {
+     "source": "east-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "east-bay.sync",
+       "token": "3"
+      },
+      {
+       "identity": "workers.east.headroom",
+       "token": "-13"
+      },
+      {
+       "identity": "fleet.capacity",
+       "token": "212"
+      },
+      {
+       "identity": "depot.pier.headroom",
+       "token": "2.5"
+      }
+     ]
+    },
+    {
+     "source": "west-bay",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "west-bay.sync",
+       "token": "3"
+      },
+      {
+       "identity": "workers.west.headroom",
+       "token": "11"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "convention": "signed-delta",
+   "identities": [
+    "room.thermal_margin",
+    "rack.thermal_margin",
+    "sensor.reference"
+   ],
+   "relays": [
+    {
+     "id": "room-riser",
+     "port_offset": 1
+    },
+    {
+     "id": "rack-riser",
+     "port_offset": 2
+    }
+   ],
+   "groups": [
+    {
+     "source": "room-riser",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "room-riser.sync",
+       "token": "1"
+      },
+      {
+       "identity": "room.thermal_margin",
+       "token": "6.5"
+      },
+      {
+       "identity": "sensor.reference",
+       "token": "20.5"
+      }
+     ]
+    },
+    {
+     "source": "rack-riser",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "rack-riser.sync",
+       "token": "1"
+      },
+      {
+       "identity": "rack.thermal_margin",
+       "token": "2.25"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "room.thermal_margin",
+       "token": "+0.5"
+      }
+     ]
+    },
+    {
+     "source": "rack-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "rack.thermal_margin",
+       "token": "-1.25"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "room.thermal_margin",
+       "token": "+0.5"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "room.thermal_margin",
+       "token": "-0"
+      },
+      {
+       "identity": "sensor.reference",
+       "token": "80.5"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "room.thermal_margin",
+       "token": "4.75"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "room-riser.sync",
+       "token": "2"
+      },
+      {
+       "identity": "room.thermal_margin",
+       "token": "4.75"
+      },
+      {
+       "identity": "sensor.reference",
+       "token": "80.5"
+      }
+     ]
+    },
+    {
+     "source": "rack-riser",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "rack-riser.sync",
+       "token": "2"
+      },
+      {
+       "identity": "rack.thermal_margin",
+       "token": "1"
+      }
+     ]
+    },
+    {
+     "source": "rack-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "rack.thermal_margin",
+       "token": "0"
+      },
+      {
+       "identity": "rack.thermal_margin",
+       "token": "-2.5"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "room.thermal_margin",
+       "token": "+3"
+      },
+      {
+       "identity": "room.thermal_margin",
+       "token": "+3"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "room.thermal_margin",
+       "token": "+3"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "room.thermal_margin",
+       "token": "+3"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "room.thermal_margin",
+       "token": "-4"
+      },
+      {
+       "identity": "sensor.reference",
+       "token": "91"
+      }
+     ]
+    },
+    {
+     "source": "rack-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "rack.thermal_margin",
+       "token": "+2"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "intake.thermal_margin",
+       "token": "-1.5"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": false,
+     "lines": [
+      {
+       "identity": "intake.thermal_margin",
+       "token": "+2.5"
+      }
+     ]
+    },
+    {
+     "source": "room-riser",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "room-riser.sync",
+       "token": "3"
+      },
+      {
+       "identity": "room.thermal_margin",
+       "token": "12.75"
+      },
+      {
+       "identity": "sensor.reference",
+       "token": "91"
+      },
+      {
+       "identity": "intake.thermal_margin",
+       "token": "1"
+      }
+     ]
+    },
+    {
+     "source": "rack-riser",
+     "announce": true,
+     "lines": [
+      {
+       "identity": "rack-riser.sync",
+       "token": "3"
+      },
+      {
+       "identity": "rack.thermal_margin",
+       "token": "-0.5"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "transport_forms": [
+  "batched-valid-lines",
+  "split-whole-lines"
+ ],
+ "announce_batches_are_atomic": true,
+ "maximum_datagram_bytes": 512,
+ "public_contract": {
+  "scope": "Finite gauge values in native units. Announce batches (relay sync register first, unsigned restatement of every tracked gauge) carry authoritative current readings. Between announces the deployment's provisioned relay generation determines whether signed live lines are relative updates (pass-through relays) or sign-formatted absolute readings (folding relays); the active generation is evaluator-owned deployment state reconciled from the announce evidence each epoch. All accepted receipt events preserve identity, relay attribution and multiplicity. No exact patch/config whitelist.",
+  "numeric_range": "-1000000 through +1000000; finite decimals; abs tolerance 1e-9 or rel tolerance 1e-9",
+  "receipt_processing_bound_ms": 1000,
+  "datagram_scope": "Every submitted UDP datagram contains complete ASCII metric lines; LF batching valid; announce batches never split. No cross-datagram reconstruction requirement.",
+  "transport_reliability": "Controlled localhost fixture: one in-flight datagram, raw capture plus native receipt counter barrier, no application retries. UDP loss/reorder/duplication outside intended writer multiplicity makes fixture infrastructure-invalid; no exactly-once/order claim for UDP generally."
+ },
+ "controls": [
+  "healthy unsigned absolute stream",
+  "relay sync registers as unaffected unsigned counters",
+  "positive/negative/signed-zero live lines",
+  "ordinary unsigned rebase between announces",
+  "opening and mid-stream announce batches per relay",
+  "first signed value with implicit zero on a late identity",
+  "interleaved relay attribution",
+  "identical line repeated within batch and across separate datagrams",
+  "empty/no-input state",
+  "idle does not reset gauges",
+  "reset deletes gauges only through declared operator reset",
+  "replay yields same state/history in a fresh epoch",
+  "read/reload does not inject traffic",
+  "process restart starts fresh then replay"
+ ],
+ "proof_variants": [
+  "reference-announce-reconciled",
+  "baseline-absolute-overwrite",
+  "correct-held-reconciler",
+  "correct-ingress-normalize",
+  "negative-sign-delta-everywhere",
+  "negative-add-everything",
+  "negative-positive-only-relative",
+  "negative-numeric-sign",
+  "negative-deduplicate-lines",
+  "negative-global-state",
+  "negative-clamp-to-zero",
+  "negative-reset-per-datagram",
+  "negative-rebase-as-reconciliation",
+  "negative-invert-binding",
+  "negative-tracked-only-delta",
+  "negative-ignore-signed-updates",
+  "negative-render-running-total"
+ ],
+ "candidate_materialization": false
+}

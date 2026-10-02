@@ -1,0 +1,89 @@
+status: built_and_certification_gated
+visibility_axis: Seed the opening capture using real native producer traffic from
+  all four provisioned fleet endpoints and colocate raw attributed receipts, the
+  fleet inventory, the runtime provisioning bulletin and real gauge history in one
+  operator console. This remains the only declared accessibility axis; the
+  successor adds no new surface kind - the decisive update-mode evidence moves
+  from descriptive inventory wording into the traffic itself: every endpoint's
+  epoch-opening channel self-check is ordinary attributed datagram traffic shown
+  in the existing capture table and update history, the bulletin describing the
+  check is rendered in the existing left rail, the session epoch stays in the
+  existing footer, and observing the post-rollout epoch uses the ordinary Replay
+  control (the left rail may need one ordinary scroll).
+primary_action_limit: 3
+primary_actions:
+- number: 1
+  action: Select the affected gauge in the opening live capture.
+  observation: Raw received datagrams with per-datagram producer attribution and
+    receipt time/sequence; the opening channel self-checks (two identically
+    signed pulses then one unsigned settle per endpoint), signed forms, gauge
+    type, interleaved healthy identities and repeated bytes visible. The fleet
+    inventory with all four endpoint labels and neutral lane/firmware channel
+    designations plus the provisioning bulletin describing the check is
+    available in the same left rail without any click (at most one scroll); the
+    session epoch is shown in the console footer.
+- number: 2
+  action: Open its receipt/update history.
+  observation: Actual parser token/type/value, producer attribution and actual
+    before/stored-after values from the receiver update path; the check-register
+    transitions disagree with the settle line on the additive endpoints in the
+    broken build, while nearby unsigned baselines, subsequent rebases, repeated
+    identical signed deltas on the additive channels and repeated identical
+    signed readings on the absolute channels remain visible.
+- number: 3
+  action: Replay traffic (ordinary Replay control) into the post-rollout epoch,
+    then re-read the fresh channel checks, the fleet inventory and the same gauge
+    histories.
+  observation: The session epoch advances deterministically; the gatehouse card
+    now shows lane C4 and its unchanged +3/+3 check settles at 3, while the yard
+    card shows lane G2 and its unchanged +1.5/+1.5 check settles at 3; cabinet
+    and basin cards and checks are unchanged, proving the active mode follows the
+    endpoint's currently demonstrated convention rather than the endpoint
+    identity, any inventory wording, or a first-seen binding.
+opening_state: Start a new runtime epoch, execute the ordinary native producers
+  once beginning with the four channel self-checks, wait for verified native
+  receipt completion, then show those actual receipts. Never inject a fabricated
+  expected-data panel.
+decisive_observations:
+- Signed raw |g traffic with intact receipt attribution proves valid sender forms
+  and native transport receipt from all four provisioned endpoints in every
+  graded epoch.
+- Each endpoint's epoch-opening channel self-check, read with the bulletin,
+  shows whether that endpoint's unchanged signed pulses settle to the
+  accumulated register or to the last reading; this is the only public
+  disclosure of the active convention, and correlating it with the per-datagram
+  Source column binds the convention per endpoint.
+- Preserved decoded token and identity plus contradictory stored transitions on
+  the currently-additive streams (including the check register jumping at the
+  settle line) isolate update application from lexical loss, parsing, routing
+  and renderer-only hypotheses.
+- Re-running the checks after the rollout epoch shows the same stable endpoint
+  identities settling unchanged pulses to different register values, so any
+  static per-endpoint table, inventory or endpoint-name keyword guess, default
+  for uncalibrated endpoints, or first-seen source-to-mode cache contradicts the
+  visible runtime evidence in at least one epoch.
+normal_controls:
+- clear/reset
+- replay
+- metric selection
+- page reload retains service state
+- process restart starts fresh and replays on explicit trigger
+forbidden:
+- expected answer card
+- desired policy/setting label
+- inventory wording that lexically implies delta versus absolute semantics
+- machine-readable update-mode field on any public surface
+- machine-readable rollout schedule on any public surface
+- gold source location hints
+- fabricated ideal trace
+- DOM/accessibility/window state/direct HTTP as agent observation
+construction_observability_gates:
+- actual builtpage HTTP200
+- epoch-active fleet inventory labels and neutral channel designations rendered
+  in the operator console body in every graded epoch, with retired designations
+  absent and the provisioning bulletin visible
+- opening channel-check pulses and settle visible in the datagram capture in
+  every graded epoch
+- retained deterministic per-update sink assertions across three payload
+  profiles, two transport forms and three graded epochs per combination
+- clear custody and teardown for each run

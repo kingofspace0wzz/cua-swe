@@ -1,0 +1,84 @@
+schema_version: 1
+task_id: gameqa.phase-relay-checkpoint-hazard-sync.003
+trajectory_id: signal-weave-three-owner-return-v3
+seed: 2903
+level: 1
+trigger:
+  actions:
+    - action: api_reset
+      value:
+        seed: 2903
+        level: 1
+    - action: keyboard_move
+      keys: [ArrowRight]
+      until: metrics.tokens equals 1
+    - action: keyboard_move
+      keys: [ArrowRight]
+      until: game_state.checkpoint.active equals true
+    - action: inspect_visible_route_card
+      expected: three colored owners hand off to neighboring destinations
+    - action: warning_guided_crossing
+      until: player is right of the gate with metrics.deaths equals 0
+    - action: keyboard_move
+      keys: [ArrowUp, ArrowRight]
+      until: metrics.tokens equals 2
+    - action: deliberate_collision
+      lane: any visibly closed lane
+      until: metrics.deaths equals 1
+    - action: key_release
+      keys: [ArrowLeft, ArrowRight, ArrowUp, ArrowDown, W, A, S, D]
+    - action: wait_for_state
+      until: game_state.checkpoint.returns equals 1 and game_state.safe_zone.occupied equals true
+  causal_checkpoint: >-
+    The first actionable state inside the returned shelter after all movement
+    keys are released, before the player crosses the shelter's right edge.
+pre_trigger_equivalence:
+  expected:
+    metrics.tokens: 1
+    metrics.deaths: 0
+    game_state.checkpoint.active: true
+    game_state.triad.return_armed: false
+    game_state.triad.field_complete: true
+    game_state.triad.panel_complete: true
+    first_warning_guided_crossing: survives
+post_trigger_divergence:
+  baseline:
+    shelter_hold: advances instead of remaining held
+    first_handoff_pulse: marked and physical openings differ
+    second_handoff_trail: repeats, skips, or reverses the visible card
+    replay_crossing: collision
+    metrics.deaths: 2
+  gold:
+    shelter_hold: stable after released-input return
+    first_handoff_pulse: marked and physical openings agree
+    second_handoff_trail: continues the visible card
+    replay_crossing: survives
+    metrics.deaths: 1
+    terminal.outcome: success
+  negative:
+    immediate_departure: marked and physical openings agree
+    first_handoff_pulse: physical and marked openings remain aligned
+    second_handoff_trail: u-to-w-to-v reverses the evaluator-owned ownership orientation
+    replay_crossing: survives
+    completion: may succeed physically
+    verifier_failure: visible owner trail violates the route card
+required_evidence:
+  screenshots:
+    - verifier-artifacts/00-boot.png
+    - verifier-artifacts/00-initial.png
+    - verifier-artifacts/01-checkpoint-card.png
+    - verifier-artifacts/02-pre-trigger-crossing.png
+    - verifier-artifacts/03-collision.png
+    - verifier-artifacts/04-returned-held.png
+    - verifier-artifacts/05-departure.png
+    - verifier-artifacts/06-first-pulse.png
+    - verifier-artifacts/07-second-pulse.png
+    - verifier-artifacts/08-replayed-opening.png
+    - verifier-artifacts/09-complete.png
+    - verifier-artifacts/10-restarted.png
+  state_record: verifier-artifacts/state-replay.json
+  construction_outcomes:
+    no_op: fail
+    gold: pass
+    negative: fail
+status: browser_certification_blocked_by_managed_socket_policy

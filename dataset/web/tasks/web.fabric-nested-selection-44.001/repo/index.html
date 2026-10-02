@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Artboard Editor — Camera Presets</title>
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+        background: #0b0d12;
+        color: #e8ecf3;
+      }
+      header {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        padding: 12px 20px;
+        background: #141824;
+        border-bottom: 1px solid #232a3a;
+      }
+      header h1 { font-size: 15px; margin: 0; font-weight: 600; }
+      #preset-name { font-size: 13px; color: #9fb0c8; }
+      .rail {
+        display: flex;
+        gap: 20px;
+        padding: 10px 20px;
+        font-size: 12px;
+        color: #9fb0c8;
+        align-items: center;
+      }
+      #status.ok { color: #57d38a; }
+      #status.busy { color: #d9a441; }
+      #zoom-readout {
+        font-variant-numeric: tabular-nums;
+        color: #7fd7ff;
+      }
+      .stage {
+        display: flex;
+        justify-content: center;
+        padding: 24px;
+      }
+      .frame {
+        border: 1px solid #232a3a;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #0f1115;
+      }
+      canvas { display: block; }
+      .hint {
+        max-width: 800px;
+        margin: 0 auto 24px;
+        padding: 0 24px;
+        font-size: 12px;
+        line-height: 1.5;
+        color: #7f8ba3;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Artboard Editor</h1>
+      <span id="preset-name">—</span>
+    </header>
+    <div class="rail">
+      <label>Camera <select id="camera-choice">
+        <option>A</option><option>B</option><option>C</option><option>D</option>
+      </select></label>
+      <span id="status" class="busy">initializing…</span>
+      <span id="zoom-readout">zoom —</span>
+      <label>Artwork <select id="artwork-choice">
+        <option value="nested">Nested</option><option value="single">Single</option>
+      </select></label>
+    </div>
+    <div class="stage">
+      <div class="frame">
+        <canvas id="artboard" width="800" height="600"></canvas>
+      </div>
+    </div>
+    <details class="hint">
+      <summary>Help — artwork and gestures</summary>
+      <p>Nested starts unselected: click Blue to select it. Drag a side handle to
+      change only that dimension along Blue's current axes in its containing frame;
+      corners change both dimensions independently. The opposite edge or corner
+      stays fixed, as does your initial grab offset in the resized directions. The rotation handle turns Blue in that
+      same frame around its current center, preserving its dimensions. Ancestor
+      stretching can change apparent screen angles and lengths; this is local-frame
+      rotation, not rigid scene rotation.</p>
+      <p>A side or corner may pass through its opposite edge or corner, collapse,
+      and expand beyond it; corner axes cross independently. During drags and after
+      ordinary release, Blue's paint, red outline and usable handles agree. Release
+      commits without a jump. A newly grabbed visible handle resizes the resulting
+      shape, and a later fill drag moves the whole shape rigidly. Amber, both frames,
+      selection and camera values stay fixed.</p>
+      <p>All positions below are centers in the immediate parent's coordinates.
+      Outer gray frame: scene center (200,150), size 180×120, angle −15°,
+      scale (1.1,0.9). Inner gray frame: outer-local center (0,0), size 120×80,
+      angle −10°, unit scale. Blue: inner-local center (0,0), size 60×36,
+      angle 15°, center origin. Amber: outer-local center (60,0), size 16×16,
+      angle 0°, unit scale. Frames and Amber are not editable.</p>
+      <p>Single keeps the original selected artwork and the same handle/fill
+      gestures without frames. Use the Camera selector for the existing
+      A, B, C and D presets and the Artwork selector for Nested or Single. Camera transforms can project a rectangle as a
+      parallelogram; its outline follows the projected edges.</p>
+    </details>
+    <script>
+      const camera = document.getElementById('camera-choice');
+      camera.value = new URLSearchParams(location.search).get('preset') || 'A';
+      camera.addEventListener('change', () => {
+        const url = new URL(location.href);
+        url.searchParams.set('preset', camera.value);
+        location.href = url.href;
+      });
+      const choice = document.getElementById('artwork-choice');
+      choice.value = new URLSearchParams(location.search).get('artwork') === 'single' ? 'single' : 'nested';
+      choice.addEventListener('change', () => {
+        const url = new URL(location.href);
+        url.searchParams.set('artwork', choice.value);
+        location.href = url.href;
+      });
+    </script>
+    <script type="module" src="./dist/app.bundle.js"></script>
+  </body>
+</html>

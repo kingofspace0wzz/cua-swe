@@ -1,0 +1,53 @@
+diff --git a/src/controllers/console.js b/src/controllers/console.js
+index 11efc765915b5581858373eb68047e3227a5e804..e4a3b18f950f55d6e0ae846cc385f812e80ad2bc 100644
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -4,7 +4,7 @@ import {store} from '../state/store.js';
+ import {render} from '../views/render.js';
+ export async function initialize(){
+  store.catalog=await request('catalog');
+- await request('configure',{rules:store.catalog.rules.map(compileRule)});
++ await request('configure',{rules:store.catalog.rules.map(rule=>compileRule(rule,store.catalog.routing))});
+  store.snapshot=await request('snapshot');render(store);
+  document.querySelector('#app').addEventListener('click',async event=>{
+   const button=event.target.closest('button[data-action]');if(!button||store.busy)return;
+diff --git a/src/rules/compileRule.js b/src/rules/compileRule.js
+index 2fe93e45b7623f4a4bbfacf9bdbacea0c99802a0..953b899e3ed8b0a3d5f1a0ebba2950110883f0a8 100644
+--- a/src/rules/compileRule.js
++++ b/src/rules/compileRule.js
+@@ -1,10 +1,33 @@
+ import {compileQuery} from './query.js';
+ 
+-export function compileRule(rule) {
++const VALUE_REFERENCE = /\$value\b/;
++const ROUTE_REFERENCE = /\$route\.([A-Za-z0-9_]+)/g;
++
++function durableRouteKeys(routing) {
++  const durable = new Set();
++  for (const [scope, keys] of Object.entries(routing?.epoch || {})) {
++    if (scope === 'evaluation') continue;
++    for (const key of keys || []) durable.add(key);
++  }
++  return durable;
++}
++
++function isDurableTemplate(template, durableKeys) {
++  const text = String(template ?? '');
++  if (VALUE_REFERENCE.test(text)) return false;
++  for (const match of text.matchAll(ROUTE_REFERENCE)) {
++    if (!durableKeys.has(match[1])) return false;
++  }
++  return true;
++}
++
++export function compileRule(rule, routing) {
+   const labels = {...rule.labels};
+   const annotations = {...rule.annotations};
++  const durableKeys = durableRouteKeys(routing);
+   for (const field of rule.enrichments || []) {
+-    labels[field.name] = field.template;
++    if (isDurableTemplate(field.template, durableKeys)) labels[field.name] = field.template;
++    else annotations[field.name] = field.template;
+   }
+   return {
+     name: rule.name,

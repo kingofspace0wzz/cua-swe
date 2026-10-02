@@ -1,0 +1,24 @@
+diff --git a/src/config/contextCompatibilityPolicy.js b/src/config/contextCompatibilityPolicy.js
+--- a/src/config/contextCompatibilityPolicy.js
++++ b/src/config/contextCompatibilityPolicy.js
+@@ -2,7 +2,8 @@ export function contextCompatibilityPolicy(catalog) {
+   return Object.freeze({
+     profileLabel: catalog.label,
+     contextManager: catalog.contextManager,
+     asyncSemantics: "native",
+     propagationStrategy: "manager",
++    continuationScope: catalog.delayedContinuationBinding,
+   });
+ }
+diff --git a/src/config/compileRuntimeProfile.js b/src/config/compileRuntimeProfile.js
+--- a/src/config/compileRuntimeProfile.js
++++ b/src/config/compileRuntimeProfile.js
+@@ -1,7 +1,8 @@
+ export function compileRuntimeProfile(policy) {
+   return {
+     context_manager: policy.contextManager,
+     async_semantics: "native",
+     propagation_strategy: policy.propagationStrategy,
++    continuation_scope: policy.continuationScope,
+   };
+ }

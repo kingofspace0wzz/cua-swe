@@ -1,0 +1,132 @@
+schema_version: 1
+collection_id: cua-swe.devops.valid-20.20260919
+status: canonical
+publication_date: '2026-09-20'
+track: web_frontend
+benchmark_domain: devops-observability
+task_count: 20
+tiers:
+  lower: 15
+  differential: 3
+  upper: 2
+model_policy:
+  construction_and_confirmation:
+    gpt6:
+      model_id: gpt-6-astra
+    fable5:
+      model_id: claude-fable-5
+  cua_observation: screenshot_only
+evaluation_summary:
+  selected_rows: 400
+  code_only_successes: 1
+  code_only_rows: 180
+  cua_successes: 114
+  cua_rows: 220
+  grounded_cua_rows: 219
+  cua_nonuse_failures: 1
+  invalid_attempts_replaced: 6
+reporting_policy:
+- Keep DevOps separate from Web, Game, and Mobile denominators.
+- Report lower, GPT-6/Fable differential, and upper anchors separately.
+- Count only selected protocol-valid rows; retained infrastructure-invalid attempts are provenance, not model failures.
+tasks:
+- task_id: devops.trace-await-context.lower-1.frontier-hard-r1.001
+  task_file: dataset/devops/tasks/devops.trace-await-context.lower-1.frontier-hard-r1.001/task.yaml
+  task_digest: fa20a76ced01a2c4cf6be540f6db73cbee6c0593e3b58d998071c31efa5b09b9
+  tier: lower
+  cohort: previously_admitted_10
+- task_id: devops.trace-clock-skew.lower-3.frontier-hard-r1.001
+  task_file: dataset/devops/tasks/devops.trace-clock-skew.lower-3.frontier-hard-r1.001/task.yaml
+  task_digest: 6e68da5870c77dbc1d36cf8dd6c8bf2fffa5482596f6da9a9951feb45f398ca4
+  tier: lower
+  cohort: previously_admitted_10
+- task_id: devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.001
+  task_file: dataset/devops/tasks/devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.001/task.yaml
+  task_digest: cfe74fa09d3b4ed8bf8305ec923ea48c1876c8c7df37cf7807d0f10b6fe09800
+  tier: lower
+  cohort: previously_admitted_10
+- task_id: devops.rate-before-aggregation.harder-1.frontier-hard-r1.001
+  task_file: dataset/devops/tasks/devops.rate-before-aggregation.harder-1.frontier-hard-r1.001/task.yaml
+  task_digest: c9ee2d955216ac3056eeb0e55b1341841bde7fe229e8e5342edaea39e8324e45
+  tier: lower
+  cohort: previously_admitted_10
+- task_id: devops.slo-availability-rollup.harder-1.frontier-hard-r1.001
+  task_file: dataset/devops/tasks/devops.slo-availability-rollup.harder-1.frontier-hard-r1.001/task.yaml
+  task_digest: d009efa6696377a0c1a4c1a3fddb8be75aee2383b285ac13a7ce9d68e363cb59
+  tier: lower
+  cohort: previously_admitted_10
+- task_id: devops.log-severity-normalization.r1.frontier-hard-r1.001
+  task_file: dataset/devops/tasks/devops.log-severity-normalization.r1.frontier-hard-r1.001/task.yaml
+  task_digest: 8201c210ea1873df738025eef377ecc392c2749e4248b119e15b83e7947c0a80
+  tier: lower
+  cohort: previously_admitted_10
+- task_id: devops.tail-sampling-decision-window.owner20-r1.frontier-hard-r2.001
+  task_file: dataset/devops/tasks/devops.tail-sampling-decision-window.owner20-r1.frontier-hard-r2.001/task.yaml
+  task_digest: 52eaa1deb1374a50ee7ed5658e40b74967dbd17f25e54c4fd59a477a7102f706
+  tier: lower
+  cohort: previously_admitted_10
+- task_id: devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r1.001
+  task_file: dataset/devops/tasks/devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r1.001/task.yaml
+  task_digest: 465a9ca93350c70c973208fdfbea72c98d53a7d5d007744057c7ba354bab7dcb
+  tier: differential
+  cohort: previously_admitted_10
+- task_id: devops.statsd-gauge-update-mode.owner32-r1.frontier-hard-r4.001
+  task_file: dataset/devops/tasks/devops.statsd-gauge-update-mode.owner32-r1.frontier-hard-r4.001/task.yaml
+  task_digest: 2a68261b5494b53712c067d4179f9c901b4a73d8b9df3ff2240a47c9f2f57b00
+  tier: differential
+  cohort: previously_admitted_10
+- task_id: devops.rate-before-aggregation.harder-1.frontier-hard-r1.cua-upper-r1.001
+  task_file: dataset/devops/tasks/devops.rate-before-aggregation.harder-1.frontier-hard-r1.cua-upper-r1.001/task.yaml
+  task_digest: faa97d8611acda70b6ae16532f91c8678fd0965f91b57f81ef380e2cbc5727c0
+  tier: upper
+  cohort: previously_admitted_10
+- task_id: devops.tail-sampling-decision-window.owner20-r1.frontier-hard-r3.cua-diff-r2.001
+  task_file: dataset/devops/tasks/devops.tail-sampling-decision-window.owner20-r1.frontier-hard-r3.cua-diff-r2.001/task.yaml
+  task_digest: 95a8afe92a0e84d72e0125c57f6acdc00fd341cf18009a5875449f2ad789a4bd
+  tier: lower
+  cohort: expansion_10
+- task_id: devops.statsd-gauge-update-mode.owner32-r1.frontier-hard-r5.001
+  task_file: dataset/devops/tasks/devops.statsd-gauge-update-mode.owner32-r1.frontier-hard-r5.001/task.yaml
+  task_digest: 3361364167a173ba069a0fa32451ccace8edaee776d01a6db5c84a6e6427fae6
+  tier: differential
+  cohort: expansion_10
+- task_id: devops.rate-before-aggregation.harder-1.frontier-hard-r1.cua-upper-r2.001
+  task_file: dataset/devops/tasks/devops.rate-before-aggregation.harder-1.frontier-hard-r1.cua-upper-r2.001/task.yaml
+  task_digest: 06b9c4071a248684d5f3b8411949bde0bd313a3866af4d97dfc992a9795d969c
+  tier: lower
+  cohort: expansion_10
+- task_id: devops.trace-await-context.lower-1.frontier-hard-r1.cua-diff-r1.001
+  task_file: dataset/devops/tasks/devops.trace-await-context.lower-1.frontier-hard-r1.cua-diff-r1.001/task.yaml
+  task_digest: 1ec21095b42c1bcea81b2afaa49f406644dc89645662462042d643d044fb3772
+  tier: lower
+  cohort: expansion_10
+- task_id: devops.slo-availability-rollup.harder-1.frontier-hard-r1.cua-upper-r1.001
+  task_file: dataset/devops/tasks/devops.slo-availability-rollup.harder-1.frontier-hard-r1.cua-upper-r1.001/task.yaml
+  task_digest: e8b03b6935a411bef756f7f1206b2c96c30668b2aff0a6b3bde18b0dd1289b67
+  tier: lower
+  cohort: expansion_10
+- task_id: devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.cua-upper-r3.001
+  task_file: dataset/devops/tasks/devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.cua-upper-r3.001/task.yaml
+  task_digest: 571e08ff552a4b2e7cb4892093130b2df35eec4d8071902672bc8e61c7141de7
+  tier: lower
+  cohort: expansion_10
+- task_id: devops.log-severity-normalization.r1.frontier-hard-r1.cua-upper-r2.001
+  task_file: dataset/devops/tasks/devops.log-severity-normalization.r1.frontier-hard-r1.cua-upper-r2.001/task.yaml
+  task_digest: 01b3fb13889e8ddafa439bc721fe656d642215523dd91358cd69ce8a98da8c54
+  tier: upper
+  cohort: expansion_10
+- task_id: devops.trace-clock-skew.lower-3.frontier-hard-r1.cua-upper-r6.001
+  task_file: dataset/devops/tasks/devops.trace-clock-skew.lower-3.frontier-hard-r1.cua-upper-r6.001/task.yaml
+  task_digest: 7466c67cd319c77afdc490172f599e005a7f2fd7fcf439de405fcc5e22d97217
+  tier: lower
+  cohort: expansion_10
+- task_id: devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r2.cua-upper-r2.001
+  task_file: dataset/devops/tasks/devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r2.cua-upper-r2.001/task.yaml
+  task_digest: d818ae66c3da50fa90e235421ba2acf197262c88f5857d6635c9921fdce88068
+  tier: lower
+  cohort: expansion_10
+- task_id: devops.scrape-response-phase-deadline.owner29-r1.frontier-hard-r2.cua-diff-r3.001
+  task_file: dataset/devops/tasks/devops.scrape-response-phase-deadline.owner29-r1.frontier-hard-r2.cua-diff-r3.001/task.yaml
+  task_digest: 95fcbe0539035ed6749dd3e828f1ae7239bf6ab210f463aef9fef11e4aa5c98e
+  tier: lower
+  cohort: expansion_10

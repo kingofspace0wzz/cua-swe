@@ -1,0 +1,16 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+index 2ca366ab15985349340044ba1cd10e5ffff22f8e..f61e241af8d52d2267f4c0ef5cf56cca6a610e8d 100644
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -15,7 +15,9 @@ export function compileInhibitionRule(catalog, policy) {
+       },
+     ],
+     equal: [...catalog.equalDimensions],
+-    required_source_labels: [],
+-    required_target_labels: [],
++    // Cluster rollout is complete: absent/empty clusters are not a shared scope.
++    // Environment remains optional for legitimate pairs opened before its rollout.
++    required_source_labels: ["cluster"],
++    required_target_labels: ["cluster"],
+   };
+ }

@@ -1,0 +1,122 @@
+diff --git a/src/ingest.mjs b/src/ingest.mjs
+index d1efb83c863f5fc9530f51faafd78651817a5e87..857c75dd34106a25b9fe370779710b8710e12a21 100644
+--- a/src/ingest.mjs
++++ b/src/ingest.mjs
+@@ -1,11 +1,14 @@
+ import {decodeDatagram} from './protocol.mjs';
+ import {applyGauge} from './update.mjs';
+-export function ingestCapture(receipt, state) {
++export function ingestCapture(receipt, state, modeForSource) {
++  const mode = typeof modeForSource === 'function'
++    ? modeForSource(receipt.source)
++    : (modeForSource ?? 'snapshot');
+   return decodeDatagram(Buffer.from(receipt.base64, 'base64')).map(measurement => {
+-    const result = applyGauge(state, {...measurement, source: receipt.source});
++    const result = applyGauge(state, {...measurement, source: receipt.source, mode});
+     return {receipt: receipt.sequence, lineIndex: measurement.lineIndex,
+       identity: measurement.identity, source: receipt.source, token: measurement.token,
+       metricType: measurement.metricType, parsedValue: measurement.value,
+-      value: result.value};
++      before: result.before, value: result.value};
+   });
+ }
+diff --git a/src/protocol.mjs b/src/protocol.mjs
+index b6f45f139a2d4f407e9fb79710a51d86ac7041ac..f529d62f3ce352a724c300f8181bc6fdd9d1895b 100644
+--- a/src/protocol.mjs
++++ b/src/protocol.mjs
+@@ -9,7 +9,8 @@ export function decodeDatagram(bytes) {
+     const [, identity, token, metricType] = match;
+     const value = Number(token);
+     if (!Number.isFinite(value)) throw new Error('Non-finite gauge value');
+-    measurements.push({identity, token, metricType, value, lineIndex});
++    const signed = token[0] === '+' || token[0] === '-';
++    measurements.push({identity, token, metricType, value, signed, lineIndex});
+   }
+   return measurements;
+ }
+diff --git a/src/receiver.mjs b/src/receiver.mjs
+index 60bb2a225fa06f8ceb2ad869d27845e690350263..5db0d0f11158bf664db285fb6d929b820f4e597a 100644
+--- a/src/receiver.mjs
++++ b/src/receiver.mjs
+@@ -1,6 +1,7 @@
+ import {ingestCapture} from './ingest.mjs';
+ export function createReceiver(origin) {
+   let state = new Map(), cursor = 0, epoch = 0, error = null, timer = null, pending = Promise.resolve();
++  let producers = [], inventoryLoaded = false;
+   async function request(path, body) {
+     const response = await fetch(origin + path, body === undefined ? {} : {
+       method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify(body)
+@@ -8,11 +9,36 @@ export function createReceiver(origin) {
+     if (!response.ok) throw new Error('Receiver request failed: ' + response.status);
+     return response.json();
+   }
++  function adoptInventory(payload) {
++    if (payload && Array.isArray(payload.producers)) {
++      producers = payload.producers;
++      inventoryLoaded = true;
++    }
++  }
++  function classify(producer) {
++    const text = JSON.stringify(producer ?? {}).toLowerCase();
++    if (/delta|relative|incremental/.test(text)) return 'delta';
++    if (/snapshot|absolute|direct|publish|reading|report/.test(text)) return 'snapshot';
++    if (/relay/.test(text)) return 'delta';
++    return 'snapshot';
++  }
++  function modeFor(source) {
++    if (source == null) return 'snapshot';
++    const key = String(source);
++    const identifiers = producer =>
++      [producer.endpoint, producer.label, producer.id, producer.address, producer.source, producer.name]
++        .filter(value => value != null).map(String);
++    let match = producers.find(producer => identifiers(producer).includes(key));
++    match ??= producers.find(producer =>
++      identifiers(producer).some(id => id.includes(key) || key.includes(id)));
++    return match ? classify(match) : 'snapshot';
++  }
+   async function drain() {
++    if (!inventoryLoaded) adoptInventory(await request('/snapshot'));
+     const capture = await request('/capture?after=' + cursor);
+     if (capture.epoch !== epoch) return;
+     for (const receipt of capture.receipts) {
+-      const updates = ingestCapture(receipt, state);
++      const updates = ingestCapture(receipt, state, modeFor);
+       await request('/ingest', {epoch, receipt: receipt.sequence, updates});
+       cursor = receipt.sequence;
+     }
+@@ -24,6 +50,7 @@ export function createReceiver(origin) {
+   async function begin(seed = false) {
+     if (seed) {
+       const current = await request('/snapshot');
++      adoptInventory(current);
+       if (current.seeded) {
+         if (epoch !== current.epoch) {
+           state = new Map(Object.entries(current.state)); cursor = current.committedReceipt;
+@@ -35,12 +62,14 @@ export function createReceiver(origin) {
+     }
+     stop(); await pending;
+     const snapshot = await request('/begin', {seed});
++    adoptInventory(snapshot);
+     if (snapshot.alreadySeeded) return snapshot;
+     state = new Map(); cursor = 0; epoch = snapshot.epoch; error = null;
+     timer = setInterval(pump, 25); pump(); return snapshot;
+   }
+   async function reset() {
+     stop(); await pending; const snapshot = await request('/reset', {});
++    adoptInventory(snapshot);
+     state = new Map(); cursor = 0; epoch = snapshot.epoch; error = null; return snapshot;
+   }
+   return {begin, reset, status: () => ({cursor, epoch, error}), close: stop};
+diff --git a/src/update.mjs b/src/update.mjs
+index a736259119a72077cfd17fbee96fccc26aaaf85d..dad824a98c0b7d43b31e5451e1316cac2a77f07c 100644
+--- a/src/update.mjs
++++ b/src/update.mjs
+@@ -1,6 +1,7 @@
+ export function applyGauge(state, measurement) {
+   const before = state.get(measurement.identity) ?? 0;
+-  const value = measurement.value;
++  const relative = measurement.mode === 'delta' && measurement.signed;
++  const value = relative ? before + measurement.value : measurement.value;
+   state.set(measurement.identity, value);
+   return {before, value};
+ }

@@ -1,0 +1,56 @@
+diff --git a/src/config/collectorSettings.js b/src/config/collectorSettings.js
+index c34e22f93da5c70973f28d08047527363eeabbfd..aaee82139676072b61a59378b336ea5591caea11 100644
+--- a/src/config/collectorSettings.js
++++ b/src/config/collectorSettings.js
+@@ -1,6 +1,9 @@
+ import { SAMPLING_POLICIES } from "./samplingPolicies.js";
+ 
++// The decision wait must cover the receiver span-delivery envelope so that
++// late error and slow spans arrive before the tail-sampling decision is
++// cached, while staying inside the tail-decision SLO.
+ export const COLLECTOR_SETTINGS = Object.freeze({
+-  decisionWaitMs: 250,
++  decisionWaitMs: 2000,
+   policies: SAMPLING_POLICIES,
+ });
+diff --git a/src/controllers/console.js b/src/controllers/console.js
+index 3fb22364ab15c4ba24a8fadd7e4ed40b0adf846b..3517c8ab04aee29c8e52b2d91929e20e206318d4 100644
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -5,14 +5,33 @@ import { store } from "../state/store.js";
+ 
+ const refresh = async () => store.set({ snapshot: await samplerClient.snapshot() });
+ 
++// Keep the collector decision window aligned with the receiver service
++// levels the collector reports: it must span the whole span-delivery
++// envelope (so late error/slow spans arrive before the decision is cached)
++// while staying within the tail-decision SLO budget. When the durable
++// configuration already satisfies both levels this is a no-op.
++async function alignDecisionWindow(plan) {
++  const snapshot = store.get().snapshot;
++  const diagnostics = snapshot && snapshot.diagnostics;
++  if (!diagnostics) return;
++  const envelope = Number(diagnostics.deliveryEnvelopeMs);
++  const budget = Number(diagnostics.decisionBudgetMs);
++  if (!Number.isFinite(envelope) || !Number.isFinite(budget)) return;
++  const target = Math.min(Math.max(plan.decisionWaitMs, envelope), budget);
++  if (!Number.isFinite(target) || target === Number(diagnostics.waitMs)) return;
++  await samplerClient.configure({ ...plan, decisionWaitMs: target });
++  await samplerClient.scenario(snapshot.scenarioId);
++  await refresh();
++}
++
+ export async function initialize() {
+   const catalog = await samplerClient.catalog();
+-  await samplerClient.configure(
+-    compilePolicyPlan(COLLECTOR_SETTINGS),
+-  );
++  const plan = compilePolicyPlan(COLLECTOR_SETTINGS);
++  await samplerClient.configure(plan);
+   store.set({ catalog });
+   await samplerClient.scenario(catalog.scenarios[0].id);
+   await refresh();
++  await alignDecisionWindow(plan);
+ }
+ 
+ export async function chooseScenario(id) {

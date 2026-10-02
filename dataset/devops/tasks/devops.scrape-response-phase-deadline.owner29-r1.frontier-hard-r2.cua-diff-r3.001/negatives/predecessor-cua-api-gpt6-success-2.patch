@@ -1,0 +1,89 @@
+diff --git a/src/budgets.mjs b/src/budgets.mjs
+index f94b8c1680230d1aabcf6c4186b71868c30bf237..b473e9b119d8b4b256b98e64cfff819a686644c2 100644
+--- a/src/budgets.mjs
++++ b/src/budgets.mjs
+@@ -1,3 +1,28 @@
+-// Staging scrape service objectives. Units are milliseconds.
++// Transport defaults for callers without a rollout assignment. Units: milliseconds.
+ export const budgets = Object.freeze({connectTimeoutMs:250, requestTimeoutMs:2000});
+ export const serviceObjectives = Object.freeze({supportedResponseMs:1500, cancelByMs:2250, freshByMs:2500});
++
++// Receiver operations runbook: approved whole-response caps. Select the entire
++// assignment, since receiver classes within the same tier have different bounds.
++const responseCaps = new Map([
++  ['RH-27', new Map([
++    ['standard', new Map([['interlock',1850],['streamline',1350]])],
++    ['bulk', new Map([['interlock',2850],['streamline',2150]])],
++  ])],
++  ['VT-58', new Map([
++    ['express', new Map([['relay',950],['trunk',1650]])],
++    ['freight', new Map([['relay',2550],['trunk',2150]])],
++  ])],
++  ['JN-84', new Map([
++    ['rapid', new Map([['orbit',1550],['depot',1050]])],
++    ['batch', new Map([['orbit',2050],['depot',2700]])],
++  ])],
++]);
++
++export function budgetsForTarget(target) {
++  const requestTimeoutMs = responseCaps.get(target.profileCode)
++    ?.get(target.tier)?.get(target.receiverClass);
++  // Do not silently apply an unrelated rollout's cap to a new assignment.
++  if (requestTimeoutMs === undefined) throw new Error('unknown_scrape_assignment');
++  return {...budgets, requestTimeoutMs};
++}
+diff --git a/src/collector.mjs b/src/collector.mjs
+index ee5a2ed9aad22153874e2d2bae85e952f140d220..bbfdee3e675efe05d97fbdb08a903d177a689c8e 100644
+--- a/src/collector.mjs
++++ b/src/collector.mjs
+@@ -1,7 +1,8 @@
+ import {fetchMetrics} from './scrape.mjs';
+ import {parseMetrics} from './metrics.mjs';
++import {budgetsForTarget} from './budgets.mjs';
+ export async function collectTarget(origin,target){
+- const body=await fetchMetrics(new URL(target.path,origin));
++ const body=await fetchMetrics(new URL(target.path,origin),budgetsForTarget(target));
+  const samples=parseMetrics(body);
+  const response=await fetch(new URL('/ingest',origin),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:target.id,samples}),signal:AbortSignal.timeout(500)});
+  if(!response.ok)throw new Error('ingestion_rejected');
+diff --git a/src/scrape.mjs b/src/scrape.mjs
+index 7f496326c8842c7be5fd832d7ee604c9273aef9f..a9d72ed4e7a39d8824b9fff0108ea1075ecce349 100644
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -5,7 +5,7 @@ import {budgets} from './budgets.mjs';
+ // Fetch a complete metrics response. Both deadlines are configurable transport inputs.
+ export function fetchMetrics(url, limits=budgets, notify=()=>{}) {
+   return new Promise((resolve,reject)=>{
+-    const started=performance.now();let settled=false,response=null;
++    const started=performance.now();let settled=false,response=null,connectTimer;
+     const event=(phase,extra={})=>notify({phase,elapsedMs:performance.now()-started,...extra});
+     const req=request(url,{method:'GET',agent:false},res=>{
+       response=res;event('headers',{status:res.statusCode});const chunks=[];
+@@ -19,18 +19,22 @@ export function fetchMetrics(url, limits=budgets, notify=()=>{}) {
+       });
+     });
+     const finish=(error,body)=>{
+-      if(settled)return;settled=true;clearTimeout(watchdog);
++      if(settled)return;settled=true;clearTimeout(watchdog);clearTimeout(connectTimer);
+       if(error){event('abort',{reason:error.message});response?.destroy();req.destroy();reject(error);}
+       else resolve(body);
+     };
+     // This absolute guard covers connect, first final response, and every body read.
+     const watchdog=setTimeout(()=>finish(new Error('request_deadline')),limits.requestTimeoutMs);
++    // Connection establishment has its own deadline, not a socket inactivity
++    // timeout: a valid exporter may be quiet while preparing headers or body.
++    connectTimer=setTimeout(()=>finish(new Error('socket_timeout')),limits.connectTimeoutMs);
+     req.on('socket',socket=>{
+-      socket.setTimeout(limits.connectTimeoutMs);
+-      socket.on('timeout',()=>finish(new Error('socket_timeout')));
+-      socket.once('connect',()=>{
++      const connected=()=>{
++        clearTimeout(connectTimer);
+         event('connected');
+-      });
++      };
++      if(socket.connecting)socket.once('connect',connected);
++      else connected();
+     });
+     req.on('error',finish);event('dispatch');req.end();
+   });

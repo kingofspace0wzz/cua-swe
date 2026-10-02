@@ -1,0 +1,147 @@
+--- a/src/receiver.mjs
++++ b/src/receiver.mjs
+@@ -1,6 +1,9 @@
+-import {ingestCapture} from './ingest.mjs';
++import {decodeCapture} from './ingest.mjs';
++import {applyGauge} from './update.mjs';
++import {createReconciler, isSignedToken} from './relay.mjs';
+ export function createReceiver(origin) {
+   let state = new Map(), cursor = 0, epoch = 0, error = null, timer = null, pending = Promise.resolve();
++  let reconciler = createReconciler(), held = [];
+   async function request(path, body) {
+     const response = await fetch(origin + path, body === undefined ? {} : {
+       method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify(body)
+@@ -8,14 +11,31 @@
+     if (!response.ok) throw new Error('Receiver request failed: ' + response.status);
+     return response.json();
+   }
++  function beginEpoch(at) {
++    state = new Map(); cursor = 0; epoch = at; error = null;
++    reconciler = createReconciler(); held = [];
++  }
+   async function drain() {
+     const capture = await request('/capture?after=' + cursor);
+     if (capture.epoch !== epoch) return;
+     for (const receipt of capture.receipts) {
+-      const updates = ingestCapture(receipt, state);
+-      await request('/ingest', {epoch, receipt: receipt.sequence, updates});
++      for (const event of decodeCapture(receipt)) {
++        reconciler.observe(event);
++        held.push(event);
++      }
+       cursor = receipt.sequence;
+     }
++    const ready = [];
++    while (held.length) {
++      const mode = reconciler.mode();
++      if (mode === null && isSignedToken(held[0].token) && !held[0].announce) break;
++      const {announce, ...event} = held.shift();
++      event.value = applyGauge(state, {...event, value: event.parsedValue, mode, announce}).value;
++      ready.push(event);
++    }
++    if (ready.length) {
++      await request('/ingest', {epoch, receipt: ready[ready.length - 1].receipt, updates: ready});
++    }
+   }
+   function stop() { if (timer) clearInterval(timer); timer = null; }
+   function pump() {
+@@ -26,8 +46,8 @@
+       const current = await request('/snapshot');
+       if (current.seeded) {
+         if (epoch !== current.epoch) {
++          beginEpoch(current.epoch);
+           state = new Map(Object.entries(current.state)); cursor = current.committedReceipt;
+-          epoch = current.epoch; error = null;
+           if (!timer) { timer = setInterval(pump, 25); pump(); }
+         }
+         return {alreadySeeded: true, epoch};
+@@ -36,12 +56,12 @@
+     stop(); await pending;
+     const snapshot = await request('/begin', {seed});
+     if (snapshot.alreadySeeded) return snapshot;
+-    state = new Map(); cursor = 0; epoch = snapshot.epoch; error = null;
++    beginEpoch(snapshot.epoch);
+     timer = setInterval(pump, 25); pump(); return snapshot;
+   }
+   async function reset() {
+     stop(); await pending; const snapshot = await request('/reset', {});
+-    state = new Map(); cursor = 0; epoch = snapshot.epoch; error = null; return snapshot;
++    beginEpoch(snapshot.epoch); return snapshot;
+   }
+   return {begin, reset, status: () => ({cursor, epoch, error}), close: stop};
+ }
+--- a/src/ingest.mjs
++++ b/src/ingest.mjs
+@@ -1,11 +1,11 @@
+ import {decodeDatagram} from './protocol.mjs';
+-import {applyGauge} from './update.mjs';
+-export function ingestCapture(receipt, state) {
+-  return decodeDatagram(Buffer.from(receipt.base64, 'base64')).map(measurement => {
+-    const result = applyGauge(state, {...measurement, source: receipt.source});
+-    return {receipt: receipt.sequence, lineIndex: measurement.lineIndex,
+-      identity: measurement.identity, source: receipt.source, token: measurement.token,
+-      metricType: measurement.metricType, parsedValue: measurement.value,
+-      value: result.value};
+-  });
++import {isAnnounceBatch} from './relay.mjs';
++export function decodeCapture(receipt) {
++  const measurements = decodeDatagram(Buffer.from(receipt.base64, 'base64'));
++  const announce = isAnnounceBatch(receipt, measurements);
++  return measurements.map(measurement => ({
++    receipt: receipt.sequence, lineIndex: measurement.lineIndex,
++    identity: measurement.identity, source: receipt.source, token: measurement.token,
++    metricType: measurement.metricType, parsedValue: measurement.value,
++    value: measurement.value, announce}));
+ }
+--- a/src/update.mjs
++++ b/src/update.mjs
+@@ -1,6 +1,8 @@
++import {isSignedToken} from './relay.mjs';
+ export function applyGauge(state, measurement) {
+   const before = state.get(measurement.identity) ?? 0;
+-  const value = measurement.value;
++  const relative = measurement.mode === 'signed-delta' && !measurement.announce && isSignedToken(measurement.token);
++  const value = relative ? before + measurement.value : measurement.value;
+   state.set(measurement.identity, value);
+   return {before, value};
+ }
+--- /dev/null
++++ b/src/relay.mjs
+@@ -0,0 +1,37 @@
++// Site relay reconciliation. Every relay opens its session epoch, and follows
++// each internal rollover, with one atomic announce batch: the relay's own
++// sync register line first, then the authoritative current reading of every
++// gauge the relay tracks. Between announces, live-forwarded lines follow the
++// deployment's provisioned relay generation: pass-through relays forward
++// signed relative updates, while folding relays publish sign-formatted
++// absolute readings. The first announce restatement that resolves a
++// divergence between the two running interpretations binds the active
++// generation for the epoch; announces re-run every epoch, so bindings never
++// outlive a session.
++const near = (a, b) => Math.abs(a - b) <= 1e-9 + 1e-9 * Math.abs(b);
++export const isSignedToken = token => /^[+-]/.test(String(token ?? ''));
++export function isAnnounceBatch(receipt, measurements) {
++  return measurements.length > 1 && measurements[0].identity === receipt.source + '.sync';
++}
++export function createReconciler() {
++  let mode = null;
++  const paths = new Map();
++  const path = identity => paths.get(identity) ?? {sum: 0, last: 0};
++  return {
++    mode: () => mode,
++    observe(event) {
++      const current = path(event.identity);
++      if (event.announce) {
++        if (mode === null && !near(current.sum, current.last)) {
++          mode = near(event.parsedValue, current.sum) ? 'signed-delta' : 'absolute-reading';
++        }
++        paths.set(event.identity, {sum: event.parsedValue, last: event.parsedValue});
++      } else if (isSignedToken(event.token)) {
++        paths.set(event.identity, {sum: current.sum + event.parsedValue, last: event.parsedValue});
++      } else {
++        paths.set(event.identity, {sum: event.parsedValue, last: event.parsedValue});
++      }
++      return mode;
++    },
++  };
++}

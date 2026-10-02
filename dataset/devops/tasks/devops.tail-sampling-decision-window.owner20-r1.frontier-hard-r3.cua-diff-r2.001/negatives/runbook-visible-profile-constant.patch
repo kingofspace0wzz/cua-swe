@@ -1,0 +1,18 @@
+--- a/src/config/compilePolicyPlan.js
++++ b/src/config/compilePolicyPlan.js
+@@ -11,9 +11,14 @@
+   }
+ }
+ 
++// Receiver operations runbook RB-217: the active delivery profile DP-C41
++// holds a 2840 ms delivery envelope with a 120 ms decision margin.
++const RUNBOOK_DELIVERY_ENVELOPE_MS = 2840;
++const RUNBOOK_DECISION_MARGIN_MS = 120;
++
+ export function compilePolicyPlan(collector) {
+   return {
+-    decisionWaitMs: Number(collector.decisionWaitMs),
++    decisionWaitMs: RUNBOOK_DELIVERY_ENVELOPE_MS + RUNBOOK_DECISION_MARGIN_MS,
+     policies: collector.policies.map(compilePolicy),
+   };
+ }

@@ -1,0 +1,54 @@
+schema_version: 1
+task_id: gameqa.captain-callisto-conditional-physics.002
+trajectory_id: captain-callisto-level3-release-transfer-v3
+seed: 44
+level: 3
+candidate:
+  family: conditional-physics
+  difficulty: l4
+  variant: 2
+  status: quarantined_revision_3
+trigger:
+  actions:
+    - action: key_down
+      keys: [D, Shift]
+    - action: wait
+      until: player_x_greater_than_or_equal_14
+      timeout_ms: 4500
+    - action: key_up
+      keys: [Shift]
+    - action: key_hold
+      keys: [D]
+      duration_ms: 900
+  causal_checkpoint: Shift release while D remains held between the two lifts
+pre_trigger_equivalence:
+  required_fields:
+    - game_state.player.x
+    - game_state.player.y
+    - game_state.player.velocity_x
+    - game_state.player.velocity_y
+    - metrics.coins
+    - debug.first_lift_x
+    - debug.second_lift_x
+  status: revision_3f_certified_too_easy
+post_trigger_divergence:
+  mutant:
+    expected: visible leftward excursion greater than 0.35 world units
+  gold:
+    expected: no leftward excursion, at least 2.5 world units forward, grounded landing, and native success
+  negative:
+    expected: verifier failure from incomplete support-frame consumption
+  status: revision_3f_certified_too_easy
+required_evidence:
+  clean_mutant_pre_trigger_equivalence: passed_revision_1
+  post_trigger_observable_divergence: passed_revision_1
+  no_op_failure: passed_revision_1
+  gold_pass: passed_revision_1
+  negative_failure: passed_revision_1
+  code_only_failure: revision_1_scorable_fail_upper_anchor
+  cua_reproducible_success: revision_1_scorable_fail_capability_used_upper_anchor
+execution_requirements:
+  chromium_required: true
+  local_or_containerized_linux_supported: true
+  machine_specific_configuration_included: false
+status: frozen_revision_3f_too_easy_with_revision_1_upper_anchor

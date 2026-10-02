@@ -1,0 +1,245 @@
+:root {
+  color-scheme: dark;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: #091018;
+  color: #e9f4f5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 22% 10%, #183240 0, transparent 35%),
+    linear-gradient(145deg, #070b10, #101c25 65%, #091018);
+}
+
+.shell {
+  width: min(1040px, 94vw);
+}
+
+header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+
+h1 {
+  margin: 3px 0 0;
+  font-size: clamp(30px, 5vw, 54px);
+  letter-spacing: -0.07em;
+}
+
+.eyebrow, .help {
+  margin: 0;
+  color: #7ea1aa;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+}
+
+.legend {
+  display: flex;
+  gap: 18px;
+  color: #9eb5ba;
+  font-size: 12px;
+}
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+
+.swatch.warning {
+  background: #49f2dd;
+  box-shadow: 0 0 12px #49f2dd;
+}
+
+.swatch.active {
+  background: #ff6c64;
+}
+
+.panel {
+  border: 1px solid #29424b;
+  border-radius: 18px;
+  background: rgba(7, 16, 22, 0.86);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.42);
+  padding: 18px;
+}
+
+.readouts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.readouts div {
+  border: 1px solid #243943;
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #0b171e;
+}
+
+.readouts span {
+  display: block;
+  color: #688b94;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+}
+
+.readouts strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 19px;
+  color: #e8f5f6;
+}
+
+.maze {
+  --columns: 11;
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  width: min(880px, 88vw);
+  aspect-ratio: 11 / 7;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid #32505a;
+  border-radius: 12px;
+  background: #060c10;
+}
+
+.cell {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  background: #142630;
+  border: 1px solid rgba(98, 139, 148, 0.12);
+}
+
+.cell.wall {
+  background:
+    linear-gradient(135deg, rgba(75, 112, 122, 0.11) 25%, transparent 25%) 0 0 / 12px 12px,
+    #091217;
+  border-color: rgba(37, 59, 66, 0.42);
+}
+
+.cell.walkable::after {
+  content: "";
+  position: absolute;
+  inset: 45%;
+  border-radius: 50%;
+  background: #35535c;
+}
+
+.dock::before {
+  content: "DOCK";
+  position: absolute;
+  inset: 12%;
+  display: grid;
+  place-items: center;
+  border: 1px dashed #4d7079;
+  border-radius: 8px;
+  color: #4d7079;
+  font-size: 9px;
+}
+
+.piece {
+  position: absolute;
+  inset: 18%;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+}
+
+.player {
+  border-radius: 12px;
+  background: #ffd66b;
+  box-shadow: 0 0 18px rgba(255, 214, 107, 0.45);
+}
+
+.player::after {
+  content: "";
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  background: #142028;
+}
+
+.rover {
+  border-radius: 50% 50% 36% 36%;
+  background: #ff6c64;
+  box-shadow: 0 0 18px rgba(255, 108, 100, 0.42);
+  transition: background 80ms linear, box-shadow 80ms linear;
+}
+
+.rover.warning {
+  background: #49f2dd;
+  box-shadow: 0 0 22px rgba(73, 242, 221, 0.8);
+}
+
+.rover::before, .rover::after {
+  content: "";
+  position: absolute;
+  top: 34%;
+  width: 14%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #091018;
+}
+
+.rover::before {
+  left: 28%;
+}
+
+.rover::after {
+  right: 28%;
+}
+
+.pulse {
+  inset: 31%;
+  border: 2px solid #49f2dd;
+  border-radius: 50%;
+  box-shadow: 0 0 18px #49f2dd, inset 0 0 8px #49f2dd;
+}
+
+.exit {
+  inset: 28%;
+  border: 3px solid #f3f9fa;
+  transform: rotate(45deg);
+  box-shadow: 0 0 16px rgba(243, 249, 250, 0.6);
+}
+
+.message {
+  min-height: 24px;
+  margin: 14px 0 7px;
+  text-align: center;
+  color: #a8c4ca;
+}
+
+.message.hit {
+  color: #ff8e87;
+}
+
+.message.success {
+  color: #79f1b2;
+}
+
+@media (max-width: 720px) {
+  header, .legend {
+    align-items: start;
+    flex-direction: column;
+  }
+  .maze {
+    width: 90vw;
+  }
+}
+

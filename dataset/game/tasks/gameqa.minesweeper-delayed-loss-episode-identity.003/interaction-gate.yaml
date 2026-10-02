@@ -1,0 +1,24 @@
+schema_version: 1
+task_id: gameqa.minesweeper-delayed-loss-episode-identity.003
+trajectory_id: minesweeper-delayed-loss-retargeted-timing-v3
+seed: 42
+candidate_branches:
+  selected: delayed_terminal_restart_identity
+  fallbacks: [first_click_board_ownership, chord_question_flag_reconciliation]
+trigger:
+  actions:
+    - {action: game_api_reset, options: {seed: 42}}
+    - {action: click, target: center cell}
+    - {action: click, target: known mine}
+    - {action: wait, target: Episode integrity Timing classification}
+    - {action: observe, target: elapsed-versus-target TIMING MISMATCH}
+    - {action: restart, target: face and Game API}
+    - {action: wait, duration_ms: 3500}
+    - {action: observe, target: fresh board versus stale loss}
+  alternative_path: count-valid chord with an incorrect adjacent flag
+post_trigger_divergence:
+  clean: same-episode loss commits at protected handoff; old callbacks cannot affect a fresh episode
+  baseline: handoff is late and an old callback can kill a new board
+  negative: timing is repaired but callback ownership remains stale
+required_evidence: {state_evidence: verifier-artifacts/delayed-loss-state.json, no_op_failure: pending, gold_pass: pending, negative_failure: pending, code_only_failure: not_run, cua_reproducible_success: not_run}
+status: construction_materialized_pending_browser_certification

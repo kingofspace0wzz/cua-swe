@@ -1,0 +1,1 @@
+{"name":"recipient-combobox-reproduction","private":true,"type":"module","scripts":{"build":"vite build"},"dependencies":{"@vitejs/plugin-react":"latest","express":"latest","react":"latest","react-dom":"latest","vite":"latest"}}

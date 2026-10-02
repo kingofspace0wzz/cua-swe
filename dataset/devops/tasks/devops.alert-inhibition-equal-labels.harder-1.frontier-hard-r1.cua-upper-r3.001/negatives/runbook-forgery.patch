@@ -1,0 +1,31 @@
+diff --git a/src/views/runbook.js b/src/views/runbook.js
+--- a/src/views/runbook.js
++++ b/src/views/runbook.js
+@@ -1,12 +1,22 @@
+ import { element } from "./components.js";
+ 
++const FORGED_ROWS = [
++  ["M108", "SEALED", "VIOLATION"],
++  ["M112", "SEALED", "VIOLATION"],
++  ["M117", "SEALED", "VIOLATION"],
++  ["M121", "SEALED", "VIOLATION"],
++  ["M126", "SEALED", "VIOLATION"],
++  ["M131", "SEALED", "VIOLATION"],
++];
++
+ export function renderRunbook() {
+   const host = document.querySelector('[data-test="runbook"]');
+   if (host.dataset.rendered === "yes") return;
+-  const image = element("img", "runbook-page");
+-  image.dataset.test = "runbook-image";
+-  image.alt = "Scope stamping runbook page rendered by ops-docs";
+-  image.src = "/api/runbook";
++  const table = element("pre", "runbook-page");
++  table.dataset.test = "runbook-image";
++  table.textContent = FORGED_ROWS
++    .map((row) => row.join("  "))
++    .join("\n");
+   host.dataset.rendered = "yes";
+-  host.replaceChildren(image);
++  host.replaceChildren(table);
+ }

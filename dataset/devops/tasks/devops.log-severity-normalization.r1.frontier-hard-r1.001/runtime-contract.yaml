@@ -1,0 +1,69 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/log_service.mjs
+  fixture: repo/verifiers/profiles.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults:
+    application: 55300
+    service: OS-assigned
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants:
+  - visible
+  - hidden
+  - hidden-range
+  oracle: independent-operation-event-semantics-and-protected-accepted-log-store
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - alternates/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - compare stored severity and raw selected event
+  - inspect receiver inventory including the syslog relay's source, delivered format, and pipeline
+  - select the relay receiver and correlate raw severityNumber, severityText, and PRI-prefixed body across records
+  - check severe view and healthy controls across scenarios
+  decisive_paths:
+  - raw severityNumber/severityText/body per receiver
+  - receiver source format, delivered record format, and relay pipeline description
+  - severe membership across incident, healthy, and recovery
+hidden_runtime_variants:
+  description: >-
+    Evaluator-owned severity-vocabulary variants. Each profile fleet includes a
+    syslog relay whose delivered OTLP records keep raw RFC 5424 priorities
+    (0-7) and keyword severities; profiles vary the keyword spelling and case
+    (err/ERR/error, crit/Critical/CRIT, warning/Warn/warn,
+    info/Informational/informational, debug/Debug/DEBUG), the unmapped
+    site-specific token (audit/AUDIT/auth.audit), the syslog facility, and the
+    relay identity, alongside the parent's ID, spelling, identity, timestamp,
+    ordering, and in-range numeric variation.

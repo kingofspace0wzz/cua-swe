@@ -1,0 +1,302 @@
+{
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "native": {
+      "assets": [],
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "index.html",
+          "style.css",
+          "app.mjs",
+          "schedule.mjs",
+          "render.mjs",
+          "integration.mjs",
+          "guide.html"
+        ],
+        "timeout_seconds": 20
+      },
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "01704494870b74f8d0122e67fcc9edbd5a5eb9019b875faf97f3fa8c95094861"
+      },
+      "scene": {
+        "device_scale_factor": 1,
+        "frame_paths": [],
+        "locale": "en-US",
+        "path": "/",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 30000,
+        "timezone": "UTC",
+        "viewport": {
+          "height": 800,
+          "width": 400
+        }
+      },
+      "schema": 1,
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "8b32845eb4ee70b81270b1a4d128aa34fdad1c1aa9c17f35af85d1f0110e11d4"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "3e9b548811f85416fd84356a43c996119199b999c6c55974959ab19927036a2f"
+      }
+    }
+  },
+  "controls": {
+    "alternative": {
+      "correct": true,
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "9dd9455898a7493c4660f90a74064b9a462d01845c8c8a6c6d7e053753bdbdae"
+      }
+    },
+    "arrow-crossing-read-as-join": {
+      "correct": false,
+      "patch": {
+        "path": "controls/arrow-crossing-read-as-join.json",
+        "sha256": "54075802eeafa47c98264c4f31bcebcfc7506e57c7c841f2553eb52192df119a"
+      }
+    },
+    "artifact-guess": {
+      "correct": false,
+      "patch": {
+        "path": "controls/artifact-guess.json",
+        "sha256": "db9532dbb576f098d1350df5b3f09b8de5b10ac5e600f933bac7d2f519351d68"
+      }
+    },
+    "dropped-export": {
+      "correct": false,
+      "patch": {
+        "path": "controls/dropped-export.json",
+        "sha256": "36c1c0014897d68e9de54aaa25e0eb5178b4273e9a9a2d9372e6e6efb30cd4f6"
+      }
+    },
+    "dropped-inline-export": {
+      "correct": false,
+      "patch": {
+        "path": "controls/dropped-inline-export.json",
+        "sha256": "148504e268a069ce8dc80b82881da761b5ad2f03c698c5b330765a9196385979"
+      }
+    },
+    "duration-off-by-one": {
+      "correct": false,
+      "patch": {
+        "path": "controls/duration-off-by-one.json",
+        "sha256": "8baa681c4745836fdf328ac09018461f8affd0a229e5ac0be2fd5094de6022e2"
+      }
+    },
+    "finish-to-finish-read-as-finish-to-start": {
+      "correct": false,
+      "patch": {
+        "path": "controls/finish-to-finish-read-as-finish-to-start.json",
+        "sha256": "ce57667c89754991728c12e7171b4d0ef895a4b17181129068b73324959dfa7d"
+      }
+    },
+    "first-edition-only": {
+      "correct": false,
+      "patch": {
+        "path": "controls/first-edition-only.json",
+        "sha256": "ca4c1c3c9b3829e8ddd20878b72a90ca29cf79f19e53c9a803456e97ee679e48"
+      }
+    },
+    "gold": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "6f539ce25c94253fd13c7dfdfb50b5123e66934f06ccb045b7c91d8bbd56aa55"
+      }
+    },
+    "gold_with_cua_viewer": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_cua_viewer.json",
+        "sha256": "a4b93e87eafc865f99139cdcb11fbd56320f8abaf6b1a763a6a43d1c5d23467f"
+      }
+    },
+    "gold_with_fable_viewer": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_fable_viewer.json",
+        "sha256": "f22412d828b4abf63cdbb8fdcbe7adaabb9e29760800a47f950caa4f875bed7b"
+      }
+    },
+    "gold_with_reordered_duplicate_navigation": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_reordered_duplicate_navigation.json",
+        "sha256": "a66dfee9b902580d528d5b749758dfbc58e025ec19b5cbe321d532954d4f7954"
+      }
+    },
+    "gold_with_submitted_viewer": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_submitted_viewer.json",
+        "sha256": "20395bcd05d91f36aee2130d4c6f389ee1196f9ee34d2dbfa0712626fba24a43"
+      }
+    },
+    "incomplete-save": {
+      "correct": false,
+      "patch": {
+        "path": "controls/incomplete-save.json",
+        "sha256": "4427dc305dca97d8d2c66b3fe0dd0cfd1cfb829cfb918d8992b1ee94e5ebea7c"
+      }
+    },
+    "lag-ignored": {
+      "correct": false,
+      "patch": {
+        "path": "controls/lag-ignored.json",
+        "sha256": "10764dc8c034bd96c658c59bc2c4220d5ad5f6f71d4fa513b40bb4b6a25de18c"
+      }
+    },
+    "malformed-integration": {
+      "correct": false,
+      "patch": {
+        "path": "controls/malformed-integration.json",
+        "sha256": "c095f8b9ca251b6c7af971f0befc4e3d8eab5ad964043fa2d258504b35a4c8ab"
+      }
+    },
+    "missed-long-arrow": {
+      "correct": false,
+      "patch": {
+        "path": "controls/missed-long-arrow.json",
+        "sha256": "5c2dab5535af9fb72476f63ef31a0f56abeffd08174d93a424bd18827da95637"
+      }
+    },
+    "one-sheet-only": {
+      "correct": false,
+      "patch": {
+        "path": "controls/one-sheet-only.json",
+        "sha256": "640886b4dcea87c09c9a29236890a333f377cfbafe8d551db669d8693abd1a79"
+      }
+    },
+    "partial": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "5c2dab5535af9fb72476f63ef31a0f56abeffd08174d93a424bd18827da95637"
+      }
+    },
+    "partial-jobs": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial-jobs.json",
+        "sha256": "d43699aca8cd3d6b95da57453712fd9acb32d62b227e6d9938a2656614084724"
+      }
+    },
+    "pre-first-day-rejection": {
+      "correct": false,
+      "patch": {
+        "path": "controls/pre-first-day-rejection.json",
+        "sha256": "4fec6bd206f74a88854341c9f380b5a96e9b9b3c7ab9349704c909d3062cf14f"
+      }
+    },
+    "stale-parent-integration": {
+      "correct": false,
+      "patch": {
+        "path": "controls/stale-parent-integration.json",
+        "sha256": "31e8b7bcd05a2ab0f267db01ce9426b3e6636f7e9bc39b6e637c046ca90922b2"
+      }
+    },
+    "static-report": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static-report.json",
+        "sha256": "0e2e511cad592a1eba1bc5dce0474e0b9a71d2135c3043fd2f4520537bc02bad"
+      }
+    },
+    "static-schedule-view": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static-schedule-view.json",
+        "sha256": "6a89f8c070145ab10af27f607861c7b35a599d7143ddad0a2560b8164cb753f6"
+      }
+    },
+    "top-level-throw": {
+      "correct": false,
+      "patch": {
+        "path": "controls/top-level-throw.json",
+        "sha256": "639a2d6f8ada0db8e75322e7846d929d6700511e5ebdc7e470c28900512eea0e"
+      }
+    }
+  },
+  "dependencies": [],
+  "editable": [
+    "index.html",
+    "style.css",
+    "app.mjs",
+    "schedule.mjs",
+    "render.mjs",
+    "integration.mjs",
+    "guide.html"
+  ],
+  "expected_assertions": [
+    "received_preview",
+    "both_complete_integrations",
+    "live_jobs_and_links",
+    "cycle_undo_cancel",
+    "save_reload_independent_reset",
+    "slip_and_complete_export"
+  ],
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "54011b25df233e54b5dd16db028db007a3dcfbdd842a80ca99d05d9080ea292d"
+  },
+  "public_files": {
+    "app.mjs": {
+      "path": "public/app.mjs",
+      "sha256": "596bf2544234a4b85ffcb200247dc457197f2ffbe1e826870b8f9bd2ef0e014b"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "a89c500908f66144fe07d9a2ff2b0d8606200df199aa6375f1245f27487f816c"
+    },
+    "guide.html": {
+      "path": "public/guide.html",
+      "sha256": "2a35ec3346ab5b5caa81997ee8e63edd6d5d7e12c1fde3b62f6b582f75db19d5"
+    },
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "ed8b5d712e7122b801ecc03a38b360862d699af2c1be3e116cc52ed1519d122f"
+    },
+    "integration.mjs": {
+      "path": "public/integration.mjs",
+      "sha256": "2818437123a05012e19769ee68f9614c0b838798732297f44ae1921399e2a6f2"
+    },
+    "render.mjs": {
+      "path": "public/render.mjs",
+      "sha256": "81ade2e07d4dc92d2471521acf85f0e199de781dded7348ccdfed98f9e7fd00e"
+    },
+    "schedule.mjs": {
+      "path": "public/schedule.mjs",
+      "sha256": "221d0a62456df26f1cdad6d8d8e8db5cda6fce9d17d5a1335a83362a88859966"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "311fbdc2e88c285ac7c7ad5ff01f87f9502dd6672d42251f1dbdc359afb20db0"
+    }
+  },
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "revision": "001",
+  "scratch": [
+    "dist/",
+    "index.html.bak",
+    "style.css.bak",
+    "app.mjs.bak",
+    "schedule.mjs.bak",
+    "render.mjs.bak",
+    "integration.mjs.bak",
+    "guide.html.bak"
+  ],
+  "task_id": "mobile.synthetic.external-wallchart-schedule.008"
+}

@@ -1,0 +1,12 @@
+diff -ruN a/src/rules/compileRule.js b/src/rules/compileRule.js
+--- a/src/rules/compileRule.js	2026-09-18 07:19:45.316738755 +0000
++++ b/src/rules/compileRule.js	2026-09-18 07:20:50.589709939 +0000
+@@ -4,7 +4,7 @@
+   const labels = {...rule.labels};
+   const annotations = {...rule.annotations};
+   for (const field of rule.enrichments || []) {
+-    labels[field.name] = field.template;
++    annotations[field.name] = field.template;
+   }
+   return {
+     name: rule.name,

@@ -1,0 +1,261 @@
+{
+  "schema": "static-source-custody-v1",
+  "candidate": "web.maplibre-mouse-ridge-attachment.001",
+  "task_id": "web.maplibre-mouse-ridge-attachment.001",
+  "decision": "written_awaiting_native_slot",
+  "author_mode": "one existing authorized GPT6 Astra high static author; no additional model call",
+  "authority": "Main source acceptance recorded in source-review.json; independent final review pending Anscombe",
+  "source_inputs": {
+    "source-review.json": {
+      "path": "private-artifact:source-0012",
+      "sha256": "54f9482caf00dc3908a60618bdf42aa2ace03e51a3f07e6175a5f1e02afbc5c6"
+    },
+    "source-assembly.json": {
+      "path": "private-artifact:source-0010",
+      "sha256": "a9ec7e3f8593ade614e722438516e9743c4fe050ae5ab3e137ad7a545a35c096"
+    },
+    "source-scope.md": {
+      "path": "private-artifact:source-0013",
+      "sha256": "de6b8c0a9d4e14f0f388ee6a69ec7a6618139c6a49d411e1a81ecaab5dd583ab"
+    },
+    "next-source-hypothesis-01.json": {
+      "path": "private-artifact:source-0009",
+      "sha256": "cbc12854421b216b04634d1ba218f8a7d1e20f3eb83c16639436f13e77fd92d2"
+    },
+    "source-pins.json": {
+      "path": "private-artifact:source-0011",
+      "sha256": "95441a6c275686a63c2ad8f3dc5dc95f2f71662cdbafe6546beaf8deba5c1f37"
+    },
+    "baseline-source-manifest.json": {
+      "path": "private-artifact:source-0008",
+      "sha256": "981df5ee65bb771b2fde5d3b4a98cafeee2b3d496b2e61819193c5318fc95bed"
+    }
+  },
+  "baseline_pins": {
+    "description": "Exact Map revision03 plus applied complete query-fallback gold; no-op is baseline",
+    "source_task": {
+      "path": "private-artifact:source-0033",
+      "sha256": "86266a32784f8afb4bb0d2864574d9ce3d90199a6e1387bc0c49f0423bfc7fde"
+    },
+    "source_task_input_sha256": "6092f3b1dcc1e40ae92d817c764d07a06ec2afef5c5c5f9ae3fde1fc17027a58",
+    "applied_query_gold": {
+      "path": "private-artifact:source-0032",
+      "sha256": "dd59906a7729c78db0459543f2b2a9fdb41b4d2cf6a2ef409e01c15b007a5470"
+    },
+    "preauthor_task_input_sha256": "d25d021d67ec09e47e1865a879a5c1da04a35ccac2f371ffd733b1f90344c690",
+    "baseline_manifest": {
+      "path": "private-artifact:source-0008",
+      "sha256": "981df5ee65bb771b2fde5d3b4a98cafeee2b3d496b2e61819193c5318fc95bed"
+    },
+    "assembled_mouse_manager": {
+      "path": "private-artifact:source-0027",
+      "sha256": "4ca38f258aaa48a6cd3e6d3bb6fb707ffb303a505bbcfaf90bbf763a2b17f39a"
+    },
+    "assembled_mouse_input": {
+      "path": "private-artifact:source-0026",
+      "sha256": "2c86e111b90f303e4968569034b7e07c483c8d0f81848155b43a891f530f1fd8"
+    },
+    "assembled_complete_query_helper": {
+      "path": "private-artifact:source-0025",
+      "sha256": "6633efdaa7a9dfe614d376b5aabe2ea5b8d26c4b7a8f36b43302b6385bf613a4"
+    },
+    "retained_query_checker": {
+      "path": "private-artifact:source-0029",
+      "sha256": "69454365b247eb0434a486151dc3e5a022de2c8d8ec248310cc79b8795cdd9d6"
+    },
+    "v2_adoption": {
+      "path": "private-artifact:source-0034",
+      "sha256": "e184893a536354f180a47d10e282974bf24484e87c1a81922302b97dcca05926"
+    }
+  },
+  "assembly_query_fallback_already_complete": true,
+  "baseline_not_mutated": true,
+  "baseline_not_mutated_definition": "All immutable baseline bytes retained; only authorized public Help differs and new checker is added. No reference patch applied to delivered repo.",
+  "authorized_source_delta": {
+    "changed": [
+      "runtime-task/help.html"
+    ],
+    "added": [
+      "verifiers/check_mouse_ridge_attachment.mjs"
+    ],
+    "immutable_files_preserved": 787,
+    "original_file_count": 788,
+    "delivered_file_count": 789
+  },
+  "patch_preparation": "Owned external source copy at private-artifact:source-0007 standalone patches checked from delivered repo and applied/reversed only externally.",
+  "observer_derivation": {
+    "source": {
+      "path": "private-artifact:source-0029",
+      "sha256": "69454365b247eb0434a486151dc3e5a022de2c8d8ec248310cc79b8795cdd9d6"
+    },
+    "reused": "native launch conventions, public locators, connected-component RGB centroid observer, contact-ring evidence and observation-only visibility handling; touch demo assertions",
+    "not_reused": "initial projection calculation, any app geometry/debug camera oracle; no imported historical helper"
+  },
+  "artifacts": {
+    "task.yaml": {
+      "path": "private-artifact:source-0031",
+      "sha256": "4f4aa690bf320a8c209e70628d9d2ac4091a1092fff0ca6982b6d763697b4a17"
+    },
+    "gold.patch": {
+      "path": "private-artifact:source-0018",
+      "sha256": "a7a525205b1993134e9fba753022fb18654475dd6250ef2fd11eea9b51ac0836"
+    },
+    "alternate.patch": {
+      "path": "private-artifact:source-0015",
+      "sha256": "bf0aa71ab6f1be4800b7b12e627c93076a015a064269e8c30d502b41bc18624e"
+    },
+    "negative.patch": {
+      "path": "private-artifact:source-0021",
+      "sha256": "c99533ad5115d2aeaf98ff1a22e517ce7b9fdacc38b6eb98992243396aa6ecf7"
+    },
+    "negative-cases/plane-grab.patch": {
+      "path": "private-artifact:source-0020",
+      "sha256": "46bff54f2383e9fcc12a931f0060d84d8661d33740cbad70de7e9f50b6fca398"
+    },
+    "negative-cases/first-delta-only.patch": {
+      "path": "private-artifact:source-0019",
+      "sha256": "412ab22daca779e583c4dbd5511149013b9fbce47476f959618381a73562ff25"
+    },
+    "replay.md": {
+      "path": "private-artifact:source-0022",
+      "sha256": "60fa0b8b0df7f6da1576432af53cea37c1d69195b70b78d8880e621ff2e86cfe"
+    },
+    "construction-report.md": {
+      "path": "private-artifact:source-0016",
+      "sha256": "6683e8fb1c1f0a6dff48ec50a130f696ad9359fa5c0e21eb6a76ce01694b896f"
+    },
+    "static-checks.json": {
+      "path": "private-artifact:source-0030",
+      "sha256": "db496ce7afe6fc8d0760b0ec5aec82287f5085cf7e787a8a219117905af197df"
+    },
+    "delivery-source-manifest.json": {
+      "path": "private-artifact:source-0017",
+      "sha256": "b6b29dd4667c1a410d295dd5df33b82722a07af9195801c5367a9734385782d9"
+    },
+    "repo/runtime-task/help.html": {
+      "path": "private-artifact:source-0024",
+      "sha256": "3344591a873cc27b90f32d3eb9c66d1c0d2533ef789718b86fbe3543a9bdabf5"
+    },
+    "repo/verifiers/check_mouse_ridge_attachment.mjs": {
+      "path": "private-artifact:source-0028",
+      "sha256": "0c2c3790fc6fa925c4a86d5f47c63221658ae0b19f467f2bf6e332bc2d053026"
+    },
+    "repo/verifiers/check_rendered_query_compatibility.mjs": {
+      "path": "private-artifact:source-0029",
+      "sha256": "69454365b247eb0434a486151dc3e5a022de2c8d8ec248310cc79b8795cdd9d6"
+    }
+  },
+  "proposed_public_coverage": [
+    {
+      "state": "fresh loaded pitched map",
+      "assertions": "painted-ridge press, two held endpoints with direction change, companion/grid motion, paused release and idle retention"
+    },
+    {
+      "state": "touch demonstration from prior accepted view",
+      "assertions": "existing Move and zoom / Move 1 / Move 2 / Move 3 / Release without Reset; existing attachment, increasing companion separation and release retention"
+    },
+    {
+      "state": "mouse after touch release",
+      "assertions": "fresh painted-ridge press, direction-changing held moves, paused release, reacquire from accepted view and repeat"
+    },
+    {
+      "state": "wheel completed with no button held",
+      "assertions": "observable geographic zoom and settled paint BEFORE fresh mouse press; held endpoints, paused release and idle retention"
+    },
+    {
+      "state": "integration/flat preservation",
+      "assertions": "repeat coherent sequence in Legacy after fresh Reset; compare actual painted states with Native; retain original separate query checker including both touch repeats and ordinary flat drag/zoom"
+    }
+  ],
+  "control_predictions": {
+    "baseline_noop": {
+      "expected": "likely semantic failure on reached held mouse attachment; touch/query/flat remain working",
+      "native_status": "unobserved",
+      "qualification": "Source-only hypothesis. Retain a later baseline PASS and park; no regression injection."
+    },
+    "gold.patch": {
+      "expected": "intended complete PASS for new mouse sequence and retained original controls",
+      "native_status": "unobserved",
+      "mechanism": "press-time geographic grab with ordered mouse updates and existing accepted terrain settlement"
+    },
+    "alternate.patch": {
+      "expected": "intended complete PASS for disclosed sequential mouse workflow and retained controls",
+      "native_status": "unobserved",
+      "mechanism": "first-accepted-delta acquisition and per-gesture retained placement through render batching"
+    },
+    "negative.patch": {
+      "expected": "held attachment failure from longitude/latitude-only placement despite terrain acquisition; touch/query/flat preserved",
+      "native_status": "unobserved"
+    },
+    "negative-cases/plane-grab.patch": {
+      "expected": "held attachment failure from planar acquisition despite retained placement; touch/query/flat preserved",
+      "native_status": "unobserved"
+    },
+    "negative-cases/first-delta-only.patch": {
+      "expected": "first combined move may attach, continuing held/direction-changing motion likely fails; touch/query/flat preserved",
+      "native_status": "unobserved",
+      "qualification": "Exact first observed failed endpoint depends on batching; no requirement to reach all later states."
+    }
+  },
+  "runtime_preserved": {
+    "setup": {
+      "install": [
+        "npm ci",
+        "npm run build-dev"
+      ],
+      "launch": [
+        "npx st --no-cache -H 127.0.0.1 --port 4173 ."
+      ],
+      "reset": []
+    },
+    "environment": {
+      "adapter": "playwright_web",
+      "start_url": "http://127.0.0.1:4173/runtime-task/index.html",
+      "viewport_or_device": "desktop-1000x800"
+    },
+    "allowed_tools": {
+      "code_edit": true,
+      "terminal": true,
+      "browser_gui": true,
+      "mobile_gui": false
+    },
+    "budgets": {
+      "wall_time_sec": 2400,
+      "max_steps": 180,
+      "max_gui_actions": 220,
+      "max_test_runs": 24
+    }
+  },
+  "v2_unchanged": true,
+  "ordinary_api_docs_license_attribution_unchanged": true,
+  "verifiers": {
+    "build": [
+      "npm run build-dev"
+    ],
+    "unit": [],
+    "ui": [
+      "node verifiers/check_rendered_query_compatibility.mjs",
+      "node verifiers/check_mouse_ridge_attachment.mjs"
+    ],
+    "visual": [],
+    "state": [],
+    "side_effects": []
+  },
+  "native_runs": 0,
+  "browser_runs": 0,
+  "build_runs": 0,
+  "solver_runs": 0,
+  "dependency_install_runs": 0,
+  "server_startups": 0,
+  "network_requests": 0,
+  "additional_model_calls": 0,
+  "subagent_runs": 0,
+  "static_checks": {
+    "path": "private-artifact:source-0030",
+    "sha256": "db496ce7afe6fc8d0760b0ec5aec82287f5085cf7e787a8a219117905af197df"
+  },
+  "source_shortcut_risk": "Unmeasured and material: exposed acquire/place helpers and separate mouse branch may admit a short source-only solution; no helper/algorithm/LOC ban or hardness claim.",
+  "reference_feasibility": "Unresolved: neither complete reference nor unchanged baseline has native mouse evidence; prospective 3px attachment/retention and narrow grid/input observers require native validation.",
+  "next_gate": "Independent Anscombe review and finite healthy-reference / unchanged-baseline native slot before any solver. Retain unexpected baseline PASS. Park rather than inject a regression.",
+  "self_hash_note": "This file is hashed by author/report.json; terminal report has a separate SHA-256 receipt to avoid self-referential hashes."
+}

@@ -1,0 +1,46 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 20
+    versioning-strategy: increase
+    groups:
+      vitest:
+        patterns:
+          - "*vitest*"
+      eslint:
+        patterns:
+          - "*eslint*"
+    cooldown:
+      default-days: 5
+      semver-major-days: 5
+      semver-minor-days: 3
+      semver-patch-days: 3
+      include:
+        - "*"
+      exclude:
+        - "@maplibre/*"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action*"
+    cooldown:
+      default-days: 3
+      # no semver support for github-actions
+      # => no specific configuration for this
+      include:
+        - "*"
+  - package-ecosystem: "docker-compose"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    ignore:
+      # Odd-numbered Node.js majors are never promoted to LTS
+      - dependency-name: "node"
+        versions: ["27.x", "29.x", "31.x", "33.x", "35.x", "37.x", "39.x"]

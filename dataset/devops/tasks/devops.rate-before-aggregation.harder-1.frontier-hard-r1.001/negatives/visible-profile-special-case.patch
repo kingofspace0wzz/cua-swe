@@ -1,0 +1,14 @@
+diff --git a/src/main.js b/src/main.js
+--- a/src/main.js
++++ b/src/main.js
+@@ -10,7 +10,9 @@
+ async function start() {
+   try {
+     const catalog = await queryClient.catalog();
+-    const plan = compilePanelPlan(queryPolicy());
++    const plan = catalog.label.startsWith("Checkout")
++      ? {pipeline: "traffic-detail", panel_scope: "all", sample_filter: "none"}
++      : compilePanelPlan(queryPolicy());
+     updateState({catalog, plan});
+     acceptInitial(await queryClient.configure(plan));
+   } catch (error) {

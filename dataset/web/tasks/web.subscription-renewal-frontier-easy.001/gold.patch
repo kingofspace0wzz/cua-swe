@@ -1,0 +1,30 @@
+--- a/src/app.js
++++ b/src/app.js
+@@ -1,10 +1,25 @@
+ const root = document.querySelector("#root");
++
++function formatInZone(epochMs, timeZone, pattern) {
++  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-CA", {
++    timeZone, year:"numeric", month:"2-digit", day:"2-digit",
++    hour:"2-digit", minute:"2-digit", hourCycle:"h23",
++  }).formatToParts(new Date(epochMs)).map((part)=>[part.type,part.value]));
++  return pattern
++    .replace("YYYY",parts.year).replace("MM",parts.month).replace("DD",parts.day)
++    .replace("HH",parts.hour).replace("mm",parts.minute);
++}
+ 
+ async function render() {
+   const response = await fetch(`/api/subscription-cycle${window.location.search}`);
+   const data = await response.json();
+-  // The legacy lifecycle response exposed a display-ready renewal label.
+-  const renewal = data.next_renewal ?? "Renewal unavailable";
++  const grace=data.cycle.grace_application==="add_to_cycle"?data.cycle.grace_quanta:0;
++  const elapsedDays=(data.cycle.interval_quanta+grace)*data.cycle.quantum_days;
++  const target=data.cycle.anchor_application==="single_interval"
++    ? data.cycle.anchor_epoch_ms+elapsedDays*86_400_000
++    : data.cycle.anchor_epoch_ms;
++  const value=formatInZone(target,data.cycle.display_zone,data.cycle.value_format);
++  const renewal=data.cycle.display_pattern.replace("{value}",value);
+   root.innerHTML = `<main class="shell"><section class="card">
+     <p class="eyebrow">Subscription lifecycle</p><h1>${data.subscription_ref ?? "Unknown subscription"}</h1>
+     <div class="renewal-row"><span>Next renewal</span><strong id="renewal-value">${renewal}</strong></div>

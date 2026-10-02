@@ -1,0 +1,159 @@
+diff --git a/src/config/adjustmentPolicy.js b/src/config/adjustmentPolicy.js
+index 718fc1d376551f52cfafeb109f72aa4fbe78dbf5..77f06f2da7c7bdf63c9c96a4162481071e078639 100644
+--- a/src/config/adjustmentPolicy.js
++++ b/src/config/adjustmentPolicy.js
+@@ -1,6 +1,9 @@
+-export function adjustmentPolicy(catalog) {
++import { maintenanceHostShifts } from "../trace/clockSkew.js";
++
++export function adjustmentPolicy(catalog, trace, replays = []) {
+   return Object.freeze({
+-    crossHostMode: "observe",
++    crossHostMode: "maintenance-replay",
+     maxAdjustmentMs: catalog.maxAdjustmentMs,
++    hostShifts: maintenanceHostShifts(trace, replays, catalog.maxAdjustmentMs),
+   });
+ }
+diff --git a/src/controllers/query.js b/src/controllers/query.js
+index 67ee0b0ddc50b112bb9260ab8e1e691dc8aa0f6c..08a4134bcdf9fca63ff0b3e5d59b3ac12b0a58e5 100644
+--- a/src/controllers/query.js
++++ b/src/controllers/query.js
+@@ -2,6 +2,19 @@ import { loadCatalog, loadTrace, submitAdjustment } from "../api/traceClient.js"
+ import { adjustmentPolicy } from "../config/adjustmentPolicy.js";
+ import { compileAdjusters } from "../trace/compileAdjusters.js";
+ import { runPipeline } from "../trace/runPipeline.js";
++import { isBeforeMaintenance, isAfterMaintenance } from "../trace/clockSkew.js";
++
++// Load reference captures through the same query API, without evaluating or
++// modifying them. Cache only within a catalog's lifetime.
++const references = new WeakMap();
++function loadMaintenanceReplays(catalog) {
++  if (!references.has(catalog)) {
++    const pending = Promise.all(catalog.traces.filter(isAfterMaintenance).map(({ id }) => loadTrace(id)));
++    references.set(catalog, pending);
++    pending.catch(() => references.delete(catalog));
++  }
++  return references.get(catalog);
++}
+ 
+ export async function startQuery() {
+   const catalog = await loadCatalog();
+@@ -11,7 +24,8 @@ export async function startQuery() {
+ 
+ export async function evaluateTrace(catalog, traceId) {
+   const trace = await loadTrace(traceId);
+-  const pipeline = runPipeline(trace.spans, compileAdjusters(adjustmentPolicy(catalog)));
++  const replays = isBeforeMaintenance(trace) ? await loadMaintenanceReplays(catalog) : [];
++  const pipeline = runPipeline(trace.spans, compileAdjusters(adjustmentPolicy(catalog, trace, replays)));
+   await submitAdjustment(trace.id, pipeline.spans, pipeline.annotations);
+   return {
+     trace,
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+index 437de453a1bd65e33ddd29d7e8c57ee7264c1050..7b2f623d997becdc092859457a64592b9e6646a9 100644
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,13 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
++import { translateHostClocks } from "./clockSkew.js";
+ 
+ export function compileAdjusters(policy) {
+   return [
+     { name: "dedupe", apply: dedupeSpans },
++    ...(policy.crossHostMode === "maintenance-replay" ? [{
++      name: "clock-skew",
++      apply: (spans) => translateHostClocks(spans, policy.hostShifts),
++    }] : []),
+     { name: "sort", apply: sortSpans },
+   ];
+ }
+
+diff --git a/src/trace/clockSkew.js b/src/trace/clockSkew.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..017e6294b7f69e360ed8a6333af4e4416c81c4c5
+--- /dev/null
++++ b/src/trace/clockSkew.js
+@@ -0,0 +1,84 @@
++// The operator's maintenance reset is a calibration event, not a reason to
++// force every child into its parent. Unchanged replay times include genuine
++// instrumentation defects and must remain untouched.
++export function isBeforeMaintenance(trace) {
++  return /\bbefore the .*clock-maintenance reset\b/i.test(trace.title || "");
++}
++
++export function isAfterMaintenance(trace) {
++  return /\bafter the .*clock-maintenance reset\b/i.test(trace.title || "");
++}
++
++const spanKey = (span) => JSON.stringify([span.service, span.operation, span.host]);
++
++function indexWorkload(spans) {
++  const index = new Map();
++  for (const span of spans) {
++    const key = spanKey(span);
++    // Ambiguous repeated operations need stronger evidence than this replay.
++    if (index.has(key)) return null;
++    index.set(key, span);
++  }
++  return index;
++}
++
++function matchesWorkload(spans, replay, index) {
++  if (!index || index.size !== spans.length) return false;
++  const parents = new Map(spans.map((span) => [span.id, span]));
++  const replayParents = new Map(replay.spans.map((span) => [span.id, span]));
++  return spans.every((span) => {
++    const match = index.get(spanKey(span));
++    if (!match || match.durationMs !== span.durationMs) return false;
++    if (span.parentId === null) {
++      return match.parentId === null && match.startMs === span.startMs && match.endMs === span.endMs;
++    }
++    const parent = parents.get(span.parentId);
++    const replayParent = replayParents.get(match.parentId);
++    return parent && replayParent && spanKey(parent) === spanKey(replayParent);
++  });
++}
++
++export function maintenanceHostShifts(trace, replays, maxAdjustmentMs = Infinity) {
++  const shifts = new Map();
++  if (!trace || !isBeforeMaintenance(trace) || !indexWorkload(trace.spans)) return shifts;
++  const candidates = replays.filter(isAfterMaintenance).map((replay) => ({
++    replay, index: indexWorkload(replay.spans),
++  })).filter(({ replay, index }) => matchesWorkload(trace.spans, replay, index));
++  if (candidates.length !== 1) return shifts;
++
++  const authorities = new Map((trace.hostNotes || []).map(({ host, note }) => [
++    host, /\btime authority\s+([^\s·;,]+)/i.exec(note || "")?.[1],
++  ]));
++  const groups = new Map();
++  for (const span of trace.spans) {
++    const authority = authorities.get(span.host);
++    if (!authority) continue; // No operator evidence: do not guess.
++    if (!groups.has(authority)) groups.set(authority, []);
++    groups.get(authority).push(span);
++  }
++  const { index } = candidates[0];
++  for (const spans of groups.values()) {
++    if (spans.some((span) => span.parentId === null)) continue;
++    const shift = index.get(spanKey(spans[0])).startMs - spans[0].startMs;
++    if (!Number.isFinite(shift) || Math.abs(shift) > maxAdjustmentMs) continue;
++    const coherent = spans.every((span) => {
++      const match = index.get(spanKey(span));
++      return match.startMs - span.startMs === shift && match.endMs - span.endMs === shift;
++    });
++    if (coherent && shift !== 0) {
++      for (const span of spans) shifts.set(span.host, shift);
++    }
++  }
++  return shifts;
++}
++
++export function translateHostClocks(spans, hostShifts) {
++  return spans.map((span) => {
++    const shift = span.parentId === null ? 0 : hostShifts.get(span.host) || 0;
++    return shift === 0 ? span : {
++      ...span,
++      startMs: span.startMs + shift,
++      endMs: span.endMs + shift,
++    };
++  });
++}

@@ -1,0 +1,65 @@
+diff --git a/src/config/collectorSettings.js b/src/config/collectorSettings.js
+index c34e22f93da5c70973f28d08047527363eeabbfd..9bfa2f3692fd06d000b98cf52fcf03213816dd8a 100644
+--- a/src/config/collectorSettings.js
++++ b/src/config/collectorSettings.js
+@@ -1,6 +1,7 @@
+ import { SAMPLING_POLICIES } from "./samplingPolicies.js";
+ 
+ export const COLLECTOR_SETTINGS = Object.freeze({
+-  decisionWaitMs: 250,
++  // Resolve against the receiver profile on every deployment, including replay.
++  decisionWaitMs: "receiver-delivery-frontier",
+   policies: SAMPLING_POLICIES,
+ });
+diff --git a/src/config/compilePolicyPlan.js b/src/config/compilePolicyPlan.js
+index 2a7047203072cbf1dea505637b50f5c6cb5121cd..7a98f8dd18aa2140ea96a207a358c34c8c0874b3 100644
+--- a/src/config/compilePolicyPlan.js
++++ b/src/config/compilePolicyPlan.js
+@@ -11,9 +11,32 @@ function compilePolicy(policy) {
+   }
+ }
+ 
+-export function compilePolicyPlan(collector) {
++function compileDecisionWait(collector, receiver) {
++  if (collector.decisionWaitMs !== "receiver-delivery-frontier") {
++    return Number(collector.decisionWaitMs);
++  }
++
++  const deliveries = receiver?.deliveries;
++  if (!Array.isArray(deliveries) || deliveries.length === 0) {
++    throw new Error("Receiver delivery ledger is required to configure decision timing");
++  }
++
++  // Decisions are cached, so even a late failed dependency must be present at
++  // the first decision. Use the whole profile, not just the selected window.
++  // The smallest complete window avoids adding unnecessary decision latency.
++  return deliveries.reduce((waitMs, delivery) => {
++    const { firstSpanAtMs, lastSpanAtMs } = delivery;
++    if (!Number.isFinite(firstSpanAtMs) || !Number.isFinite(lastSpanAtMs)
++        || lastSpanAtMs < firstSpanAtMs) {
++      throw new Error("Receiver delivery ledger contains invalid receipt timing");
++    }
++    return Math.max(waitMs, lastSpanAtMs - firstSpanAtMs);
++  }, 0);
++}
++
++export function compilePolicyPlan(collector, receiver) {
+   return {
+-    decisionWaitMs: Number(collector.decisionWaitMs),
++    decisionWaitMs: compileDecisionWait(collector, receiver),
+     policies: collector.policies.map(compilePolicy),
+   };
+ }
+diff --git a/src/controllers/console.js b/src/controllers/console.js
+index 3fb22364ab15c4ba24a8fadd7e4ed40b0adf846b..50fa2c7a87bda13e75771bcf67bc784e9e06042b 100644
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -8,7 +8,7 @@ const refresh = async () => store.set({ snapshot: await samplerClient.snapshot()
+ export async function initialize() {
+   const catalog = await samplerClient.catalog();
+   await samplerClient.configure(
+-    compilePolicyPlan(COLLECTOR_SETTINGS),
++    compilePolicyPlan(COLLECTOR_SETTINGS, catalog.receiver),
+   );
+   store.set({ catalog });
+   await samplerClient.scenario(catalog.scenarios[0].id);

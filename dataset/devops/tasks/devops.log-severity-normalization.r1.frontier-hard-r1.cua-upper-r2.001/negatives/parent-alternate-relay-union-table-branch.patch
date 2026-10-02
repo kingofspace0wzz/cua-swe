@@ -1,0 +1,20 @@
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,15 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
++const bands = ['TRACE','DEBUG','INFO','WARN','ERROR','FATAL'];
++// Union of the severity keywords demonstrated by the relay's two producer fleets
++// (syslog gateway daemon and application forwarder agents); delivered numbers are
++// producer-internal scales, and unknown site-specific tokens stay unspecified.
++const relayKeywords = {err:'ERROR',error:'ERROR',alert:'FATAL',warn:'WARN',warning:'WARN',info:'INFO',informational:'INFO',verbose:'DEBUG',debug:'DEBUG'};
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
+-  const decode = severityAdapters[format];
++  if (receiver.source.format === 'syslog') {
++    const band = relayKeywords[String(record.severityText ?? '').trim().toLowerCase()] ?? 'UNSPECIFIED';
++    return {band, number:band === 'UNSPECIFIED' ? 0 : bands.indexOf(band)*4+1};
++  }
++  const decode = severityAdapters[receiver.output.format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }

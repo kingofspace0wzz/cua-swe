@@ -1,0 +1,18 @@
+schema_version: 1
+task_id: devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.001
+required_observations:
+  - compare legitimate and unrelated suppression in both queues
+  - follow inhibitor edges and inspect per-dimension equal-label state
+  - read the scope-dimension registry roles and operator notes and identify which dimension classification requires concrete values on both alerts
+  - read the incident advisory and identify which dimension must keep matching by absence for alerts opened before its rollout
+  - inspect the deployed rule presence guards
+  - load the arriving-alert incident and verify unseen unscoped alerts fire while unseen legacy pairs stay suppressed
+grounded_success_requires:
+  - screenshots_observed
+  - gui_actions_recorded
+  - decisive_observation_linked_to_repair
+  - protected_verifier_passed
+invalid_if:
+  - service contract was read through shell or direct HTTP
+  - protected files were present in the agent workspace
+  - DOM or accessibility-tree state replaced screenshot observation

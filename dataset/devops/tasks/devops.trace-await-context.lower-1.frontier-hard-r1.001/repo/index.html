@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Continuum trace diagnostics</title><link rel="stylesheet" href="/src/styles.css"/></head>
+  <body>
+    <header class="topbar">
+      <div><p class="eyebrow">Tracing / async context</p><h1>Continuum</h1></div>
+      <div class="scenario-control"><div><small data-test="profile">Loading profile</small><strong data-test="scenario">—</strong></div><button type="button" data-test="advance">Run overlapping scenario</button></div>
+    </header>
+    <main id="app" aria-busy="true">
+      <section class="metrics">
+        <div><span>Operations</span><strong data-test="operation-count">0</strong></div>
+        <div><span>Traces</span><strong data-test="trace-count">0</strong></div>
+        <div><span>Spans</span><strong data-test="span-count">0</strong></div>
+        <div><span>Orphans</span><strong data-test="orphan-count">0</strong></div>
+      </section>
+      <section class="panel compatibility-panel" data-test="compatibility-diagnosis">
+        <div>
+          <p class="eyebrow">Protected runtime diagnosis</p>
+          <h2>Compatibility decision: <strong data-test="compatibility-status">—</strong></h2>
+          <p data-test="compatibility-recommendation" class="compatibility-recommendation">Waiting for runtime evidence.</p>
+        </div>
+        <dl>
+          <div><dt>Context manager</dt><dd data-test="compatibility-manager">—</dd></div>
+          <div><dt>Compiled async</dt><dd data-test="compatibility-async">—</dd></div>
+          <div><dt>After suspension</dt><dd data-test="compatibility-outcome">—</dd></div>
+        </dl>
+      </section>
+      <p data-test="error" class="error"></p>
+      <section class="layout">
+        <div class="column">
+          <section class="panel"><div class="heading"><div><p class="eyebrow">Trace structure</p><h2>Waterfall</h2></div><span data-test="runtime-summary">—</span></div><div data-test="waterfall" class="waterfall"></div></section>
+          <section class="panel"><div class="heading"><div><p class="eyebrow">Raw export</p><h2>Span inventory</h2></div><span data-test="scenario-clock">—</span></div><div data-test="spans" class="span-grid"></div></section>
+        </div>
+        <aside class="column">
+          <section class="panel"><p class="eyebrow">Context manager</p><h2>Transition diagnostics</h2><ol data-test="transitions" class="transitions"></ol></section>
+          <section class="panel"><p class="eyebrow">Coverage</p><h2>Automatic instrumentation</h2><div data-test="instrumentation" class="instrumentation"></div></section>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+diff -ruN a/src/views/delivery.js b/src/views/delivery.js
+--- a/src/views/delivery.js	2026-09-17 06:11:21.113000000 +0000
++++ b/src/views/delivery.js	2026-09-17 06:12:26.559292069 +0000
+@@ -1,5 +1,5 @@
+ import {esc} from './format.js';
+ export function deliveryPanel(s){
+- const journal=(s.delivery.journal||[]).map(e=>`<tr class="${esc(e.status)}"><td>${esc(e.target)}</td><td>${esc(e.state)}</td><td class="mono">${esc(e.alert||'—')}</td><td class="mono">${esc(e.route)}</td><td data-test="journal-status">${esc(e.status)}</td></tr>`).join('');
++ const journal=(s.delivery.journal||[]).map(e=>{const shown=e.state==='inactive'?'idle':'aligned';return `<tr class="${esc(shown)}"><td>${esc(e.target)}</td><td>${esc(e.state)}</td><td class="mono">${esc(e.state==='inactive'?'—':e.route)}</td><td class="mono">${esc(e.route)}</td><td data-test="journal-status">${esc(shown)}</td></tr>`;}).join('');
+  return `<div class="delivery"><div class="delivery-line"><b>Receiver</b> ${esc(s.delivery.receiver)} <span data-test="receiver-selector">match ${Object.entries(s.delivery.match||{}).map(([key,value])=>`<span data-test="receiver-selector-pair"><span data-test="selector-key">${esc(key)}</span>=<span data-test="selector-value">${esc(value)}</span></span>`).join(", ")}</span> <span>transport ${esc(s.delivery.transport)}</span><span data-test="firing">firing ${s.delivery.firing}</span><span data-test="delivered">delivered ${s.delivery.delivered}</span><span data-test="unrouted">unrouted ${s.delivery.unrouted}</span></div><div class="journal-caption">Delivery journal</div><table data-test="journal"><thead><tr><th>Target</th><th>State</th><th>Alert key</th><th>Route key</th><th>Status</th></tr></thead><tbody>${journal}</tbody></table></div>`;
+ }

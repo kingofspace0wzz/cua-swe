@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Core Ball</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="playfield" aria-label="Core Ball game">
+        <canvas id="game" width="760" height="680" aria-label="Core Ball playfield"></canvas>
+        <div id="overlay" class="overlay">
+          <div class="mark" aria-hidden="true"><span></span><span></span><span></span></div>
+          <h1>CORE BALL</h1>
+          <p id="overlay-message">Place every pin without touching another.</p>
+          <button id="start" type="button">START ROUND</button>
+        </div>
+      </section>
+      <aside class="panel">
+        <p class="eyebrow">ROTATION LAB</p>
+        <h2>Attachment Run</h2>
+        <div class="readout"><span>ROUND</span><strong id="round">01</strong></div>
+        <div class="readout"><span>PINS LEFT</span><strong id="remaining">04</strong></div>
+        <div class="readout"><span>CORE PACE</span><strong id="pace">STEADY</strong></div>
+        <div class="pace-track"><i id="pace-fill"></i></div>
+        <div id="queue-cue" class="queue-cue"><i></i><strong id="queue-state">QUEUE OPEN</strong></div>
+        <p class="rules">Flights are deliberate. Tap again while the launch trail is visible to stage the next pin.</p>
+        <button id="restart" class="secondary" type="button">RESTART</button>
+        <p id="status" class="status" aria-live="polite">Ready</p>
+      </aside>
+    </main>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+schema_version: 1
+candidate_id: v3.react-datepicker-mask-clear-blur.001
+roster_order: 6a
+source_repo: Hacker0x01/react-datepicker
+source_pull_request: https://github.com/Hacker0x01/react-datepicker/pull/6180
+source_issue: https://github.com/Hacker0x01/react-datepicker/issues/5814
+pinned_base: 0231bbd7e707d87397e1486d0f2b453cf7f50367
+merge_commit: d4625d425ae31b15ed13de98446ffb6431f82659
+license: MIT
+upstream_change:
+  files: ["src/index.tsx", "src/test/datepicker_test.test.tsx"]
+  decisive_hunk: >-
+    In DatePicker.handleBlur, before resetInputValue(), if state.inputValue is a
+    non-empty string with no date-like characters (/[a-zA-Z0-9]/) and there is a
+    `selected` value, clear the selection: setSelected(null,...). This clears the
+    selection when a mask library surfaces a cleared placeholder like
+    "__/__/____" while preserving the selection for a merely-invalid date like
+    "2025-02-45".
+faithful_reproduction:
+  approach: behavior_derived_clean_room_verbatim_decision_surface
+  runtime: real_browser_react_18_real_date_fns_parse_format
+  rationale: >-
+    The full react-datepicker component (~24 files, floating-ui popper, calendar,
+    range/multiple modes) is prohibitively heavy and irrelevant to the blur
+    contract. The reproduction ports the EXACT upstream date-input state machine
+    (getInputValue precedence, handleChange, resetInputValue, handleBlur) that
+    participates in the reported behavior, using the real date-fns parse/format
+    helpers. The upstream broken behavior was first CONFIRMED against the REAL
+    react-datepicker@9.0.0 (pinned base version) in _rdp6180_probe: after typing
+    "__/__/____" and blurring, the real component reverts the input to
+    "12/25/2024" (the bug); the invalid-date case reverts too. The clean-room
+    field reproduces this identical broken behavior.
+  preserved_verbatim:
+    - "getInputValue precedence: state.inputValue string wins, else format(selected)"
+    - "handleChange sets inputValue and calls onChange only on a valid parse"
+    - "resetInputValue sets inputValue = null"
+    - "handleBlur calls resetInputValue (broken: unconditionally)"
+  intentionally_omitted:
+    - floating-ui popper / calendar rendering (irrelevant to contract)
+    - selectsRange / selectsMultiple modes (irrelevant to contract)
+contract_boundary:
+  runtime_owned:
+    - "cleared-mask placeholder pattern (env/service.mjs, varies per scene)"
+  non_inferable_evidence: >-
+    A source-only analogue that matches the exact literal "__/__/____" was RUN
+    and fails the protected payloads served with other cleared patterns
+    (--/--/----, spaces). The decisive rule (recognize a cleared mask
+    generically as a value with no date characters) is not present in
+    agent-visible source.
+authoring_notes: >-
+  The prior draft exposed the mask literal as a source prop (maskOnEmpty). A RUN
+  source-only analogue matching that literal PASSED all payloads, revealing an
+  answer leak. Per the pipeline remediation rule (source leaks the answer -> move
+  the contract behind the runtime boundary) the mask pattern was moved to the
+  evaluator-owned /mask runtime and the protected payloads now use several
+  distinct cleared patterns, which makes the literal-match analogue fail.

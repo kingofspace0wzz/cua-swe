@@ -1,0 +1,47 @@
+kind: original-purpose-built-regression
+upstream_bug_claim: false
+reference_product: statsd/statsd v0.9.0
+reference_commit: 9cf77d87855bcb69a8663135f59aa23825db9797
+source_records: artifacts/devops-adversarial-v1/owner-lanes/devops-owner-32-statsd-gauge/round-1/primary-sources
+source_license: MIT retained with full archive; application code and styling originally
+  authored
+successor_of: devops.statsd-gauge-update-mode.owner32-r1.001
+successor_change: One axis, preserve_upstream_transformations. The parent leaked the
+  decisive update convention through its README dialect paragraph and console side
+  label, and both successful predecessor code-only patches applied the conventional
+  lexical sign-delta repair at the sink. The successor preserves the same broken
+  absolute-overwrite fault byte-identical in src/update.mjs and keeps the StatsD
+  gauge absolute-versus-delta failure family, but the pipeline now retains realistic
+  upstream relay transformations, collector batching of LF multiline datagrams,
+  receipt-level relay attribution recorded by the protected receiver, and relay
+  announce/rebase restatements. Every relay opens each session epoch, and follows
+  each internal rollover, with one atomic announce batch that leads with the relay's
+  own sync register and restates the authoritative current reading of every gauge it
+  tracks; between announces the deployment's provisioned relay generation determines
+  whether signed live lines are relative updates (pass-through relays, statsd v0.9.0
+  semantics) or sign-formatted absolute readings (folding relays). No producer label,
+  README sentence, mode table or public payload states which generation a deployment
+  runs; the active convention is diagnosable only from the screenshot-visible
+  datagram and stored-value transitions, where announce restatements reconcile the
+  accumulated-versus-last interpretations of the preceding signed lines across
+  deterministic epochs. A correct repair binds the convention per epoch from that
+  announce evidence and applies announce restatements as authoritative readings, so
+  the exact predecessor sign-delta patches now corrupt folding-deployment readings
+  and signed-negative announce restatements and fail the verifier. StatsD gauge
+  semantics, source architecture, symptom-only instruction, reset/replay controls
+  and the deterministic behavioral oracle remain preserved.
+single_fault: Gauge state update replaces each measurement despite an intact lexical
+  token; the same single update-application fault as the parent, now graded under
+  evaluator-owned deployment relay generations with retained upstream relay
+  batching, attribution and announce transformations
+native_boundary: Protected relays send real UDP from one socket per attributed
+  endpoint; a protected receiver witnesses bytes and attribution before candidate
+  decoding; the candidate receiver worker reads the durable attributed capture and
+  emits to a protected state/history sink
+dialect_limit: classic StatsD gauge lines on the pass-through generation with
+  zero-then-negative-delta for negative absolutes there; the folding generation
+  publishes absolute readings that may carry an explicit leading sign; relay
+  announce batches lead with the relay sync register and restate authoritative
+  current readings (negative readings keep their minus sign) and are never split;
+  no tagged or sampled other metric kinds; the deployment-to-generation assignment
+  is evaluator-owned runtime state

@@ -1,0 +1,538 @@
+{
+  "visible": {
+    "label": "Platform incident inhibition",
+    "equalDimensions": [
+      "environment",
+      "cluster"
+    ],
+    "dimensions": [
+      {
+        "name": "cluster",
+        "role": "suppression scope",
+        "epoch": "M126",
+        "note": "Compute cell that hosts the workload, recorded by the scheduler. Cell labels are stamped under migration epoch M126 of the cell consolidation program; the scope stamping runbook records that epoch's stamping state."
+      },
+      {
+        "name": "environment",
+        "role": "correlation context",
+        "epoch": "M112",
+        "note": "Delivery ring recorded by the deploy pipeline. Ring labels are stamped under migration epoch M112; the scope stamping runbook records that epoch's stamping state."
+      }
+    ],
+    "advisories": [
+      "Scope labels are stamped under numbered migration epochs. Alerts opened under an epoch that has not finished stamping may legitimately omit that label, and existing suppression between two such alerts is expected and must keep working.",
+      "The scope stamping runbook page rendered in the stamping runbook panel is the operator authority for every epoch's stamping state. Consult it before changing rule eligibility.",
+      "The incident timeline is deterministic: the initial batch, arriving alerts, a partial resolution, then a replay of the initial batch."
+    ],
+    "routes": [
+      {
+        "name": "page-oncall",
+        "description": "Pages the on-call rotation for every firing alert.",
+        "delivery": "firing-only"
+      },
+      {
+        "name": "incident-archive",
+        "description": "Archives every active alert for incident review, regardless of suppression.",
+        "delivery": "all-active"
+      }
+    ],
+    "sourceClass": "NodeUnavailable",
+    "targetClass": "all active alerts",
+    "alerts": [
+      {
+        "id": "v-node-west",
+        "displayName": "NodeUnavailable@node-7",
+        "labels": {
+          "alertname": "NodeUnavailable",
+          "instance": "node-7",
+          "cluster": "eu-west",
+          "environment": "prod",
+          "severity": "critical"
+        },
+        "summary": "node-7 has not reported for five minutes"
+      },
+      {
+        "id": "v-disk-west",
+        "displayName": "DiskPressure@node-7",
+        "labels": {
+          "alertname": "DiskPressure",
+          "instance": "node-7",
+          "cluster": "eu-west",
+          "environment": "prod",
+          "severity": "warning"
+        },
+        "summary": "root filesystem is above ninety percent"
+      },
+      {
+        "id": "v-node-edge",
+        "displayName": "NodeUnavailable@bastion-1",
+        "labels": {
+          "alertname": "NodeUnavailable",
+          "instance": "bastion-1",
+          "severity": "critical"
+        },
+        "summary": "standalone bastion has not reported"
+      },
+      {
+        "id": "v-payments",
+        "displayName": "PaymentsFailures@payments",
+        "labels": {
+          "alertname": "PaymentsFailures",
+          "service": "payments",
+          "severity": "critical"
+        },
+        "summary": "payments API is returning errors"
+      },
+      {
+        "id": "v-checkout",
+        "displayName": "CheckoutLatency@checkout",
+        "labels": {
+          "alertname": "CheckoutLatency",
+          "service": "checkout",
+          "severity": "critical"
+        },
+        "summary": "checkout latency breached the page threshold"
+      },
+      {
+        "id": "v-search",
+        "displayName": "SearchErrors@search",
+        "labels": {
+          "alertname": "SearchErrors",
+          "service": "search",
+          "cluster": "",
+          "environment": "",
+          "severity": "critical"
+        },
+        "summary": "search requests are failing"
+      },
+      {
+        "id": "v-canary-west",
+        "displayName": "CanaryLatency@checkout-canary",
+        "labels": {
+          "alertname": "CanaryLatency",
+          "service": "checkout-canary",
+          "cluster": "eu-west",
+          "environment": "staging",
+          "severity": "warning"
+        },
+        "summary": "staging canary latency breached its rollout threshold"
+      },
+      {
+        "id": "v-api-east",
+        "displayName": "ApiLatency@api",
+        "labels": {
+          "alertname": "ApiLatency",
+          "service": "api",
+          "cluster": "us-east",
+          "environment": "prod",
+          "severity": "warning"
+        },
+        "summary": "api requests are slower than the target"
+      },
+      {
+        "id": "v-node-legacy",
+        "displayName": "NodeUnavailable@node-12",
+        "labels": {
+          "alertname": "NodeUnavailable",
+          "instance": "node-12",
+          "environment": "prod",
+          "severity": "critical"
+        },
+        "summary": "node-12 has not reported for six minutes"
+      },
+      {
+        "id": "v-disk-legacy",
+        "displayName": "DiskPressure@node-12",
+        "labels": {
+          "alertname": "DiskPressure",
+          "instance": "node-12",
+          "environment": "prod",
+          "severity": "warning"
+        },
+        "summary": "node-12 root filesystem is filling"
+      },
+      {
+        "id": "v-node-relay",
+        "displayName": "NodeUnavailable@relay-2",
+        "labels": {
+          "alertname": "NodeUnavailable",
+          "instance": "relay-2",
+          "cluster": "us-east",
+          "severity": "critical"
+        },
+        "summary": "relay-2 has not reported"
+      },
+      {
+        "id": "v-cdn",
+        "displayName": "CdnErrors@cdn-edge",
+        "labels": {
+          "alertname": "CdnErrors",
+          "service": "cdn-edge",
+          "cluster": "us-east",
+          "severity": "critical"
+        },
+        "summary": "cdn edge requests are failing"
+      },
+      {
+        "id": "v-node-east",
+        "displayName": "NodeUnavailable@node-9",
+        "labels": {
+          "alertname": "NodeUnavailable",
+          "instance": "node-9",
+          "cluster": "us-east",
+          "environment": "prod",
+          "severity": "critical"
+        },
+        "summary": "node-9 stopped reporting"
+      },
+      {
+        "id": "v-iops-east",
+        "displayName": "IOPressure@node-9",
+        "labels": {
+          "alertname": "IOPressure",
+          "instance": "node-9",
+          "cluster": "us-east",
+          "environment": "prod",
+          "severity": "warning"
+        },
+        "summary": "node-9 storage queue is saturated"
+      }
+    ],
+    "phases": [
+      {
+        "id": "visible-active",
+        "label": "Checkout incident \u00b7 initial batch",
+        "alertIds": [
+          "v-node-west",
+          "v-disk-west",
+          "v-node-edge",
+          "v-payments",
+          "v-checkout",
+          "v-search",
+          "v-canary-west",
+          "v-api-east"
+        ]
+      },
+      {
+        "id": "visible-arrival",
+        "label": "Checkout incident \u00b7 arriving alerts",
+        "alertIds": [
+          "v-node-west",
+          "v-disk-west",
+          "v-node-edge",
+          "v-payments",
+          "v-checkout",
+          "v-search",
+          "v-canary-west",
+          "v-api-east",
+          "v-node-legacy",
+          "v-disk-legacy",
+          "v-node-relay",
+          "v-cdn",
+          "v-node-east",
+          "v-iops-east"
+        ]
+      },
+      {
+        "id": "visible-resolution",
+        "label": "Checkout incident \u00b7 partial resolution",
+        "alertIds": [
+          "v-disk-west",
+          "v-node-edge",
+          "v-payments",
+          "v-checkout",
+          "v-search",
+          "v-canary-west",
+          "v-api-east",
+          "v-node-legacy",
+          "v-disk-legacy",
+          "v-node-relay",
+          "v-cdn",
+          "v-iops-east"
+        ]
+      },
+      {
+        "id": "visible-reset",
+        "label": "Checkout incident \u00b7 replay of initial batch",
+        "alertIds": [
+          "v-node-west",
+          "v-disk-west",
+          "v-node-edge",
+          "v-payments",
+          "v-checkout",
+          "v-search",
+          "v-canary-west",
+          "v-api-east"
+        ]
+      }
+    ]
+  },
+  "hidden": {
+    "label": "Ledger shard inhibition",
+    "equalDimensions": [
+      "zone",
+      "tenant"
+    ],
+    "dimensions": [
+      {
+        "name": "tenant",
+        "role": "suppression scope",
+        "epoch": "M131",
+        "note": "Tenant that owns the shard, stamped by the control plane. Tenant labels are stamped under migration epoch M131 of the tenant renumbering program; the scope stamping runbook records that epoch's stamping state."
+      },
+      {
+        "name": "zone",
+        "role": "correlation context",
+        "epoch": "M108",
+        "note": "Ledger zone recorded by each producer. Zone labels are stamped under migration epoch M108; the scope stamping runbook records that epoch's stamping state."
+      }
+    ],
+    "advisories": [
+      "Scope labels are stamped under numbered migration epochs. Alerts opened under an epoch that has not finished stamping may legitimately omit that label, and existing suppression between two such alerts is expected and must keep working.",
+      "The scope stamping runbook page rendered in the stamping runbook panel is the operator authority for every epoch's stamping state. Consult it before changing rule eligibility.",
+      "The incident timeline is deterministic: the initial batch, arriving alerts, a partial resolution, then a replay of the initial batch."
+    ],
+    "routes": [
+      {
+        "name": "shard-oncall",
+        "description": "Pages the shard on-call rotation for every firing alert.",
+        "delivery": "firing-only"
+      },
+      {
+        "name": "compliance-archive",
+        "description": "Archives every active alert for compliance review, regardless of suppression.",
+        "delivery": "all-active"
+      }
+    ],
+    "sourceClass": "ShardOffline",
+    "targetClass": "all active alerts",
+    "alerts": [
+      {
+        "id": "h-shard-cobalt",
+        "displayName": "ShardOffline@cobalt-2",
+        "labels": {
+          "alertname": "ShardOffline",
+          "shard": "cobalt-2",
+          "tenant": "cobalt",
+          "zone": "emea",
+          "severity": "critical"
+        },
+        "summary": "cobalt-2 shard is unavailable"
+      },
+      {
+        "id": "h-lag-cobalt",
+        "displayName": "ReplicationLag@cobalt-2",
+        "labels": {
+          "alertname": "ReplicationLag",
+          "shard": "cobalt-2",
+          "tenant": "cobalt",
+          "zone": "emea",
+          "severity": "warning"
+        },
+        "summary": "replica lag follows the shard outage"
+      },
+      {
+        "id": "h-shard-utility",
+        "displayName": "ShardOffline@utility-0",
+        "labels": {
+          "alertname": "ShardOffline",
+          "shard": "utility-0",
+          "severity": "critical"
+        },
+        "summary": "shared utility shard is unavailable"
+      },
+      {
+        "id": "h-audit",
+        "displayName": "AuditDeliveryErrors@audit",
+        "labels": {
+          "alertname": "AuditDeliveryErrors",
+          "service": "audit",
+          "severity": "critical"
+        },
+        "summary": "audit delivery is failing"
+      },
+      {
+        "id": "h-export",
+        "displayName": "ExportPipelineStopped@exports",
+        "labels": {
+          "alertname": "ExportPipelineStopped",
+          "service": "exports",
+          "severity": "critical"
+        },
+        "summary": "nightly exports are not completing"
+      },
+      {
+        "id": "h-console",
+        "displayName": "ConsoleErrors@console",
+        "labels": {
+          "alertname": "ConsoleErrors",
+          "service": "console",
+          "tenant": "",
+          "zone": "",
+          "severity": "critical"
+        },
+        "summary": "console requests are failing"
+      },
+      {
+        "id": "h-lag-apac",
+        "displayName": "ReplicationLag@cobalt-7",
+        "labels": {
+          "alertname": "ReplicationLag",
+          "shard": "cobalt-7",
+          "tenant": "cobalt",
+          "zone": "apac",
+          "severity": "warning"
+        },
+        "summary": "cobalt-7 replica lag is above threshold"
+      },
+      {
+        "id": "h-index",
+        "displayName": "IndexFreshnessLag@index",
+        "labels": {
+          "alertname": "IndexFreshnessLag",
+          "service": "index",
+          "tenant": "violet",
+          "zone": "emea",
+          "severity": "warning"
+        },
+        "summary": "index freshness is behind target"
+      },
+      {
+        "id": "h-shard-onyx",
+        "displayName": "ShardOffline@onyx-4",
+        "labels": {
+          "alertname": "ShardOffline",
+          "shard": "onyx-4",
+          "tenant": "onyx",
+          "severity": "critical"
+        },
+        "summary": "onyx-4 shard is unavailable"
+      },
+      {
+        "id": "h-journal-onyx",
+        "displayName": "JournalBacklog@onyx-4",
+        "labels": {
+          "alertname": "JournalBacklog",
+          "shard": "onyx-4",
+          "tenant": "onyx",
+          "severity": "warning"
+        },
+        "summary": "journal backlog follows the onyx outage"
+      },
+      {
+        "id": "h-shard-relay",
+        "displayName": "ShardOffline@relay-9",
+        "labels": {
+          "alertname": "ShardOffline",
+          "shard": "relay-9",
+          "zone": "emea",
+          "severity": "critical"
+        },
+        "summary": "relay-9 shard is unavailable"
+      },
+      {
+        "id": "h-settlement",
+        "displayName": "SettlementJobsStuck@settlement",
+        "labels": {
+          "alertname": "SettlementJobsStuck",
+          "service": "settlement",
+          "zone": "emea",
+          "severity": "critical"
+        },
+        "summary": "settlement jobs stopped draining"
+      },
+      {
+        "id": "h-shard-violet",
+        "displayName": "ShardOffline@violet-1",
+        "labels": {
+          "alertname": "ShardOffline",
+          "shard": "violet-1",
+          "tenant": "violet",
+          "zone": "apac",
+          "severity": "critical"
+        },
+        "summary": "violet-1 shard is unavailable"
+      },
+      {
+        "id": "h-cache-violet",
+        "displayName": "CacheDivergence@violet-1",
+        "labels": {
+          "alertname": "CacheDivergence",
+          "shard": "violet-1",
+          "tenant": "violet",
+          "zone": "apac",
+          "severity": "warning"
+        },
+        "summary": "cache divergence follows the violet outage"
+      }
+    ],
+    "phases": [
+      {
+        "id": "hidden-active",
+        "label": "Ledger incident \u00b7 initial batch",
+        "alertIds": [
+          "h-shard-cobalt",
+          "h-lag-cobalt",
+          "h-shard-utility",
+          "h-audit",
+          "h-export",
+          "h-console",
+          "h-lag-apac",
+          "h-index"
+        ]
+      },
+      {
+        "id": "hidden-arrival",
+        "label": "Ledger incident \u00b7 arriving alerts",
+        "alertIds": [
+          "h-shard-cobalt",
+          "h-lag-cobalt",
+          "h-shard-utility",
+          "h-audit",
+          "h-export",
+          "h-console",
+          "h-lag-apac",
+          "h-index",
+          "h-shard-onyx",
+          "h-journal-onyx",
+          "h-shard-relay",
+          "h-settlement",
+          "h-shard-violet",
+          "h-cache-violet"
+        ]
+      },
+      {
+        "id": "hidden-resolution",
+        "label": "Ledger incident \u00b7 partial resolution",
+        "alertIds": [
+          "h-lag-cobalt",
+          "h-shard-utility",
+          "h-audit",
+          "h-export",
+          "h-console",
+          "h-lag-apac",
+          "h-index",
+          "h-shard-onyx",
+          "h-journal-onyx",
+          "h-shard-relay",
+          "h-settlement",
+          "h-cache-violet"
+        ]
+      },
+      {
+        "id": "hidden-reset",
+        "label": "Ledger incident \u00b7 replay of initial batch",
+        "alertIds": [
+          "h-shard-cobalt",
+          "h-lag-cobalt",
+          "h-shard-utility",
+          "h-audit",
+          "h-export",
+          "h-console",
+          "h-lag-apac",
+          "h-index"
+        ]
+      }
+    ]
+  }
+}

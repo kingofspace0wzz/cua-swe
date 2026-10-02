@@ -1,0 +1,31 @@
+diff --git a/js/keyboard_input_manager.js b/js/keyboard_input_manager.js
+--- a/js/keyboard_input_manager.js
++++ b/js/keyboard_input_manager.js
+@@ -76,2 +76,11 @@ KeyboardInputManager.prototype.restart = function (event) {
+   this.emit("restart");
+ };
++
++KeyboardInputManager.prototype.beginEpisode = function () {
++  this.serial += 1;
++  this.down = {};
++  if (this.pending !== null) {
++    window.clearTimeout(this.pending);
++    this.pending = null;
++  }
++};
+diff --git a/js/game_manager.js b/js/game_manager.js
+--- a/js/game_manager.js
++++ b/js/game_manager.js
+@@ -8,6 +8,12 @@ function GameManager(size, InputManager, Actuator) {
+ }
+ 
+ GameManager.prototype.restart = function () {
++  if (typeof this.inputManager.beginEpisode === "function") {
++    this.inputManager.beginEpisode();
++  }
++  if (typeof window.__resetRandom === "function") {
++    window.__resetRandom();
++  }
+   this.actuator.restart();
+   this.setup();
+ };

@@ -1,0 +1,108 @@
+--- a/src/config/adjustmentPolicy.js
++++ b/src/config/adjustmentPolicy.js
+@@ -1,6 +1,6 @@
+ export function adjustmentPolicy(catalog) {
+   return Object.freeze({
+-    crossHostMode: "observe",
++    crossHostMode: "maintenance-reference-shift",
+     maxAdjustmentMs: catalog.maxAdjustmentMs,
+   });
+ }
+--- a/src/controllers/query.js
++++ b/src/controllers/query.js
+@@ -1,6 +1,7 @@
+ import { loadCatalog, loadTrace, submitAdjustment } from "../api/traceClient.js";
+ import { adjustmentPolicy } from "../config/adjustmentPolicy.js";
+ import { compileAdjusters } from "../trace/compileAdjusters.js";
++import { findMaintenanceReference } from "../trace/maintenanceReference.js";
+ import { runPipeline } from "../trace/runPipeline.js";
+ 
+ export async function startQuery() {
+@@ -11,7 +12,11 @@
+ 
+ export async function evaluateTrace(catalog, traceId) {
+   const trace = await loadTrace(traceId);
+-  const pipeline = runPipeline(trace.spans, compileAdjusters(adjustmentPolicy(catalog)));
++  const reference = await findMaintenanceReference(catalog, trace, loadTrace);
++  const pipeline = runPipeline(
++    trace.spans,
++    compileAdjusters(adjustmentPolicy(catalog), reference),
++  );
+   await submitAdjustment(trace.id, pipeline.spans, pipeline.annotations);
+   return {
+     trace,
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,16 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
++import { alignToMaintenanceReference } from "./maintenanceReference.js";
+ 
+-export function compileAdjusters(policy) {
+-  return [
+-    { name: "dedupe", apply: dedupeSpans },
+-    { name: "sort", apply: sortSpans },
+-  ];
++export function compileAdjusters(policy, reference) {
++  const adjusters = [{ name: "dedupe", apply: dedupeSpans }];
++  if (policy.crossHostMode === "maintenance-reference-shift" && reference) {
++    adjusters.push({
++      name: "maintenance-reference",
++      apply: alignToMaintenanceReference(reference, {
++        maxAdjustmentMs: policy.maxAdjustmentMs,
++      }),
++    });
++  }
++  adjusters.push({ name: "sort", apply: sortSpans });
++  return adjusters;
+ }
+--- /dev/null
++++ b/src/trace/maintenanceReference.js
+@@ -0,0 +1,48 @@
++function spanKey(span) {
++  return [span.service, span.operation, span.host].join("\u0000");
++}
++
++function authorityOf(span) {
++  return span.timeAuthority || span.host;
++}
++
++export async function findMaintenanceReference(catalog, trace, loadTrace) {
++  const entry = (catalog.traces || []).find((item) => item.id === trace.id);
++  if (!entry?.capture || entry.capture.window !== "before-reset") return null;
++  const partner = (catalog.traces || []).find(
++    (item) =>
++      item.capture?.window === "after-reset" &&
++      item.capture.workload === entry.capture.workload,
++  );
++  return partner ? loadTrace(partner.id) : null;
++}
++
++export function alignToMaintenanceReference(reference, { maxAdjustmentMs }) {
++  return function adjust(spans) {
++    const replayed = new Map(reference.spans.map((span) => [spanKey(span), span]));
++    const root = spans.find((span) => span.parentId === null);
++    const deltas = new Map();
++    for (const span of spans) {
++      const match = replayed.get(spanKey(span));
++      if (!match || match.durationMs !== span.durationMs) return spans;
++      const delta = match.startMs - span.startMs;
++      const authority = authorityOf(span);
++      if (!deltas.has(authority)) deltas.set(authority, delta);
++      else if (deltas.get(authority) !== delta) return spans;
++    }
++    const confirmed = new Set();
++    for (const span of spans) {
++      if (!root || span.parentId !== root.id) continue;
++      if (span.startMs < root.startMs || span.endMs > root.endMs) {
++        confirmed.add(authorityOf(span));
++      }
++    }
++    return spans.map((span) => {
++      const authority = authorityOf(span);
++      if (!confirmed.has(authority)) return span;
++      const delta = deltas.get(authority) || 0;
++      if (!delta || Math.abs(delta) > maxAdjustmentMs) return span;
++      return { ...span, startMs: span.startMs + delta, endMs: span.endMs + delta };
++    });
++  };
++}

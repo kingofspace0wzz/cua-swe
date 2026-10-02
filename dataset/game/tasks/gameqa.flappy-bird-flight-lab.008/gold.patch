@@ -1,0 +1,401 @@
+diff --git a/src/bird.js b/src/bird.js
+index 3fc5a10..83c75ab 100644
+--- a/src/bird.js
++++ b/src/bird.js
+@@ -45,28 +45,61 @@
+       });
+     }
+ 
++    advance(duration, start, end, slices) {
++      if (duration <= 0) return;
++      const before = this.pose;
++      this.flapClock += duration;
++      this.velocityY = Math.min(340, this.velocityY + 620 * duration);
++      this.y += this.velocityY * duration;
++      this.rotation = clamp(this.velocityY * 0.17, -30, 82);
++      this.pose = this.snapshotPose();
++      slices.push(Object.freeze({start, end, before, after: this.pose}));
++    }
++
++    releaseFlap(minimumCharge) {
++      const effectiveCharge = Math.max(this.chargeSeconds, minimumCharge);
++      const impulse = 120 + effectiveCharge * 15000;
++      this.lastImpulse = Math.min(250, impulse);
++      this.velocityY = -this.lastImpulse;
++      this.flapClock = 0;
++      this.chargeSeconds = 0;
++      this.pose = this.snapshotPose();
++    }
++
+     step(dt, control) {
+-      this.flapClock += dt;
++      const before = this.pose;
++      const slices = [];
++      let cursor = 0;
+ 
+-      if (control.pressed) {
+-        this.chargeSeconds = 0;
++      for (const event of control.events) {
++        const offset = clamp(event.offset, cursor, 1);
++        const duration = dt * (offset - cursor);
++        if (control.initial_down && duration > 0) {
++          this.chargeSeconds = Math.min(0.055, this.chargeSeconds + duration);
++        }
++        this.advance(duration, cursor, offset, slices);
++        if (event.kind === "press") {
++          this.chargeSeconds = 0;
++        } else if (event.kind === "release") {
++          this.releaseFlap(Math.max(event.held_seconds, dt * 0.4));
++        }
++        cursor = offset;
+       }
+-      if (control.down && !control.pressed) {
+-        this.chargeSeconds = Math.min(0.055, this.chargeSeconds + dt);
++
++      const remainder = dt * (1 - cursor);
++      if (control.down && remainder > 0) {
++        this.chargeSeconds = Math.min(0.055, this.chargeSeconds + remainder);
+       }
+-      if (control.released) {
+-        const impulse = 120 + this.chargeSeconds * 15000;
+-        this.lastImpulse = Math.min(250, impulse);
+-        this.velocityY = -this.lastImpulse;
+-        this.flapClock = 0;
+-        this.chargeSeconds = 0;
++      this.advance(remainder, cursor, 1, slices);
++      if (slices.length === 0) {
++        slices.push(Object.freeze({start: 0, end: 1, before, after: this.pose}));
+       }
+ 
+-      this.velocityY = Math.min(340, this.velocityY + 620 * dt);
+-      this.y += this.velocityY * dt;
+-      this.rotation = clamp(this.velocityY * 0.17, -30, 82);
+-      this.pose = this.snapshotPose();
+-      return this.pose;
++      return Object.freeze({
++        before,
++        after: this.pose,
++        slices: Object.freeze(slices),
++      });
+     }
+ 
+     snapshot() {
+diff --git a/src/game.js b/src/game.js
+index 3dbc3b4..0a09980 100644
+--- a/src/game.js
++++ b/src/game.js
+@@ -383,15 +383,17 @@
+ 
+     update(dt) {
+       if (this.phase === "drill") this.applyDrillScript();
+-      const control = this.input.sample();
++      const control = this.input.sample(dt);
+       this.captureReceipt(control);
++      const pressEvent = control.events.find((event) => event.kind === "press");
++      const pressed = Boolean(pressEvent);
+ 
+       if (this.phase === "lab") {
+         if (control.command !== null) {
+           this.launchDrill(control.command);
+           return;
+         }
+-        if (control.pressed) {
++        if (pressed) {
+           const index = LAB_BUTTONS.findIndex((button) => inside(control.pointer, button));
+           if (index >= 0) {
+             this.launchDrill(index);
+@@ -402,21 +404,21 @@
+         return;
+       }
+       if (this.phase === "drill_result") {
+-        if (control.pressed && (
+-          control.source !== "pointer" || inside(control.pointer, BACK_BUTTON)
++        if (pressed && (
++          pressEvent.source !== "pointer" || inside(control.pointer, BACK_BUTTON)
+         )) {
+           this.showLab();
+         }
+         return;
+       }
+       if (this.phase === "dead") {
+-        if (control.pressed) this.start();
++        if (pressed) this.start();
+         return;
+       }
+ 
+       this.elapsed += dt;
+       if (this.phase === "drill" && !this.drill.received) {
+-        if (!control.pressed) return;
++        if (!pressed) return;
+         this.drill = this.drillState(
+           this.drill.index,
+           true,
+@@ -428,26 +430,34 @@
+         this.record("pulse-received", {id: this.drill.id});
+       }
+ 
+-      this.lastBirdFrame = this.bird.step(dt, control);
+-      if (this.lastBirdFrame.last_impulse) {
+-        this.actualImpulse = this.lastBirdFrame.last_impulse;
++      const birdMotion = this.bird.step(dt, control);
++      this.lastBirdFrame = birdMotion.after;
++      if (birdMotion.after.last_impulse) {
++        this.actualImpulse = birdMotion.after.last_impulse;
+       }
+-      this.lastPipeFrame = this.pipeField.step(dt, this.lastBirdFrame);
++      this.lastPipeFrame = this.pipeField.step(dt, birdMotion);
++      const collision = this.collisionFor(
++        this.lastBirdFrame,
++        this.lastPipeFrame.collision
++      );
+       if (this.phase === "drill") {
+         this.captureTrail();
+         this.drillFrame += 1;
+-        if (this.lastPipeFrame.collision) {
+-          this.finishDrill("bump", this.lastPipeFrame.collision);
++        if (collision) {
++          this.finishDrill("bump", collision);
+           return;
+         }
+-        const drillPipe = this.lastPipeFrame.pipes[0];
+-        const spec = DRILLS[this.drill.index];
+-        if (drillPipe && drillPipe.x <= spec.finishX) {
+-          this.finishDrill(this.lastPipeFrame.scored ? "clear" : "bump", null);
++        if (this.lastPipeFrame.scored) {
++          this.finishDrill("clear", null);
+         }
+         return;
+       }
+ 
++      if (collision) {
++        this.die(collision);
++        return;
++      }
++
+       if (this.lastPipeFrame.scored) {
+         this.score += this.lastPipeFrame.scored;
+         for (const crossing of this.lastPipeFrame.score_events) {
+@@ -460,11 +470,14 @@
+         }
+       }
+ 
+-      const bird = this.lastBirdFrame.bounds;
+-      let collision = this.lastPipeFrame.collision;
+-      if (!collision && bird.top < CEILING) collision = {kind: "ceiling", bird};
+-      if (!collision && bird.bottom > FLOOR) collision = {kind: "ground", bird};
+-      if (collision) this.die(collision);
++    }
++
++    collisionFor(birdFrame, pipeCollision) {
++      if (pipeCollision) return pipeCollision;
++      const bird = birdFrame.bounds;
++      if (bird.top < CEILING) return {kind: "ceiling", bird};
++      if (bird.bottom > FLOOR) return {kind: "ground", bird};
++      return null;
+     }
+ 
+     die(collision) {
+diff --git a/src/input.js b/src/input.js
+index 66d625a..7e7a3ae 100644
+--- a/src/input.js
++++ b/src/input.js
+@@ -5,12 +5,12 @@
+     constructor(target) {
+       this.target = target;
+       this.down = false;
+-      this.pressed = false;
+-      this.released = false;
+       this.source = null;
+       this.command = null;
+       this.pointer = Object.freeze({x: 0, y: 0});
+-      this.receipt = [];
++      this.sampleDown = false;
++      this.sampleStartedAt = performance.now();
++      this.edges = [];
+       this.pressedAt = null;
+ 
+       this.onKeyDown = (event) => {
+@@ -52,10 +52,9 @@
+     press(source) {
+       if (this.down) return;
+       this.down = true;
+-      this.pressed = true;
+       this.source = source;
+       this.pressedAt = performance.now();
+-      this.receipt.push(Object.freeze({
++      this.edges.push(Object.freeze({
+         kind: "press",
+         source,
+         at: this.pressedAt,
+@@ -67,9 +66,8 @@
+       if (!this.down || (this.source && this.source !== source)) return;
+       const releasedAt = performance.now();
+       this.down = false;
+-      this.released = true;
+       this.source = null;
+-      this.receipt.push(Object.freeze({
++      this.edges.push(Object.freeze({
+         kind: "release",
+         source,
+         at: releasedAt,
+@@ -80,29 +78,52 @@
+       this.pressedAt = null;
+     }
+ 
+-    sample() {
++    sample(dt) {
++      const endedAt = performance.now();
++      const span = Math.max(1, endedAt - this.sampleStartedAt);
++      let lastPress = null;
++      const events = this.edges.map((edge) => {
++        let offset = Math.max(
++          0,
++          Math.min(1, (edge.at - this.sampleStartedAt) / span)
++        );
++        if (edge.kind === "press") {
++          lastPress = offset;
++        } else if (lastPress !== null) {
++          offset = Math.min(1, Math.max(offset, lastPress + 0.4));
++          lastPress = null;
++        }
++        return Object.freeze({
++          kind: edge.kind,
++          source: edge.source,
++          offset,
++          held_seconds: edge.held_ms / 1000,
++          held_ms: edge.held_ms,
++        });
++      });
+       const result = Object.freeze({
++        initial_down: this.sampleDown,
+         down: this.down,
+-        pressed: this.pressed,
+-        released: this.released,
+-        receipt: Object.freeze(this.receipt.slice()),
++        duration: dt,
++        events: Object.freeze(events),
++        receipt: Object.freeze(events),
+         command: this.command,
+         pointer: this.pointer,
+       });
+-      this.pressed = false;
+-      this.released = false;
+-      this.receipt = [];
++      this.sampleDown = this.down;
++      this.sampleStartedAt = endedAt;
++      this.edges = [];
+       this.command = null;
+       return result;
+     }
+ 
+     clear() {
+       this.down = false;
+-      this.pressed = false;
+-      this.released = false;
+       this.source = null;
+       this.command = null;
+-      this.receipt = [];
++      this.sampleDown = false;
++      this.sampleStartedAt = performance.now();
++      this.edges = [];
+       this.pressedAt = null;
+     }
+   }
+diff --git a/src/pipes.js b/src/pipes.js
+index 5fbf246..a7dae29 100644
+--- a/src/pipes.js
++++ b/src/pipes.js
+@@ -41,35 +41,80 @@
+       this.nextId = this.pipes.length + 1;
+     }
+ 
+-    step(dt, birdFrame) {
++    step(dt, birdMotion) {
+       let scored = 0;
+       const scoreEvents = [];
+       let collision = null;
+       const speed = this.mode === "drill" ? LAB_SPEED : PIPE_SPEED;
+ 
+       for (const pipe of this.pipes) {
+-        pipe.x -= speed * dt;
+-        const left = pipe.x;
+-        const right = left + PIPE_WIDTH;
+-        const bird = birdFrame.bounds;
+-        const overlaps = bird.right > left && bird.left < right;
++        const startX = pipe.x;
++        pipe.x = startX - speed * dt;
++        for (const slice of birdMotion.slices) {
++          const startLeft = startX - speed * dt * slice.start;
++          const endLeft = startX - speed * dt * slice.end;
++          const before = slice.before.bounds;
++          const after = slice.after.bounds;
++          const startOverlap = before.right > startLeft
++            && before.left < startLeft + PIPE_WIDTH;
++          const endOverlap = after.right > endLeft
++            && after.left < endLeft + PIPE_WIDTH;
++          const startContact = startOverlap
++            && (before.top < pipe.gapTop || before.bottom > pipe.gapBottom);
++          const endContact = endOverlap
++            && (after.top < pipe.gapTop || after.bottom > pipe.gapBottom);
++          if (!startContact && !endContact) continue;
+ 
+-        if (
+-          overlaps
+-          && (bird.top < pipe.gapTop || bird.bottom > pipe.gapBottom)
+-        ) {
++          let intervalEnd = slice.end;
++          if (
++            startContact
++            && !endContact
++            && before.bottom > pipe.gapBottom
++            && after.bottom <= pipe.gapBottom
++            && before.bottom !== after.bottom
++          ) {
++            const local = (before.bottom - pipe.gapBottom)
++              / (before.bottom - after.bottom);
++            intervalEnd = slice.start + (slice.end - slice.start) * local;
++          }
++          const marker = (slice.start + intervalEnd) / 2;
+           collision = Object.freeze({
+             kind: "pipe",
+             pipe_id: pipe.id,
+-            pipe_left: left,
+-            pipe_right: right,
++            pipe_left: startLeft - speed * dt * (marker - slice.start),
++            pipe_right: startLeft - speed * dt * (marker - slice.start) + PIPE_WIDTH,
+             gap_top: pipe.gapTop,
+             gap_bottom: pipe.gapBottom,
+-            bird,
++            bird: startContact ? before : after,
++            interval_start: slice.start,
++            interval_end: intervalEnd,
++            motion_segment: Object.freeze({
++              start: Object.freeze({
++                x: slice.before.x,
++                y: slice.before.y,
++                pipe_x: startLeft,
++                contact: startContact,
++              }),
++              end: Object.freeze({
++                x: slice.after.x,
++                y: slice.after.y,
++                pipe_x: endLeft,
++                contact: endContact,
++              }),
++              interval: Object.freeze({
++                start: slice.start,
++                end: intervalEnd,
++                marker,
++              }),
++              endpoint_safe: !endContact,
++            }),
+           });
+           break;
+         }
++        if (collision) break;
+ 
++        const right = pipe.x + PIPE_WIDTH;
++        const bird = birdMotion.after.bounds;
+         if (!pipe.scored && right < bird.left) {
+           pipe.scored = true;
+           scored += 1;

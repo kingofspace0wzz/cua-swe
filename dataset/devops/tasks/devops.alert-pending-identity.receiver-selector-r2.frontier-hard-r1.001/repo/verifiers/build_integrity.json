@@ -1,0 +1,7 @@
+{
+  "package.json": "77218a8d00096991f0e38595effc73e293b9ae2ef8d4768d473b8265b346325a",
+  "build.mjs": "c85ae78acdc666983742c1885b2f9ad8fc4c5bfb61c2af161ac5fd064655e4db",
+  "server.mjs": "73e3b2e1fc8523bb2f2e2f05a2792682f84f3671d8e9f6f2d12de64dfa0dbb15",
+  "src/server/staticFiles.js": "c80714f541929ec451594d8bc55f3bce1fedd07b17bf2bc6523f092e640638c1",
+  "src/server/serviceProxy.js": "79a177c937a99871e27cfaa3b8c1d1fb0d81092179674f29b799141bf18d01a4"
+}

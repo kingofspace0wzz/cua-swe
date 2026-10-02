@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tail Sampling Console</title><link rel="stylesheet" href="/src/styles.css"></head>
+<body><main data-testid="app" data-ready="no">
+<header><div><span class="eyebrow">Collector / traces</span><h1>Tail Sampling Console</h1></div><p id="error" role="alert"></p></header>
+<nav id="scenario" aria-label="Incident windows"></nav>
+<section id="funnel" class="funnel"></section>
+<section class="diagnostic-grid">
+<article><h2>Trace decisions</h2><div class="filters"><label>Bucket<select id="bucket" data-testid="bucket"><option value="all">All buckets</option><option value="error">Error</option><option value="slow">Slow</option><option value="ordinary">Ordinary</option></select></label><label>Decision<select id="decision" data-testid="decision"><option value="all">All decisions</option><option value="sampled">Sampled</option><option value="dropped">Dropped</option></select></label></div><ul id="decisions" class="decisions"></ul></article>
+<article><h2>Selected trace · receiver and decision</h2><div id="detail" data-testid="detail"></div></article>
+<article><h2>Receiver service levels</h2><div id="diagnostics"></div><h2 class="subhead">Retention buckets</h2><div id="buckets"></div><button id="replay" data-testid="replay">Replay unseen trace</button><label class="probe-label">Probe<select id="probe" data-testid="probe"></select></label><button id="run-probe" data-testid="run-probe">Run probe</button><div id="probe-result" data-testid="probe-result"></div></article>
+</section>
+<section class="grid lower"><article><h2>Arrival and decision timeline</h2><div id="timeline"></div></article><article><h2>Trace-store exports</h2><ul id="exports" class="exports"></ul></article><article><h2>Receiver delivery ledger</h2><div id="receiver"></div></article></section>
+<section class="runbook-panel"><article><h2>Receiver operations runbook</h2><div id="runbook"></div></article></section>
+</main><script type="module" src="/src/main.js"></script></body></html>

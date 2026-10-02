@@ -1,0 +1,14 @@
+diff --git a/handsontable/src/plugins/contextMenu/menu/menu.ts b/handsontable/src/plugins/contextMenu/menu/menu.ts
+index a5169678a..d4d5c1d9a 100644
+--- a/handsontable/src/plugins/contextMenu/menu/menu.ts
++++ b/handsontable/src/plugins/contextMenu/menu/menu.ts
+@@ -233,6 +233,9 @@ export class Menu {
+       this.eventManager.addEventListener(frame.document, 'mousedown', event => this.onDocumentMouseDown(event));
+       this.eventManager.addEventListener(frame.document, 'touchstart', event => this.onDocumentMouseDown(event));
+       this.eventManager.addEventListener(frame.document, 'contextmenu', event => this.onDocumentContextMenu(event));
++      this.eventManager.addEventListener(frame.document, 'scroll', () => {
++        this.close(true);
++      }, { capture: true, passive: true });
+ 
+       frame = getParentWindow(frame);
+     }

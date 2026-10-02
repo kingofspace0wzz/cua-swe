@@ -1,0 +1,225 @@
+{
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "native": {
+      "assets": [],
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "index.html",
+          "style.css",
+          "app.js",
+          "geometry.js",
+          "raster.js",
+          "integration.js",
+          "guide.js",
+          "package.json"
+        ],
+        "timeout_seconds": 20
+      },
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "3471dc086ba7b88dae2fb9aba2c36159ace46890c9320214ecab16a7f9f29545"
+      },
+      "scene": {
+        "device_scale_factor": 1,
+        "frame_paths": [],
+        "locale": "en-US",
+        "path": "/",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 30000,
+        "timezone": "UTC",
+        "viewport": {
+          "height": 800,
+          "width": 400
+        }
+      },
+      "schema": 1,
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "c9c2eb033b58df68bff90f6ff6287f4badcf8ff350ff23145f4a4f50467044f0"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "4a13d188a23fdfaba88efa0e77f3bb0adfa6a473d62826dc952ea73993c9ae89"
+      }
+    }
+  },
+  "controls": {
+    "alternative": {
+      "correct": true,
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "c84fdf576de726b6f9a1d2bf95d67e15debef808eb8672776e46f9fff940d7bf"
+      }
+    },
+    "artifact-hardcode": {
+      "correct": false,
+      "patch": {
+        "path": "controls/artifact-hardcode.json",
+        "sha256": "345a36afe8757d3c94521bd68eff56a16914d96987346714af12df10ca4755d1"
+      }
+    },
+    "brightness-rank-guess": {
+      "correct": false,
+      "patch": {
+        "path": "controls/brightness-rank-guess.json",
+        "sha256": "9cc3723e54caf0e8c5977ff4036b9ded08072aeb4f6dac71c865e0808a0ee94b"
+      }
+    },
+    "first-edition-only": {
+      "correct": false,
+      "patch": {
+        "path": "controls/first-edition-only.json",
+        "sha256": "cc41145763c1b642f77ade012233f2360b227210adbf296c40051d01339facff"
+      }
+    },
+    "gold": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "8774f609c69fc5d1b9d036c754ec76e90b41ecd90f82b01ba46928ceef98bb3c"
+      }
+    },
+    "incomplete-save": {
+      "correct": false,
+      "patch": {
+        "path": "controls/incomplete-save.json",
+        "sha256": "de4ea40d7e89a5a2b2764042499f203ba9022c6110ac03a50363e188da7d7203"
+      }
+    },
+    "malformed-integration": {
+      "correct": false,
+      "patch": {
+        "path": "controls/malformed-integration.json",
+        "sha256": "3cf7155934a098b81e6f7fad29b79e6a35bf05d8419fe03e3d6a2adf43c39b93"
+      }
+    },
+    "partial": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "99aa3e18f5b0d9ef92ee512e76359945038f95f565f446844dec30dd85efc784"
+      }
+    },
+    "static-overlay-report": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static-overlay-report.json",
+        "sha256": "0387941bb41d8a0190282337d80f03ec81675418601ac017aa646bf72f101a2e"
+      }
+    },
+    "unmirrored": {
+      "correct": false,
+      "patch": {
+        "path": "controls/unmirrored.json",
+        "sha256": "986364e303a6cc4d0032dbdb31d1f2820a96011add921b81d33d04ce2685df11"
+      }
+    },
+    "wrong-quarter-turn": {
+      "correct": false,
+      "patch": {
+        "path": "controls/wrong-quarter-turn.json",
+        "sha256": "c4c359b7f301dd801047f90dd3938ef5dce7d434cff1952a81f09ef1725bee67"
+      }
+    },
+    "wrong-scale": {
+      "correct": false,
+      "patch": {
+        "path": "controls/wrong-scale.json",
+        "sha256": "9c1cf14b83a3e03550421b110b1d5a70861ff04888e16f05daebad0afeed3280"
+      }
+    }
+  },
+  "dependencies": [],
+  "editable": [
+    "LICENSE",
+    "README.md",
+    "app.js",
+    "geometry.js",
+    "guide.js",
+    "index.html",
+    "integration.js",
+    "package.json",
+    "public-tests.md",
+    "raster.js",
+    "style.css"
+  ],
+  "expected_assertions": [
+    "received_registrations",
+    "live_pose_draft",
+    "identification_draft",
+    "complete_save_reload",
+    "edition_reset_isolation",
+    "evidence_viewer"
+  ],
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "88fa3cb8aa831511290fe393c657a70093e95b94b42bf2532b35833552abb7f3"
+  },
+  "public_files": {
+    "LICENSE": {
+      "path": "public/LICENSE",
+      "sha256": "084b680bf2a2b8c50e2f44045073afb430362e711e9700acfffdaffcd22eaa62"
+    },
+    "README.md": {
+      "path": "public/README.md",
+      "sha256": "c8fa1bbfbf0af46135c95f9c28b346c8fe806ffbfc8f5fc06e7c41faf4912ffd"
+    },
+    "app.js": {
+      "path": "public/app.js",
+      "sha256": "6297bcec5fd559efe48ae6fffe07e2329b9df71bf6e9f461bb1e300ba25cd096"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "26b52a6afbb2991392227ca2da6ae5e710df1005688df068ab973d0c8059715c"
+    },
+    "geometry.js": {
+      "path": "public/geometry.js",
+      "sha256": "4fb47c66e88aa9908d90800c9c5e416d699d2449b44a3db66514bd8daf090ab8"
+    },
+    "guide.js": {
+      "path": "public/guide.js",
+      "sha256": "e3547a4ab06d41c33b85ca91e9e67245a25020b8f1c9e415614cb43d714a675e"
+    },
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "615e087faebe20d92167dcb2ca7e9d0a3300392e2292d1fee1a115257639feae"
+    },
+    "integration.js": {
+      "path": "public/integration.js",
+      "sha256": "583cb8237122cb4154fb0dd9127c186185df922af1db2cd4d37609d4635aa1ac"
+    },
+    "package.json": {
+      "path": "public/package.json",
+      "sha256": "89c47db7851f89caec72da4f215ebc21cf1e294aeef3b45d2583562d846ab035"
+    },
+    "public-tests.md": {
+      "path": "public/public-tests.md",
+      "sha256": "96c9660006c0c24b55f6e3dead8e0efa90e60a5ada2a61594ce8d6576b2cf57c"
+    },
+    "raster.js": {
+      "path": "public/raster.js",
+      "sha256": "eab5d954d0f0983b47e6321597b8e2fa33e7c3b061e00d98c87204ca9cb1a7d6"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "63018783721e9a691378ef689329caeedb6aec9df9d324ca5e0cecbfca93c1e6"
+    }
+  },
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "revision": "002",
+  "scratch": [
+    "dist/"
+  ],
+  "task_id": "mobile.synthetic.external-star-plate-registration.001"
+}

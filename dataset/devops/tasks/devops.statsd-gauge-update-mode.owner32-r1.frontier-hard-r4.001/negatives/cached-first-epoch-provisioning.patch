@@ -1,0 +1,87 @@
+--- a/src/receiver.mjs
++++ b/src/receiver.mjs
+@@ -1,6 +1,8 @@
+ import {ingestCapture} from './ingest.mjs';
++import {mapChannelModes} from './fleet.mjs';
+ export function createReceiver(origin) {
+   let state = new Map(), cursor = 0, epoch = 0, error = null, timer = null, pending = Promise.resolve();
++  let modes = null;
+   async function request(path, body) {
+     const response = await fetch(origin + path, body === undefined ? {} : {
+       method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify(body)
+@@ -8,11 +10,14 @@
+     if (!response.ok) throw new Error('Receiver request failed: ' + response.status);
+     return response.json();
+   }
++  function adoptModes(payload) {
++    if (!modes && payload && Array.isArray(payload.producers)) modes = mapChannelModes(payload.producers);
++  }
+   async function drain() {
+     const capture = await request('/capture?after=' + cursor);
+     if (capture.epoch !== epoch) return;
+     for (const receipt of capture.receipts) {
+-      const updates = ingestCapture(receipt, state);
++      const updates = ingestCapture(receipt, state, modes);
+       await request('/ingest', {epoch, receipt: receipt.sequence, updates});
+       cursor = receipt.sequence;
+     }
+@@ -24,6 +29,7 @@
+   async function begin(seed = false) {
+     if (seed) {
+       const current = await request('/snapshot');
++      adoptModes(current);
+       if (current.seeded) {
+         if (epoch !== current.epoch) {
+           state = new Map(Object.entries(current.state)); cursor = current.committedReceipt;
+@@ -35,12 +41,14 @@
+     }
+     stop(); await pending;
+     const snapshot = await request('/begin', {seed});
++    adoptModes(snapshot);
+     if (snapshot.alreadySeeded) return snapshot;
+     state = new Map(); cursor = 0; epoch = snapshot.epoch; error = null;
+     timer = setInterval(pump, 25); pump(); return snapshot;
+   }
+   async function reset() {
+     stop(); await pending; const snapshot = await request('/reset', {});
++    adoptModes(snapshot);
+     state = new Map(); cursor = 0; epoch = snapshot.epoch; error = null; return snapshot;
+   }
+   return {begin, reset, status: () => ({cursor, epoch, error}), close: stop};
+--- a/src/ingest.mjs
++++ b/src/ingest.mjs
+@@ -1,8 +1,9 @@
+ import {decodeDatagram} from './protocol.mjs';
+ import {applyGauge} from './update.mjs';
+-export function ingestCapture(receipt, state) {
++export function ingestCapture(receipt, state, modes) {
++  const mode = (modes ?? {})[receipt.source];
+   return decodeDatagram(Buffer.from(receipt.base64, 'base64')).map(measurement => {
+-    const result = applyGauge(state, {...measurement, source: receipt.source});
++    const result = applyGauge(state, {...measurement, source: receipt.source, mode});
+     return {receipt: receipt.sequence, lineIndex: measurement.lineIndex,
+       identity: measurement.identity, source: receipt.source, token: measurement.token,
+       metricType: measurement.metricType, parsedValue: measurement.value,
+--- a/src/update.mjs
++++ b/src/update.mjs
+@@ -1,6 +1,7 @@
+ export function applyGauge(state, measurement) {
+   const before = state.get(measurement.identity) ?? 0;
+-  const value = measurement.value;
++  const relative = measurement.mode === 'signed-delta' && /^[+-]/.test(measurement.token);
++  const value = relative ? before + measurement.value : measurement.value;
+   state.set(measurement.identity, value);
+   return {before, value};
+ }
+--- /dev/null
++++ b/src/fleet.mjs
+@@ -0,0 +1,9 @@
++export const channelConventions = {
++  'statsd v0.9.0 gateway · event-driven gauge updates': 'signed-delta',
++  'site sweep publisher · reports every reading each sweep': 'absolute-reading',
++  'shift census recorder · re-reports the whole occupancy register every shift': 'absolute-reading',
++  'shift log recorder · retransmits the full level register every shift': 'absolute-reading',
++};
++export function mapChannelModes(producers) {
++  return Object.fromEntries(producers.map(entry => [entry.id, channelConventions[entry.channel] ?? 'absolute-reading']));
++}

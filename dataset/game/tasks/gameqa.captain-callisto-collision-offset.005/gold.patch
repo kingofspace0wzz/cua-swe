@@ -1,0 +1,127 @@
+diff --git a/src/entities/hero.js b/src/entities/hero.js
+index f025058..0a11fd8 100644
+--- a/src/entities/hero.js
++++ b/src/entities/hero.js
+@@ -15,8 +15,9 @@ class Hero extends GameEntity {
+     this.fuel = 100;
+     this.jetpack = false;
+     this.collisionContactMask = 0;
+-    this.cornerLockTime = -1;
+     this.cornerDescentArmed = false;
++    this.cornerDescentApproach = false;
++    this.cornerDescentLanded = false;
+   }
+ 
+   /**
+@@ -24,17 +25,38 @@ class Hero extends GameEntity {
+    */
+   armCornerDescent() {
+     this.cornerDescentArmed = true;
+-    this.collisionContactMask =
+-        Math.abs(this.velocity[0]) >= Math.abs(this.velocity[2]) ? 1 : 2;
++    this.cornerDescentApproach = false;
++    this.cornerDescentLanded = false;
++    this.collisionContactMask = 0;
++  }
++
++  /**
++   * Enables the compact envelope after the deck catches the player.
++   */
++  finishCornerDescent() {
++    if (this.cornerDescentArmed) {
++      this.cornerDescentLanded = true;
++    }
++  }
++
++  /**
++   * Clears corner landing state when starting a level.
++   */
++  resetCornerDescent() {
++    this.cornerDescentArmed = false;
++    this.cornerDescentApproach = false;
++    this.cornerDescentLanded = false;
++    this.collisionContactMask = 0;
+   }
+ 
+   /**
+    * Starts a fresh collision manifold for the frame.
+    */
+   beginCollisionFrame() {
+-    if (!this.cornerDescentArmed) {
+-      this.collisionContactMask = 0;
+-      this.cornerLockTime = -1;
++    this.collisionContactMask = 0;
++    if (this.cornerDescentArmed && !this.cornerDescentLanded &&
++        this.velocity[1] < 0 && this.pos[2] >= 11.1) {
++      this.cornerDescentApproach = true;
+     }
+   }
+ 
+@@ -43,7 +65,10 @@ class Hero extends GameEntity {
+    * @return {number}
+    */
+   collisionRadius() {
+-    return this.cornerDescentArmed && this.velocity[1] < 0 ? 0.28 : 0.7;
++    if (!this.cornerDescentArmed) {
++      return 0.7;
++    }
++    return this.cornerDescentLanded || !this.cornerDescentApproach ? 0.28 : 0.7;
+   }
+ 
+   /**
+@@ -52,9 +77,6 @@ class Hero extends GameEntity {
+    */
+   recordCollisionAxis(axis) {
+     this.collisionContactMask |= axis;
+-    if (this.collisionContactMask === 3 && this.cornerDescentArmed) {
+-      this.cornerLockTime = gameTime;
+-    }
+   }
+ 
+   /**
+@@ -62,7 +84,7 @@ class Hero extends GameEntity {
+    * @return {boolean}
+    */
+   isCornerLocked() {
+-    return this.cornerLockTime >= 0 && this.cornerDescentArmed;
++    return false;
+   }
+ 
+   /**
+diff --git a/src/index.js b/src/index.js
+index 337155a..e5a417d 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -395,7 +395,7 @@ function updateWorld() {
+               actor.groundedTime = gameTime;
+               actor.groundedPlatform = platform;
+               if (actor instanceof Hero) {
+-                actor.recordCollisionAxis(2);
++                actor.finishCornerDescent();
+               }
+             }
+           } else if (actorY < platformMaxY && actorY + actorHeight > platformMinY) {
+@@ -490,11 +490,6 @@ function updateEntity(entity) {
+ 
+   entity.velocity[0] *= (1.0 - dt * FRICTION);
+   entity.velocity[2] *= (1.0 - dt * FRICTION);
+-  if (entity instanceof Hero && entity.isCornerLocked()) {
+-    entity.velocity[0] = 0;
+-    entity.velocity[2] = 0;
+-  }
+-
+   entity.pos[0] += dt * entity.velocity[0];
+   entity.pos[2] += dt * entity.velocity[2];
+ 
+diff --git a/src/mapgen.js b/src/mapgen.js
+index 010b88e..f568eee 100644
+--- a/src/mapgen.js
++++ b/src/mapgen.js
+@@ -506,6 +506,7 @@ function initGame() {
+   player.yaw = 3.0;
+   player.groundedTime = 0;
+   player.shootTime = 0;
++  player.resetCornerDescent();
+   coins = 0;
+   lastCoinTime = 0;
+   coinSequence = 0;

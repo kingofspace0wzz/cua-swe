@@ -1,0 +1,72 @@
+id: gameqa.phase-relay-checkpoint-hazard-sync.003
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.phase-relay-checkpoint-hazard-sync.003/repo
+  ref: clean-room-signal-weave-baseline-v3
+  copy_mode: filtered
+instruction: >-
+  The deterministic three-lane transit has a gameplay regression. Move with
+  WASD or the arrow keys, collect the prism before the midpoint, and activate
+  the visible shelter. Its route card and colored handoff trail show the
+  repeating order used by the lane beacons. After a later collision and
+  return, the pattern should stay held while you remain inside the shelter
+  and continue with the next handoff when you leave. Instead, the trail can
+  repeat, skip, or reverse, and the first lane marked OPEN can cause another
+  hit. Preserve the visible handoff and physical opening behavior through
+  checkpoint returns and ordinary R restarts, then collect both prisms and
+  reach the exit.
+setup:
+  install:
+    - npm ci
+    - npm run build
+  reset: []
+  launch:
+    - >-
+      "${CUA_SWE_PYTHON:-python3}" verifiers/runtime_service.py
+      --host 127.0.0.1 --port 51001
+    - >-
+      CUA_SWE_RUNTIME_SERVICE_ORIGIN=http://127.0.0.1:51001
+      npm run dev -- --host 127.0.0.1 --port 51000
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:51000/
+  viewport_or_device: desktop-1280x860
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1200
+  max_steps: 150
+  max_gui_actions: 180
+  max_test_runs: 20
+verifiers:
+  build:
+    - npm run build
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - >-
+      "${CUA_SWE_PYTHON:-python3}" verifiers/browser_check.py
+      --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:51000/}"
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: clean-room-signal-weave
+  state_api: window.gameAPI
+  seed: 2903
+  level: 1
+schema_version: 1

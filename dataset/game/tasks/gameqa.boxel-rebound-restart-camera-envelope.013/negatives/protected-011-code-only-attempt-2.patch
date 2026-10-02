@@ -1,0 +1,18 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..a752136e7c070fe545d88fa14a8d18cc91036a62 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -254,7 +254,12 @@
+         this.retry = function(retry){
+             this.resumeGame(retry);
+             this.player.respawn();
+-            this.levelMap.showGuide(this.player.spawnGuide);
++            this.levelMap.cameraProgress = this.player.xPos;
++            this.levelMap.x = -this.levelMap.cameraProgress;
++            var checkpointSupport = this.levelMap.getSupport(this.player.spawnSupportId);
++            this.levelMap.showGuide(checkpointSupport == null
++                ? this.player.spawnGuide
++                : this.levelMap.captureGuide(checkpointSupport));
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+                 detail: { level: this.home.selectedLevel, method: "keyboard" }

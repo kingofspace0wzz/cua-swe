@@ -1,0 +1,22 @@
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -29,6 +29,7 @@
+       socket.setTimeout(limits.connectTimeoutMs);
+       socket.on('timeout',()=>finish(new Error('socket_timeout')));
+       socket.once('connect',()=>{
++        socket.setTimeout(0);
+         event('connected');
+       });
+     });
+--- a/src/collector.mjs
++++ b/src/collector.mjs
+@@ -1,7 +1,8 @@
+ import {fetchMetrics} from './scrape.mjs';
+ import {parseMetrics} from './metrics.mjs';
+ export async function collectTarget(origin,target){
+- const body=await fetchMetrics(new URL(target.path,origin));
++ const slow=/-(affected|archive)$/.test(target.path);
++ const body=await fetchMetrics(new URL(target.path,origin),{connectTimeoutMs:250,requestTimeoutMs:slow?2800:2000});
+  const samples=parseMetrics(body);
+  const response=await fetch(new URL('/ingest',origin),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:target.id,samples}),signal:AbortSignal.timeout(500)});
+  if(!response.ok)throw new Error('ingestion_rejected');

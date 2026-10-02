@@ -1,0 +1,93 @@
+diff --git a/src/config/adjustmentPolicy.js b/src/config/adjustmentPolicy.js
+--- a/src/config/adjustmentPolicy.js
++++ b/src/config/adjustmentPolicy.js
+@@ -1,6 +1,6 @@
+ export function adjustmentPolicy(catalog) {
+   return Object.freeze({
+-    crossHostMode: "observe",
++    crossHostMode: "bounded-authority-shift",
+     maxAdjustmentMs: catalog.maxAdjustmentMs,
+   });
+ }
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,14 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
++import { alignClockAuthorities } from "./authorityAlignment.js";
+ 
+ export function compileAdjusters(policy) {
+-  return [
+-    { name: "dedupe", apply: dedupeSpans },
+-    { name: "sort", apply: sortSpans },
+-  ];
++  const adjusters = [{ name: "dedupe", apply: dedupeSpans }];
++  if (policy.crossHostMode === "bounded-authority-shift") {
++    adjusters.push({
++      name: "authority-clock",
++      apply: alignClockAuthorities({ maxAdjustmentMs: policy.maxAdjustmentMs }),
++    });
++  }
++  adjusters.push({ name: "sort", apply: sortSpans });
++  return adjusters;
+ }
+diff --git a/src/trace/authorityAlignment.js b/src/trace/authorityAlignment.js
+new file mode 100644
+--- /dev/null
++++ b/src/trace/authorityAlignment.js
+@@ -0,0 +1,55 @@
++function depthOf(span, byId, memo) {
++  if (memo.has(span.id)) return memo.get(span.id);
++  if (span.parentId === null) {
++    memo.set(span.id, 0);
++    return 0;
++  }
++  const parent = byId.get(span.parentId);
++  const depth = parent ? depthOf(parent, byId, memo) + 1 : 0;
++  memo.set(span.id, depth);
++  return depth;
++}
++
++function authorityOf(span) {
++  return span.timeAuthority || span.host;
++}
++
++function moveAuthority(spans, authority, delta) {
++  for (const span of spans) {
++    if (authorityOf(span) !== authority) continue;
++    span.startMs += delta;
++    span.endMs += delta;
++  }
++}
++
++export function alignClockAuthorities({ maxAdjustmentMs }) {
++  return function adjust(spans) {
++    const output = spans.map((span) => ({ ...span }));
++    const byId = new Map(output.map((span) => [span.id, span]));
++    const memo = new Map();
++    const ordered = output.slice().sort((left, right) => {
++      const depth = depthOf(left, byId, memo) - depthOf(right, byId, memo);
++      return depth || left.id.localeCompare(right.id);
++    });
++    const authorityShifts = new Map();
++
++    for (const span of ordered) {
++      if (span.parentId === null) continue;
++      const parent = byId.get(span.parentId);
++      if (!parent || authorityOf(parent) === authorityOf(span)) continue;
++      let delta = 0;
++      if (span.startMs < parent.startMs) {
++        delta = parent.startMs - span.startMs;
++      } else if (span.endMs > parent.endMs) {
++        delta = parent.endMs - span.endMs;
++      }
++      if (!delta) continue;
++      const authority = authorityOf(span);
++      const nextShift = (authorityShifts.get(authority) || 0) + delta;
++      if (Math.abs(nextShift) > maxAdjustmentMs) continue;
++      moveAuthority(output, authority, delta);
++      authorityShifts.set(authority, nextShift);
++    }
++    return output;
++  };
++}

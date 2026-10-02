@@ -1,0 +1,20 @@
+--- a/src/config/collectorSettings.js
++++ b/src/config/collectorSettings.js
+@@ -1,6 +1,6 @@
+ import { SAMPLING_POLICIES } from "./samplingPolicies.js";
+ 
+ export const COLLECTOR_SETTINGS = Object.freeze({
+-  decisionWaitMs: 250,
++  decisionWaitMs: 3300,
+   policies: SAMPLING_POLICIES,
+ });
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -36,6 +36,6 @@
+   await refresh();
+ }
+ export async function replay() {
+-  await samplerClient.replay();
++  await samplerClient.snapshot();
+   await refresh();
+ }

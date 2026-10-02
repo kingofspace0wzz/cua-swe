@@ -1,0 +1,22 @@
+{
+  "task_id": "gameqa.boxel-rebound-restart-camera-envelope.010",
+  "source_commit": "6861f7fa",
+  "source_bundle": "new_artifacts/new_valid_games_batch_2/gameqa.boxel-rebound-restart-camera-envelope.010",
+  "source_task_sha256": "ecc6e27f8afcd1c2c38f3b146d0bdf386d7d4ef6c71d5dafb187bdc70ffbb608",
+  "packaged_task_sha256": "c3fb5e8df1c153941054b72f84e4ebb05c7b45ba7494915367f1dc0faa5faff5",
+  "packaging_changes": [
+    "Relocate repo_snapshot.path to canonical collection"
+  ],
+  "author_records": [
+    "new_artifacts/new_valid_games_batch_2/gameqa.boxel-rebound-restart-camera-envelope.010/asset-recipe.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.boxel-rebound-restart-camera-envelope.010/causal-upper-anchor-audit.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.boxel-rebound-restart-camera-envelope.010/certification-summary.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.boxel-rebound-restart-camera-envelope.010/custody.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.boxel-rebound-restart-camera-envelope.010/design-review.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.boxel-rebound-restart-camera-envelope.010/preservation-audit.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.boxel-rebound-restart-camera-envelope.010/provenance.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.boxel-rebound-restart-camera-envelope.010/rights.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.boxel-rebound-restart-camera-envelope.010/visual-audit.json"
+  ],
+  "admission_report": "dataset/reports/GAME_CUA_BATCH_2_ADMISSION_REPORT.md"
+}

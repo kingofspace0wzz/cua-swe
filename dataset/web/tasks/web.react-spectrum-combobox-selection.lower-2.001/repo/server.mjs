@@ -1,0 +1,3 @@
+import express from 'express';
+const args=process.argv.slice(2);const port=Number(args[args.indexOf('--port')+1]||4181);const host=args[args.indexOf('--host')+1]||'127.0.0.1';const upstream=process.env.CUA_SWE_EXTERNAL_SERVICE_ORIGIN||'http://127.0.0.1:4321';
+const app=express();app.use('/api',async(req,res)=>{try{const r=await fetch(upstream+req.originalUrl);res.status(r.status).type('json').send(Buffer.from(await r.arrayBuffer()))}catch{res.status(502).json({error:'policy unavailable'})}});app.use(express.static('dist'));app.get('*path',(_req,res)=>res.sendFile(new URL('./dist/index.html',import.meta.url).pathname));app.listen(port,host);

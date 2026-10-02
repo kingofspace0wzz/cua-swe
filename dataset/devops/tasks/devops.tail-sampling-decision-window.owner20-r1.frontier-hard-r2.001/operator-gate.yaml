@@ -1,0 +1,14 @@
+{
+  "independent_early_control": "payments child ERROR sampled under same status policy",
+  "initial_selection": "late ERROR child; dropped trace",
+  "limits_visible": true,
+  "limits_source": "pixel-rendered receiver policy panel served by the protected receiver and proxied at /api/service-levels; active profile SL-INCIDENT-2026.09 among superseded and scheduled distractor rows; absent from agent-visible source and from every machine-readable HTTP response",
+  "minimum_decisive_observations": 2,
+  "primary_actions_max": 4,
+  "states": [
+    "delayed",
+    "early",
+    "interleaved",
+    "replay"
+  ]
+}

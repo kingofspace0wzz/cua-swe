@@ -1,0 +1,66 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..0d7db148357b60ccb99e54874b9bee95b2d8b9a3 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -253,7 +253,16 @@
+         };
+         this.retry = function(retry){
+             this.resumeGame(retry);
++            if (this.player.spawnSupportId != null){
++                this.levelMap.restoreCheckpointFrame(
++                    this.player.spawnMotionTime,
++                    this.player.spawnCameraProgress
++                );
++            }
+             this.player.respawn();
++            if (this.player.spawnSupportId != null){
++                this.player.supportId = this.player.spawnSupportId;
++            }
+             this.levelMap.showGuide(this.player.spawnGuide);
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+diff --git a/js/LevelMap.js b/js/LevelMap.js
+index b57a6f995f0d58427f8879bfa3fac061ede82026..1983a5a22d30eac0c8707ae85e4d0cfb36bc8e74 100644
+--- a/js/LevelMap.js
++++ b/js/LevelMap.js
+@@ -194,6 +194,18 @@
+             }
+             return null;
+         };
++        this.restoreCheckpointFrame = function(motionTime,cameraProgress){
++            if (typeof motionTime == "number" && isFinite(motionTime)){
++                this.motionTime = motionTime;
++                for (var i=0; i<this.movingSupports.length; i++){
++                    this.movingSupports[i].update(this.motionTime);
++                }
++            }
++            if (typeof cameraProgress == "number" && isFinite(cameraProgress)){
++                this.cameraProgress = cameraProgress;
++                this.x = -this.cameraProgress;
++            }
++        };
+         this.captureGuide = function(support){
+             if (support == null) return null;
+             return {
+diff --git a/js/Player.js b/js/Player.js
+index 7a23504b6677e0d461c5ac4d8a04995efb2a0e5f..c06baa772b9715fa51b9abf5116279fe528583ee 100644
+--- a/js/Player.js
++++ b/js/Player.js
+@@ -156,6 +156,8 @@
+                             this.spawnSupportId = movingSupport.id;
+                             this.spawnSupportOffset = this.supportOffset;
+                             this.spawnGuide = map.captureGuide(movingSupport);
++                            this.spawnMotionTime = map.motionTime;
++                            this.spawnCameraProgress = map.cameraProgress;
+                             this.newSpawn = true;
+                             window.Game.particles.addParticles(this.x,this.y,this.scaleX/2,window.Game.theme.main_color4,1,25,true);
+                         }
+@@ -233,6 +235,8 @@
+                 this.newSpawn = false;
+                 this.spawnSupportId = null;
+                 this.spawnGuide = null;
++                this.spawnMotionTime = null;
++                this.spawnCameraProgress = null;
+             }
+             if (this.newSpawn == true){
+                 this.xPos = this.spawnX;

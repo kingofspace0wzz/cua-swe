@@ -1,0 +1,29 @@
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,25 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
+ 
++function containOffendingSpans(spans) {
++  const output = spans.map((span) => ({ ...span }));
++  const byId = new Map(output.map((span) => [span.id, span]));
++  for (const span of output) {
++    if (span.parentId === null) continue;
++    const parent = byId.get(span.parentId);
++    if (!parent || parent.host === span.host) continue;
++    let delta = 0;
++    if (span.startMs < parent.startMs) delta = parent.startMs - span.startMs;
++    else if (span.endMs > parent.endMs) delta = parent.endMs - span.endMs;
++    span.startMs += delta;
++    span.endMs += delta;
++  }
++  return output;
++}
++
+ export function compileAdjusters(policy) {
+   return [
+     { name: "dedupe", apply: dedupeSpans },
++    { name: "contain", apply: containOffendingSpans },
+     { name: "sort", apply: sortSpans },
+   ];
+ }

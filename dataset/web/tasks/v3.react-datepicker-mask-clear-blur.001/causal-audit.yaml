@@ -1,0 +1,187 @@
+schema_version: 1
+audit_kind: phase6_phase7_causal_evaluation
+auditor_model: claude-opus-4-8
+audit_scope: >-
+  Causal evaluation of the completed Batch 53 independent root
+  v3.react-datepicker-mask-clear-blur.001 (upstream Hacker0x01/react-datepicker#6180,
+  issue #5814). One valid code-only trial and one valid screenshot-only CUA trial
+  were reviewed. No new model trial was run; the one-valid-trial policy is locked.
+  No shared round-state or evaluation-results files were modified.
+
+task:
+  task_id: v3.react-datepicker-mask-clear-blur.001
+  identity: Hacker0x01/react-datepicker#6180
+  independence_group: react-datepicker-mask-clear-blur
+  difficulty: l3
+  pinned_base: 0231bbd7e707d87397e1486d0f2b453cf7f50367
+  merge_commit: d4625d425ae31b15ed13de98446ffb6431f82659
+
+construction_state_verified:
+  all_ten_gates_pass: true
+  verifier_driving_timing_defect_repaired: true
+  product_contract_unchanged_by_repair: true
+  broken_baseline: "FAIL 2/5 exit 1"
+  gold: "PASS 5/5 exit 0"
+  negative: "FAIL 4/5 (fails invalid_date_digits)"
+  source_only_analogue: "FAIL 3/5 (literal __/__/____ match; dash and space patterns unmatched)"
+  five_protected_payloads:
+    - cleared_mask            # scene a underscore __/__/____ -> readout None
+    - invalid_date_digits     # 13/40/2024 -> preserve 12/25/2024
+    - valid_date_change       # 03/14/2025 -> update selection
+    - cleared_mask_dashes     # scene b --/--/---- -> readout None
+    - cleared_mask_spaces     # scene c space-only -> readout None
+
+formal_replay:
+  host: machine
+  runtime: protected_bubblewrap
+  baseline: "exit 1, 2/5"
+  gold: "exit 0, 5/5"
+  verifier_digest_before: 2db8c04c78b2686e07bc91840002d7d0803f8bd07db1fb27b8181c009e75a8c4
+  verifier_digest_after: 2db8c04c78b2686e07bc91840002d7d0803f8bd07db1fb27b8181c009e75a8c4
+  task_environment_digest_before: bbb58b918b705e3b1ae6954bd58229eb5c4582e539ec1f60e3179b1b838994d3
+  task_environment_digest_after: bbb58b918b705e3b1ae6954bd58229eb5c4582e539ec1f60e3179b1b838994d3
+  containment_stable: true
+
+code_only_trial:
+  shard: v3-b53-rdp001-codeonly-gpt56-machine-01
+  model_id: gpt-5.6-luna
+  valid: true
+  scorable: true
+  protocol_clean: true
+  infrastructure_error: false
+  hidden_material_attempts: []
+  unauthorized_external_connections: []
+  verifier_sha256: 2db8c04c78b2686e07bc91840002d7d0803f8bd07db1fb27b8181c009e75a8c4
+  outcome: verifier_fail
+  protected_payloads_passed: 4
+  protected_payloads_total: 5
+  duration_sec: 96.281
+  failed_payload: invalid_date_digits
+  substantive_diagnosis: >-
+    The code-only patch tracked a cleared flag at CHANGE time and, in the empty
+    branch, eagerly committed onChange(null) immediately plus set clearedRef,
+    then skipped resetInputValue on blur whenever clearedRef was set. Because the
+    protected verifier emulates "select-all + delete" (which fires the empty
+    change branch) BEFORE typing a value, the eager change-time onChange(null)
+    dropped the previously selected date, so the subsequent invalid-date
+    (13/40/2024) case could no longer restore the prior selection. Result:
+    invalid_date_digits observed input='' readout='None' instead of the required
+    12/25/2024. The failure is a genuine lifecycle-timing error: the clear was
+    committed at the wrong moment (on change, unconditionally) instead of being
+    deferred to blur and gated on the FINAL input state.
+
+cua_trial:
+  shard: v3-b53-rdp001-cua-gpt56-machine-01
+  model_id: gpt-5.6-luna
+  observation_mode: visual
+  valid: true
+  scorable: true
+  protocol_clean: true
+  infrastructure_error: false
+  hidden_material_attempts: []
+  unauthorized_external_connections: []
+  verifier_sha256: 2db8c04c78b2686e07bc91840002d7d0803f8bd07db1fb27b8181c009e75a8c4
+  outcome: verifier_pass
+  protected_payloads_passed: 5
+  protected_payloads_total: 5
+  duration_sec: 195.989
+  host_audited_gui_actions: 13
+  host_audited_observations: 2
+  matched_screenshots: 15
+  budget_attestation:
+    exceeded: [noncached_tokens]
+    diagnostic_only: true
+    frozen_harness_marks_compliant: true
+  substantive_diagnosis: >-
+    The CUA patch added a ref set true only in the empty-mask change branch and
+    reset to false on any non-empty typed change, then on handleBlur committed
+    onChange(null) (and reset the flag) BEFORE resetInputValue, but only when the
+    FINAL input state was a cleared mask. This correctly distinguishes a cleared
+    mask (commit clear on blur) from a merely-invalid non-empty date (the invalid
+    text resets the flag, so blur preserves the prior selection). It edits only
+    the agent-visible product source (src/DatePickerField.jsx); it does not touch
+    the evaluator-owned env/service.mjs, env/contract.json, or verifiers/verify.py.
+
+visual_evidence_assessment:
+  decisive_information_screenshot_observable: true
+  trajectory_used_visual_evidence: true
+  observed_interactions:
+    - "clear (click field, Ctrl+a, Backspace) then click-away blur: observed the mask placeholder and the revert-to-old-date bug"
+    - "type valid 12/26/2024, then Ctrl+a and type invalid 13/40/2024, then click-away blur: observed the invalid-date preservation case"
+    - "post-fix re-verification of clear + blur showing empty field / readout None"
+  screenshots: "15 distinct 1280x720 renders delivered via mcp_image_content and viewed (view_image)"
+  note: >-
+    The model explored BOTH decisive branches (cleared-mask/blur AND
+    invalid-date/blur), which is exactly the discriminator that separates the
+    correct blur-time gated clear from the negative "clear on any non-parse"
+    variant. Visual grounding is genuine, not source-only inference.
+
+causal_questions:
+  q1_repair_permitted_and_genuine:
+    permitted_by_instruction: true
+    genuinely_repairs_clear_on_blur_lifecycle: true
+    changed_evaluator_owned_material: false
+    hardcoded_protected_payloads: false
+    bypassed_behavior: false
+    evidence: >-
+      Patch confined to src/DatePickerField.jsx; verifier digest identical across
+      code-only, CUA, and formal replay; generic no-date-character intent via the
+      "final input was empty-mask" flag rather than any literal pattern; passes all
+      three distinct runtime-served cleared patterns plus invalid and valid controls.
+  q2_decisive_diagnosis_screenshot_available_and_used:
+    available_via_screenshot_only_browser_use: true
+    trajectory_actually_used_visual_evidence: true
+  q3_supports_capability_necessary_lower_anchor:
+    code_only_genuine_fail: true
+    cua_genuine_pass: true
+    verifier_gaming: false
+    hidden_material_leakage: false
+    task_ambiguity: false
+    infrastructure_cause: false
+    rationale: >-
+      Same protected verifier and containment digests; both trials protocol-clean
+      with no hidden-material access or unauthorized network; gold solvable 5/5;
+      multi-payload discrimination intact; the capability difference is a concrete,
+      visually grounded lifecycle-timing repair (defer clear commit to blur, gated
+      on final input state) that code-only got wrong and screenshot-only CUA got right.
+  q4_independent_root_under_materialized_diversity:
+    independent: true
+    repository_canonical_fresh: true
+    distinct_ui_surface: date_input_form_field
+    distinct_bug_mechanism: controlled_input_blur_reset_discards_cleared_mask_value
+    distinct_discovery_pattern: clear_field_then_blur_interaction_lifecycle
+    distinct_contract_channel: runtime_owned_input_mask_service
+    distinct_patch_topology: guarded_pre_reset_selection_clear_on_blur
+
+disposition: capability_necessary_lower_anchor
+
+admission_accounting:
+  contributes_one_independent_admission: true
+  anchor_role: lower_anchor
+  orchestrator_will_raise_canonical_independent_admissions: "13 -> 14"
+  orchestrator_will_raise_lower_roots: "8 -> 9"
+  note: >-
+    Accounting change is deferred to the orchestrator after reviewing this audit.
+    This audit does not edit shared round-state or evaluation-results files, and
+    does not publish into the canonical task directory.
+
+required_follow_up:
+  minimally_harder_controlled_neighbor:
+    required: true
+    adds_independent_admission: false
+    dimension_to_vary_exactly_one: >-
+      Suggested: increase the cleared-mask formatting-grammar / precedence depth
+      (e.g. a mask whose cleared placeholder contains a benign non-date literal
+      token, or an invalid-but-plausible value) so the no-date-character rule
+      alone is insufficient and a stricter clear-vs-invalid discrimination is
+      required. Change exactly one declared difficulty dimension from the lower
+      anchor.
+  independent_root_replenishment_continues_from: Hacker0x01/react-datepicker#6079
+
+integrity:
+  shared_round_state_edited: false
+  evaluation_results_files_edited: false
+  new_model_trial_run: false
+  network_access_used: false
+  generated_dist_diffs_ignored_in_analysis: true
+  wrote_only_under: artifacts/v3/replenishment/batch-53

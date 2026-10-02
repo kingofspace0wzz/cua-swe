@@ -1,0 +1,19 @@
+diff --git a/src/entities/hero.js b/src/entities/hero.js
+index e5645dc..bfe8aa9 100644
+--- a/src/entities/hero.js
++++ b/src/entities/hero.js
+@@ -25,13 +25,7 @@ class Hero extends GameEntity {
+    */
+   setJetpackInput(active, released) {
+     this.jetpack = active;
+-    if (active) {
+-      this.jetpackThrusting = true;
+-    }
+-    if (released && this.jetpack) {
+-      this.jetpackThrusting = false;
+-      this.jetpackPower = 0;
+-    }
++    this.jetpackThrusting = active;
+   }
+ 
+   /**

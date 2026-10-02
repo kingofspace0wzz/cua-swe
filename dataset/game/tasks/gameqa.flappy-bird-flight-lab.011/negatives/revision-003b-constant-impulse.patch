@@ -1,0 +1,40 @@
+diff --git a/src/bird.js b/src/bird.js
+index 3fc5a10..0c5a2ee 100644
+--- a/src/bird.js
++++ b/src/bird.js
+@@ -2,6 +2,7 @@
+   "use strict";
+ 
+   const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
++  const FLAP_IMPULSE = 250;
+   const SHAPE = Object.freeze({radiusX: 15, radiusY: 10});
+ 
+   function boundsFor(x, y) {
+@@ -27,7 +28,6 @@
+       this.y = 248;
+       this.velocityY = 0;
+       this.rotation = 0;
+-      this.chargeSeconds = 0;
+       this.flapClock = 1;
+       this.lastImpulse = 0;
+       this.pose = this.snapshotPose();
+@@ -48,18 +48,10 @@
+     step(dt, control) {
+       this.flapClock += dt;
+ 
+-      if (control.pressed) {
+-        this.chargeSeconds = 0;
+-      }
+-      if (control.down && !control.pressed) {
+-        this.chargeSeconds = Math.min(0.055, this.chargeSeconds + dt);
+-      }
+       if (control.released) {
+-        const impulse = 120 + this.chargeSeconds * 15000;
+-        this.lastImpulse = Math.min(250, impulse);
++        this.lastImpulse = FLAP_IMPULSE;
+         this.velocityY = -this.lastImpulse;
+         this.flapClock = 0;
+-        this.chargeSeconds = 0;
+       }
+ 
+       this.velocityY = Math.min(340, this.velocityY + 620 * dt);

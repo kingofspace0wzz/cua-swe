@@ -1,0 +1,31 @@
+schema_version: 1
+task_id: gameqa.2048-seeded-restart-parity.002
+trajectory_id: 2048-held-input-restart-envelope-v2
+seed: 42
+trigger:
+  actions:
+    - action: game_api_reset
+      options: {seed: 42}
+    - action: key_sequence
+      keys: [ArrowDown, ArrowRight, ArrowUp, ArrowLeft]
+    - action: key_hold
+      keys: [ArrowLeft, Space]
+      duration_ms: 400
+    - action: wait
+      duration_ms: 400
+  causal_checkpoint: delayed pre-restart input firing in the fresh episode
+pre_trigger_equivalence:
+  status: expected
+  fields: [seed, game_state.environment, game_state.score]
+post_trigger_divergence:
+  clean: the opening remains still until the next deliberate move
+  baseline: a delayed held-key move advances the fresh board and spawn stream
+  negative: rewinding the seed still leaves the delayed move alive
+required_evidence:
+  state_evidence: verifier-artifacts/seeded-restart-state.json
+  no_op_failure: {status: pending_remote_chromium}
+  gold_pass: {status: pending_remote_chromium}
+  negative_failure: {status: pending_remote_chromium}
+  code_only_failure: {status: not_run}
+  cua_reproducible_success: {status: not_run}
+status: construction_materialized_pending_browser_certification

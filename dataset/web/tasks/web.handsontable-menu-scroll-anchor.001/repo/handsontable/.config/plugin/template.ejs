@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Jasmine Spec Runner</title>
+  <% for (var i = 0; i < htmlWebpackPlugin.options.jasmineCssFiles.length; i++) { %>
+    <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.baseJasminePath %><%= htmlWebpackPlugin.options.jasmineCssFiles[i] %>">
+  <% } %>
+  <% for (var i = 0; i < htmlWebpackPlugin.options.externalCssFiles.length; i++) { %>
+    <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.externalCssFiles[i] %>">
+  <% } %>
+  <% for (var i = 0; i < htmlWebpackPlugin.options.jasmineJsFiles.length; i++) { %>
+    <script src="<%= htmlWebpackPlugin.options.baseJasminePath %><%= htmlWebpackPlugin.options.jasmineJsFiles[i] %>"></script>
+  <% } %>
+  <% for (var i = 0; i < htmlWebpackPlugin.options.externalJsFiles.length; i++) { %>
+    <script src="<%= htmlWebpackPlugin.options.externalJsFiles[i] %>"></script>
+  <% } %>
+
+  <script>
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var hotVersion = params.get('hotVersion');
+
+      if (hotVersion) {
+        var cdnBase = 'https://cdn.jsdelivr.net/npm/handsontable@' + hotVersion + '/dist/';
+        var cdnStylesBase = 'https://cdn.jsdelivr.net/npm/handsontable@' + hotVersion + '/styles/';
+        var hotTheme = '<%= htmlWebpackPlugin.options.hotTheme %>';
+
+        document.write('<link rel="stylesheet" href="' + cdnBase + 'handsontable.full.css">');
+        document.write('<link rel="stylesheet" href="' + cdnStylesBase + 'ht-theme-' + hotTheme + '.css" onerror="this.remove()">');
+        document.write('<scr' + 'ipt src="' + cdnBase + 'handsontable.full.js"></scr' + 'ipt>');
+        document.write('<scr' + 'ipt src="' + cdnBase + 'languages/all.js"></scr' + 'ipt>');
+      } else {
+        <% for (var i = 0; i < (htmlWebpackPlugin.options.hotCssFiles || []).length; i++) { %>
+          document.write('<link rel="stylesheet" href="<%= htmlWebpackPlugin.options.hotCssFiles[i] %>">');
+        <% } %>
+        <% for (var i = 0; i < (htmlWebpackPlugin.options.hotJsFiles || []).length; i++) { %>
+          document.write('<scr' + 'ipt src="<%= htmlWebpackPlugin.options.hotJsFiles[i] %>"></scr' + 'ipt>');
+        <% } %>
+      }
+    })();
+  </script>
+
+  <script>
+    if (window.location.search.indexOf('random=true') === -1) {
+      jasmine.getEnv().configure({random: false});
+    }
+  </script>
+</head>
+<body>
+
+</body>
+</html>

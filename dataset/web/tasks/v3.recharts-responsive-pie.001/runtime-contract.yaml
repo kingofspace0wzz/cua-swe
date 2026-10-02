@@ -1,0 +1,78 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: npm run build && CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - read the active board title and note, and see the live allocation ring beside the approved reference of that same board
+    - step the board through each layout profile across the top (widescreen, sidebar, stacked, compact) and watch the live ring re-settle each time
+    - on a profile where the card docks its legend and leaves the ring less room, compare the live ring against the approved reference and read the live read-out under it
+    - observe whether the live ring fills the room it has the way the reference does, or comes out sized for more room than it has and spills past its frame
+  decisive_edge: >-
+    Once a board profile is actually laid out, the ring's size and center must be
+    derived from the room the card has actually left the ring on screen -- the
+    area remaining after the card docks its legend and applies its gutter -- not
+    from the whole card, and not from the whole card minus a fixed guess at the
+    legend's extent. Which measured area is the correct one to size the ring to
+    is a property of the running board once the browser lays it out; it is
+    observable only by stepping the profiles and comparing the live ring to the
+    approved reference, and it is not a constant, radius, reserve, box, or
+    formula present in any agent-visible source.
+  multi_payload:
+    - a board whose widescreen profile leaves the ring the full body, so a ring sized to the whole card box already overflows before any legend is docked
+    - a board whose sidebar and compact profiles dock the legend to the right with different reserves, so subtracting one fixed reserve from the card fits neither
+    - a board whose stacked profile docks the legend along the bottom, so a handling that only accounts for a right-side reserve mis-sizes it
+    - three boards with different ring scales, hole ratios, card shapes, and reserves, so no single memorized radius settles every profile of every board
+source_noninferability:
+  forbidden_agent_source_literals:
+    - Endowment Allocation
+    - Pension Reserve Mix
+    - Sovereign Fund Split
+    - Public Equity
+    - Private Markets
+    - Real Assets
+    - Domestic Bonds
+    - Global Equity
+    - Infrastructure
+    - Liquidity
+    - "board-seal:"
+    - observe the plot
+    - settled plot box
+    - measured while hidden
+    - subtract the legend reserve
+    - size the ring to the plot area
+provenance:
+  source_repo: recharts/recharts
+  source_issue: https://github.com/recharts/recharts/issues/1136
+  source_revision: 12bbe4f280df0df33bc30d0488673a965fa17262
+  license: MIT
+  implementation: behavior-derived clean-room fixture
+  conversion_note: >-
+    Recharts draws responsive charts by wrapping them in a ResponsiveContainer
+    that measures its parent and hands the measured width/height down to the
+    chart, which sizes the pie radius from that measurement. Issue #1136 concerns
+    responsive pie sizing where the radius must derive from the correct measured
+    box: when the container reports the raw parent box rather than the settled
+    plot area left after surrounding chrome (legend, margins) is laid out, the
+    pie is sized for more room than it has and over-draws / clips, and it fails
+    to re-settle correctly as the layout changes. The decisive facts are that the
+    ring must be sized to the drawable area the browser actually leaves after the
+    card docks its legend and applies its gutter, and that this settled area is a
+    runtime layout fact, not a width formula. The full Recharts + React +
+    ResponsiveContainer runtime is heavy, so the responsive-measurement radius
+    behaviour is reproduced in a clean-room canvas allocation-ring studio with the
+    same measure-then-size lifecycle under a live ResizeObserver, a dockable
+    legend that consumes plot area, and per-profile layouts. A harness-owned board
+    service supplies several protected boards with heterogeneous card shapes, dock
+    sides, reserves, ring scales, and hole ratios, plus an approved reference image
+    it renders itself from the correct settled geometry, so the correct measured
+    box is exercised and shown without any resolved radius, center, or plot box
+    appearing in agent-visible source.

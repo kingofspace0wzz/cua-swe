@@ -1,0 +1,19 @@
+kind: simple_workflow_variant_of_qualified_broken_task
+parent_task: web.fabric-through-edge-opposite-resize.001
+parent_input_sha256: 4f81ef86e7206609eec7048da14391ba574ba144261f2e8915c1fef9f9e46e00
+parent_revision: private-artifact:source-0069
+parent_qualification: private-artifact:source-0070
+parent_qualification_sha256: 3cc6f27925cfc8c889f62b21644508577b12de2134898562343355f889382d25
+variation: Camera A instead of Camera B for the unchanged Nested sequence.
+source_app_sha256: 40671789d37209d5e546e7681f86b530a2a19a4c9c9907028944bdc06751a76b
+baseline: exact_broken_parent_no_agent_patch_or_new_fault
+source_runtime_help_references_negatives_bitmap_observer: byte_identical
+general_prompts_budgets_access_scoring: unchanged
+author_model_calls: 0
+reviewer: Anscombe
+native_and_model_outcomes: unmeasured
+cohort: simple-variants-followup-20260919
+authority_plan_sha256: 969b6f28304ca3248134c87ef76c32de686a767306b884240644c4006550d415
+previous_workflow_input_sha256: 52c401e967833739cbb47e9bea36d0a44e394f1df13fb4b932900c807fb7b39a
+validity_correction: Early corner displacement fraction 1/6 to 1/12; unchanged six
+  moves, endpoints, source and all thresholds.

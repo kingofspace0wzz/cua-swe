@@ -1,0 +1,144 @@
+schema_version: 1
+task_id: gameqa.boxel-rebound-restart-camera-envelope.014
+trajectory_id: boxel-level50-explicit-saved-spawn-camera-recipe-restart-v9
+seed: 50
+level: 50
+candidate:
+  family: restart-checkpoint
+  family_label: Explicit saved-spawn camera recipe plus immutable geometry-only moving-support restart echo
+  difficulty: l3
+  variant: 9
+  status: quarantined_construction
+trigger:
+  shape: ordinary restart from the moving-lift checkpoint after visible lift motion
+  actions:
+    - action: browser_observe
+      stop_condition: player owns the moving checkpoint support, the geometry-only guide exists, and the ordinary card is visible
+    - action: bounded_wait
+      duration_ms: 40
+    - action: key_press
+      keys: [R]
+  causal_checkpoint: >-
+    the evaluator captures and freezes the complete saved checkpoint
+    relationship before restart, then records the restart event synchronously
+    while the faded saved-position echo and the ordinary Level 50 card are
+    visible and before subsequent lift motion can obscure the resumed frame
+accessibility_gate:
+  initial_url: /?level=50
+  initial_state:
+    view: native_gameplay
+    selected_level: 50
+    menu_action_required: false
+    card_visible: true
+  generic_control:
+    every_other_valid_level: no_card
+    absent_query: selector_without_card
+    invalid_queries: selector_without_card
+    shared_start_path: Game.startLevel
+    benchmark_only_branch: false
+pre_trigger_equivalence:
+  fields:
+    - game_state.player.props.support_id
+    - game_state.player.props.checkpoint_support_id
+    - game_state.player.jump_ready
+    - game_state.environment.moving_supports[0].top
+    - terminal.isTerminal
+  expected:
+    support_owned: true
+    guide_snapshot_fields: [id, tiles, x, y]
+    jump_ready: true
+    terminal: false
+    card_visible: true
+post_trigger_divergence:
+  mutant:
+    saved_echo_visible: true
+    card_visible: true
+    live_lift_matches_saved_echo: false
+    rider_rebased_to_saved_frame: false
+    course_view_continuous: false
+  gold:
+    saved_echo_visible: true
+    card_visible: true
+    live_lift_matches_saved_echo: true
+    support_owned: true
+    rider_rebased: true
+    course_view_continuous: true
+    terminal_outcome: success
+  predecessor_005_cua_negative:
+    saved_echo_visible: true
+    card_visible: true
+    coupled_restart_repair_present: true
+    guide_fields: [cameraProgress, id, motionTime, tiles, x, y]
+    geometry_only_contract_satisfied: false
+  predecessor_005_code_only_negative:
+    saved_echo_replaced_or_discarded: true
+    rider_attached_at_live_frame: true
+    immutable_evaluator_snapshot_matches: false
+  predecessor_003_live_rewrite_negative:
+    saved_echo_rewritten_to_live_frame: true
+    checkpoint_spawn_y_rewritten_to_live_frame: true
+    rider_attached_at_live_frame: true
+    course_view_rebased: true
+    immutable_evaluator_snapshot_matches: false
+  predecessor_current_phase_negative:
+    saved_echo_visible: true
+    live_lift_matches_saved_echo: false
+    support_owned: true
+    rider_attached_at_live_frame: true
+    course_view_rebased: true
+  predecessor_006_code_only_negative:
+    saved_echo_visible: true
+    live_lift_recaptured: true
+    checkpoint_fields_rewritten: true
+    rider_attached_at_live_frame: true
+    immutable_evaluator_snapshot_matches: false
+  predecessor_007_code_only_negative:
+    saved_echo_visible: true
+    live_lift_recaptured: true
+    checkpoint_fields_rewritten: true
+    rider_attached_at_live_frame: true
+    immutable_evaluator_snapshot_matches: false
+  predecessor_007_cua_negative:
+    saved_echo_visible: true
+    live_lift_matches_saved_echo: true
+    nearest_earlier_height_recovery_present: true
+    saved_echo_immutable: true
+    camera_restored_from_smoothed_live_value: true
+    camera_restored_from_player_saved_spawn_x: false
+certification:
+  status: construction_certified
+  direct_browser_replay:
+    baseline: fail
+    gold: pass
+    negative_default_005_cua_exact: fail
+    predecessor_005_cua_exact: fail
+    predecessor_005_code_only_exact: fail
+    predecessor_004_code_only_exact: fail
+    predecessor_003_code_only_exact: fail
+    predecessor_002_code_only_rebased: fail
+    predecessor_001_cua_current_phase: fail
+    predecessor_006_code_only_exact: fail
+    predecessor_007_code_only_exact: fail
+    predecessor_007_cua_exact: fail
+  visual_contract:
+    asset_sha256: 2e283549878c0734bbbdd8c3a1f192ef132f8e17af373118670fcef2dd8f5685
+    rendered_opaque_sha256: 636458365eb2a8db781857646df7589bd1b35ba71d30f69eb2f5a26fa89ebba3
+    opaque_pixels_checked: 7814
+    initial_mismatches: 0
+    post_restart_mismatches: 0
+    other_valid_levels_without_card: 49
+  workflow_runs:
+    - run_id: 20260902T181538Z-certify-task
+      manifest: certification-008/workflow/20260902T181538Z-certify-task/manifest.json
+      ready: true
+      negative_patches_applied_and_failed: 10
+    - run_id: 20260902T182223Z-certify-task
+      manifest: certification-008-repeat/workflow/20260902T182223Z-certify-task/manifest.json
+      ready: true
+      negative_patches_applied_and_failed: 10
+  repeated_outcomes:
+    no_op: [fail, fail]
+    gold: [pass, pass]
+    all_ten_negative_entries: [fail, fail]
+  machine_specific_configuration_included: false
+status: construction_certified

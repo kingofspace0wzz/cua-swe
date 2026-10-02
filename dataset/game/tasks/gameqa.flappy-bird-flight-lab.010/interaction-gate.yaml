@@ -1,0 +1,80 @@
+schema_version: 1
+task_id: gameqa.flappy-bird-flight-lab.010
+trajectory_id: flappy-bird-selectable-flight-lab
+seed: 42
+level: 1
+pre_trigger_equivalence:
+  expected: true
+  boundary: before a named drill is launched from the stable Flight Lab
+  stable_window: indefinite
+trigger:
+  bounded_visual_workflow:
+    - view the initial Flight Lab screenshot
+    - launch TAP ARC
+    - compare its same-step PRESS/RELEASE receipt, actual/target impulse, and arcs
+    - click BACK TO LAB
+    - launch HELD ARC
+    - compare its longer receipt, distinct impulse, and arcs
+    - click BACK TO LAB
+    - launch LATE CONTACT
+    - compare its moving segment, endpoint poses, fractional contact interval, result, and ledger
+  total_interaction_and_image_view_steps: 9
+  pointer_or_keyboard_actions: 5
+post_trigger_divergence:
+  baseline:
+    outcomes: [bump, clear, clear]
+    visible_contact: [false, false, true]
+    tap_target_envelope: false
+    held_target_envelope: false
+    receipts_visible: true
+    tap_actual_target_impulse: [120, 220]
+    late_contact_interval_visible: true
+    late_endpoint_safe: true
+    swept_contact_retained: false
+  gold:
+    outcomes: [clear, clear, bump]
+    visible_contact: [false, false, true]
+    tap_target_envelope: true
+    held_target_envelope: true
+    tap_actual_target_impulse: [220, 220]
+    held_actual_target_impulse: [250, 250]
+    same_tick_browser_custody: [keyboard, pointer]
+    swept_contact_retained: true
+  revision_006_visual_cua_two_file_negative:
+    outcomes: [clear, clear, bump]
+    target_envelopes: true
+    receipt_steps: [[0, 1], [0, 4]]
+    same_tick_browser_custody: false
+    swept_contact_retained: false
+  revision_005_structured_cua_two_file_negative:
+    outcomes: [clear, clear, bump]
+    target_envelopes: false
+  revision_005_visual_cua_relabel_negative:
+    outcomes: [clear, clear, bump]
+    target_envelopes: false
+  revision_003b_constant_impulse_negative:
+    outcomes: [bump, clear, clear]
+completion:
+  frozen_lab_score: 2
+  viewed_drills: 3
+  normal_pipe_ids: [1, 2, 3]
+  controls:
+    - same_tick_keyboard_flap
+    - same_tick_pointer_flap
+    - ground_death
+    - keyboard_restart
+    - pointer_restart
+required_evidence:
+  screenshots: true
+  protected_state_json: true
+  visible_trajectory: true
+  visible_target_arc_or_corridor: true
+  protected_trajectory_checkpoints: true
+  visible_gate_boundaries: true
+  visible_bird_silhouette: true
+  visible_contact_marker: true
+  visible_input_receipts: true
+  visible_actual_and_target_impulses: true
+  visible_motion_segment_and_endpoint_poses: true
+  visible_fractional_contact_interval: true
+  visible_result_and_ledger: true

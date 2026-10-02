@@ -1,0 +1,37 @@
+diff -ruN a/src/controllers/console.js b/src/controllers/console.js
+--- a/src/controllers/console.js	2026-09-14 05:09:04.056000000 +0000
++++ b/src/controllers/console.js	2026-09-19 12:30:01.813977104 +0000
+@@ -4,7 +4,7 @@
+ import {render} from '../views/render.js';
+ export async function initialize(){
+  store.catalog=await request('catalog');
+- await request('configure',{rules:store.catalog.rules.map(compileRule)});
++ await request('configure',{rules:store.catalog.rules.map(rule=>compileRule(rule,store.catalog.routing))});
+  store.snapshot=await request('snapshot');render(store);
+  document.querySelector('#app').addEventListener('click',async event=>{
+   const button=event.target.closest('button[data-action]');if(!button||store.busy)return;
+diff -ruN a/src/rules/compileRule.js b/src/rules/compileRule.js
+--- a/src/rules/compileRule.js	2026-09-14 05:09:03.876000000 +0000
++++ b/src/rules/compileRule.js	2026-09-19 12:30:01.813927583 +0000
+@@ -1,10 +1,19 @@
+ import {compileQuery} from './query.js';
+ 
+-export function compileRule(rule) {
++export function compileRule(rule, routing) {
+   const labels = {...rule.labels};
+   const annotations = {...rule.annotations};
++  const scopeByKey = {};
++  for (const [scope, declared] of Object.entries((routing || {}).epoch || {})) {
++    for (const key of (declared || {}).keys || []) scopeByKey[key] = scope;
++  }
++  const durableClasses = new Set(['RC-2']);
++  const durable = key => durableClasses.has((((routing || {}).epoch || {})[scopeByKey[key]] || {}).policy);
+   for (const field of rule.enrichments || []) {
+-    labels[field.name] = field.template;
++    const template = String(field.template);
++    const references = [...template.matchAll(/\$route\.(\w+)/g)].map(m => m[1]);
++    const identity = !/\$value\b/.test(template) && references.every(durable);
++    (identity ? labels : annotations)[field.name] = field.template;
+   }
+   return {
+     name: rule.name,

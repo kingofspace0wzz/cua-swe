@@ -1,0 +1,61 @@
+diff --git a/src/config/compileSloPlan.js b/src/config/compileSloPlan.js
+index 808b0b01ae489a607e59cbee10c4b3d04bcc488b..bf531005cd40c644cee49b3f0fe23249f980e9cd 100644
+--- a/src/config/compileSloPlan.js
++++ b/src/config/compileSloPlan.js
+@@ -1,15 +1,26 @@
+-function compileRollup(rollup) {
++const POOLED_HINT = /pool|event|weight|ratio|sum/i;
++
++function resolveReference(mode, reference) {
++  const items = Array.isArray(reference) ? reference : [];
++  return items.find((item) => item.mode === mode)
++    || items.find((item) => item.mode !== "mean_of_slices" && POOLED_HINT.test(String(item.mode)))
++    || items.find((item) => item.mode !== "mean_of_slices" && POOLED_HINT.test(`${item.label ?? ""} ${item.description ?? ""}`))
++    || null;
++}
++
++function compileRollup(rollup, reference) {
++  const resolved = resolveReference(rollup.mode, reference);
+   return {
+-    mode: "mean_of_slices",
+-    weight: rollup.weight || null,
++    mode: resolved ? resolved.mode : rollup.mode,
++    weight: rollup.weight ?? (resolved ? resolved.weight ?? null : null),
+     includeIds: rollup.includeIds || null,
+     minimumTotal: rollup.minimumTotal || 0,
+   };
+ }
+ 
+-export function compileSloPlan(definition) {
++export function compileSloPlan(definition, rollupReference) {
+   return {
+-    availability: compileRollup(definition.availability),
+-    budget: compileRollup(definition.budget),
++    availability: compileRollup(definition.availability, rollupReference),
++    budget: compileRollup(definition.budget, rollupReference),
+   };
+ }
+diff --git a/src/config/sloDefinition.js b/src/config/sloDefinition.js
+index d8d437b8029e10b8cfb141665c40a9cd0794a59a..b3a8e1cfc7af35d5c62216e6c84829fc58d864e4 100644
+--- a/src/config/sloDefinition.js
++++ b/src/config/sloDefinition.js
+@@ -1,4 +1,4 @@
+ export const SLO_ROLLUPS = Object.freeze({
+-  availability: { mode: "mean_of_slices" },
+-  budget: { mode: "mean_of_slices" },
++  availability: { mode: "event_weighted" },
++  budget: { mode: "event_weighted" },
+ });
+diff --git a/src/controllers/console.js b/src/controllers/console.js
+index 8bfeb871648661f2bde1985fa597f60bcc3e27af..611a279559ce4c35f1c994aeb031802ddea5d698 100644
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -5,7 +5,7 @@ import { store } from "../state/store.js";
+ const refresh = async () => store.set({ snapshot: await sloClient.snapshot() });
+ export async function initialize() {
+   const catalog = await sloClient.catalog();
+-  await sloClient.configure(compileSloPlan(SLO_ROLLUPS));
++  await sloClient.configure(compileSloPlan(SLO_ROLLUPS, catalog.rollupReference));
+   store.set({ catalog });
+   await sloClient.scenario(catalog.scenarios[0].id);
+   await refresh();

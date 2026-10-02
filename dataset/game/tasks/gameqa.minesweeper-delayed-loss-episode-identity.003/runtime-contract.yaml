@@ -1,0 +1,21 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: python3 env/service.py --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: CUA_SWE_EPISODE_SERVICE_ORIGIN=http://127.0.0.1:{service_port} python3 serve.py --port {app_port}
+  start_url: http://127.0.0.1:{app_port}/
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps: [trigger direct loss and wait for Timing classification, trigger count-valid chord loss, restart during pending presentation, observe Timing and Ownership diagnostics]
+  decisive_paths: [expected_delay_ms, verdict]
+source_noninferability:
+  forbidden_agent_source_literals: ['EXPECTED_DELAY_MS=2100', 'Target handoff: 2.1 s']
+visual_treatment:
+  lineage_predecessor: gameqa.minesweeper-delayed-loss-episode-identity.002
+  changed_axis: protected_handoff_retarget_with_same_visual_diagnostic
+  source_only_workspace_excludes_target_value: true

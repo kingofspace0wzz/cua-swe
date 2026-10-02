@@ -1,0 +1,129 @@
+import Point from '@mapbox/point-geometry';
+import {indexTouches} from './handler_util.ts';
+import {type Handler} from '../handler_manager.ts';
+import type {Map} from '../map.ts';
+
+/**
+ * A `TouchPanHandler` allows the user to pan the map using touch gestures.
+ */
+export class TouchPanHandler implements Handler {
+
+    _enabled: boolean;
+    _active: boolean;
+    _touches: {
+        [k in string | number]: Point;
+    };
+    _clickTolerance: number;
+    _sum: Point;
+    _recognized: boolean;
+    _map: Map;
+
+    constructor(options: {clickTolerance: number}, map: Map) {
+        this._clickTolerance = options.clickTolerance || 1;
+        this._map = map;
+        this.reset();
+    }
+
+    reset(): void {
+        this._active = false;
+        this._touches = {};
+        this._sum = new Point(0, 0);
+        this._recognized = false;
+    }
+
+    _shouldBePrevented(touchesCount: number): boolean {
+        const minTouches = this._map.cooperativeGestures.isEnabled() ? 2 : 1;
+        return touchesCount < minTouches;
+    }
+
+    touchstart(e: TouchEvent, points: Point[], mapTouches: Touch[]): {around: Point; panDelta: Point} | void {
+        return this._calculateTransform(e, points, mapTouches);
+    }
+
+    touchmove(e: TouchEvent, points: Point[], mapTouches: Touch[]): {around: Point; panDelta: Point} | void {
+        if (!this._active) return;
+        if (this._shouldBePrevented(mapTouches.length)) {
+            this._map.cooperativeGestures.notifyGestureBlocked('touch_pan', e);
+            return;
+        }
+        e.preventDefault();
+        return this._calculateTransform(e, points, mapTouches);
+    }
+
+    touchend(e: TouchEvent, points: Point[], mapTouches: Touch[]): void {
+        this._calculateTransform(e, points, mapTouches);
+
+        if (this._active && this._shouldBePrevented(mapTouches.length)) {
+            this.reset();
+        }
+    }
+
+    touchcancel(): void {
+        this.reset();
+    }
+
+    _calculateTransform(e: TouchEvent, points: Point[], mapTouches: Touch[]): {around: Point; panDelta: Point} | void {
+        if (mapTouches.length > 0) this._active = true;
+
+        const touches = indexTouches(mapTouches, points);
+
+        const ids = Object.keys(touches);
+        if (ids.length !== Object.keys(this._touches).length || ids.some(id => !this._touches[id])) {
+            this._touches = touches;
+            this._sum = new Point(0, 0);
+            this._recognized = false;
+            return;
+        }
+
+        const touchPointSum = new Point(0, 0);
+        const touchDeltaSum = new Point(0, 0);
+        let touchDeltaCount = 0;
+
+        for (const identifier in touches) {
+            const point = touches[identifier];
+            const prevPoint = this._touches[identifier];
+            if (prevPoint) {
+                touchPointSum._add(point);
+                touchDeltaSum._add(point.sub(prevPoint));
+                touchDeltaCount++;
+                touches[identifier] = point;
+            }
+        }
+
+        this._touches = touches;
+
+        if (this._shouldBePrevented(touchDeltaCount) || !touchDeltaSum.mag()) return;
+
+        let panDelta = touchDeltaSum.div(touchDeltaCount);
+        this._sum._add(panDelta);
+        if (!this._recognized) {
+            if (this._sum.mag() < this._clickTolerance) return;
+            panDelta = this._sum.clone();
+            this._recognized = true;
+        }
+
+        const around = touchPointSum.div(touchDeltaCount);
+
+        return {
+            around,
+            panDelta
+        };
+    }
+
+    enable(): void {
+        this._enabled = true;
+    }
+
+    disable(): void {
+        this._enabled = false;
+        this.reset();
+    }
+
+    isEnabled(): boolean {
+        return this._enabled;
+    }
+
+    isActive(): boolean {
+        return this._active;
+    }
+}

@@ -1,0 +1,86 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: node build.mjs && CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - In Nested A, observe the unselected native scene and click actual Blue fill.
+  - Acquire the visible side at initial-axis midpoint (-30,0) with the inherited off-center grab; translate
+    by (96,0) and release.
+  - Reacquire the visible corner (66,-18), independent of native control key; move by (12,66) to (78,48)
+    and release.
+  - Move the resulting shape by inner-parent (-3,-2) using ordinary visible fill input.
+  - In Single C preserve width-minus-20, a small 10-degree rotation and fill movement (2,-2).
+  decisive_edge: Evaluator-owned replay endpoints construct explicit expected polygons, projected through
+    the protected feed camera and declared fixture frames. Nondegenerate side checkpoints are at one-sixth
+    and full displacement; corner checkpoints are at one-twelfth and full displacement, never collapse.
+    Acquire actual unordered pixel markers by geometric location and visibly supported off-center positions,
+    and actual Blue fill. Verify paint, silhouette, outline, controls, frames, Amber, selection and unchanged
+    camera readouts during held previews and after release. No candidate arrays, private transforms, getCoords/oCoords,
+    telemetry or application object access supplies oracle truth.
+  exclusions: No scored cancellation, held Escape, focus, modifiers, exact-zero stop, persistence, shared-size,
+    reparenting or expanded camera matrix. Do not grade private flip flags, angle/scale normalization,
+    native control keys or rotation stem side after reflection. Equivalent geometry and usable visible
+    controls are valid; the solid fill has no asymmetric material identity. Unsupported markers/readouts
+    or insufficient visible regions are coverage issues, not implementation-choice failures. No fixed
+    rotation-stem length assumption.
+  result_contract: native-results.json, raw screenshots, annotated copies, input logs, assertions, coverage
+    gaps and runtime errors go to CUA_SWE_VERIFIER_ARTIFACTS, with a writable /tmp fallback. Exit 0 is
+    a complete covered pass, 1 a reached public behavior failure, and 2 unsupported coverage/setup/runtime
+    requiring causal review. Dependent input stops after decisive divergence or unsupported acquisition.
+    Cleanup releases after a stopped preview retain unscored raw images. Missing continuation is not additional
+    negative evidence. Complete-alternative raw success is preserved as passed/raw_success, independently
+    of legacy control_passed.
+validity_repair:
+  version: synthetic-nested-selection-05-02-draft
+  canonical_id: web.fabric-nested-selection-05.001
+  baseline: Exact seed app.mjs broken logic retained; no gold/model repair installed. New public fixture
+    geometry, matching Help and independent oracle arithmetic are the only product/checker changes.
+  fixture: Outer center(200,150),size180x120,angle-15,scales(1.2,.8); inner center(0,0),size120x80,angle-10;
+    Blue center(0,0),size60x36,angle15; Amber outer-local center(60,0),size16x16.
+  preserved: Full camera/parent inverse, parent-relative geometry, affine paint/control projection, native
+    body movement/cache propagation, selection, ordinary non-crossing resize and local-frame rotation,
+    transaction lifecycle, protected service/feed, vendor, build/server/package/lock bytes, original setup,
+    policies, 1800/80/120/20 budgets and verifier command.
+  incomplete_paths: Positive-size clamps naturally do not implement the new crossing contract. A complete
+    integration needs signed extents, stable fixed anchors and grab offsets, native scale/flip normalization,
+    reflected starting directions for later visible acquisition, and idempotent release. The parent/camera
+    inverse already works and is not an injected regression or missing repair here. In addition, the later
+    actual fill acquisition must reach the protruding child beyond fixed ancestor bounds.
+  reference: Byte-identical seed gold and alternative, both including signed geometry and out-of-frame
+    native child targeting. New resize-only partial removes only the targeting hunk; inherited negatives
+    retained.
+  attribution: 'Initial synthetic construction: Synthetic parameter mutation of frozen Web33 slot09. Outer
+    rotation25→−15 degrees and inner rotation−20→35 degrees; Blue remains60×36 and gestures are unchanged.
+    No new upstream failure claim and no inherited candidate outcome. Current draft adjustment: From frozen
+    candidate05, change only inner rotation35→−10 degrees; retain outer−15, Blue60×36 and the original
+    gestures. Update fixture, public geometry declaration and independent projection together.'
+  validation: 'Revision02 is unexecuted: syntax, patch applicability and affine arithmetic only. Preceding
+    frozen native01 gold was observed-behavior-failure/reference_needs_review; no baseline or partial
+    was run. Main review is required before publication or execution.'
+  revision02_delta: From frozen candidate05, change only inner rotation35→−10 degrees; retain outer−15,
+    Blue60×36 and the original gestures. Update fixture, public geometry declaration and independent projection
+    together.
+provenance:
+  source_repo: fabricjs/fabric.js
+  source_pull_request: https://github.com/fabricjs/fabric.js/pull/10977
+  source_issue: https://github.com/fabricjs/fabric.js/issues/10976
+  broken_revision: fd50b70d365533e79ce421f64947fdc692cec619
+  merge_commit: d87aa66d68e0b8aeafa5afa1145b919b382813e8
+  fixed_head: f36e679c3b27ac434de83353f3ab52ebaef521e9
+  license: MIT
+  implementation: real-upstream-browser-build
+  conversion_note: Historical upstream/library metadata copied from the pinned seed only; not newly retrieved
+    or asserted as provenance for this generated failure. Outer rotation25→−15 degrees and inner rotation−20→35
+    degrees; Blue remains60×36 and gestures are unchanged.
+  failure_origin: synthetic
+  construction_mode: synthetic_adversary

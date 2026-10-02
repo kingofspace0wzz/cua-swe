@@ -1,0 +1,11 @@
+{
+  "name": "spanline-trace-console",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Trace waterfall and query adjustment console.",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node server.mjs"
+  }
+}

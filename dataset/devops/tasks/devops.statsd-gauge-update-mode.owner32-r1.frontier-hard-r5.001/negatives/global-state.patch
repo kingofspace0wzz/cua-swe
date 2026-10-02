@@ -1,0 +1,12 @@
+--- a/src/update.mjs
++++ b/src/update.mjs
+@@ -1,6 +1,6 @@
+ export function applyGauge(state, measurement) {
+-  const before = state.get(measurement.identity) ?? 0;
+-  const value = measurement.value;
+-  state.set(measurement.identity, value);
++  const before = state.globalValue ?? 0;
++  const value = /^[+-]/.test(measurement.token) ? before + measurement.value : measurement.value;
++  state.set(measurement.identity, value); state.globalValue = value;
+   return {before, value};
+ }

@@ -1,0 +1,15 @@
+{
+ "source": {
+  "package.json": "ff03175e369871b5a19552d6fc0998674cb75b01466f29be201bf5a26f1760ca",
+  "build.mjs": "4adee9526552b00c46e95dfec6fc27c83e7578a752ec00c0126d8e331fdf7ae5",
+  "server.mjs": "c8d6683336a70c7c8302a93c629eeeb3c3a958c44fd1265ce24d4e3162e7471d"
+ },
+ "verifiers": {
+  "browser_check.py": "6b4343ff70372b15f3e5de4eefd372df3c9d0d9f177477168fe129fede3f880e",
+  "build_check.py": "d833f0f58b96145e6bffde58a4712e30df329b2f29037bbc955b4dcf2c0993ca",
+  "profiles.json": "3f2af1cc4fc0fa0cafbf1a77d3136b065a353fb0490cd74cbfd8afe281d37fe0",
+  "policy-activation-board.png": "5289ccae7425b18e0adc47634cba764c6dbd67acad993832634ac8803cba883c",
+  "deadline-authority-matrix.png": "fe1184fb4b313d69ed0c9db5c67af6bbb7def0e0e152e5d89dff56101395f710",
+  "service.mjs": "47642994b705f2ee7a3dc1945fc37c1732d2a30d15d3f5cfa898884abab683c5"
+ }
+}

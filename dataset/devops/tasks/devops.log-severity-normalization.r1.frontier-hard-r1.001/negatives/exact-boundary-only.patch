@@ -1,0 +1,22 @@
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,7 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
++  const format = receiver.output.format;
+   const decode = severityAdapters[format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }
+--- a/src/pipeline/severityAdapters.js
++++ b/src/pipeline/severityAdapters.js
+@@ -6,7 +6,7 @@
+ }
+ export function fromOtel(record) {
+   const number = Number(record.severityNumber ?? 0);
+-  if (Number.isInteger(number) && number >= 1 && number <= 24) return {number,band:bands[Math.floor((number-1)/4)]};
++  if (Number.isInteger(number) && number >= 1 && number <= 24) return {number,band:bands[[1,5,9,13,17,21].indexOf(number)]};
+   return fromText(record.severityText);
+ }
+ export function fromJson(record) {

@@ -1,0 +1,11 @@
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -20,7 +20,7 @@
+     });
+     const finish=(error,body)=>{
+       if(settled)return;settled=true;clearTimeout(watchdog);
+-      if(error){event('abort',{reason:error.message});response?.destroy();req.destroy();reject(error);}
++      if(error){event('abort',{reason:error.message});response?.destroy();req.destroy();resolve('');}
+       else resolve(body);
+     };
+     // This absolute guard covers connect, first final response, and every body read.

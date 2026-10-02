@@ -1,0 +1,9 @@
+{
+  "name": "alert-operations-console",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "type": "module",
+  "version": "1.0.0"
+}

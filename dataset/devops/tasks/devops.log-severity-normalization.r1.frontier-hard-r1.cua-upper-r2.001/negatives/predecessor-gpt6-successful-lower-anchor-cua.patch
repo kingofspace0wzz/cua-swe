@@ -1,0 +1,39 @@
+diff --git a/src/pipeline/resolveSeverity.js b/src/pipeline/resolveSeverity.js
+index 98dd29b0a432ec92329f57a3e68f6e633552dbf7..0494c34e49c8c20a83005a605fa23d38332135e5 100644
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,11 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
++  // Decode the delivered representation, not the pre-collector source.
++  // The syslog relay preserves PRI severity (0–7) inside its OTLP envelope.
++  const deliveredFormat = receiver.output?.format ?? receiver.source.format;
++  const format = receiver.source.format === 'syslog' && deliveredFormat === 'otlp'
++    ? 'syslog' : deliveredFormat;
+   const decode = severityAdapters[format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }
+diff --git a/src/pipeline/severityAdapters.js b/src/pipeline/severityAdapters.js
+index cea909e7f5a8b53020db5a1c2f1d2d675c7a54d6..a04e22882e67468a4127a2921cdccc6a6ab93363 100644
+--- a/src/pipeline/severityAdapters.js
++++ b/src/pipeline/severityAdapters.js
+@@ -14,4 +14,16 @@ export function fromJson(record) {
+   if (typeof body === 'string') {try {body=JSON.parse(body);} catch {body={};}}
+   return fromText(body?.level);
+ }
+-export const severityAdapters = {otlp:fromOtel,json:fromJson};
++export function fromSyslog(record) {
++  const rawNumber = record.severityNumber;
++  const number = typeof rawNumber === 'number' ||
++    (typeof rawNumber === 'string' && rawNumber.trim() !== '')
++    ? Number(rawNumber) : NaN;
++  // Unlike OTel, syslog zero is a real severity: emergency.
++  if (Number.isInteger(number) && number >= 0 && number <= 7) {
++    return fromText(['FATAL','FATAL','FATAL','ERROR','WARN','INFO','INFO','DEBUG'][number]);
++  }
++  const text = String(record.severityText ?? '').trim().toUpperCase();
++  return fromText(['EMERG','EMERGENCY','ALERT'].includes(text) ? 'FATAL' : text);
++}
++export const severityAdapters = {otlp:fromOtel,json:fromJson,syslog:fromSyslog};

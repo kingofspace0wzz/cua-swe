@@ -1,0 +1,154 @@
+{
+  "primary": {
+    "render": {
+      "label": "GOLD STAR",
+      "count": 1
+    },
+    "standbyCargoRouteV13": "route-amber-219",
+    "activeCargoRouteV13": "route-cobalt-864",
+    "standbyCargoMapV13": "map-lyra-418",
+    "activeCargoMapV13": "map-orion-705",
+    "cargoShadowRouteMapV13": [
+      {
+        "routeGlyphV13": "route-cobalt-864",
+        "aliasGlyphV13": "alias-saffron-481"
+      },
+      {
+        "routeGlyphV13": "route-amber-219",
+        "aliasGlyphV13": "alias-indigo-926"
+      }
+    ],
+    "cargoRouteMapV13": [
+      {
+        "mapGlyphV13": "map-lyra-418",
+        "routeGlyphV13": "route-cobalt-864",
+        "aliasGlyphV13": "alias-saffron-481"
+      },
+      {
+        "mapGlyphV13": "map-orion-705",
+        "routeGlyphV13": "route-cobalt-864",
+        "aliasGlyphV13": "alias-indigo-926"
+      },
+      {
+        "mapGlyphV13": "map-orion-705",
+        "routeGlyphV13": "route-amber-219",
+        "aliasGlyphV13": "alias-saffron-481"
+      },
+      {
+        "mapGlyphV13": "map-lyra-418",
+        "routeGlyphV13": "route-amber-219",
+        "aliasGlyphV13": "alias-indigo-926"
+      }
+    ],
+    "cargoAliasMapV13": [
+      {
+        "aliasGlyphV13": "alias-saffron-481",
+        "relayGlyphV13": "relay-silver-357"
+      },
+      {
+        "aliasGlyphV13": "alias-indigo-926",
+        "relayGlyphV13": "relay-onyx-804"
+      }
+    ],
+    "cargoRelayMapV13": [
+      {
+        "relayGlyphV13": "relay-silver-357",
+        "receiptGlyphV13": "glyph-lambda-642"
+      },
+      {
+        "relayGlyphV13": "relay-onyx-804",
+        "receiptGlyphV13": "glyph-zeta-315"
+      }
+    ],
+    "cargoReceiptMatrixV13": [
+      {
+        "receiptGlyphV13": "glyph-nu-773",
+        "creditUnitsV13": 2
+      },
+      {
+        "receiptGlyphV13": "glyph-lambda-642",
+        "creditUnitsV13": 1
+      },
+      {
+        "receiptGlyphV13": "glyph-zeta-315",
+        "creditUnitsV13": 1
+      }
+    ]
+  },
+  "secondary": {
+    "render": {
+      "label": "TWIN STAR",
+      "count": 2
+    },
+    "activeCargoRouteV13": "route-amber-219",
+    "standbyCargoRouteV13": "route-cobalt-864",
+    "activeCargoMapV13": "map-lyra-418",
+    "standbyCargoMapV13": "map-orion-705",
+    "cargoShadowRouteMapV13": [
+      {
+        "routeGlyphV13": "route-amber-219",
+        "aliasGlyphV13": "alias-indigo-926"
+      },
+      {
+        "routeGlyphV13": "route-cobalt-864",
+        "aliasGlyphV13": "alias-saffron-481"
+      }
+    ],
+    "cargoRouteMapV13": [
+      {
+        "mapGlyphV13": "map-orion-705",
+        "routeGlyphV13": "route-amber-219",
+        "aliasGlyphV13": "alias-indigo-926"
+      },
+      {
+        "mapGlyphV13": "map-lyra-418",
+        "routeGlyphV13": "route-amber-219",
+        "aliasGlyphV13": "alias-saffron-481"
+      },
+      {
+        "mapGlyphV13": "map-lyra-418",
+        "routeGlyphV13": "route-cobalt-864",
+        "aliasGlyphV13": "alias-indigo-926"
+      },
+      {
+        "mapGlyphV13": "map-orion-705",
+        "routeGlyphV13": "route-cobalt-864",
+        "aliasGlyphV13": "alias-saffron-481"
+      }
+    ],
+    "cargoAliasMapV13": [
+      {
+        "aliasGlyphV13": "alias-saffron-481",
+        "relayGlyphV13": "relay-silver-357"
+      },
+      {
+        "aliasGlyphV13": "alias-indigo-926",
+        "relayGlyphV13": "relay-onyx-804"
+      }
+    ],
+    "cargoRelayMapV13": [
+      {
+        "relayGlyphV13": "relay-silver-357",
+        "receiptGlyphV13": "glyph-lambda-642"
+      },
+      {
+        "relayGlyphV13": "relay-onyx-804",
+        "receiptGlyphV13": "glyph-zeta-315"
+      }
+    ],
+    "cargoReceiptMatrixV13": [
+      {
+        "receiptGlyphV13": "glyph-nu-773",
+        "creditUnitsV13": 3
+      },
+      {
+        "receiptGlyphV13": "glyph-lambda-642",
+        "creditUnitsV13": 2
+      },
+      {
+        "receiptGlyphV13": "glyph-zeta-315",
+        "creditUnitsV13": 2
+      }
+    ]
+  }
+}

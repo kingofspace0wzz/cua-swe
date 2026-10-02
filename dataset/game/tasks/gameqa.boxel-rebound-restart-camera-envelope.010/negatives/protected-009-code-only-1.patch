@@ -1,0 +1,22 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..c08661a7d76274968214dc84087c893b6b22e971 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -253,7 +253,17 @@
+         };
+         this.retry = function(retry){
+             this.resumeGame(retry);
++            if (this.player.newSpawn == true && this.player.spawnSupportId != null){
++                var spawnSupport = this.levelMap.getSupport(this.player.spawnSupportId);
++                if (spawnSupport != null){
++                    this.player.spawnY = spawnSupport.top+this.player.spawnSupportOffset;
++                    this.player.supportId = spawnSupport.id;
++                    this.player.spawnGuide = this.levelMap.captureGuide(spawnSupport);
++                }
++            }
+             this.player.respawn();
++            this.levelMap.cameraProgress = this.player.xPos;
++            this.levelMap.x = -this.levelMap.cameraProgress;
+             this.levelMap.showGuide(this.player.spawnGuide);
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {

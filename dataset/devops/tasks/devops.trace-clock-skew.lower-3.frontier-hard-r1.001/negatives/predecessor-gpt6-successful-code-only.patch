@@ -1,0 +1,89 @@
+diff --git a/src/config/adjustmentPolicy.js b/src/config/adjustmentPolicy.js
+index 718fc1d376551f52cfafeb109f72aa4fbe78dbf5..61edd1df385684fd7aa80dc20136283b0ffea5b3 100644
+--- a/src/config/adjustmentPolicy.js
++++ b/src/config/adjustmentPolicy.js
+@@ -1,6 +1,6 @@
+ export function adjustmentPolicy(catalog) {
+   return Object.freeze({
+-    crossHostMode: "observe",
++    crossHostMode: "adjust",
+     maxAdjustmentMs: catalog.maxAdjustmentMs,
+   });
+ }
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+index 437de453a1bd65e33ddd29d7e8c57ee7264c1050..d0cc559dbb52bd2bcb39587fe884bcf62d8fcc09 100644
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,13 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
++import { adjustClockSkew } from "./clockSkewAdjuster.js";
+ 
+ export function compileAdjusters(policy) {
+   return [
+     { name: "dedupe", apply: dedupeSpans },
++    ...(policy.crossHostMode === "adjust" ? [{
++      name: "clock-skew",
++      apply: (spans) => adjustClockSkew(spans, policy.maxAdjustmentMs),
++    }] : []),
+     { name: "sort", apply: sortSpans },
+   ];
+ }
+
+diff --git a/src/trace/clockSkewAdjuster.js b/src/trace/clockSkewAdjuster.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..5f461c2fa059a5bd50b70c5340451ab16b7bdbd8
+--- /dev/null
++++ b/src/trace/clockSkewAdjuster.js
+@@ -0,0 +1,52 @@
++// Clock corrections are translations, never changes to measured durations.
++export function adjustClockSkew(spans, maxAdjustmentMs) {
++  const index = new Map(spans.map((span) => [span.id, span]));
++  const hosts = new Map();
++  for (const span of spans) {
++    if (!hosts.has(span.host)) hosts.set(span.host, []);
++    hosts.get(span.host).push(span);
++  }
++
++  const shifts = new Map();
++  const boundaries = new Map();
++  for (const [host, members] of hosts) {
++    // A root clock defines the trace's geometry and must not move.
++    if (members.some((span) => span.parentId === null)) shifts.set(host, 0);
++    boundaries.set(host, members.flatMap((span) => {
++      const parent = index.get(span.parentId);
++      return parent && parent.host !== host ? [{ span, parent }] : [];
++    }));
++  }
++
++  const limit = Number.isFinite(maxAdjustmentMs) && maxAdjustmentMs >= 0
++    ? maxAdjustmentMs : 0;
++  // Resolve parent hosts first, independently of the incoming span order.
++  // Unresolvable host cycles are left as reported rather than guessed at.
++  let progressed = true;
++  while (progressed) {
++    progressed = false;
++    for (const [host, edges] of boundaries) {
++      if (shifts.has(host) || edges.some(({ parent }) => !shifts.has(parent.host))) continue;
++      let lower = -limit;
++      let upper = limit;
++      for (const { span, parent } of edges) {
++        const parentShift = shifts.get(parent.host);
++        lower = Math.max(lower, parent.startMs + parentShift - span.startMs);
++        upper = Math.min(upper, parent.endMs + parentShift - span.endMs);
++      }
++      // The nearest feasible shift preserves already-aligned clocks. If no
++      // translation fits every boundary, retain the warning, not a clipped span.
++      shifts.set(host, lower <= upper ? Math.max(lower, Math.min(0, upper)) : 0);
++      progressed = true;
++    }
++  }
++
++  return spans.map((span) => {
++    const shift = shifts.get(span.host) || 0;
++    return shift === 0 ? span : {
++      ...span,
++      startMs: span.startMs + shift,
++      endMs: span.endMs + shift,
++    };
++  });
++}

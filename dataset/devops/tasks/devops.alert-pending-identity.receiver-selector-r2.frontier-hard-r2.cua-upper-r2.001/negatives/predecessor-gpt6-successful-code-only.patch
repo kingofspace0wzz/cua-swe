@@ -1,0 +1,16 @@
+diff --git a/src/rules/compileRule.js b/src/rules/compileRule.js
+index 2fe93e45b7623f4a4bbfacf9bdbacea0c99802a0..36977791b688421134de374c00e2a5969dd0741d 100644
+--- a/src/rules/compileRule.js
++++ b/src/rules/compileRule.js
+@@ -4,7 +4,10 @@ export function compileRule(rule) {
+   const labels = {...rule.labels};
+   const annotations = {...rule.annotations};
+   for (const field of rule.enrichments || []) {
+-    labels[field.name] = field.template;
++    // Sample-dependent detail must not change alert identity on each evaluation.
++    // Keep stable enrichments as labels for receiver routing and target identity.
++    const destination = /\$value\b/.test(field.template) ? annotations : labels;
++    destination[field.name] = field.template;
+   }
+   return {
+     name: rule.name,

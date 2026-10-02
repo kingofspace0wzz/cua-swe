@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "task_digest": "4b2ff9c0c0495680d9a29324da190e518c56e7c53b1a897849e1ffcb69cb3754",
+  "baseline_digest": "7d876d8afa43cfe50232e93e8b4baee98b3cc03ce6da91db6068ecd079d11d19",
+  "changes": [
+    {
+      "path": "board.js",
+      "before": {
+        "sha256": "f77e163a8ebd6e01fc81a284bfee5a1447227e64bc78984b15dbe8a1823499e3",
+        "executable": false
+      },
+      "after": {
+        "sha256": "cd3220452eaa911a2b88510912f9c89f1a6dbe1d468264206c500a181dd5b43e",
+        "executable": false
+      },
+      "content_b64": "Ly8gQm9hcmQgaW50ZWdyYXRpb24uIFBvcnRzIHVzZSB0aGUgc2ltdWxhdG9yJ3MgbG9jYWwgYS9iIGFuZCBEL0VOIHZvY2FidWxhcnkuCmV4cG9ydCBjb25zdCBib2FyZCA9IHsKICBnYXRlczogWwogICAge2lkOidBMScsdHlwZTonT1InLGE6J1RhcCcsYjonUTInfSwKICAgIHtpZDonQTInLHR5cGU6J1hPUicsYTonU3dlZXAnLGI6J1EwJ30sCiAgICB7aWQ6J0EzJyx0eXBlOidNQVNLJyxhOidBMScsYjonQTInfSwKICAgIHtpZDonQjEnLHR5cGU6J1hPUicsYTonQTMnLGI6J1ExJ30sCiAgICB7aWQ6J0IyJyx0eXBlOidBTkQnLGE6J0EyJyxiOidFMSd9LAogICAge2lkOidCMycsdHlwZTonT1InLGE6J0IxJyxiOidCMid9LAogICAge2lkOidDMScsdHlwZTonWE9SJyxhOidCMycsYjonUTInfSwKICAgIHtpZDonQzInLHR5cGU6J09SJyxhOidRMCcsYjonUTEnfQogIF0sCiAgbWVtb3JpZXM6IFsKICAgIHtpZDonUTAnLEQ6J0IzJyxFTjonRTAnfSwKICAgIHtpZDonUTEnLEQ6J0ExJyxFTjonRTEnfSwKICAgIHtpZDonUTInLEQ6J0MyJyxFTjonQjInfQogIF0sCiAgbGlnaHRzOiBbe2lkOidGbGFyZScsZnJvbTonQzEnfSx7aWQ6J1dhc2gnLGZyb206J0MyJ30se2lkOidQZWFybCcsZnJvbTonUTInfV0KfTsK"
+    }
+  ]
+}

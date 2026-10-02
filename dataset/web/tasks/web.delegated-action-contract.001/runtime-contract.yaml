@@ -1,0 +1,12 @@
+schema_version: 1
+visibility: evaluator_owned
+service: {command: 'node env/service.mjs --host 127.0.0.1 --port "{service_port}"', health_path: /health}
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy: {service_source_visible: false, direct_loopback_http_allowed: false, process_environment_inspection_allowed: false}
+browser_observation:
+  steps: [open the recovery page, expand Recovery decision trace, read the selected band and channel policy]
+  decisive_paths: [delegation.selected_assignment_ref, 'delegation.assignments[*].assignment_ref', 'delegation.assignments[*].role_ref', 'delegation.roles[*].role_ref', 'delegation.roles[*].grant_refs', delegation.grant_precedence, 'delegation.grants[*].grant_ref', 'delegation.grants[*].required_condition_refs', 'delegation.grants[*].ui_mode', 'delegation.grants[*].display_label', delegation.active_condition_refs, delegation.allowed_modes]
+source_noninferability:
+  forbidden_agent_source_literals: [selected_assignment_ref, assignment_ref, role_ref, grant_refs, grant_precedence, grant_ref, required_condition_refs, ui_mode, display_label, active_condition_refs, allowed_modes, A7, R9, G8, C1, C4, delegated_approval, delegated_reject, Approve with note, Reject on behalf]

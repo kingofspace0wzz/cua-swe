@@ -1,0 +1,59 @@
+id: v3.fabric-viewport-rotation-controls.001
+track: web_frontend
+type: interaction_state
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: "private-artifact:source-0037"
+  ref: fabric-fd50b70-real-runtime-v1
+instruction: |
+  The Artboard Editor loads a camera preset for the design surface and selects
+  the shape on it. The red selection frame and its corner handles are supposed
+  to hug the shape exactly as it appears under the current camera, and the zoom
+  readout should report the camera's zoom level.
+
+  On the orbit camera presets the selection is wrong: the zoom readout is off,
+  the selection frame is the wrong size, the corner handles do not sit on the
+  shape's corners, and on one preset the handles disappear entirely. The frame
+  also stays upright even though the shape looks tilted under the camera. On the
+  flat camera preset everything already looks correct.
+
+  Fix the editor so the zoom readout, the selection frame size, the corner
+  handle positions, and the frame orientation all match the shape as it is drawn
+  under every camera preset. Do not change the camera presets, the shape, the
+  scene feed, the protected profiles, or the verifier.
+setup:
+  install:
+    - npm ci
+  launch:
+    - node build.mjs && node server.mjs --host 127.0.0.1 --port 4173
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4173
+  viewport_or_device: desktop-1000x780
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 80
+  max_gui_actions: 120
+  max_test_runs: 20
+verifiers:
+  build:
+    - node build.mjs
+  unit: []
+  ui:
+    - python3 verifiers/browser_check.py
+  visual: []
+  state: []
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: false

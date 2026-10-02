@@ -1,0 +1,20 @@
+title = "CUA-SWE public release credential scan"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Exact reviewed non-secrets: seven content hashes, two model labels, one localStorage key"
+regexTarget = "secret"
+regexes = [
+  '''^00fe5bfa66d1b9fb11acc11d8f2ae5fd696216f589da8fba43ef476f256eace8$''',
+  '''^1f9dd75ff34a73432ea7f534e97072585b44ed941a1260fe79ae9eed620f3789$''',
+  '''^45811484dee515c82df387116aaf79b225f25c24ec641ece0ec3900dce403bda$''',
+  '''^61e51bb93b61245b4b5bfec90c9ed9804c2a6a94e2af60432e2500b9e0c8e0a0$''',
+  '''^904cfdeacdfaa1735f8a4cd974b92574ba15ef43926aced04ab0bc295f24340f$''',
+  '''^campus\-pocket\.trips\.v1$''',
+  '''^claude\-opus48$''',
+  '''^claude\-sonnet5$''',
+  '''^dccde4ad65a3f6e9093da9abf2d67fed01f8a9cf3739992af495ffa88161a63e$''',
+  '''^fd99a5c61f7de06e69ea0a0efec4c00f15e6900a866a95f61322349188ebb6e1$''',
+]

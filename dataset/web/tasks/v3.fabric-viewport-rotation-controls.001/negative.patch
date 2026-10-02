@@ -1,0 +1,34 @@
+--- a/vendor/fabric.mjs
++++ b/vendor/fabric.mjs
+@@ -1390,6 +1390,8 @@
+ */
+ const multiplyTransformMatrixArray = (matrices, is2x2) => matrices.reduceRight((product, curr) => curr && product ? multiplyTransformMatrices(curr, product, is2x2) : curr || product, void 0) || iMatrix.concat();
+ const calcPlaneRotation = ([a, b]) => Math.atan2(b, a);
++const calcPlaneZoom = ([a, b]) => Math.sqrt(a * a + b * b);
++const calcPlaneScaleY = ([, , c, d]) => Math.sqrt(c * c + d * d);
+ /**
+ * Decomposes standard 2x3 matrix into transform components
+ * @param  {TMat2D} a transformMatrix
+@@ -2084,7 +2086,7 @@
+ 	* @return {Number}
+ 	*/
+ 	getZoom() {
+-		return this.viewportTransform[0];
++		return calcPlaneZoom(this.viewportTransform);
+ 	}
+ 	/**
+ 	* Sets viewport transformation of this canvas instance
+@@ -5429,7 +5431,12 @@
+ 	* @returns {Point} dimensions
+ 	*/
+ 	_calculateCurrentDimensions(options) {
+-		return this._getTransformedDimensions(options).transform(this.getViewportTransform(), true).scalarAdd(2 * this.padding);
++		const vpt = this.canvas?.viewportTransform;
++		const dim = this._getTransformedDimensions(options);
++		if (vpt) {
++			return dim.multiply(new Point(calcPlaneZoom(vpt), calcPlaneScaleY(vpt))).scalarAdd(2 * this.padding);
++		}
++		return dim.scalarAdd(2 * this.padding);
+ 	}
+ 	/**
+ 	* Calculate object bounding box dimensions from its properties scale, skew.

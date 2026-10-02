@@ -1,0 +1,25 @@
+primary_actions: 1
+workflow:
+- observe above-threshold samples for longer than hold and fresh active-since at every
+  tick
+- click Labels & detail to compare successive labels and annotations
+- correlate the churning label values with the rotating routing epoch pair, its bracketed
+  policy class, and the constant classes and receiver selector
+- open the Routing runbook tab and read which policy classes are durable receiver identity
+  and which are descriptive detail only
+controls:
+- Short burst
+- Independent targets
+- Next evaluation
+- Replay capture
+- Reset
+states:
+- persistent
+- pending
+- firing after repair
+- healthy
+- recovered
+- second target
+- rotating evaluation epoch pair with its policy class
+- constant capture epoch pairs with their policy classes
+- posted routing policy runbook sheet

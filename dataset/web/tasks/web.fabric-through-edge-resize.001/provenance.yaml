@@ -1,0 +1,122 @@
+task_id: web.fabric-through-edge-resize.001
+stage: static_author_draft
+source_lineage:
+  parent_task: web.fabric-nested-frame-edit.001
+  parent_revision: fabric-nested-frames/revision-03
+  parent_input_sha256: 7a2f7bccc47f41bb85ad558ad823dedbf6b39cbf6eb9f1aa77400b16aa4f4fa5
+  passing_trial: fabric-nested-frames/matched-initial-v2-01/gpt6/run/trials/cua/api-gpt6-astra/web.fabric-nested-frame-edit.001/attempt-1/trial.json
+  passing_trial_sha256: d3c442b547151b448af84d76eaef75bd9e1d047b02b92be20a44e697a5c05ba5
+  passing_raw_patch_sha256: 20145ac0d9332abe996fdfd01ffef9aba2fd8a471b37a206512e8232a75921aa
+  passing_app_sha256: 40671789d37209d5e546e7681f86b530a2a19a4c9c9907028944bdc06751a76b
+  fixture_sha256: ab198b23f0978a5c23907e05629ef0f9b3fb6cacc35f5f5ef65c96394574d559
+  vendor_sha256: c4cbcb0a45aef5e6af602809d45c30ef8d69f7f26f3c9293775e14bb91c47fca
+  feed_sha256: 4f0146ae0df4e3f3f2faab598306557bf916dc4bdde6b44ac8415b1b3d581447
+  custody: >-
+    Baseline preparation copied the real nested revision03 bundle and applied
+    only the retained passing GPT6 application patch. This author did not change
+    app, fixture, vendor, feed, build/server/package/lock or service bytes.
+    Historical parent bundles and results are untouched. No generated dependencies
+    or build outputs belong to this bundle.
+  upstream: >-
+    Historical fabricjs/fabric.js PR10977 / issue10976 lineage, MIT, pinned browser
+    build fd50b70d365533e79ce421f64947fdc692cec619. No retrieval or new upstream
+    bug attribution. The crossing contract is a synthetic application extension.
+public_contract:
+  instruction: Enable resizing Blue through opposite edges as described in Help, preserving the editor's existing behavior.
+  author_task_yaml_sha256: 5fc8ee0b54576cd7f7dce67d43a2f50a82c4f5d823a0716dc1a212a281cf694b
+  historical_help_sha256: fdb34b028ac87eba64d61ab1cd123cccb2792bf6f049d43a012264a1e6195243
+  historical_prohibition: Keep sizes positive; do not cross or flip edges.
+  history: >-
+    The old positive-only contract and its passing results remain valid and
+    preserved in the parent. This task explicitly adds crossing; it does not
+    claim that the old task required it.
+  new_help: >-
+    Side/corner crossing through collapse and expansion, independently on corner
+    axes; fixed opposite anchor and initial grab offset in resized directions;
+    matching paint/outline/usable controls, ordinary no-jump release, subsequent
+    visible resize and rigid fill continuation. Preserve selection, Amber, both
+    frames, camera values, non-crossing edits, local-frame rotation and Single.
+  equivalence: >-
+    Geometry and usable visible controls decide success. Solid Blue cannot expose
+    private parity. No preferred flip flags, normalized angle/scale, Fabric key
+    or rotation-stem side is graded. The accepted source contract supersedes the
+    earlier proposal's carried-stem requirement; it is not a hidden condition.
+  actual_baseline_delta: >-
+    Help text only in repo/index.html; task-owned browser_check.py and visible.py;
+    runtime/provenance narrative and reviewer documents; four standalone patch
+    artifacts. task.yaml instruction, setup, budgets1800/80/120/20, environment,
+    allowed tools, artifacts and verifier command are unchanged. Runtime schema,
+    visibility, service, application and agent_policy are unchanged.
+integration:
+  already_working: >-
+    Complete camera/parent inverse, parent-relative center, affine rendered paint
+    and controls, native nested targeting/body interaction, non-crossing offsets
+    and anchors, local-frame rotation and pointer transaction ownership.
+  genuinely_missing: >-
+    Signed resize extents, idempotent native scale/flip writes, reflected starting
+    axes/visible-handle correspondence on a new gesture, signed anchor placement
+    and ordinary release continuation. Positive-size clamps naturally omit the
+    new contract. No arbitrary fault, special camera obstacle or handler disable.
+references:
+  gold.patch: >-
+    Signed spans in the snapshot's reflected angle basis. Positive native scale
+    magnitudes plus explicit absolute flip state prevent per-event toggles;
+    signed anchor-to-center vectors preserve carried points and grab offsets.
+    A new gesture captures the then-visible reflected directions. Existing inverse,
+    control renderer, body path and release lifecycle are retained.
+  alternatives/alternative.patch: >-
+    Capture full native material edge vectors and fixed/moving endpoints; remove
+    the initial pointer offset and resolve the endpoint vector in the dual basis.
+    Construct an absolute parent-local affine matrix and apply/decompose it with
+    the native helper, which resets reflection before writing scales. New gestures
+    read the resulting full basis, independent of normalization. An isolated zero
+    column uses a subpixel limit for QR; no zero-area checkpoint is graded.
+partials:
+  negative.patch:
+    omission: Signed anchor-to-center placement; uses scale magnitudes for placement.
+    expected_reached_failure: >-
+      Nested B final side preview is 36x36 centered at initial-axis (-12,0), not
+      (-48,0). Expanded paint remains on the wrong side, a 93.271px center error.
+      These are scalar predictions, not executed observations.
+  negative-cases/unreflected-snapshot.patch:
+    omission: Reflection-aware starting basis on a subsequent handle gesture.
+    expected_reached_failure: >-
+      First crossing and release are supported. The regrabbed corner's one-sixth
+      preview is 34x25 rather than 38x25; corners are displaced about5.182px while
+      the center happens to agree. This is visible size/anchor failure, not parity.
+oracle:
+  geometry: Explicit public fixed/moving endpoint polygons, independent forward fixture/camera projection.
+  observations: >-
+    Screenshot-only canvas-bounded palettes, distributed interior, edges, silhouette,
+    winding-aware inward normals, fixed layers/camera and visible selection.
+    Actual unordered marker blobs and actual fill support ordinary native input.
+    No candidate state, arrays, transforms, oCoords, __geom or telemetry is read.
+  continuation: >-
+    Nested B side crossing, release, geometric-corner reacquisition, independent
+    corner dimensions crossing the other axis, release, rigid fill movement.
+    One compact Single C non-crossing/rotation/fill segment. No camera matrix expansion.
+  observer_preservation: >-
+    Canvas-bounded red/blue/white sampling; semantic zoom labels; visible first
+    summary and display:contents text with closed-details descendants excluded.
+    No fixed rotation-stem length or side. Unsupported acquisition is coverage.
+  result_contract: >-
+    Preserve raw screenshots, overlays, actions, errors, runtime and coverage records.
+    Stop dependent input at divergence/unsupported observation. Cleanup images are
+    unscored. Exit0=complete covered pass,1=reached behavior failure,2=causal review
+    for setup/runtime/coverage. Raw complete-alternative passed/raw_success is not
+    legacy control_passed. No native checker was run by this author.
+validation:
+  scope: Static parsing, independent patch application checks and scalar endpoint arithmetic only.
+  report: ../author-01/rollout/report.json
+  static_details: ../author-01/rollout/static-checks.json
+  arithmetic: ../author-01/rollout/scalar-geometry.json
+  unresolved_native_risks: >-
+    Native pointer compatibility/capture and grouped cache behavior through near
+    collapse; QR/scale limiting behavior at an isolated singular instant; pixel
+    marker and layer observability for both complete references. These require
+    causal native review elsewhere, not execution or tuning by this author.
+  native_executed: false
+  build_executed: false
+  solver_executed: false
+  model_difficulty_measured: false
+review_boundary: Main independently reviews this final source/reference/oracle delta. No downstream work is launched here.

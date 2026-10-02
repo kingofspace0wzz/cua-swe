@@ -1,0 +1,38 @@
+schema_version: 1
+task_id: devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r2.cua-upper-r2.001
+source:
+  project: prometheus/prometheus
+  specification: Prometheus v3.5.0 alerting rules and Alertmanager receiver routing semantics
+  pinned_revision: 8be3a9560fbdd18a94dedec4b747c35178177202
+  official_sources:
+  - https://github.com/prometheus/prometheus/blob/8be3a9560fbdd18a94dedec4b747c35178177202/rules/alerting.go
+  - https://github.com/prometheus/prometheus/blob/8be3a9560fbdd18a94dedec4b747c35178177202/docs/configuration/alerting_rules.md
+  - https://github.com/prometheus/alertmanager/blob/main/docs/configuration.md
+  license: Apache-2.0
+  source_type: original_source_faithful_fixture
+  rights: source consulted for semantics; authored fixture may be redistributed with benchmark
+  runtime_scope: supports comparison, $value, $labels, and $route templates, per-labelset pending/firing/inactive,
+    receiver match routing, and evaluator-owned routing epochs with opaque per-scope policy classes whose
+    custody dispositions are published only on a raster operator runbook; focused fixture, not full PromQL
+lineage:
+  parent_task_id: devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r2.cua-upper-r1.001
+  parent_candidate: artifacts/v2-candidates/devops-observability/devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r2.cua-upper-r1.001
+  parent_tree_sha256: 646ba28e768c5dc7e6d5d864938b5b492e6aac755541785c06c3baa9c66cbf9b
+  bounded_feedback: ../final-successor-feedback/devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r2.cua-upper-r1.001/frontier-feedback.json
+  bounded_feedback_sha256: 2e60ca1f3dffd9b2dad4db347d1501b8becc4bc035206ef16d2f35b20deb0546
+  selected_axis: move_receiver_identity_authority_to_operator_epoch_runbook_pixels
+notes:
+- Prometheus alerting semantics establish that a changed labelset is a new alert identity, so evaluation-scoped
+  labels reset the pending clock every time they rotate.
+- Alertmanager routing establishes that the receiver consumes a declared label selector, so routed and
+  stable enrichment labels must remain part of the alert identity.
+- The routing epochs, their opaque per-scope policy classes, the raster routing policy runbook, rotation
+  cadences, and the rotated protected profiles are original adversarial extensions; the console, engine,
+  profiles, runbook sheet, and assets are original.
+- No Prometheus or Alertmanager source, configuration, tests, or assets are copied.
+- This immutable successor moves the complete routing-epoch-to-receiver-identity authority from source-visible
+  rule-family ownership in the machine-readable catalog to an evaluator-owned operator routing policy
+  runbook rendered only in pixels and available before configuration. The exact successful GPT-6 catalog-ownership
+  repair and both GPT-6 snapshot-before-configure repairs from the parent confirmation apply and fail;
+  hidden profiles rename epoch scopes, keys, cadences, and enrichments and require all four policy-class
+  mappings.

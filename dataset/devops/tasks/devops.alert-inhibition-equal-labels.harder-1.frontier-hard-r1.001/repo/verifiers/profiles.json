@@ -1,0 +1,100 @@
+{
+  "visible": {
+    "label": "Platform incident inhibition",
+    "equalDimensions": ["cluster", "environment"],
+    "dimensions": [
+      {
+        "name": "cluster",
+        "role": "placement",
+        "note": "Placement scope for infrastructure suppression. A suppression is trustworthy only between alerts that both carry a concrete cluster; alerts without a concrete placement page independently."
+      },
+      {
+        "name": "environment",
+        "role": "partition",
+        "note": "Delivery partition compared exactly as recorded. Alerts opened before the environment rollout omit this label, and matching by absence between two such alerts is expected."
+      }
+    ],
+    "advisories": [
+      "Alerts opened before the environment rollout carry no environment label. Their suppression inside a shared concrete cluster is expected and must keep working."
+    ],
+    "sourceClass": "NodeUnavailable",
+    "targetClass": "all active alerts",
+    "incidents": [
+      {
+        "id": "visible-initial",
+        "label": "Checkout incident · initial batch",
+        "alerts": [
+          {"id":"v-node-west","displayName":"NodeUnavailable@node-7","labels":{"alertname":"NodeUnavailable","instance":"node-7","cluster":"eu-west","environment":"prod","severity":"critical"},"summary":"node-7 has not reported for five minutes"},
+          {"id":"v-node-legacy","displayName":"NodeUnavailable@node-12","labels":{"alertname":"NodeUnavailable","instance":"node-12","cluster":"ap-south","severity":"critical"},"summary":"node-12 has not reported for six minutes"},
+          {"id":"v-node-edge","displayName":"NodeUnavailable@bastion-1","labels":{"alertname":"NodeUnavailable","instance":"bastion-1","environment":"prod","severity":"critical"},"summary":"standalone bastion has not reported"},
+          {"id":"v-disk-west","displayName":"DiskPressure@node-7","labels":{"alertname":"DiskPressure","instance":"node-7","cluster":"eu-west","environment":"prod","severity":"warning"},"summary":"root filesystem is above ninety percent"},
+          {"id":"v-canary-west","displayName":"CanaryLatency@checkout-canary","labels":{"alertname":"CanaryLatency","service":"checkout-canary","cluster":"eu-west","environment":"staging","severity":"warning"},"summary":"staging canary latency breached its rollout threshold"},
+          {"id":"v-disk-legacy","displayName":"DiskPressure@node-12","labels":{"alertname":"DiskPressure","instance":"node-12","cluster":"ap-south","severity":"warning"},"summary":"node-12 root filesystem is filling"},
+          {"id":"v-payments","displayName":"PaymentsFailures@payments","labels":{"alertname":"PaymentsFailures","service":"payments","environment":"prod","severity":"critical"},"summary":"payments API is returning errors"},
+          {"id":"v-checkout","displayName":"CheckoutLatency@checkout","labels":{"alertname":"CheckoutLatency","service":"checkout","environment":"prod","severity":"critical"},"summary":"checkout latency breached the page threshold"},
+          {"id":"v-search","displayName":"SearchErrors@search","labels":{"alertname":"SearchErrors","service":"search","cluster":"","environment":"prod","severity":"critical"},"summary":"search requests are failing"},
+          {"id":"v-export-legacy","displayName":"LedgerExportStalled@exports","labels":{"alertname":"LedgerExportStalled","service":"exports","severity":"critical"},"summary":"nightly ledger export has stalled"}
+        ]
+      },
+      {
+        "id": "visible-arrival",
+        "label": "Checkout incident · arriving alerts",
+        "alerts": [
+          {"id":"v-node-east","displayName":"NodeUnavailable@node-9","labels":{"alertname":"NodeUnavailable","instance":"node-9","cluster":"us-east","environment":"prod","severity":"critical"},"summary":"node-9 stopped reporting"},
+          {"id":"v-iops-east","displayName":"IOPressure@node-9","labels":{"alertname":"IOPressure","instance":"node-9","cluster":"us-east","environment":"prod","severity":"warning"},"summary":"node-9 storage queue is saturated"},
+          {"id":"v-billing","displayName":"BillingQueueStuck@billing","labels":{"alertname":"BillingQueueStuck","service":"billing","environment":"prod","severity":"critical"},"summary":"billing jobs have stopped draining"},
+          {"id":"v-cache-legacy","displayName":"CacheEvictionsStalled@node-12","labels":{"alertname":"CacheEvictionsStalled","instance":"node-12","cluster":"ap-south","severity":"warning"},"summary":"node-12 cache eviction backlog is growing"},
+          {"id":"v-catalog-south","displayName":"CatalogErrors@catalog","labels":{"alertname":"CatalogErrors","service":"catalog","cluster":"ap-south","environment":"prod","severity":"critical"},"summary":"catalog errors are isolated to another deployment"}
+        ]
+      }
+    ]
+  },
+  "hidden": {
+    "label": "Ledger shard inhibition",
+    "equalDimensions": ["region", "tenant"],
+    "dimensions": [
+      {
+        "name": "region",
+        "role": "partition",
+        "note": "Ledger region recorded exactly as each producer wrote it. Alerts opened before the region rollout omit this label, and matching by absence between two such alerts is expected."
+      },
+      {
+        "name": "tenant",
+        "role": "placement",
+        "note": "Tenant placement scope for shard suppression. A suppression is trustworthy only between alerts that both carry a concrete tenant; alerts without a concrete placement page independently."
+      }
+    ],
+    "advisories": [
+      "Alerts opened before the region rollout carry no region label. Their suppression inside a shared concrete tenant is expected and must keep working."
+    ],
+    "sourceClass": "ShardOffline",
+    "targetClass": "all active alerts",
+    "incidents": [
+      {
+        "id": "hidden-initial",
+        "label": "Ledger incident · initial batch",
+        "alerts": [
+          {"id":"h-source-cobalt","displayName":"ShardOffline@cobalt-2","labels":{"alertname":"ShardOffline","shard":"cobalt-2","tenant":"cobalt","region":"emea","severity":"critical"},"summary":"cobalt shard is unavailable"},
+          {"id":"h-source-legacy","displayName":"ShardOffline@onyx-4","labels":{"alertname":"ShardOffline","shard":"onyx-4","tenant":"onyx","severity":"critical"},"summary":"onyx-4 shard is unavailable"},
+          {"id":"h-source-edge","displayName":"ShardOffline@utility-0","labels":{"alertname":"ShardOffline","shard":"utility-0","region":"emea","severity":"critical"},"summary":"shared utility shard is unavailable"},
+          {"id":"h-lag-cobalt","displayName":"ReplicationLag@cobalt-2","labels":{"alertname":"ReplicationLag","shard":"cobalt-2","tenant":"cobalt","region":"emea","severity":"warning"},"summary":"replica lag follows the shard outage"},
+          {"id":"h-journal-legacy","displayName":"JournalBacklog@onyx-4","labels":{"alertname":"JournalBacklog","shard":"onyx-4","tenant":"onyx","severity":"warning"},"summary":"journal backlog follows the onyx outage"},
+          {"id":"h-lag-apac","displayName":"ReplicationLag@cobalt-7","labels":{"alertname":"ReplicationLag","shard":"cobalt-7","tenant":"cobalt","region":"apac","severity":"warning"},"summary":"apac replica lag is unrelated"},
+          {"id":"h-export","displayName":"ExportPipelineStopped@exports","labels":{"alertname":"ExportPipelineStopped","service":"exports","region":"emea","severity":"critical"},"summary":"exports are not completing"},
+          {"id":"h-audit","displayName":"AuditDeliveryErrors@audit","labels":{"alertname":"AuditDeliveryErrors","service":"audit","tenant":"","region":"emea","severity":"critical"},"summary":"audit delivery is failing"}
+        ]
+      },
+      {
+        "id": "hidden-arrival",
+        "label": "Ledger incident · arriving alerts",
+        "alerts": [
+          {"id":"h-source-violet","displayName":"ShardOffline@violet-1","labels":{"alertname":"ShardOffline","shard":"violet-1","tenant":"violet","region":"apac","severity":"critical"},"summary":"violet shard is unavailable"},
+          {"id":"h-cache-violet","displayName":"CacheDivergence@violet-1","labels":{"alertname":"CacheDivergence","shard":"violet-1","tenant":"violet","region":"apac","severity":"warning"},"summary":"cache divergence follows the outage"},
+          {"id":"h-settlement","displayName":"SettlementJobsStuck@settlement","labels":{"alertname":"SettlementJobsStuck","service":"settlement","region":"emea","severity":"critical"},"summary":"settlement jobs stopped"},
+          {"id":"h-ledger-legacy","displayName":"LedgerReplayLag@onyx-4","labels":{"alertname":"LedgerReplayLag","shard":"onyx-4","tenant":"onyx","severity":"warning"},"summary":"ledger replay lag follows the onyx outage"},
+          {"id":"h-console","displayName":"ConsoleErrors@console","labels":{"alertname":"ConsoleErrors","service":"console","tenant":"violet","region":"emea","severity":"critical"},"summary":"another tenant console is failing"}
+        ]
+      }
+    ]
+  }
+}

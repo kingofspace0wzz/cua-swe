@@ -1,0 +1,35 @@
+diff --git a/src/panel.js b/src/panel.js
+--- a/src/panel.js
++++ b/src/panel.js
+@@ -1,7 +1,8 @@
+ import {
+   complete,
+   consumeTicket,
+   createRecord,
++  invert,
+   openSlot,
+   pull,
+   restoreRecord,
+@@ -29,7 +30,7 @@ export function restorePanel(panel, note) {
+ 
+ export function stagePanel(panel, ticket) {
+   const checksum = consumeTicket(ticket);
+-  setRoute(panel, ticket.alternatives[(checksum + 1) % 3]);
++  setRoute(panel, invert(ticket.alternatives[checksum % 3]));
+ }
+ 
+ export function runPanel(panel, active) {
+diff --git a/src/session.js b/src/session.js
+--- a/src/session.js
++++ b/src/session.js
+@@ -177,8 +177,8 @@ export class Session {
+         ticket: cloneTicket(note.ticket),
+         returns: this.returnState.returns + 1,
+       };
+-      runField(this.field, true);
+-      runPanel(this.panel, true);
++      runField(this.field, false);
++      runPanel(this.panel, false);
+     } else {
+       this.player.x = START.x;
+       this.player.y = START.y;

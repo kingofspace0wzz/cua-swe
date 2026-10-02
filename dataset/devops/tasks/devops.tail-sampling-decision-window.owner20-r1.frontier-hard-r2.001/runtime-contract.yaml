@@ -1,0 +1,70 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/sampler_service.mjs
+  fixture: repo/verifiers/profiles.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults:
+    application: 54700
+    service: OS-assigned
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants:
+  - visible
+  - hidden
+  - hidden-order
+  oracle: independent-received-span-predicate-plus-active-policy-profile-envelope-slo-band
+external_state:
+  authoritative_truth: active receiver policy profile SL-INCIDENT-2026.09 with delivery
+    envelope 3300 ms and decision SLO 3600 ms, published only as the pixel-rendered
+    receiver policy panel (repo/verifiers/levels_panel.mjs)
+  machine_readable_exposure: none; snapshot and audit JSON carry no envelope, SLO,
+    or policy fields, and every hidden-variant observable delivery lag stays below
+    the envelope so no runtime statistic reproduces the band
+  visibility: operator diagnostics panel image proxied at /api/service-levels
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - alternates/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - inspect selected late child ERROR after cached drop
+  - select payments and compare early child ERROR retention
+  - read the active policy profile (activation epoch, delivery envelope, decision SLO)
+    on the receiver policy panel and reject the superseded and scheduled rows
+  - compare Early arrivals then Interleaved traffic and replay
+  decisive_paths:
+  - selected.spans
+  - selected.decisionAtMs
+  - selected.visibleSpanCount
+  - exports
+  - receiver policy panel pixels (active vs superseded vs scheduled profile rows)

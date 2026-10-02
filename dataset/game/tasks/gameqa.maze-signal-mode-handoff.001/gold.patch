@@ -1,0 +1,97 @@
+diff --git a/src/game.js b/src/game.js
+index e049be7..ad52b4e 100644
+--- a/src/game.js
++++ b/src/game.js
+@@ -87,17 +87,19 @@ export class SignalMaze {
+   }
+ 
+   startAlert() {
++    const resumeMode = this.phase.suspend();
+     this.alert.active = true;
+     this.alert.remaining = this.config.alertTicks;
+     this.releaseRemaining = this.config.releaseTicks;
+-    this.rover.enterAlert(this.phase.mode);
++    this.rover.enterAlert(resumeMode);
+     this.message = 'TEAL WARNING — rover contact is safe.';
+   }
+ 
+   finishAlert() {
+     this.alert.active = false;
+     this.alert.remaining = 0;
+-    this.rover.exitAlert(this.phase.mode);
++    const resumeMode = this.phase.resume();
++    this.rover.exitAlert(resumeMode);
+     this.message = 'Warning cleared — active contact restored.';
+   }
+ 
+diff --git a/src/phase_clock.js b/src/phase_clock.js
+index 566b09c..c2dee44 100644
+--- a/src/phase_clock.js
++++ b/src/phase_clock.js
+@@ -9,9 +9,21 @@ export class PhaseClock {
+   reset() {
+     this.mode = this.initial;
+     this.elapsed = 0;
++    this.suspended = false;
++  }
++
++  suspend() {
++    this.suspended = true;
++    return this.mode;
++  }
++
++  resume() {
++    this.suspended = false;
++    return this.mode;
+   }
+ 
+   step() {
++    if (this.suspended) return false;
+     if (this.mode === this.next) return false;
+     this.elapsed += 1;
+     if (this.elapsed < this.duration) return false;
+diff --git a/src/rover.js b/src/rover.js
+index 2cc4431..872db7c 100644
+--- a/src/rover.js
++++ b/src/rover.js
+@@ -14,12 +14,14 @@ export class Rover {
+     this.hazard = true;
+     this.branch = null;
+     this.alertActive = false;
++    this.resumeMode = null;
+     this.pendingAppearance = null;
+     this.appearanceLag = 0;
+   }
+ 
+   enterAlert(globalMode) {
+     this.alertActive = true;
++    this.resumeMode = globalMode;
+     this.hazard = false;
+     this.appearance = 'warning';
+     if (this.state !== 'dock') this.mode = 'warning';
+@@ -29,7 +31,7 @@ export class Rover {
+   release(globalMode, alertActive) {
+     this.state = 'junction';
+     this.position = clonePoint(this.config.junction);
+-    this.mode = globalMode;
++    this.mode = alertActive && this.resumeMode ? this.resumeMode : globalMode;
+     if (alertActive) {
+       this.alertActive = true;
+       this.appearance = 'warning';
+@@ -45,10 +47,12 @@ export class Rover {
+ 
+   exitAlert(globalMode) {
+     this.alertActive = false;
+-    this.mode = globalMode;
++    this.mode = this.resumeMode || globalMode;
+     this.hazard = true;
+-    this.pendingAppearance = globalMode;
+-    this.appearanceLag = 2;
++    this.appearance = this.mode;
++    this.resumeMode = null;
++    this.pendingAppearance = null;
++    this.appearanceLag = 0;
+   }
+ 
+   step(globalMode, alertActive) {
+

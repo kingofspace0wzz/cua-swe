@@ -1,0 +1,10 @@
+diff --git a/src/config/compileRuntimeProfile.js b/src/config/compileRuntimeProfile.js
+--- a/src/config/compileRuntimeProfile.js
++++ b/src/config/compileRuntimeProfile.js
+@@ -3,5 +3,6 @@ export function compileRuntimeProfile(policy) {
+     context_manager: policy.contextManager,
+     async_semantics: "native",
+     propagation_strategy: policy.propagationStrategy,
++    global_root: true,
+   };
+ }

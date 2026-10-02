@@ -1,0 +1,144 @@
+diff --git a/src/entities/flagpole.js b/src/entities/flagpole.js
+index 1cf6a5d..1aee958 100644
+--- a/src/entities/flagpole.js
++++ b/src/entities/flagpole.js
+@@ -33,8 +33,7 @@ class Flagpole extends GameEntity {
+       });
+     }
+     if (this.completionTicket) {
+-      const completionState =
+-          resolveLevelCompletion(this.completionTicket, eligible);
++      const completionState = resolveLevelCompletion(this.completionTicket);
+       if (completionState !== 0) {
+         this.completionTicket = 0;
+       }
+diff --git a/src/index.js b/src/index.js
+index 42ad52c..3592ea5 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -99,28 +99,31 @@ const GameState = {
+ let gameState = GameState.WAITING_FOR_FIRST_CLICK;
+ 
+ /** @type {number} */
+-let controlFrameRevision = 0;
++let controlIntentRevision = 0;
+ 
+-/**
+- * Records gameplay controls that remain active across an update boundary.
+- */
+-function sampleControlFrame() {
++/** @type {string} */
++let controlIntentSignature = '';
++
++/** Records changes to the player's requested control intent. */
++function sampleControlIntent() {
+   const movementActive =
+       isKeyDown(KEY_UP) || isKeyDown(KEY_W) ||
+       isKeyDown(KEY_DOWN) || isKeyDown(KEY_S) ||
+       isKeyDown(KEY_LEFT) || isKeyDown(KEY_A) ||
+       isKeyDown(KEY_RIGHT) || isKeyDown(KEY_D);
+   const jetpackActive = isKeyDown(KEY_X) || isKeyDown(KEY_SHIFT);
+-  if (movementActive || jetpackActive) {
+-    controlFrameRevision++;
++  const nextSignature = `${movementActive}:${jetpackActive}`;
++  if (nextSignature !== controlIntentSignature) {
++    controlIntentSignature = nextSignature;
++    controlIntentRevision++;
+   }
+ }
+ 
+ /**
+  * @return {number}
+  */
+-function getControlFrameRevision() {
+-  return controlFrameRevision;
++function getControlIntentRevision() {
++  return controlIntentRevision;
+ }
+ 
+ initGame();
+@@ -151,7 +154,7 @@ const flyoverCamera = () => {
+  * Updates game state.
+  */
+ function update() {
+-  sampleControlFrame();
++  sampleControlIntent();
+   updateWorld();
+ 
+   if (menu !== mainMenu && isKeyPressed(KEY_ESCAPE)) {
+diff --git a/src/menu.js b/src/menu.js
+index 371a7af..ff3636f 100644
+--- a/src/menu.js
++++ b/src/menu.js
+@@ -173,6 +173,9 @@ let menuStartTime = 0;
+  */
+ let menu = clickToStart;
+ 
++/** @type {boolean} */
++let menuReleaseArmed = true;
++
+ /** @type {?Object} */
+ let pendingLevelCompletion = null;
+ 
+@@ -191,7 +194,7 @@ function beginLevelCompletion(detail) {
+   pendingLevelCompletion = {
+     ticket: ++nextLevelCompletionTicket,
+     detail: detail,
+-    controlRevision: getControlFrameRevision(),
++    controlRevision: getControlIntentRevision(),
+     age: 0,
+   };
+   stopJetpackSound();
+@@ -202,10 +205,9 @@ function beginLevelCompletion(detail) {
+ /**
+  * Settles a staged level transition after the presentation has rendered.
+  * @param {number} ticket
+- * @param {boolean} eligible
+  * @return {number} -1 for cancelled, 0 for pending, 1 for committed
+  */
+-function resolveLevelCompletion(ticket, eligible) {
++function resolveLevelCompletion(ticket) {
+   if (!pendingLevelCompletion ||
+       pendingLevelCompletion['ticket'] !== ticket) {
+     return -1;
+@@ -214,8 +216,8 @@ function resolveLevelCompletion(ticket, eligible) {
+   if (pendingLevelCompletion['age'] < 4) {
+     return 0;
+   }
+-  if (!eligible ||
+-      pendingLevelCompletion['controlRevision'] !== getControlFrameRevision()) {
++  if (pendingLevelCompletion['controlRevision'] !==
++      getControlIntentRevision()) {
+     pendingLevelCompletion = null;
+     setMenu(null);
+     return -1;
+@@ -252,7 +254,7 @@ function getLevelCompletionDebug() {
+     ticket: pendingLevelCompletion['ticket'],
+     age: pendingLevelCompletion['age'],
+     control_revision: pendingLevelCompletion['controlRevision'],
+-    current_control_revision: getControlFrameRevision(),
++    current_control_revision: getControlIntentRevision(),
+   };
+ }
+ 
+@@ -277,6 +279,7 @@ function setMenu(m) {
+   menuStartTime = time;
+   menu = m;
+   menuY = 0;
++  menuReleaseArmed = !anyKey.down;
+ }
+ 
+ /**
+@@ -386,7 +389,11 @@ const drawMenu = () => {
+       menu === winScreen &&
+       (isLevelCompletionPending() || gameState === GameState.AFTER_LEVEL);
+   const canContinue = completionMenuReady || time - menuStartTime > 0.5;
+-  if (canContinue && anyKey.upCount === 1) {
++  if (!menuReleaseArmed) {
++    if (!anyKey.down) {
++      menuReleaseArmed = true;
++    }
++  } else if (canContinue && anyKey.upCount === 1) {
+     menu.callback();
+   } else {
+     if (gameState === GameState.WAITING_FOR_FIRST_CLICK) {

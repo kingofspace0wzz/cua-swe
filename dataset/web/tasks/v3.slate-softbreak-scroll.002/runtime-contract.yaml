@@ -1,0 +1,24 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: npm run build && CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps: [read the active workspace frame, place the caret at the end of the active log entry, press Shift+Enter, observe the caret and the preceding visible lines]
+  decisive_edge: The active frame supplies runtime viewport bands, a per-frame text scale, and a visible safe writing region. The status strip carries a live cursor-visibility flag derived from the running layout (in view / below fold) but no target scroll value. The correct transition keeps the new caret line inside the region with the minimum scroll on every frame, while the source provides hold, reveal, and snap behaviors without a protected-frame result or a fixed reveal amount.
+source_noninferability:
+  forbidden_agent_source_literals: [Site inspection log, Interview capture, Release field notes, North corridor walkthrough, Candidate systems debrief, Build 4.8 acceptance]
+provenance:
+  source_repo: ianstormtaylor/slate
+  source_issue: https://github.com/ianstormtaylor/slate/issues/5900
+  source_revision: ec793483ada7f7e21ebc82c2b3aa9ea674605ce3
+  license: MIT
+  implementation: behavior-derived clean-room fixture
+  conversion_note: The Slate soft-break selection/scroll behavior is isolated in a contenteditable field-log composer. A harness-owned service supplies three protected viewport frames, each with its own text scale, so the runtime caret visibility and minimal-scroll behavior can be tested without a fixed source constant. This is the lower-neighbor calibration successor (v3.slate-softbreak-scroll.002) of v3.slate-softbreak-scroll.001; it simplifies exactly one visual-discovery dimension by surfacing the off-screen writing spot through a live status-strip cursor-visibility flag, so a screenshot-only agent can observe the broken transition and confirm a repair. The decisive contract (which follow behavior, render-before-measure ordering, and per-frame minimal reveal) remains runtime-only and is not present in agent-visible source.

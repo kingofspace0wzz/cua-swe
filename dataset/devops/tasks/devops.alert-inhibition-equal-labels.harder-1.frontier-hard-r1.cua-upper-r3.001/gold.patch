@@ -1,0 +1,48 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -15,7 +15,7 @@ export function compileInhibitionRule(catalog, policy) {
+       },
+     ],
+     equal: [...catalog.equalDimensions],
+-    required_source_labels: [],
+-    required_target_labels: [],
++    required_source_labels: [...policy.presenceDimensions],
++    required_target_labels: [...policy.presenceDimensions],
+   };
+ }
+diff --git a/src/config/inhibitionScopePolicy.js b/src/config/inhibitionScopePolicy.js
+--- a/src/config/inhibitionScopePolicy.js
++++ b/src/config/inhibitionScopePolicy.js
+@@ -1,10 +1,28 @@
++// Scope stamping runbook, ops-docs page 41: per-epoch stamping state.
++// Sealed epochs require the label on both alerts; stamping epochs match
++// the label as recorded.
++const STAMPING_RUNBOOK = Object.freeze({
++  M108: "stamping",
++  M112: "sealed",
++  M117: "sealed",
++  M121: "stamping",
++  M126: "stamping",
++  M131: "sealed",
++});
++
+ export function inhibitionScopePolicy(catalog) {
++  const dimensionRegistry = catalog.dimensions.map((dimension) =>
++    Object.freeze({ ...dimension }),
++  );
+   return Object.freeze({
+     profileLabel: catalog.label,
+     scopeDimensions: catalog.equalDimensions,
+-    dimensionRegistry: catalog.dimensions.map((dimension) =>
+-      Object.freeze({ ...dimension }),
+-    ),
++    dimensionRegistry,
++    presenceDimensions: dimensionRegistry
++      .filter(
++        (dimension) => STAMPING_RUNBOOK[dimension.epoch] === "sealed",
++      )
++      .map((dimension) => dimension.name),
+     sourceClass: catalog.sourceClass,
+     targetClass: catalog.targetClass,
+   });

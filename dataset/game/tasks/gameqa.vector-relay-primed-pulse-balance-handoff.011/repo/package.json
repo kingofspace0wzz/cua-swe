@@ -1,0 +1,10 @@
+{
+  "name": "vector-relay",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node --check src/relay_contact.js && node --check src/relay_commit.js && node --check src/pulse_balance.js && node --check src/vector_relay.js && node --check src/game_api.js && node --check server.mjs",
+    "dev": "node server.mjs"
+  }
+}

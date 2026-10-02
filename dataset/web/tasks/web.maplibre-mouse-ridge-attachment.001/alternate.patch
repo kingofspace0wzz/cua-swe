@@ -1,0 +1,72 @@
+diff --git a/src/ui/handler_manager.ts b/src/ui/handler_manager.ts
+--- a/src/ui/handler_manager.ts
++++ b/src/ui/handler_manager.ts
+@@ -163,6 +163,7 @@
+     _updatingCamera: boolean;
+     _changes: Array<[HandlerResult, EventsInProgress, {[handlerName: string]: Event}]>;
+     _terrainMovement: boolean;
++    _mouseGrab?: {grab: MercatorGrab | null};
+     _touchConfiguration?: {ids: string; point: Point; grab: MercatorGrab | null};
+     _cancelledTouchIds: Set<number> = new Set<number>();
+     _cancellingTouches = false;
+@@ -355,6 +356,7 @@
+         if (this._terrainMovement) this._settleTerrain();
+         this._changes = [];
+         this._touchConfiguration = undefined;
++        this._mouseGrab = undefined;
+     }
+ 
+     isActive(): boolean {
+@@ -407,6 +409,10 @@
+             return;
+         }
+ 
++        if (e.type === 'mousedown') {
++            this._applyChanges();
++            this._mouseGrab = undefined;
++        }
+         const touchEvent = isTouchableEvent(e, eventName || e.type);
+         let touchContactsRemaining = false;
+         if (touchEvent) {
+@@ -625,7 +631,16 @@
+         const touchControl = Object.values(combinedEventsInProgress).some(event =>
+             ['touchPan', 'touchZoom', 'touchRotate'].includes(event.handlerName));
+         const contact = this._touchConfiguration;
+-        if (touchControl && contact && !this._camera.cameraHelper.useGlobeControls && pinchAround !== null) {
++        if (combinedEventsInProgress.drag?.handlerName === 'mousePan' && panDelta &&
++            terrain && !this._camera.cameraHelper.useGlobeControls) {
++            // The first accepted delta still describes the pressed screen point.
++            // Keep its world point for every subsequent delta in this gesture.
++            this._mouseGrab ||= {grab: acquireMercatorGrab(tr, around.sub(panDelta), this._map.getTerrainQueries())};
++            this._terrainMovement = true;
++            this._camera.elevationFreeze = true;
++            this._camera.cameraHelper.handleMapControlsRollPitchBearingZoom(deltasForHelper, tr);
++            if (this._mouseGrab.grab) placeMercatorGrab(tr, this._mouseGrab.grab, around);
++        } else if (touchControl && contact && !this._camera.cameraHelper.useGlobeControls && pinchAround !== null) {
+             if (panDelta) contact.point = contact.point.add(panDelta);
+             this._camera.cameraHelper.handleMapControlsRollPitchBearingZoom(deltasForHelper, tr);
+             if (contact.grab) placeMercatorGrab(tr, contact.grab, contact.point);
+@@ -644,6 +659,7 @@
+         this._map._update();
+         if (hasChange(combinedResult) && !combinedResult.noInertia) this._inertia.record(combinedResult);
+         this._fireEvents(combinedEventsInProgress, deactivatedHandlers, true);
++        if (!this._handlersById.mousePan.isActive()) this._mouseGrab = undefined;
+ 
+     }
+ 
+diff --git a/src/geo/projection/mercator_grab.ts b/src/geo/projection/mercator_grab.ts
+--- a/src/geo/projection/mercator_grab.ts
++++ b/src/geo/projection/mercator_grab.ts
+@@ -32,10 +32,10 @@
+     const ray = mercatorCameraRay(tr, point);
+     // A skyward ray is not a usable navigation pivot, even if distant terrain exists.
+     if (ray.direction.elevation >= 0) return null;
++    const coordinate = terrain?.pointCoordinate(point);
++    if (coordinate) return {x: coordinate.x, y: coordinate.y, elevation: coordinate.z};
+     const hit = terrain?.intersectRay?.(ray, tr);
+     if (hit) return hit;
+-    const coordinate = terrain?.pointCoordinate(point);
+-    if (coordinate) return {x: coordinate.x, y: coordinate.y, elevation: coordinate.z};
+     return intersectElevationPlane(ray, tr.elevation);
+ }
+ 

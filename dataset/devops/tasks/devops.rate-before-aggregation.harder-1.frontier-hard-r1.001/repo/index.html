@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Counter Order Console</title>
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <main id="app" data-ready="no">
+    <header>
+      <div>
+        <p class="eyebrow">INGRESS COUNTER DASHBOARD</p>
+        <h1>Counter Order Console</h1>
+        <p class="subtitle" data-test="profile"></p>
+      </div>
+      <div class="live"><span></span>protected query engine</div>
+    </header>
+    <section class="toolbar">
+      <div><label>Traffic scenario</label><nav data-test="scenario-controls"></nav></div>
+      <div><label>Counter panel</label><nav data-test="panel-controls"></nav></div>
+    </section>
+    <section class="layout">
+      <article class="panel chart-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" data-test="scenario"></p>
+            <h2 data-test="panel-title"></h2>
+          </div>
+          <span data-test="panel-unit"></span>
+        </div>
+        <div class="summary">
+          <div><span>Peak</span><strong data-test="peak"></strong></div>
+          <div><span>Total in window</span><strong data-test="total"></strong></div>
+          <div><span>Range</span><strong data-test="range"></strong></div>
+          <div><span>Input series</span><strong data-test="series-count"></strong></div>
+        </div>
+        <div class="chart-wrap"><div class="chart" data-test="chart"></div><div class="time-axis" data-test="time-axis" aria-label="Sample times in seconds"></div></div>
+      </article>
+      <aside class="panel">
+        <div class="panel-head"><div><p class="eyebrow">EVENT CORRELATION</p><h2>Markers</h2></div></div>
+        <ul class="markers" data-test="markers"></ul>
+      </aside>
+    </section>
+    <section class="panel targets-panel">
+      <div class="panel-head">
+        <div><p class="eyebrow">RESET IDENTITIES</p><h2>Target evidence</h2></div>
+        <span>counter lifecycle observed by target</span>
+      </div>
+      <table>
+        <thead><tr><th>Target</th><th>Resets</th><th>Last reset</th><th>State</th></tr></thead>
+        <tbody data-test="targets"></tbody>
+      </table>
+    </section>
+    <details class="panel definitions-panel" data-test="definitions-panel">
+      <summary>Query definitions <span>Deployed recording rules and upstream stages</span></summary>
+      <div data-test="definitions"></div>
+    </details>
+    <p class="error" data-test="error"></p>
+  </main>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

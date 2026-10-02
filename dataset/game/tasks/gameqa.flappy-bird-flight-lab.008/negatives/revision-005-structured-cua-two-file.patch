@@ -1,0 +1,96 @@
+diff --git a/src/game.js b/src/game.js
+index 3dbc3b4..c7f7d9e 100644
+--- a/src/game.js
++++ b/src/game.js
+@@ -428,6 +428,14 @@
+         this.record("pulse-received", {id: this.drill.id});
+       }
+ 
++      if (this.phase === "drill") {
++        const initialCollision = this.pipeField.collisionAt(this.lastBirdFrame);
++        if (initialCollision) {
++          this.finishDrill("bump", initialCollision);
++          return;
++        }
++      }
++
+       this.lastBirdFrame = this.bird.step(dt, control);
+       if (this.lastBirdFrame.last_impulse) {
+         this.actualImpulse = this.lastBirdFrame.last_impulse;
+@@ -443,7 +451,7 @@
+         const drillPipe = this.lastPipeFrame.pipes[0];
+         const spec = DRILLS[this.drill.index];
+         if (drillPipe && drillPipe.x <= spec.finishX) {
+-          this.finishDrill(this.lastPipeFrame.scored ? "clear" : "bump", null);
++          this.finishDrill("clear", null);
+         }
+         return;
+       }
+diff --git a/src/pipes.js b/src/pipes.js
+index 5fbf246..ac10a72 100644
+--- a/src/pipes.js
++++ b/src/pipes.js
+@@ -12,6 +12,24 @@
+     [140, 280],
+   ];
+ 
++  function collisionFor(pipe, bird) {
++    const left = pipe.x;
++    const right = left + PIPE_WIDTH;
++    const overlaps = bird.right > left && bird.left < right;
++    if (!overlaps || (bird.top >= pipe.gapTop && bird.bottom <= pipe.gapBottom)) {
++      return null;
++    }
++    return Object.freeze({
++      kind: "pipe",
++      pipe_id: pipe.id,
++      pipe_left: left,
++      pipe_right: right,
++      gap_top: pipe.gapTop,
++      gap_bottom: pipe.gapBottom,
++      bird,
++    });
++  }
++
+   class PipeField {
+     constructor() {
+       this.reset();
+@@ -52,21 +70,8 @@
+         const left = pipe.x;
+         const right = left + PIPE_WIDTH;
+         const bird = birdFrame.bounds;
+-        const overlaps = bird.right > left && bird.left < right;
+-
+-        if (
+-          overlaps
+-          && (bird.top < pipe.gapTop || bird.bottom > pipe.gapBottom)
+-        ) {
+-          collision = Object.freeze({
+-            kind: "pipe",
+-            pipe_id: pipe.id,
+-            pipe_left: left,
+-            pipe_right: right,
+-            gap_top: pipe.gapTop,
+-            gap_bottom: pipe.gapBottom,
+-            bird,
+-          });
++        collision = collisionFor(pipe, bird);
++        if (collision) {
+           break;
+         }
+ 
+@@ -115,6 +120,14 @@
+       });
+     }
+ 
++    collisionAt(birdFrame) {
++      for (const pipe of this.pipes) {
++        const collision = collisionFor(pipe, birdFrame.bounds);
++        if (collision) return collision;
++      }
++      return null;
++    }
++
+     snapshot() {
+       return this.pipes.map((pipe) => Object.freeze({
+         id: pipe.id,

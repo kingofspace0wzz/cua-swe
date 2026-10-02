@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Terrain navigation integrations</title>
+<link rel="stylesheet" href="/src/css/maplibre-gl.css">
+<style>
+body{margin:16px;background:#eef1f3;color:#172535;font:14px system-ui}h1{font-size:22px;margin:0 0 6px}p{margin:8px 0}button{padding:7px 10px;margin:3px 3px 3px 0;cursor:pointer}button:disabled{cursor:default}button[aria-pressed=true]{background:#244b73;color:white}main{display:flex;gap:18px;margin-top:10px}#map{width:600px;height:480px;position:relative;background:#b4c7d6}aside{width:310px}h2{font-size:16px;margin:8px 0}#flat-map{width:300px;height:220px;background:#b4c7d6}.contacts{position:absolute;inset:0;pointer-events:none;z-index:4}.finger,.midpoint{position:absolute;transform:translate(-50%,-50%);border-radius:50%;box-sizing:border-box}.finger{width:22px;height:22px;border:3px solid #2859cc;box-shadow:0 0 0 1px white;color:#172535;text-indent:24px}.midpoint{width:24px;height:24px;border:2px dashed #182c46}.maplibregl-canvas{outline:none}#status{max-width:600px;min-height:20px}#trace{font:12px ui-monospace,monospace;white-space:pre-wrap;margin-top:6px;max-height:100px;overflow:auto}a{color:#174796}.legend{max-width:600px;font-size:13px}#error{color:#8f220e}
+</style>
+<h1>Terrain navigation integrations</h1>
+<p>Keep the magenta ridge place between the contacts as they move and spread. <a href="help.html" target="_blank">Help</a></p>
+<div aria-label="Navigation integration">Navigation integration:
+<button id="native" aria-pressed="true">Native</button><button id="legacy" aria-pressed="false">Legacy</button><button id="reset">Reset</button></div>
+<div aria-label="Move and zoom demonstration"><button id="begin" disabled>Move and zoom</button><button id="step1" disabled>Move 1</button><button id="step2" disabled>Move 2</button><button id="step3" disabled>Move 3</button><button id="release" disabled>Release</button></div>
+<main><section aria-label="Terrain example"><div id="map" role="region" aria-label="Sloped terrain map"></div><p id="status" role="status">Loading terrain…</p><p class="legend">Magenta = ridge place · Cyan = nearby ridge place · Blue rings = contacts · Dashed ring = midpoint. Grid and colored dots are geographic map features.</p><div id="trace" aria-label="Contact trace">No contacts yet.</div><p id="error" role="alert"></p></section>
+<aside><h2>Try the same view in either integration</h2><p>Reset, start Move and zoom, then click the three held moves and Release. Start again without resetting to continue from the accepted view.</p><p>After release, you can also drag the map normally.</p><h2>Flat map navigation</h2><div id="flat-map" role="region" aria-label="Flat map"></div><p>Drag this flat map, or use its zoom buttons.</p><p>Local synthetic Terrarium terrain and geographic grid; no external tile service. <a href="../developer-guides/terrain-queries.md">Query API and units</a></p></aside></main>
+<script type="module" src="fixture.js"></script></html>

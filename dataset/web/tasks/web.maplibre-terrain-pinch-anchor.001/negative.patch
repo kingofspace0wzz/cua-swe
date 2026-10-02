@@ -1,0 +1,39 @@
+diff --git a/src/ui/handler_manager.ts b/src/ui/handler_manager.ts
+index 83a70889ae8daaa1e0179738e1aee1d918742291..3efce9bef369fb142e19d13f5323440de4b03828 100644
+--- a/src/ui/handler_manager.ts
++++ b/src/ui/handler_manager.ts
+@@ -550,7 +550,7 @@ export class HandlerManager {
+ 
+         around ||= this._camera.transform.centerPoint;
+ 
+-        if (terrain && !tr.isPointOnMapSurface(around)) {
++        if (terrain && !tr.isPointOnMapSurface(around, terrain)) {
+             around = tr.centerPoint;
+         }
+ 
+@@ -564,14 +564,14 @@ export class HandlerManager {
+         };
+ 
+         // Pre-zoom location under the mouse cursor is required for accurate mercator panning and zooming
+-        if (this._camera.cameraHelper.useGlobeControls && !tr.isPointOnMapSurface(around)) {
++        if (this._camera.cameraHelper.useGlobeControls && !tr.isPointOnMapSurface(around, terrain)) {
+             around = tr.centerPoint;
+         }
+         // If we are rotating about the center point, avoid numerical issues near the horizon by using the transform's
+         // center directly, instead of computing it from the screen point
+         const preZoomAroundLoc = around.distSqr(tr.centerPoint) < 1.0e-2 ?
+             tr.center :
+-            tr.screenPointToLocation(panDelta ? around.sub(panDelta) : around);
++            tr.screenPointToLocation(panDelta ? around.sub(panDelta) : around, terrain);
+ 
+         this._handleMapControls({
+             terrain,
+@@ -624,7 +624,7 @@ export class HandlerManager {
+         }
+ 
+         if (combinedEventsInProgress.drag && this._terrainMovement && panDelta) {
+-            tr.setCenter(tr.screenPointToLocation(tr.centerPoint.sub(panDelta)));
++            tr.setCenter(tr.screenPointToLocation(tr.centerPoint.sub(panDelta), terrain));
+             return;
+         }
+ 

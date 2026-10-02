@@ -1,0 +1,59 @@
+{
+  "model": "gpt-5.6-sol",
+  "rows": [
+    {
+      "condition": "code-only",
+      "label": "code-01",
+      "model": "gpt-5.6-sol",
+      "scorable": true,
+      "success": false
+    },
+    {
+      "condition": "code-only",
+      "label": "code-02",
+      "model": "gpt-5.6-sol",
+      "scorable": true,
+      "success": false
+    },
+    {
+      "condition": "code-only",
+      "label": "code-03",
+      "model": "gpt-5.6-sol",
+      "scorable": true,
+      "success": false
+    },
+    {
+      "condition": "cua",
+      "label": "cua-01",
+      "model": "gpt-5.6-sol",
+      "scorable": true,
+      "success": false
+    },
+    {
+      "condition": "cua",
+      "label": "cua-02",
+      "model": "gpt-5.6-sol",
+      "scorable": true,
+      "success": false
+    },
+    {
+      "condition": "cua",
+      "label": "cua-03",
+      "model": "gpt-5.6-sol",
+      "scorable": true,
+      "success": false
+    }
+  ],
+  "summary": {
+    "code_only_attempts": 3,
+    "code_only_success_rate": 0.0,
+    "code_only_successes": 0,
+    "cua_attempts": 3,
+    "cua_success_rate": 0.0,
+    "cua_successes": 0,
+    "delta_cua": 0.0,
+    "scorable_rows": 6,
+    "total_rows": 6
+  },
+  "task_id": "gameqa.boxel-rebound-restart-camera-envelope.014"
+}

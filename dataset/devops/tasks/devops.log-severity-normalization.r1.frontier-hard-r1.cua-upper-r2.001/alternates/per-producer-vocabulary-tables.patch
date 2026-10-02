@@ -1,0 +1,24 @@
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,19 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
++const bands = ['TRACE','DEBUG','INFO','WARN','ERROR','FATAL'];
++// Each relay producer's demonstrated keyword vocabulary. The same token can
++// denote different bands per producer: the forwarder fleet's alert is its
++// warning tier (between error and info on each agent's own scale), while the
++// gateway daemon's alert is RFC 5424 severity 1. Delivered numbers are
++// producer-internal scales and unknown site-specific tokens stay unspecified.
++const gatewayKeywords = {err:'ERROR',error:'ERROR',alert:'FATAL',warning:'WARN',warn:'WARN',info:'INFO',informational:'INFO',debug:'DEBUG'};
++const forwarderKeywords = {error:'ERROR',err:'ERROR',alert:'WARN',warning:'WARN',warn:'WARN',info:'INFO',verbose:'DEBUG',debug:'DEBUG'};
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
+-  const decode = severityAdapters[format];
++  if (receiver.source.format === 'syslog') {
++    const table = String(record.body ?? '').includes(': level=') ? forwarderKeywords : gatewayKeywords;
++    const band = table[String(record.severityText ?? '').trim().toLowerCase()] ?? 'UNSPECIFIED';
++    return {band, number:band === 'UNSPECIFIED' ? 0 : bands.indexOf(band)*4+1};
++  }
++  const decode = severityAdapters[receiver.output.format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }

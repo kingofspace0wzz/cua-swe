@@ -1,0 +1,75 @@
+diff --git a/src/entities/hero.js b/src/entities/hero.js
+index e5645dc..3545795 100644
+--- a/src/entities/hero.js
++++ b/src/entities/hero.js
+@@ -24,14 +24,14 @@ class Hero extends GameEntity {
+    * @param {boolean} released
+    */
+   setJetpackInput(active, released) {
+-    this.jetpack = active;
+-    if (active) {
+-      this.jetpackThrusting = true;
+-    }
+-    if (released && this.jetpack) {
++    if (released && !active) {
+       this.jetpackThrusting = false;
+       this.jetpackPower = 0;
+     }
++    if (active) {
++      this.jetpackThrusting = true;
++    }
++    this.jetpack = active;
+   }
+ 
+   /**
+@@ -52,6 +52,7 @@ class Hero extends GameEntity {
+   resetJetpackInput() {
+     this.jetpack = false;
+     this.jetpackThrusting = false;
++    this.jetpackPower = 0;
+   }
+ 
+   /**
+diff --git a/src/index.js b/src/index.js
+index 1e8fabc..106935e 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -283,13 +283,13 @@ function handleInput() {
+       player.accelerating = true;
+     }
+     const jetpackKeyDown = isKeyDown(KEY_X) || isKeyDown(KEY_SHIFT);
+-    const jetpackReleased = wasKeyReleased(KEY_X) || wasKeyReleased(KEY_SHIFT);
++    const jetpackReleased = wasAnyKeyReleased([KEY_X, KEY_SHIFT]);
+     player.setJetpackInput(jetpackKeyDown, jetpackReleased);
+-    player.updateJetpackPower(dt);
++    const jetpackPower = player.updateJetpackPower(dt);
+     if (player.jetpackThrusting && player.fuel > 0) {
+       // Jetpack
+-      player.velocity[1] += dt * 60;
+-      player.fuel = Math.max(0, player.fuel - dt * 20);
++      player.velocity[1] += dt * 60 * jetpackPower;
++      player.fuel = Math.max(0, player.fuel - dt * 20 * jetpackPower);
+       createJetpackParticles();
+     }
+     if (player.jetpack && !jetpackSound) {
+diff --git a/src/lib/keyboard.js b/src/lib/keyboard.js
+index 57bd507..ed21329 100644
+--- a/src/lib/keyboard.js
++++ b/src/lib/keyboard.js
+@@ -108,7 +108,15 @@ const isKeyPressed = (keyCode) => KEYBOARD_ENABLED && keys[keyCode].upCount ===
+  * @return {boolean}
+  */
+ const wasKeyReleased = (keyCode) =>
+-  KEYBOARD_ENABLED && !keys[keyCode].down && keys[keyCode].upCount === 0;
++  KEYBOARD_ENABLED && !keys[keyCode].down && keys[keyCode].upCount === 1;
++
++/**
++ * Returns whether any key completed its release transition.
++ * @param {!Array.<number>} keyCodes
++ * @return {boolean}
++ */
++const wasAnyKeyReleased = (keyCodes) =>
++  keyCodes.some((keyCode) => wasKeyReleased(keyCode));
+ 
+ document.addEventListener('keydown', (e) => {
+   killEvent(e);

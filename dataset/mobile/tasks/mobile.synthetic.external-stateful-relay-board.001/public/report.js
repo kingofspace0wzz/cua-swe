@@ -1,0 +1,6 @@
+import {gateNames,memoryNames,lightNames} from './engine.js';
+const word=(o,keys)=>keys.map(k=>o[k]).join('');
+export function rowText(r){return `Tick ${r.t}\nInputs Tap Sweep E0 E1: ${word(r.v,['Tap','Sweep','E0','E1'])}\nGates ${gateNames.join(' ')}: ${word(r.v,gateNames)}\nOld Q0 Q1 Q2: ${word(r.old,memoryNames)}\nNext Q0 Q1 Q2: ${word(r.next,memoryNames)}\nLights Flare Wash Pearl: ${word(r.v,lightNames)}`;}
+export function ledgerHTML(rows){return rows.map(r=>`<article class="ledger-row"><pre>${rowText(r)}</pre></article>`).join('');}
+export function stageHTML(row,colors){return `<svg role="img" aria-label="Light stage" viewBox="0 0 300 96"><rect width="300" height="96" rx="12" fill="#091422"/>${lightNames.map((n,i)=>`<circle cx="${50+100*i}" cy="48" r="22" fill="${row.v[n]?colors[i]:'#182334'}"/><text x="${50+100*i}" y="87" fill="#ffffff" text-anchor="middle" font-size="12">${n}</text>`).join('')}</svg>`;}
+export function wavesHTML(rows,colors){return `<svg role="img" aria-label="Twelve tick waveform" viewBox="0 0 360 132">${lightNames.map((n,i)=>`<text x="0" y="${25+i*40}" fill="currentColor" font-size="12">${n}</text>${rows.map((r,t)=>`<rect x="${64+t*24}" y="${(r.v[n]?6:24)+i*40}" width="20" height="8" fill="${colors[i]}"/>`).join('')}`).join('')}</svg>`;}

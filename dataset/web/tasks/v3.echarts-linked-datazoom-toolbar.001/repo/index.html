@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fleet Analytics Console</title>
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>Fleet Analytics Console</h1>
+      <span class="ws-name" id="ws-title">Loading workspace…</span>
+    </header>
+    <div class="toolbox">
+      <button id="tb-zoom" type="button">Window zoom</button>
+      <button id="tb-reset" type="button">Reset</button>
+    </div>
+    <p class="hint">Arm Window zoom, then rubber-band a span on the North/Unit/Feeder master chart. The linked panels follow.</p>
+    <main class="console-body" id="console">
+      <section id="master-host"></section>
+      <section id="linked-host"></section>
+    </main>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

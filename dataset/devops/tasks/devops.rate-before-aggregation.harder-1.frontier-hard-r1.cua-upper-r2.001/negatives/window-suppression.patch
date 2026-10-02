@@ -1,0 +1,12 @@
+diff --git a/src/views/controls.js b/src/views/controls.js
+--- a/src/views/controls.js
++++ b/src/views/controls.js
+@@ -33,7 +33,7 @@ export function renderControls(catalog, snapshot) {
+ export function renderWindowControls(catalog, snapshot) {
+   buttons(
+     document.querySelector('[data-test="window-controls"]'),
+-    catalog.windows,
++    catalog.windows.slice(0, 1),
+     snapshot.window.id,
+     "windowId",
+     selectWindow,

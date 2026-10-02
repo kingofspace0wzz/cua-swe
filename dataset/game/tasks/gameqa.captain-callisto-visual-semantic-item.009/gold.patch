@@ -1,0 +1,139 @@
+diff --git a/src/cargo_contract.js b/src/cargo_contract.js
+index cd4c7ed..a661e89 100644
+--- a/src/cargo_contract.js
++++ b/src/cargo_contract.js
+@@ -1,10 +1,9 @@
+ /**
+  * Live center-cargo state supplied by the runtime service.
+- * @type {{semanticKey: string, semanticUnits: number, visualUnits: number}}
++ * @type {{receipt: {key: string, units: number}, visualUnits: number}}
+  */
+ let centerCargoSnapshot = {
+-  semanticKey: 'fallback-center',
+-  semanticUnits: 1,
++  receipt: {key: 'fallback-center', units: 1},
+   visualUnits: 1,
+ };
+ 
+@@ -55,23 +54,38 @@ function collectCargoRecords(value, path, records) {
+ }
+ 
+ /**
+- * Uses the legacy first-record fallback for an unknown cargo contract.
++ * Resolves the selected receipt from the live cargo contract.
+  * @param {!Object} payload
+- * @return {{semanticKey: string, semanticUnits: number, visualUnits: number}}
++ * @return {{receipt: {key: string, units: number}, visualUnits: number}}
+  */
+ function deriveCenterCargo(payload) {
+-  const records = [];
+-  collectCargoRecords(payload, '', records);
+-  const candidate = records[0] || {};
+-  const candidateValues = Object.values(candidate);
+-  const semanticKey = String(
+-      candidateValues.find((value) => typeof value === 'string') ||
+-      'fallback-center');
+-  const semanticUnits = Number(
+-      candidateValues.find((value) => typeof value === 'number') || 1);
++  const activeMap = payload['activeCargoMapV13'];
++  const activeRoute = payload['activeCargoRouteV13'];
++  const routes = payload['cargoRouteMapV13'] || [];
++  const selectedRoute = routes.find((route) =>
++    route['mapGlyphV13'] === activeMap &&
++    route['routeGlyphV13'] === activeRoute) || {};
++  const selectedAlias = selectedRoute['aliasGlyphV13'];
++  const aliases = payload['cargoAliasMapV13'] || [];
++  const aliasRecord = aliases.find((alias) =>
++    alias['aliasGlyphV13'] === selectedAlias) || {};
++  const selectedRelay = aliasRecord['relayGlyphV13'];
++  const relays = payload['cargoRelayMapV13'] || [];
++  const relayRecord = relays.find((relay) =>
++    relay['relayGlyphV13'] === selectedRelay) || {};
++  const activeKey = relayRecord['receiptGlyphV13'];
++  const records = payload['cargoReceiptMatrixV13'] || [];
++  const active = records.find((record) =>
++    record['receiptGlyphV13'] === activeKey) || {};
+   const render = payload['render'] || {};
+   const visualUnits = Math.max(1, Number(render['count']) || 1);
+-  return {semanticKey, semanticUnits, visualUnits};
++  return {
++    receipt: {
++      key: String(active['receiptGlyphV13'] || 'fallback-center'),
++      units: Math.max(1, Number(active['creditUnitsV13']) || 1),
++    },
++    visualUnits,
++  };
+ }
+ 
+ /**
+diff --git a/src/entities/coin.js b/src/entities/coin.js
+index 72dd96f..b86477b 100644
+--- a/src/entities/coin.js
++++ b/src/entities/coin.js
+@@ -8,7 +8,7 @@ class Coin extends GameEntity {
+    * @param {number=} x
+    * @param {number=} y
+    * @param {number=} z
+-   * @param {{semanticKey: string, semanticUnits: number, visualUnits: number}=} cargo
++   * @param {{receipt: {key: string, units: number}, visualUnits: number}=} cargo
+    */
+   constructor(x, y, z, cargo) {
+     super(x, y, z);
+@@ -19,11 +19,8 @@ class Coin extends GameEntity {
+     /** @type {number} */
+     this.pickupSequence = 0;
+ 
+-    /** @type {?string} */
+-    this.semanticKey = cargo ? cargo.semanticKey : null;
+-
+-    /** @type {number} */
+-    this.semanticUnits = cargo ? cargo.semanticUnits : 1;
++    /** @type {?{key: string, units: number}} */
++    this.receipt = cargo ? cargo.receipt : null;
+ 
+     /** @type {number} */
+     this.worldUnits = cargo ? cargo.visualUnits : 1;
+@@ -37,12 +34,14 @@ class Coin extends GameEntity {
+     const dist = this.getDistanceToPlayer();
+     if (dist < 1.0) {
+       this.health = 0;
+-      const pickupKey = this.semanticKey ||
+-          'pickup-' + (++this.pickupSequence);
++      const receipt = this.receipt || {
++        key: 'pickup-' + (++this.pickupSequence),
++        units: 1,
++      };
+       if (this.carrier) {
+         this.carrier.releasePassenger(this);
+       }
+-      recordInventoryReceipt('pickup', pickupKey, this.semanticUnits);
++      recordInventoryReceipt('pickup', receipt);
+       coinSequence++;
+       lastCoinTime = gameTime;
+       playCoinSound();
+diff --git a/src/index.js b/src/index.js
+index f46623c..3d9fa31 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -61,13 +61,17 @@ const inventoryReceipts = [];
+ /**
+  * Records an inventory transition for the current simulation frame.
+  * @param {string} source
+- * @param {string} key
++ * @param {string|{key: string, units: number}} receiptOrKey
+  * @param {number=} units
+  */
+-function recordInventoryReceipt(source, key, units) {
++function recordInventoryReceipt(source, receiptOrKey, units) {
++  const receipt = typeof receiptOrKey === 'object' ? receiptOrKey : {
++    key: String(receiptOrKey),
++    units: units,
++  };
+   const semanticUnits = source === 'transport' ? 0 :
+-      Math.max(0, Number(units) || 1);
+-  inventoryReceipts.push([source, key, semanticUnits]);
++      Math.max(0, Number(receipt.units) || 1);
++  inventoryReceipts.push([source, receipt.key, semanticUnits]);
+ }
+ 
+ /**

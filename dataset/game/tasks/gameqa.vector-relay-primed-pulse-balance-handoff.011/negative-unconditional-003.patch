@@ -1,0 +1,85 @@
+diff --git a/src/relay_commit.js b/src/relay_commit.js
+index 9562d4b..ccf1ef2 100644
+--- a/src/relay_commit.js
++++ b/src/relay_commit.js
+@@ -7,6 +7,7 @@
+     this.nextEntry = 0;
+     this.pending = [];
+     this.dropped = 0;
++    this.transferred = 0;
+   }
+ 
+   RelayLane.prototype.reset = function () {
+@@ -14,6 +15,7 @@
+     this.nextEntry = 0;
+     this.pending.length = 0;
+     this.dropped = 0;
++    this.transferred = 0;
+   };
+ 
+   RelayLane.prototype.open = function (port) {
+@@ -35,6 +37,16 @@
+     return entry.id;
+   };
+ 
++  RelayLane.prototype.transfer = function (previous, next) {
++    if (!previous || !next || previous.key === next.key) return;
++    for (var i = 0; i < this.pending.length; i += 1) {
++      if (this.pending[i].owner !== previous.key) continue;
++      this.pending[i].owner = next.key;
++      this.pending[i].port = next.port;
++      this.transferred += 1;
++    }
++  };
++
+   RelayLane.prototype.take = function (now, owner) {
+     while (this.pending.length && this.pending[0].due <= now) {
+       var entry = this.pending.shift();
+@@ -48,6 +60,7 @@
+     return {
+       pending: this.pending.length,
+       dropped: this.dropped,
++      transferred: this.transferred,
+       nextDue: this.pending.length ? this.pending[0].due : null
+     };
+   };
+diff --git a/src/vector_relay.js b/src/vector_relay.js
+index 3ba9cf0..9e17d02 100644
+--- a/src/vector_relay.js
++++ b/src/vector_relay.js
+@@ -74,6 +74,7 @@
+   };
+ 
+   VectorRelay.prototype.attachBall = function (reason) {
++    var previousOwner = this.ball && this.ball.owner;
+     this.contacts.clear();
+     this.attachmentCount += 1;
+     this.ball = {
+@@ -90,6 +91,7 @@
+       routeTime: 0,
+       overlapSlices: 0
+     };
++    this.lane.transfer(previousOwner, this.ball.owner);
+   };
+ 
+   VectorRelay.prototype.dockPort = function () {
+@@ -100,7 +102,10 @@
+     if (!this.ball.attached) return;
+     var port = this.dockPort();
+     if (this.ball.owner.port === port) return;
+-    this.ball.owner = this.lane.open(port);
++    var previousOwner = this.ball.owner;
++    var nextOwner = this.lane.open(port);
++    this.lane.transfer(previousOwner, nextOwner);
++    this.ball.owner = nextOwner;
+   };
+ 
+   VectorRelay.prototype.redock = function () {
+@@ -316,6 +321,7 @@
+         commits: this.tile.commits,
+         pending: laneState.pending,
+         dropped: laneState.dropped,
++        transferred: laneState.transferred,
+         lastCommit: this.tile.lastCommit
+       },
+       orb: {

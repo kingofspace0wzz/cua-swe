@@ -1,0 +1,45 @@
+id: gameqa.minesweeper-delayed-loss-episode-identity.002
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.minesweeper-delayed-loss-episode-identity.002/repo
+  ref: gameworld-games-55322928-minesweeper-delayed-loss-episode-identity-timing-diagnostic-mutant
+  link_node_modules: false
+  copy_mode: exact
+instruction: >-
+  The deterministic Minesweeper benchmark has an episode-boundary regression
+  in its intentionally delayed loss presentation. After exposing a mine with
+  either a normal click or a count-valid chord, quickly starting a fresh board
+  through the face or Game API can leave the new board dead or later flip it
+  back to the prior loss. Before editing, let one direct loss remain pending
+  until the live Episode integrity panel classifies its Timing check, then use
+  the panel to validate both Timing and Ownership. Preserve first-click safety,
+  seeded layouts, chord/flag/question behavior, counters, adjacency rendering,
+  and both reset routes. Do not remove the delayed presentation or reload the
+  page.
+setup:
+  install: []
+  reset: []
+  launch:
+    - python3 serve.py --port 4394
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4394/
+  viewport_or_device: desktop-1280x720
+  observation_mode: visual
+allowed_tools: {code_edit: true, terminal: true, browser_gui: true, mobile_gui: false}
+budgets: {wall_time_sec: 1200, max_steps: 160, max_gui_actions: 120, max_test_runs: 16}
+verifiers:
+  build: []
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - '"${CUA_SWE_PYTHON:-python3}" verifiers/check_delayed_loss.py --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:4394/}"'
+  side_effects: []
+artifacts: {collect_patch: true, collect_logs: true, collect_screenshots: true, collect_trajectory: true, collect_state_diff: true}
+game_runtime: {provider: gameworld, game_id: 19_minesweeper, state_api: window.gameAPI, seed: 42}
+schema_version: 1

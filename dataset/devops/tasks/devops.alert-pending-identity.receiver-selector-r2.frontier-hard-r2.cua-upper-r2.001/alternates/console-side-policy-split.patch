@@ -1,0 +1,26 @@
+diff -ruN a/src/controllers/console.js b/src/controllers/console.js
+--- a/src/controllers/console.js	2026-09-14 05:09:04.056000000 +0000
++++ b/src/controllers/console.js	2026-09-19 12:30:01.764464563 +0000
+@@ -4,7 +4,21 @@
+ import {render} from '../views/render.js';
+ export async function initialize(){
+  store.catalog=await request('catalog');
+- await request('configure',{rules:store.catalog.rules.map(compileRule)});
++ await request('configure',{rules:store.catalog.rules.map(rule=>{
++  const compiled=compileRule(rule);
++  const epoch=(store.catalog.routing||{}).epoch||{};
++  // Durable receiver identity classes per the posted routing policy runbook (revision 12).
++  const durableClasses=new Set(['RC-2','RC-7']);
++  const scopeByKey={};
++  for(const [scope,declared] of Object.entries(epoch))for(const key of (declared||{}).keys||[])scopeByKey[key]=scope;
++  for(const field of rule.enrichments||[]){
++   const template=String(field.template);
++   const references=[...template.matchAll(/\$route\.(\w+)/g)].map(m=>m[1]);
++   const identity=!/\$value\b/.test(template)&&references.every(key=>durableClasses.has(((epoch[scopeByKey[key]]||{}).policy)));
++   if(!identity&&field.name in compiled.labels){compiled.annotations[field.name]=compiled.labels[field.name];delete compiled.labels[field.name];}
++  }
++  return compiled;
++ })});
+  store.snapshot=await request('snapshot');render(store);
+  document.querySelector('#app').addEventListener('click',async event=>{
+   const button=event.target.closest('button[data-action]');if(!button||store.busy)return;

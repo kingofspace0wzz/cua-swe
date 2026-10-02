@@ -1,0 +1,113 @@
+domain,model,label,condition,metric,successes,denominator,status,percent
+Web,api-gpt6-astra,GPT-6 Astra,code-only,pass@1,10,36,evaluated,27.77777777777778
+Web,api-gpt6-astra,GPT-6 Astra,hybrid,pass@1,24,36,evaluated,66.66666666666667
+Web,api-gpt6-astra,GPT-6 Astra,hybrid,repeat-first,24,36,evaluated,66.66666666666667
+Web,api-gpt6-astra,GPT-6 Astra,hybrid,pass@3,27,36,evaluated,75.0
+Web,api-gpt56-sol,GPT-5.6 Sol,code-only,pass@1,7,36,evaluated,19.444444444444443
+Web,api-gpt56-sol,GPT-5.6 Sol,hybrid,pass@1,21,36,evaluated,58.333333333333336
+Web,api-gpt56-sol,GPT-5.6 Sol,hybrid,repeat-first,21,36,evaluated,58.333333333333336
+Web,api-gpt56-sol,GPT-5.6 Sol,hybrid,pass@3,21,36,evaluated,58.333333333333336
+Web,api-gpt56-luna,GPT-5.6 Luna,code-only,pass@1,4,36,evaluated,11.11111111111111
+Web,api-gpt56-luna,GPT-5.6 Luna,hybrid,pass@1,2,36,evaluated,5.555555555555555
+Web,api-gpt56-terra,GPT-5.6 Terra,code-only,pass@1,4,36,evaluated,11.11111111111111
+Web,api-gpt56-terra,GPT-5.6 Terra,hybrid,pass@1,5,36,evaluated,13.88888888888889
+Web,api-opus5,Opus 5,code-only,pass@1,8,36,evaluated,22.22222222222222
+Web,api-opus5,Opus 5,hybrid,pass@1,20,36,evaluated,55.55555555555556
+Web,api-opus48,Opus 4.8,code-only,pass@1,6,36,evaluated,16.666666666666668
+Web,api-opus48,Opus 4.8,hybrid,pass@1,10,36,evaluated,27.77777777777778
+Web,api-sonnet5,Sonnet 5,code-only,pass@1,3,36,evaluated,8.333333333333334
+Web,api-sonnet5,Sonnet 5,hybrid,pass@1,0,36,evaluated,0.0
+Web,api-fable5,Fable 5,code-only,pass@1,7,36,evaluated,19.444444444444443
+Web,api-fable5,Fable 5,hybrid,pass@1,17,36,evaluated,47.22222222222222
+Web,api-fable5,Fable 5,hybrid,repeat-first,17,36,evaluated,47.22222222222222
+Web,api-fable5,Fable 5,hybrid,pass@3,22,36,evaluated,61.111111111111114
+Web,api-grok46,Grok 4.6,code-only,pass@1,11,36,evaluated,30.555555555555557
+Web,api-grok46,Grok 4.6,hybrid,pass@1,20,36,evaluated,55.55555555555556
+Web,codex-gpt56-sol,Codex + Sol,code-only,pass@1,,,not_evaluated,
+Web,codex-gpt56-sol,Codex + Sol,hybrid,pass@1,20,36,evaluated,55.55555555555556
+Web,claude-code-opus5,Claude Code + Opus 5,code-only,pass@1,,,not_evaluated,
+Web,claude-code-opus5,Claude Code + Opus 5,hybrid,pass@1,20,36,evaluated,55.55555555555556
+Game,api-gpt6-astra,GPT-6 Astra,code-only,pass@1,5,29,evaluated,17.24137931034483
+Game,api-gpt6-astra,GPT-6 Astra,hybrid,pass@1,11,29,evaluated,37.93103448275862
+Game,api-gpt6-astra,GPT-6 Astra,hybrid,repeat-first,17,29,evaluated,58.62068965517241
+Game,api-gpt6-astra,GPT-6 Astra,hybrid,pass@3,18,29,evaluated,62.06896551724138
+Game,api-gpt56-sol,GPT-5.6 Sol,code-only,pass@1,3,29,evaluated,10.344827586206897
+Game,api-gpt56-sol,GPT-5.6 Sol,hybrid,pass@1,3,29,evaluated,10.344827586206897
+Game,api-gpt56-sol,GPT-5.6 Sol,hybrid,repeat-first,3,29,evaluated,10.344827586206897
+Game,api-gpt56-sol,GPT-5.6 Sol,hybrid,pass@3,9,29,evaluated,31.03448275862069
+Game,api-gpt56-luna,GPT-5.6 Luna,code-only,pass@1,0,29,evaluated,0.0
+Game,api-gpt56-luna,GPT-5.6 Luna,hybrid,pass@1,2,29,evaluated,6.896551724137931
+Game,api-gpt56-terra,GPT-5.6 Terra,code-only,pass@1,1,29,evaluated,3.4482758620689653
+Game,api-gpt56-terra,GPT-5.6 Terra,hybrid,pass@1,2,29,evaluated,6.896551724137931
+Game,api-opus5,Opus 5,code-only,pass@1,4,29,evaluated,13.793103448275861
+Game,api-opus5,Opus 5,hybrid,pass@1,6,29,evaluated,20.689655172413794
+Game,api-opus48,Opus 4.8,code-only,pass@1,1,29,evaluated,3.4482758620689653
+Game,api-opus48,Opus 4.8,hybrid,pass@1,6,29,evaluated,20.689655172413794
+Game,api-sonnet5,Sonnet 5,code-only,pass@1,2,29,evaluated,6.896551724137931
+Game,api-sonnet5,Sonnet 5,hybrid,pass@1,1,29,evaluated,3.4482758620689653
+Game,api-fable5,Fable 5,code-only,pass@1,4,29,evaluated,13.793103448275861
+Game,api-fable5,Fable 5,hybrid,pass@1,5,29,evaluated,17.24137931034483
+Game,api-fable5,Fable 5,hybrid,repeat-first,6,29,evaluated,20.689655172413794
+Game,api-fable5,Fable 5,hybrid,pass@3,12,29,evaluated,41.37931034482759
+Game,api-grok46,Grok 4.6,code-only,pass@1,3,29,evaluated,10.344827586206897
+Game,api-grok46,Grok 4.6,hybrid,pass@1,5,29,evaluated,17.24137931034483
+Game,codex-gpt56-sol,Codex + Sol,code-only,pass@1,,,not_evaluated,
+Game,codex-gpt56-sol,Codex + Sol,hybrid,pass@1,5,29,evaluated,17.24137931034483
+Game,claude-code-opus5,Claude Code + Opus 5,code-only,pass@1,,,not_evaluated,
+Game,claude-code-opus5,Claude Code + Opus 5,hybrid,pass@1,6,29,evaluated,20.689655172413794
+DevOps,api-gpt6-astra,GPT-6 Astra,code-only,pass@1,0,20,evaluated,0.0
+DevOps,api-gpt6-astra,GPT-6 Astra,hybrid,pass@1,16,20,evaluated,80.0
+DevOps,api-gpt6-astra,GPT-6 Astra,hybrid,repeat-first,16,20,evaluated,80.0
+DevOps,api-gpt6-astra,GPT-6 Astra,hybrid,pass@3,18,20,evaluated,90.0
+DevOps,api-gpt56-sol,GPT-5.6 Sol,code-only,pass@1,0,20,evaluated,0.0
+DevOps,api-gpt56-sol,GPT-5.6 Sol,hybrid,pass@1,11,20,evaluated,55.0
+DevOps,api-gpt56-sol,GPT-5.6 Sol,hybrid,repeat-first,11,20,evaluated,55.0
+DevOps,api-gpt56-sol,GPT-5.6 Sol,hybrid,pass@3,12,20,evaluated,60.0
+DevOps,api-gpt56-luna,GPT-5.6 Luna,code-only,pass@1,0,20,evaluated,0.0
+DevOps,api-gpt56-luna,GPT-5.6 Luna,hybrid,pass@1,3,20,evaluated,15.0
+DevOps,api-gpt56-terra,GPT-5.6 Terra,code-only,pass@1,0,20,evaluated,0.0
+DevOps,api-gpt56-terra,GPT-5.6 Terra,hybrid,pass@1,5,20,evaluated,25.0
+DevOps,api-opus5,Opus 5,code-only,pass@1,0,20,evaluated,0.0
+DevOps,api-opus5,Opus 5,hybrid,pass@1,12,20,evaluated,60.0
+DevOps,api-opus48,Opus 4.8,code-only,pass@1,0,20,evaluated,0.0
+DevOps,api-opus48,Opus 4.8,hybrid,pass@1,11,20,evaluated,55.0
+DevOps,api-sonnet5,Sonnet 5,code-only,pass@1,0,20,evaluated,0.0
+DevOps,api-sonnet5,Sonnet 5,hybrid,pass@1,8,20,evaluated,40.0
+DevOps,api-fable5,Fable 5,code-only,pass@1,1,20,evaluated,5.0
+DevOps,api-fable5,Fable 5,hybrid,pass@1,11,20,evaluated,55.0
+DevOps,api-fable5,Fable 5,hybrid,repeat-first,11,20,evaluated,55.0
+DevOps,api-fable5,Fable 5,hybrid,pass@3,14,20,evaluated,70.0
+DevOps,api-grok46,Grok 4.6,code-only,pass@1,0,20,evaluated,0.0
+DevOps,api-grok46,Grok 4.6,hybrid,pass@1,13,20,evaluated,65.0
+DevOps,codex-gpt56-sol,Codex + Sol,code-only,pass@1,,,not_evaluated,
+DevOps,codex-gpt56-sol,Codex + Sol,hybrid,pass@1,11,20,evaluated,55.0
+DevOps,claude-code-opus5,Claude Code + Opus 5,code-only,pass@1,,,not_evaluated,
+DevOps,claude-code-opus5,Claude Code + Opus 5,hybrid,pass@1,13,20,evaluated,65.0
+Mobile,api-gpt6-astra,GPT-6 Astra,code-only,pass@1,0,20,evaluated,0.0
+Mobile,api-gpt6-astra,GPT-6 Astra,hybrid,pass@1,11,20,evaluated,55.0
+Mobile,api-gpt6-astra,GPT-6 Astra,hybrid,repeat-first,11,20,evaluated,55.0
+Mobile,api-gpt6-astra,GPT-6 Astra,hybrid,pass@3,12,20,evaluated,60.0
+Mobile,api-gpt56-sol,GPT-5.6 Sol,code-only,pass@1,0,20,evaluated,0.0
+Mobile,api-gpt56-sol,GPT-5.6 Sol,hybrid,pass@1,9,20,evaluated,45.0
+Mobile,api-gpt56-sol,GPT-5.6 Sol,hybrid,repeat-first,9,20,evaluated,45.0
+Mobile,api-gpt56-sol,GPT-5.6 Sol,hybrid,pass@3,10,20,evaluated,50.0
+Mobile,api-gpt56-luna,GPT-5.6 Luna,code-only,pass@1,0,20,evaluated,0.0
+Mobile,api-gpt56-luna,GPT-5.6 Luna,hybrid,pass@1,7,20,evaluated,35.0
+Mobile,api-gpt56-terra,GPT-5.6 Terra,code-only,pass@1,0,20,evaluated,0.0
+Mobile,api-gpt56-terra,GPT-5.6 Terra,hybrid,pass@1,7,20,evaluated,35.0
+Mobile,api-opus5,Opus 5,code-only,pass@1,,,deferred,
+Mobile,api-opus5,Opus 5,hybrid,pass@1,,,deferred,
+Mobile,api-opus48,Opus 4.8,code-only,pass@1,0,20,evaluated,0.0
+Mobile,api-opus48,Opus 4.8,hybrid,pass@1,8,20,evaluated,40.0
+Mobile,api-sonnet5,Sonnet 5,code-only,pass@1,0,20,evaluated,0.0
+Mobile,api-sonnet5,Sonnet 5,hybrid,pass@1,7,20,evaluated,35.0
+Mobile,api-fable5,Fable 5,code-only,pass@1,1,20,evaluated,5.0
+Mobile,api-fable5,Fable 5,hybrid,pass@1,8,20,evaluated,40.0
+Mobile,api-fable5,Fable 5,hybrid,repeat-first,8,20,evaluated,40.0
+Mobile,api-fable5,Fable 5,hybrid,pass@3,8,20,evaluated,40.0
+Mobile,api-grok46,Grok 4.6,code-only,pass@1,0,20,evaluated,0.0
+Mobile,api-grok46,Grok 4.6,hybrid,pass@1,6,20,evaluated,30.0
+Mobile,codex-gpt56-sol,Codex + Sol,code-only,pass@1,,,not_evaluated,
+Mobile,codex-gpt56-sol,Codex + Sol,hybrid,pass@1,8,20,evaluated,40.0
+Mobile,claude-code-opus5,Claude Code + Opus 5,code-only,pass@1,,,not_evaluated,
+Mobile,claude-code-opus5,Claude Code + Opus 5,hybrid,pass@1,,,deferred,

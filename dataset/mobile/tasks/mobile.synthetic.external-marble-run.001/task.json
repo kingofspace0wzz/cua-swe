@@ -1,0 +1,148 @@
+{
+  "task_id": "mobile.synthetic.external-marble-run.001",
+  "revision": "001",
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "public_files": {
+    "LICENSE": {
+      "path": "public/LICENSE",
+      "sha256": "64447d986971f49f583c024c01fa4e6314ab5cd7c90b4339d803b36efa304fdc"
+    },
+    "app.js": {
+      "path": "public/app.js",
+      "sha256": "b371627ddee961300613ab72d25f7860a9a1a44b343902a02831e67f9debba4d"
+    },
+    "boundary.js": {
+      "path": "public/boundary.js",
+      "sha256": "7df6f5fc9838dd5c1c89e0cac0fefe413153b86f033e8e533547738737cf1a6a"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "fa7269eff98cb712db8840b5c6c7a55bdef9753d6b51252caab075639a607e3e"
+    },
+    "engine.js": {
+      "path": "public/engine.js",
+      "sha256": "eb220034fe88098f096d5649169c2c21b6be5156a7f45ddf72ccabf3011d7515"
+    },
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "94ff2cf472479b04c5f59676012919b8663c402fee19071bc669c81feeb7607a"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "befa7e66895c09f8300a8c5cd39b62e98b4ead24fbbe5a638cd6a78216ee37ea"
+    },
+    "viewer.js": {
+      "path": "public/viewer.js",
+      "sha256": "eab9454376ffac37a5319dc3dd4c21c8f0f2bd87fcd81c4d5b11157ac22af1c2"
+    }
+  },
+  "editable": [
+    "LICENSE",
+    "app.js",
+    "boundary.js",
+    "engine.js",
+    "index.html",
+    "style.css",
+    "viewer.js"
+  ],
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "b44641a24e86da32914f2ddac4509f9ca5c1887a470b90b165e143958a5fa794"
+  },
+  "scratch": [
+    "dist/"
+  ],
+  "dependencies": [],
+  "expected_assertions": [
+    "harbor_motion",
+    "orchard_motion",
+    "absolute_replay",
+    "draft_and_inverse_receipt",
+    "independent_saved_tracks",
+    "received_evidence_preserved"
+  ],
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "native": {
+      "schema": 1,
+      "assets": [],
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "LICENSE",
+          "app.js",
+          "boundary.js",
+          "engine.js",
+          "index.html",
+          "style.css",
+          "viewer.js"
+        ],
+        "timeout_seconds": 20
+      },
+      "scene": {
+        "path": "/",
+        "frame_paths": [],
+        "viewport": {
+          "width": 400,
+          "height": 800
+        },
+        "device_scale_factor": 1,
+        "locale": "en-US",
+        "timezone": "UTC",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 30000
+      },
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "deb582205b3009a246885e6ef87bbb0f201c6348932504a81227cd5a903d75f6"
+      },
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "5196aed68df2e4e1abd0d89bda793e4a792eb1f50d517e04c0d3f70ab9567cf6"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "63d49bdd1f479f8587ed7503856a70b390176504d1aaad5452890ba2669b6a18"
+      }
+    }
+  },
+  "controls": {
+    "gold": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "248525cd79fc98eea91006de3cb0ea22cccb5c9690db60ea9e31d4ee5ee94ab7"
+      }
+    },
+    "alternative": {
+      "correct": true,
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "e16c0e1b78333f83bb82fcbbe05bd9a7c26421686591c257a91c258a9d671b53"
+      }
+    },
+    "partial": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "489150fd5d14333c1549e5a8e8ffde400fef039e857939a8fe3b78f3263569b9"
+      }
+    },
+    "artifact-guess": {
+      "correct": false,
+      "patch": {
+        "path": "controls/artifact-guess.json",
+        "sha256": "c98bea111fa47ecfba5f7278d38d61ae1b3859eb6b96673e1a811163b5556ee4"
+      }
+    }
+  }
+}

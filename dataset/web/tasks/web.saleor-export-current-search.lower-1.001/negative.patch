@@ -1,0 +1,14 @@
+diff --git a/src/exportRequest.js b/src/exportRequest.js
+index 02106c1..b7714a2 100644
+--- a/src/exportRequest.js
++++ b/src/exportRequest.js
+@@ -1,8 +1,7 @@
+ export function buildExportRequest(scope, activeFilters, workspacePolicy) {
+   const input = { scope, exportInfo: { fields: ['NAME', 'SKU'] } };
+   if (scope === 'CURRENT_SEARCH') {
+-    // Regression: the selected search scope is never attached to the request.
+-    return input;
++    return {...input, where: {combiner: 'ALL', filters: activeFilters}};
+   }
+   return input;
+ }

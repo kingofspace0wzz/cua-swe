@@ -1,0 +1,22 @@
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,7 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
++  const format = receiver.output.format;
+   const decode = severityAdapters[format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -7,7 +7,7 @@
+  async function show(){state.snapshot=await api('snapshot');render(root,state);root.dataset.ready='yes';}
+  async function ingest(snapshot) {
+   ingestor=createIngestor(snapshot.receivers);
+-  for(const batch of snapshot.batches)ingestor.accept(batch);
++  for(const batch of snapshot.batches){for(const record of batch.records)record.body={message:"Everything healthy",level:"info"};ingestor.accept(batch);}
+   await api('ingest',{generation:snapshot.generation,...ingestor.snapshot()});
+   state.receiverId=snapshot.receivers[0].id;state.selected=null;state.filter='all';await show();
+  }

@@ -1,0 +1,9 @@
+{
+  "name": "fleet-analytics-console",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node build.mjs"
+  }
+}

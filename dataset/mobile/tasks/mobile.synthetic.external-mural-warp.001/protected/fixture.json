@@ -1,0 +1,1184 @@
+{
+  "inbox": [
+    {
+      "id": "canal-evening",
+      "title": "Canal evening",
+      "wall": {
+        "width": 360,
+        "height": 300
+      },
+      "artwork": {
+        "width": 200,
+        "height": 160,
+        "shapes": [
+          {
+            "name": "Paper",
+            "color": "#f5e9c9",
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                200,
+                0
+              ],
+              [
+                200,
+                160
+              ],
+              [
+                0,
+                160
+              ]
+            ]
+          },
+          {
+            "name": "Tide arrow",
+            "color": "#137f9c",
+            "points": [
+              [
+                18,
+                28
+              ],
+              [
+                111,
+                28
+              ],
+              [
+                111,
+                12
+              ],
+              [
+                163,
+                48
+              ],
+              [
+                111,
+                82
+              ],
+              [
+                111,
+                62
+              ],
+              [
+                18,
+                62
+              ]
+            ]
+          },
+          {
+            "name": "Gold stair",
+            "color": "#f0af36",
+            "points": [
+              [
+                24,
+                92
+              ],
+              [
+                55,
+                92
+              ],
+              [
+                55,
+                77
+              ],
+              [
+                80,
+                77
+              ],
+              [
+                80,
+                128
+              ],
+              [
+                112,
+                128
+              ],
+              [
+                112,
+                148
+              ],
+              [
+                24,
+                148
+              ]
+            ]
+          },
+          {
+            "name": "Rose kite",
+            "color": "#cb3c69",
+            "points": [
+              [
+                146,
+                85
+              ],
+              [
+                185,
+                107
+              ],
+              [
+                161,
+                143
+              ],
+              [
+                133,
+                119
+              ]
+            ]
+          },
+          {
+            "name": "Night tab",
+            "color": "#313e79",
+            "points": [
+              [
+                4,
+                5
+              ],
+              [
+                36,
+                5
+              ],
+              [
+                36,
+                18
+              ],
+              [
+                4,
+                18
+              ]
+            ]
+          }
+        ]
+      },
+      "panels": [
+        {
+          "id": "quay",
+          "label": "Quay",
+          "crop": [
+            0,
+            0,
+            200,
+            160
+          ],
+          "placement": [
+            [
+              20,
+              32
+            ],
+            [
+              178,
+              24
+            ],
+            [
+              190,
+              278
+            ],
+            [
+              32,
+              260
+            ]
+          ],
+          "displayPolygon": [
+            [
+              32,
+              31.3924050633
+            ],
+            [
+              178,
+              24
+            ],
+            [
+              190,
+              278
+            ],
+            [
+              32,
+              260
+            ],
+            [
+              25,
+              128.3333333333
+            ]
+          ],
+          "obstructions": [
+            [
+              [
+                75,
+                130
+              ],
+              [
+                108,
+                128
+              ],
+              [
+                112,
+                167
+              ],
+              [
+                78,
+                170
+              ]
+            ]
+          ]
+        },
+        {
+          "id": "steps",
+          "label": "Steps",
+          "crop": [
+            0,
+            0,
+            200,
+            160
+          ],
+          "placement": [
+            [
+              178,
+              24
+            ],
+            [
+              338,
+              44
+            ],
+            [
+              330,
+              256
+            ],
+            [
+              190,
+              278
+            ]
+          ],
+          "displayPolygon": [
+            [
+              178,
+              24
+            ],
+            [
+              320,
+              41.75
+            ],
+            [
+              337,
+              70.5
+            ],
+            [
+              330,
+              256
+            ],
+            [
+              190,
+              278
+            ]
+          ],
+          "obstructions": [
+            [
+              [
+                250,
+                160
+              ],
+              [
+                285,
+                158
+              ],
+              [
+                283,
+                197
+              ],
+              [
+                250,
+                199
+              ]
+            ]
+          ]
+        }
+      ],
+      "pins": [
+        {
+          "id": "mark-1",
+          "label": "Start",
+          "panelId": "quay",
+          "source": [
+            60.0,
+            54.199999999999996
+          ]
+        },
+        {
+          "id": "mark-2",
+          "label": "Finish",
+          "panelId": "steps",
+          "source": [
+            75.0,
+            63.5
+          ]
+        }
+      ],
+      "attachments": [
+        {
+          "kind": "guide",
+          "title": "Received provider guide",
+          "pages": [
+            {
+              "title": "1 \u00b7 Received interface / domains",
+              "text": "Projection Office v2. This complete guide applies to both packets. Source coordinates are artwork pixels, x right and y down. Wall coordinates are plan units, x right and y down, within the declared wall width and height. Inline panel crop and placement are retained survey envelopes, NOT v2 registration correspondences. The registration-report attachment is authoritative. Select a panel by its panelId, not by list position. Artwork polygons are painted in listed order."
+            },
+            {
+              "title": "2 \u00b7 Crop and local orientation",
+              "text": "For each registration panel, sourceWindow is [x,y,width,height] in source pixels. Discard source content outside that closed rectangle before projecting. Normalize the window to (u,v) in [0,1]\u00b2. If reflectU is true, first replace u by 1-u. Next apply quarterTurnsClockwise times (u,v) -> (1-v,u). This oriented local square is the control report local coordinate domain. Do not rotate the wall or the display aperture."
+            },
+            {
+              "title": "3 \u00b7 Registration / homogeneous division",
+              "text": "Each control matches local [u,v] to station [east,north]. Controls are samples, NOT ordered corners; pair values from the same row. Fit the unique nonsingular projective homography from these four pairs. Divide the first and second homogeneous components by the third. Convert station to wall with x=(east-originEast)/stationUnitsPerWallUnit, y=wallHeight-(north-originNorth)/stationUnitsPerWallUnit, using the report stationFrame. A projective mapping, not a bilinear or affine warp, is required. Station frame conversion and source orientation also apply to inverse edits."
+            },
+            {
+              "title": "4 \u00b7 Visible region and seam",
+              "text": "Clip projected artwork to panel.displayPolygon (closed, convex) and subtract all panel.obstructions, including their boundaries. These wall-space polygons do not rotate with the artwork. A source pin is valid only inside the sourceWindow and its own panel visible region. At a shared boundary, choose the first valid panel in report seamPriority. Away from overlap, the unique visible panel owns the wall point. Pin validity also requires an inverse point inside that panel sourceWindow. The gray obstruction is unpainted; off-wall space is unpainted."
+            },
+            {
+              "title": "5 \u00b7 Pin edits and saved plans",
+              "text": "Wall numeric placement and wall taps move the selected pin through the full inverse transform and update its panel ownership. An invalid point (obstruction, outside display, or outside the inverse source window) is rejected: leave panel, source and selected mark unchanged, and show a rejection message. Source numeric placement stays on the selected panel and obeys the same visibility rule; only the seam owner is valid on a shared boundary. Display source and wall coordinates to two decimals. Internal precision is retained. A selected pin is a black circle with a white center; all pins use this mark, selected adds a purple outer ring. Marks are not part of the artwork."
+            },
+            {
+              "title": "6 \u00b7 Editing / receipt serialization",
+              "text": "Undo reverses the last accepted move; a rejected move does not add history. Cancel restores the last saved plan for the current packet (or its received pins if never saved). Save plan persists source-domain pins with panel IDs, label and note independently per packet, and emits a readable plan receipt. Receipt rows include panelId, source [x,y], local [u,v] AFTER orientation, and station [east,north] obtained from the registration. Reopen saved and an ordinary reload restore that saved plan. Switching packets never overwrites a saved plan. A rebuild explicitly resets the imported scene. Received guide, raw report, artwork and intended projection plates are always readable, including before a repair."
+            }
+          ]
+        },
+        {
+          "kind": "registration-report",
+          "title": "Registration report",
+          "data": {
+            "interface": "Projection Office registration 2",
+            "stationFrame": {
+              "originEast": 1000,
+              "originNorth": 2000,
+              "stationUnitsPerWallUnit": 10,
+              "wallHeight": 300
+            },
+            "seamPriority": [
+              "steps",
+              "quay"
+            ],
+            "panels": [
+              {
+                "panelId": "steps",
+                "sourceWindow": [
+                  30,
+                  18,
+                  150,
+                  130
+                ],
+                "orientation": {
+                  "reflectU": true,
+                  "quarterTurnsClockwise": 2
+                },
+                "controls": [
+                  {
+                    "controlId": "C3",
+                    "local": [
+                      0.85,
+                      0.8
+                    ],
+                    "station": [
+                      4242.452374808,
+                      2675.742080177
+                    ]
+                  },
+                  {
+                    "controlId": "C1",
+                    "local": [
+                      0.12,
+                      0.16
+                    ],
+                    "station": [
+                      2912.317240227,
+                      4399.910532306
+                    ]
+                  },
+                  {
+                    "controlId": "C4",
+                    "local": [
+                      0.17,
+                      0.87
+                    ],
+                    "station": [
+                      3051.619480716,
+                      2421.627526014
+                    ]
+                  },
+                  {
+                    "controlId": "C2",
+                    "local": [
+                      0.91,
+                      0.13
+                    ],
+                    "station": [
+                      4396.4658072,
+                      4378.990266854
+                    ]
+                  }
+                ]
+              },
+              {
+                "panelId": "quay",
+                "sourceWindow": [
+                  12,
+                  8,
+                  160,
+                  132
+                ],
+                "orientation": {
+                  "reflectU": false,
+                  "quarterTurnsClockwise": 1
+                },
+                "controls": [
+                  {
+                    "controlId": "C3",
+                    "local": [
+                      0.85,
+                      0.8
+                    ],
+                    "station": [
+                      2738.178410758,
+                      2684.346023274
+                    ]
+                  },
+                  {
+                    "controlId": "C1",
+                    "local": [
+                      0.12,
+                      0.16
+                    ],
+                    "station": [
+                      1297.136384981,
+                      4460.215236605
+                    ]
+                  },
+                  {
+                    "controlId": "C4",
+                    "local": [
+                      0.17,
+                      0.87
+                    ],
+                    "station": [
+                      1441.056461371,
+                      2546.613673448
+                    ]
+                  },
+                  {
+                    "controlId": "C2",
+                    "local": [
+                      0.91,
+                      0.13
+                    ],
+                    "station": [
+                      2793.225387739,
+                      4563.601580972
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "pages": [
+            {
+              "title": "Station frame and ownership",
+              "text": "Registration report \u00b7 Canal evening",
+              "table": {
+                "columns": [
+                  "Field",
+                  "Value"
+                ],
+                "rows": [
+                  [
+                    "originEast",
+                    "1000"
+                  ],
+                  [
+                    "originNorth",
+                    "2000"
+                  ],
+                  [
+                    "stationUnitsPerWallUnit",
+                    "10"
+                  ],
+                  [
+                    "wallHeight",
+                    "300"
+                  ],
+                  [
+                    "seamPriority",
+                    "steps \u2192 quay"
+                  ]
+                ]
+              }
+            },
+            {
+              "title": "Panel steps \u00b7 source domain",
+              "text": "sourceWindow = [30, 18, 150, 130]; reflectU = true; quarterTurnsClockwise = 2. Read the guide for operation order."
+            },
+            {
+              "title": "Panel steps \u00b7 paired controls",
+              "text": "local \u2192 station. These are interior registration samples, not footprint corners.",
+              "table": {
+                "columns": [
+                  "Control / local",
+                  "Station east, north"
+                ],
+                "rows": [
+                  [
+                    "C3 / [0.85, 0.8]",
+                    "4242.452375, 2675.742080"
+                  ],
+                  [
+                    "C1 / [0.12, 0.16]",
+                    "2912.317240, 4399.910532"
+                  ],
+                  [
+                    "C4 / [0.17, 0.87]",
+                    "3051.619481, 2421.627526"
+                  ],
+                  [
+                    "C2 / [0.91, 0.13]",
+                    "4396.465807, 4378.990267"
+                  ]
+                ]
+              }
+            },
+            {
+              "title": "Panel quay \u00b7 source domain",
+              "text": "sourceWindow = [12, 8, 160, 132]; reflectU = false; quarterTurnsClockwise = 1. Read the guide for operation order."
+            },
+            {
+              "title": "Panel quay \u00b7 paired controls",
+              "text": "local \u2192 station. These are interior registration samples, not footprint corners.",
+              "table": {
+                "columns": [
+                  "Control / local",
+                  "Station east, north"
+                ],
+                "rows": [
+                  [
+                    "C3 / [0.85, 0.8]",
+                    "2738.178411, 2684.346023"
+                  ],
+                  [
+                    "C1 / [0.12, 0.16]",
+                    "1297.136385, 4460.215237"
+                  ],
+                  [
+                    "C4 / [0.17, 0.87]",
+                    "1441.056461, 2546.613673"
+                  ],
+                  [
+                    "C2 / [0.91, 0.13]",
+                    "2793.225388, 4563.601581"
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "kind": "image",
+          "title": "Source artwork",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 200 160\"><polygon points=\"0.00000,0.00000 200.00000,0.00000 200.00000,160.00000 0.00000,160.00000\" fill=\"#f5e9c9\"/><polygon points=\"18.00000,28.00000 111.00000,28.00000 111.00000,12.00000 163.00000,48.00000 111.00000,82.00000 111.00000,62.00000 18.00000,62.00000\" fill=\"#137f9c\"/><polygon points=\"24.00000,92.00000 55.00000,92.00000 55.00000,77.00000 80.00000,77.00000 80.00000,128.00000 112.00000,128.00000 112.00000,148.00000 24.00000,148.00000\" fill=\"#f0af36\"/><polygon points=\"146.00000,85.00000 185.00000,107.00000 161.00000,143.00000 133.00000,119.00000\" fill=\"#cb3c69\"/><polygon points=\"4.00000,5.00000 36.00000,5.00000 36.00000,18.00000 4.00000,18.00000\" fill=\"#313e79\"/></svg>"
+        },
+        {
+          "kind": "image",
+          "title": "Intended projection plate",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 360 328\"><rect width=\"360\" height=\"328\" fill=\"#edf0f5\"/><defs><clipPath id=\"visible0\"><polygon points=\"32.00000,31.39241 178.00000,24.00000 190.00000,278.00000 32.00000,260.00000 25.00000,128.33333\"/></clipPath></defs><g clip-path=\"url(#visible0)\"><polygon points=\"7.00000,12.00000 196.00000,7.00000 206.00000,290.00000 14.00000,279.00000\" fill=\"#f5e9c9\"/><polygon points=\"166.28573,18.17730 171.78384,180.43613 196.03715,181.04619 144.90759,270.69695 92.44333,178.44042 121.38639,179.16845 116.35555,19.34299\" fill=\"#137f9c\"/><polygon points=\"7.51882,31.78942 73.81931,30.44781 75.35947,82.81316 96.71251,82.72514 98.01225,125.42700 26.35927,124.78781 27.80958,178.49607 11.35399,178.07351\" fill=\"#f0af36\"/><polygon points=\"89.94410,238.50417 70.31322,282.22628 32.62987,280.06734 13.60147,263.79897 13.35821,254.52027 41.24392,214.35082\" fill=\"#cb3c69\"/><polygon points=\"196.00000,7.00000 197.48280,48.96333 182.34539,49.17534 180.89966,7.39948\" fill=\"#313e79\"/></g><polygon points=\"75.00000,130.00000 108.00000,128.00000 112.00000,167.00000 78.00000,170.00000\" fill=\"#a7aeb8\" stroke=\"#525d6a\"/><polygon points=\"32.00000,31.39241 178.00000,24.00000 190.00000,278.00000 32.00000,260.00000 25.00000,128.33333\" fill=\"none\" stroke=\"#263348\" stroke-width=\"1.5\"/><text x=\"82\" y=\"315\" text-anchor=\"middle\" font-size=\"15\" fill=\"#142438\">Quay</text><defs><clipPath id=\"visible1\"><polygon points=\"178.00000,24.00000 320.00000,41.75000 337.00000,70.50000 330.00000,256.00000 190.00000,278.00000\"/></clipPath></defs><g clip-path=\"url(#visible1)\"><polygon points=\"164.00000,8.00000 173.00000,294.00000 346.00000,277.00000 356.00000,28.00000\" fill=\"#f5e9c9\"/><polygon points=\"172.37615,274.17554 272.19411,265.77580 272.01562,284.27014 281.79140,283.30952 330.33984,224.73191 273.20727,160.80130 272.82200,200.71995 170.17595,204.25795\" fill=\"#137f9c\"/><polygon points=\"168.12650,139.13115 202.38431,139.53098 202.96667,171.71923 235.18836,171.34293 234.59956,61.19095 275.37882,64.05069 275.82821,19.64877 164.00000,8.00000\" fill=\"#f0af36\"/><polygon points=\"313.83713,154.73179 352.40722,117.46033 353.23155,96.93446 334.26364,36.48315 300.44585,84.94926\" fill=\"#cb3c69\"/><polygon points=\"173.00000,294.00000 180.84526,293.22908 180.84526,293.22908 173.00000,294.00000\" fill=\"#313e79\"/></g><polygon points=\"250.00000,160.00000 285.00000,158.00000 283.00000,197.00000 250.00000,199.00000\" fill=\"#a7aeb8\" stroke=\"#525d6a\"/><polygon points=\"178.00000,24.00000 320.00000,41.75000 337.00000,70.50000 330.00000,256.00000 190.00000,278.00000\" fill=\"none\" stroke=\"#263348\" stroke-width=\"1.5\"/><text x=\"257\" y=\"315\" text-anchor=\"middle\" font-size=\"15\" fill=\"#142438\">Steps</text></svg>",
+          "caption": "Office drawing \u2022 wall space \u2022 gray = blocked. Colors, orientation, cut edges and the panel seam are intentional. Pins are client edits, not printed on this plate."
+        }
+      ]
+    },
+    {
+      "id": "orchard-noon",
+      "title": "Orchard noon",
+      "wall": {
+        "width": 360,
+        "height": 300
+      },
+      "artwork": {
+        "width": 200,
+        "height": 160,
+        "shapes": [
+          {
+            "name": "Paper",
+            "color": "#e7efdb",
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                200,
+                0
+              ],
+              [
+                200,
+                160
+              ],
+              [
+                0,
+                160
+              ]
+            ]
+          },
+          {
+            "name": "Leaf fork",
+            "color": "#68ad63",
+            "points": [
+              [
+                10,
+                20
+              ],
+              [
+                54,
+                20
+              ],
+              [
+                91,
+                66
+              ],
+              [
+                140,
+                22
+              ],
+              [
+                164,
+                49
+              ],
+              [
+                112,
+                98
+              ],
+              [
+                107,
+                146
+              ],
+              [
+                69,
+                146
+              ],
+              [
+                70,
+                89
+              ]
+            ]
+          },
+          {
+            "name": "Rose sail",
+            "color": "#cb3c69",
+            "points": [
+              [
+                144,
+                76
+              ],
+              [
+                191,
+                92
+              ],
+              [
+                168,
+                150
+              ],
+              [
+                135,
+                126
+              ]
+            ]
+          },
+          {
+            "name": "Blue step",
+            "color": "#137f9c",
+            "points": [
+              [
+                7,
+                105
+              ],
+              [
+                34,
+                105
+              ],
+              [
+                34,
+                84
+              ],
+              [
+                59,
+                84
+              ],
+              [
+                59,
+                146
+              ],
+              [
+                7,
+                146
+              ]
+            ]
+          },
+          {
+            "name": "Gold pennant",
+            "color": "#f0af36",
+            "points": [
+              [
+                88,
+                4
+              ],
+              [
+                152,
+                4
+              ],
+              [
+                123,
+                27
+              ]
+            ]
+          }
+        ]
+      },
+      "panels": [
+        {
+          "id": "gate",
+          "label": "Gate",
+          "crop": [
+            0,
+            0,
+            200,
+            160
+          ],
+          "placement": [
+            [
+              28,
+              20
+            ],
+            [
+              168,
+              36
+            ],
+            [
+              190,
+              268
+            ],
+            [
+              16,
+              282
+            ]
+          ],
+          "displayPolygon": [
+            [
+              28,
+              20
+            ],
+            [
+              168,
+              36
+            ],
+            [
+              190,
+              268
+            ],
+            [
+              40,
+              280.0689655172
+            ],
+            [
+              17,
+              260.1666666667
+            ]
+          ],
+          "obstructions": [
+            [
+              [
+                58,
+                94
+              ],
+              [
+                97,
+                97
+              ],
+              [
+                101,
+                132
+              ],
+              [
+                55,
+                128
+              ]
+            ]
+          ]
+        },
+        {
+          "id": "court",
+          "label": "Court",
+          "crop": [
+            0,
+            0,
+            200,
+            160
+          ],
+          "placement": [
+            [
+              168,
+              36
+            ],
+            [
+              340,
+              18
+            ],
+            [
+              350,
+              278
+            ],
+            [
+              190,
+              268
+            ]
+          ],
+          "displayPolygon": [
+            [
+              168,
+              36
+            ],
+            [
+              322,
+              19.8837209302
+            ],
+            [
+              342,
+              70
+            ],
+            [
+              350,
+              278
+            ],
+            [
+              190,
+              268
+            ]
+          ],
+          "obstructions": [
+            [
+              [
+                257,
+                178
+              ],
+              [
+                305,
+                177
+              ],
+              [
+                307,
+                210
+              ],
+              [
+                260,
+                217
+              ]
+            ]
+          ]
+        }
+      ],
+      "pins": [
+        {
+          "id": "mark-1",
+          "label": "Start",
+          "panelId": "gate",
+          "source": [
+            56.8,
+            62.0
+          ]
+        },
+        {
+          "id": "mark-2",
+          "label": "Finish",
+          "panelId": "court",
+          "source": [
+            71.6,
+            55.8
+          ]
+        }
+      ],
+      "attachments": [
+        {
+          "kind": "guide",
+          "title": "Received provider guide",
+          "pages": [
+            {
+              "title": "1 \u00b7 Received interface / domains",
+              "text": "Projection Office v2. This complete guide applies to both packets. Source coordinates are artwork pixels, x right and y down. Wall coordinates are plan units, x right and y down, within the declared wall width and height. Inline panel crop and placement are retained survey envelopes, NOT v2 registration correspondences. The registration-report attachment is authoritative. Select a panel by its panelId, not by list position. Artwork polygons are painted in listed order."
+            },
+            {
+              "title": "2 \u00b7 Crop and local orientation",
+              "text": "For each registration panel, sourceWindow is [x,y,width,height] in source pixels. Discard source content outside that closed rectangle before projecting. Normalize the window to (u,v) in [0,1]\u00b2. If reflectU is true, first replace u by 1-u. Next apply quarterTurnsClockwise times (u,v) -> (1-v,u). This oriented local square is the control report local coordinate domain. Do not rotate the wall or the display aperture."
+            },
+            {
+              "title": "3 \u00b7 Registration / homogeneous division",
+              "text": "Each control matches local [u,v] to station [east,north]. Controls are samples, NOT ordered corners; pair values from the same row. Fit the unique nonsingular projective homography from these four pairs. Divide the first and second homogeneous components by the third. Convert station to wall with x=(east-originEast)/stationUnitsPerWallUnit, y=wallHeight-(north-originNorth)/stationUnitsPerWallUnit, using the report stationFrame. A projective mapping, not a bilinear or affine warp, is required. Station frame conversion and source orientation also apply to inverse edits."
+            },
+            {
+              "title": "4 \u00b7 Visible region and seam",
+              "text": "Clip projected artwork to panel.displayPolygon (closed, convex) and subtract all panel.obstructions, including their boundaries. These wall-space polygons do not rotate with the artwork. A source pin is valid only inside the sourceWindow and its own panel visible region. At a shared boundary, choose the first valid panel in report seamPriority. Away from overlap, the unique visible panel owns the wall point. Pin validity also requires an inverse point inside that panel sourceWindow. The gray obstruction is unpainted; off-wall space is unpainted."
+            },
+            {
+              "title": "5 \u00b7 Pin edits and saved plans",
+              "text": "Wall numeric placement and wall taps move the selected pin through the full inverse transform and update its panel ownership. An invalid point (obstruction, outside display, or outside the inverse source window) is rejected: leave panel, source and selected mark unchanged, and show a rejection message. Source numeric placement stays on the selected panel and obeys the same visibility rule; only the seam owner is valid on a shared boundary. Display source and wall coordinates to two decimals. Internal precision is retained. A selected pin is a black circle with a white center; all pins use this mark, selected adds a purple outer ring. Marks are not part of the artwork."
+            },
+            {
+              "title": "6 \u00b7 Editing / receipt serialization",
+              "text": "Undo reverses the last accepted move; a rejected move does not add history. Cancel restores the last saved plan for the current packet (or its received pins if never saved). Save plan persists source-domain pins with panel IDs, label and note independently per packet, and emits a readable plan receipt. Receipt rows include panelId, source [x,y], local [u,v] AFTER orientation, and station [east,north] obtained from the registration. Reopen saved and an ordinary reload restore that saved plan. Switching packets never overwrites a saved plan. A rebuild explicitly resets the imported scene. Received guide, raw report, artwork and intended projection plates are always readable, including before a repair."
+            }
+          ]
+        },
+        {
+          "kind": "registration-report",
+          "title": "Registration report",
+          "data": {
+            "interface": "Projection Office registration 2",
+            "stationFrame": {
+              "originEast": -300,
+              "originNorth": 700,
+              "stationUnitsPerWallUnit": 5,
+              "wallHeight": 300
+            },
+            "seamPriority": [
+              "gate",
+              "court"
+            ],
+            "panels": [
+              {
+                "panelId": "gate",
+                "sourceWindow": [
+                  4,
+                  20,
+                  176,
+                  120
+                ],
+                "orientation": {
+                  "reflectU": true,
+                  "quarterTurnsClockwise": 3
+                },
+                "controls": [
+                  {
+                    "controlId": "C3",
+                    "local": [
+                      0.85,
+                      0.8
+                    ],
+                    "station": [
+                      580.68212005,
+                      1082.848629148
+                    ]
+                  },
+                  {
+                    "controlId": "C1",
+                    "local": [
+                      0.12,
+                      0.16
+                    ],
+                    "station": [
+                      -133.417437494,
+                      1977.944670496
+                    ]
+                  },
+                  {
+                    "controlId": "C4",
+                    "local": [
+                      0.17,
+                      0.87
+                    ],
+                    "station": [
+                      -101.434235846,
+                      951.520349733
+                    ]
+                  },
+                  {
+                    "controlId": "C2",
+                    "local": [
+                      0.91,
+                      0.13
+                    ],
+                    "station": [
+                      557.145016774,
+                      1965.197252836
+                    ]
+                  }
+                ]
+              },
+              {
+                "panelId": "court",
+                "sourceWindow": [
+                  20,
+                  4,
+                  172,
+                  148
+                ],
+                "orientation": {
+                  "reflectU": true,
+                  "quarterTurnsClockwise": 0
+                },
+                "controls": [
+                  {
+                    "controlId": "C3",
+                    "local": [
+                      0.85,
+                      0.8
+                    ],
+                    "station": [
+                      1359.2269447,
+                      996.927545396
+                    ]
+                  },
+                  {
+                    "controlId": "C1",
+                    "local": [
+                      0.12,
+                      0.16
+                    ],
+                    "station": [
+                      584.032900895,
+                      1887.205221759
+                    ]
+                  },
+                  {
+                    "controlId": "C4",
+                    "local": [
+                      0.17,
+                      0.87
+                    ],
+                    "station": [
+                      709.803890561,
+                      927.73639673
+                    ]
+                  },
+                  {
+                    "controlId": "C2",
+                    "local": [
+                      0.91,
+                      0.13
+                    ],
+                    "station": [
+                      1374.146310912,
+                      1986.967559919
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "pages": [
+            {
+              "title": "Station frame and ownership",
+              "text": "Registration report \u00b7 Orchard noon",
+              "table": {
+                "columns": [
+                  "Field",
+                  "Value"
+                ],
+                "rows": [
+                  [
+                    "originEast",
+                    "-300"
+                  ],
+                  [
+                    "originNorth",
+                    "700"
+                  ],
+                  [
+                    "stationUnitsPerWallUnit",
+                    "5"
+                  ],
+                  [
+                    "wallHeight",
+                    "300"
+                  ],
+                  [
+                    "seamPriority",
+                    "gate \u2192 court"
+                  ]
+                ]
+              }
+            },
+            {
+              "title": "Panel gate \u00b7 source domain",
+              "text": "sourceWindow = [4, 20, 176, 120]; reflectU = true; quarterTurnsClockwise = 3. Read the guide for operation order."
+            },
+            {
+              "title": "Panel gate \u00b7 paired controls",
+              "text": "local \u2192 station. These are interior registration samples, not footprint corners.",
+              "table": {
+                "columns": [
+                  "Control / local",
+                  "Station east, north"
+                ],
+                "rows": [
+                  [
+                    "C3 / [0.85, 0.8]",
+                    "580.682120, 1082.848629"
+                  ],
+                  [
+                    "C1 / [0.12, 0.16]",
+                    "-133.417437, 1977.944670"
+                  ],
+                  [
+                    "C4 / [0.17, 0.87]",
+                    "-101.434236, 951.520350"
+                  ],
+                  [
+                    "C2 / [0.91, 0.13]",
+                    "557.145017, 1965.197253"
+                  ]
+                ]
+              }
+            },
+            {
+              "title": "Panel court \u00b7 source domain",
+              "text": "sourceWindow = [20, 4, 172, 148]; reflectU = true; quarterTurnsClockwise = 0. Read the guide for operation order."
+            },
+            {
+              "title": "Panel court \u00b7 paired controls",
+              "text": "local \u2192 station. These are interior registration samples, not footprint corners.",
+              "table": {
+                "columns": [
+                  "Control / local",
+                  "Station east, north"
+                ],
+                "rows": [
+                  [
+                    "C3 / [0.85, 0.8]",
+                    "1359.226945, 996.927545"
+                  ],
+                  [
+                    "C1 / [0.12, 0.16]",
+                    "584.032901, 1887.205222"
+                  ],
+                  [
+                    "C4 / [0.17, 0.87]",
+                    "709.803891, 927.736397"
+                  ],
+                  [
+                    "C2 / [0.91, 0.13]",
+                    "1374.146311, 1986.967560"
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "kind": "image",
+          "title": "Source artwork",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 200 160\"><polygon points=\"0.00000,0.00000 200.00000,0.00000 200.00000,160.00000 0.00000,160.00000\" fill=\"#e7efdb\"/><polygon points=\"10.00000,20.00000 54.00000,20.00000 91.00000,66.00000 140.00000,22.00000 164.00000,49.00000 112.00000,98.00000 107.00000,146.00000 69.00000,146.00000 70.00000,89.00000\" fill=\"#68ad63\"/><polygon points=\"144.00000,76.00000 191.00000,92.00000 168.00000,150.00000 135.00000,126.00000\" fill=\"#cb3c69\"/><polygon points=\"7.00000,105.00000 34.00000,105.00000 34.00000,84.00000 59.00000,84.00000 59.00000,146.00000 7.00000,146.00000\" fill=\"#137f9c\"/><polygon points=\"88.00000,4.00000 152.00000,4.00000 123.00000,27.00000\" fill=\"#f0af36\"/></svg>"
+        },
+        {
+          "kind": "image",
+          "title": "Intended projection plate",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 360 328\"><rect width=\"360\" height=\"328\" fill=\"#edf0f5\"/><defs><clipPath id=\"visible0\"><polygon points=\"28.00000,20.00000 168.00000,36.00000 190.00000,268.00000 40.00000,280.06897 17.00000,260.16667\"/></clipPath></defs><g clip-path=\"url(#visible0)\"><polygon points=\"183.00000,19.00000 12.00000,4.00000 0.00000,297.00000 210.00000,285.00000\" fill=\"#e7efdb\"/><polygon points=\"11.66953,12.06906 9.10190,74.76182 83.29365,134.61924 6.90316,218.33963 55.19094,262.31268 135.04902,168.99577 197.57370,162.57791 191.76787,105.37980 118.03076,103.66510\" fill=\"#68ad63\"/><polygon points=\"101.76123,223.70112 125.02415,289.85576 177.64648,286.84877 208.51029,270.32361 205.32837,238.97584 180.89862,206.70166\" fill=\"#cb3c69\"/><polygon points=\"183.37815,22.72549 136.43400,18.70145 138.65834,54.08461 108.48840,52.05986 109.84602,87.23886 190.32545,91.16921\" fill=\"#137f9c\"/><polygon points=\"5.25153,168.77512 3.83501,203.36174 17.03375,187.43326\" fill=\"#f0af36\"/></g><polygon points=\"58.00000,94.00000 97.00000,97.00000 101.00000,132.00000 55.00000,128.00000\" fill=\"#a7aeb8\" stroke=\"#525d6a\"/><polygon points=\"28.00000,20.00000 168.00000,36.00000 190.00000,268.00000 40.00000,280.06897 17.00000,260.16667\" fill=\"none\" stroke=\"#263348\" stroke-width=\"1.5\"/><text x=\"82\" y=\"315\" text-anchor=\"middle\" font-size=\"15\" fill=\"#142438\">Gate</text><defs><clipPath id=\"visible1\"><polygon points=\"168.00000,36.00000 322.00000,19.88372 342.00000,70.00000 350.00000,278.00000 190.00000,268.00000\"/></clipPath></defs><g clip-path=\"url(#visible1)\"><polygon points=\"366.00000,298.00000 353.00000,0.00000 151.00000,19.00000 175.00000,286.00000\" fill=\"#e7efdb\"/><polygon points=\"355.55641,58.60067 354.49569,34.28575 311.12745,37.57738 271.96166,132.14905 210.10495,49.18221 188.06019,102.48703 252.01585,193.14828 263.62828,280.90659 306.75606,283.36143 299.37438,176.28826\" fill=\"#68ad63\"/><polygon points=\"213.68137,152.33990 166.65108,181.77773 199.03325,284.09010 230.43094,243.67205\" fill=\"#cb3c69\"/><polygon points=\"362.06648,207.83165 344.60838,207.55960 342.63982,166.36111 311.98683,166.55330 318.45020,284.02706 365.50729,286.70555\" fill=\"#137f9c\"/><polygon points=\"267.63531,8.02935 194.03446,14.95220 229.94673,57.63830\" fill=\"#f0af36\"/></g><polygon points=\"257.00000,178.00000 305.00000,177.00000 307.00000,210.00000 260.00000,217.00000\" fill=\"#a7aeb8\" stroke=\"#525d6a\"/><polygon points=\"168.00000,36.00000 322.00000,19.88372 342.00000,70.00000 350.00000,278.00000 190.00000,268.00000\" fill=\"none\" stroke=\"#263348\" stroke-width=\"1.5\"/><text x=\"257\" y=\"315\" text-anchor=\"middle\" font-size=\"15\" fill=\"#142438\">Court</text></svg>",
+          "caption": "Office drawing \u2022 wall space \u2022 gray = blocked. Colors, orientation, cut edges and the panel seam are intentional. Pins are client edits, not printed on this plate."
+        }
+      ]
+    }
+  ]
+}

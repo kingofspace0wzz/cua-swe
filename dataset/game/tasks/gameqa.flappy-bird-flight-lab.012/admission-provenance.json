@@ -1,0 +1,18 @@
+{
+  "task_id": "gameqa.flappy-bird-flight-lab.012",
+  "source_commit": "6861f7fa",
+  "source_bundle": "new_artifacts/new_valid_games_batch_2/gameqa.flappy-bird-flight-lab.012",
+  "source_task_sha256": "df73412732470bc49a94a5dc225be0daf485ae8e7cf7f97fec9f35456f839182",
+  "packaged_task_sha256": "7de80553371963c0f0a00297ee7c943257f0211ca86811a4a34d5012930c0efc",
+  "packaging_changes": [
+    "Relocate repo_snapshot.path to canonical collection"
+  ],
+  "author_records": [
+    "new_artifacts/new_valid_games_batch_2/gameqa.flappy-bird-flight-lab.012/adversarial-provenance.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.flappy-bird-flight-lab.012/construction-validation.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.flappy-bird-flight-lab.012/design-review.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.flappy-bird-flight-lab.012/provenance.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.flappy-bird-flight-lab.012/rights-review.json"
+  ],
+  "admission_report": "dataset/reports/GAME_CUA_BATCH_2_ADMISSION_REPORT.md"
+}

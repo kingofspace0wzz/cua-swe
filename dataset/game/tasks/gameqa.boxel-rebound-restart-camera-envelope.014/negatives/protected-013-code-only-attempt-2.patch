@@ -1,0 +1,27 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..f4cc67aa1cdba0462625cb6e78d3a04592386934 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -254,7 +254,21 @@
+         this.retry = function(retry){
+             this.resumeGame(retry);
+             this.player.respawn();
+-            this.levelMap.showGuide(this.player.spawnGuide);
++            var restartGuide = this.player.spawnGuide;
++            if (this.player.spawnSupportId != null){
++                var spawnSupport = this.levelMap.getSupport(this.player.spawnSupportId);
++                if (spawnSupport != null){
++                    this.player.supportId = spawnSupport.id;
++                    this.player.supportOffset = this.player.spawnSupportOffset;
++                    this.player.y = spawnSupport.top+this.player.supportOffset;
++                    this.player.gravity.reset();
++                    this.player.gravity.push(0.5,this.player.y);
++                    restartGuide = this.levelMap.captureGuide(spawnSupport);
++                    this.levelMap.cameraProgress = this.player.xPos;
++                    this.levelMap.x = -this.levelMap.cameraProgress;
++                }
++            }
++            this.levelMap.showGuide(restartGuide);
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+                 detail: { level: this.home.selectedLevel, method: "keyboard" }

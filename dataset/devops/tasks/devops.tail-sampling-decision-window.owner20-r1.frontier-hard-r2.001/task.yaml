@@ -1,0 +1,52 @@
+id: devops.tail-sampling-decision-window.owner20-r1.frontier-hard-r2.001
+track: web_frontend
+benchmark_domain: devops-observability
+type: functional_ui
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: dataset/devops/tasks/devops.tail-sampling-decision-window.owner20-r1.frontier-hard-r2.001/repo
+  ref: owner20-finite-decision-wait-frontier-hard-r2
+instruction: The Tail Sampling Console shows incident traces with failed dependencies
+  missing from the trace store. Investigate the live windows and replay, then repair
+  the durable collector configuration. Keep all error and slow traces eligible for
+  retention while preserving the ordinary sampling baseline and the receiver service
+  levels shown in the console. Collector settings and decision timing may change;
+  received spans, their timestamps, trace details, filters, and replay inputs must
+  remain intact.
+setup:
+  install:
+  - npm run build
+  launch:
+  - node server.mjs --host 127.0.0.1 --port 54700
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:54700
+  viewport_or_device: desktop-1280x720
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 115
+  max_gui_actions: 180
+  max_test_runs: 26
+verifiers:
+  build:
+  - ${CUA_SWE_PYTHON:-python3} -B verifiers/build_check.py
+  unit: []
+  ui:
+  - ${CUA_SWE_PYTHON:-python3} -B verifiers/browser_check.py
+  visual: []
+  state: []
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: false
+schema_version: 2

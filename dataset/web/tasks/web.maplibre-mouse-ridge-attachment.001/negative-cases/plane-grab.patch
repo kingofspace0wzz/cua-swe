@@ -1,0 +1,68 @@
+diff --git a/src/ui/handler_manager.ts b/src/ui/handler_manager.ts
+--- a/src/ui/handler_manager.ts
++++ b/src/ui/handler_manager.ts
+@@ -163,6 +163,7 @@
+     _updatingCamera: boolean;
+     _changes: Array<[HandlerResult, EventsInProgress, {[handlerName: string]: Event}]>;
+     _terrainMovement: boolean;
++    _mouseConfiguration?: {point: Point; grab: MercatorGrab | null};
+     _touchConfiguration?: {ids: string; point: Point; grab: MercatorGrab | null};
+     _cancelledTouchIds: Set<number> = new Set<number>();
+     _cancellingTouches = false;
+@@ -355,6 +356,7 @@
+         if (this._terrainMovement) this._settleTerrain();
+         this._changes = [];
+         this._touchConfiguration = undefined;
++        this._mouseConfiguration = undefined;
+     }
+ 
+     isActive(): boolean {
+@@ -407,6 +409,9 @@
+             return;
+         }
+ 
++        // Commit accepted mouse deltas before acquiring or ending another grab.
++        const mouseInput = e.type === 'mousedown' || e.type === 'mousemove' || e.type === 'mouseup';
++        if (mouseInput) this._applyChanges();
+         const touchEvent = isTouchableEvent(e, eventName || e.type);
+         let touchContactsRemaining = false;
+         if (touchEvent) {
+@@ -503,7 +508,21 @@
+             this._camera.stop(true);
+         }
+ 
++        if (e.type === 'mousedown' && isPointableEvent(e, eventName || e.type)) {
++            this._mouseConfiguration = undefined;
++            if (activeHandlers['mousePan'] && this._map.terrain && !this._camera.cameraHelper.useGlobeControls) {
++                const point = DOM.mousePos(this._map.getCanvas(), e);
++                const tr = this._camera.getTransformForUpdate();
++                this._mouseConfiguration = {point, grab: acquireMercatorGrab(tr, point)};
++            }
++        }
++
+         this._updatingCamera = false;
++
++        if (mouseInput) {
++            this._applyChanges();
++            if (!this._handlersById.mousePan.isActive()) this._mouseConfiguration = undefined;
++        }
+ 
+         if (touchEvent) {
+             // Do not combine deltas from different contact configurations, and
+@@ -625,7 +644,15 @@
+         const touchControl = Object.values(combinedEventsInProgress).some(event =>
+             ['touchPan', 'touchZoom', 'touchRotate'].includes(event.handlerName));
+         const contact = this._touchConfiguration;
+-        if (touchControl && contact && !this._camera.cameraHelper.useGlobeControls && pinchAround !== null) {
++        const mouseContact = this._mouseConfiguration;
++        if (combinedEventsInProgress.drag?.handlerName === 'mousePan' && mouseContact &&
++            terrain && !this._camera.cameraHelper.useGlobeControls) {
++            this._terrainMovement = true;
++            this._camera.elevationFreeze = true;
++            this._camera.cameraHelper.handleMapControlsRollPitchBearingZoom(deltasForHelper, tr);
++            mouseContact.point = around;
++            if (mouseContact.grab) placeMercatorGrab(tr, mouseContact.grab, mouseContact.point);
++        } else if (touchControl && contact && !this._camera.cameraHelper.useGlobeControls && pinchAround !== null) {
+             if (panDelta) contact.point = contact.point.add(panDelta);
+             this._camera.cameraHelper.handleMapControlsRollPitchBearingZoom(deltasForHelper, tr);
+             if (contact.grab) placeMercatorGrab(tr, contact.grab, contact.point);

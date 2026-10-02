@@ -1,0 +1,139 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/counter_service.mjs
+  fixture: repo/verifiers/profiles.json
+  definition_registry: repo/verifiers/recording-rules.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults:
+    service: 4442
+    application: 4441
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants:
+  - visible
+  - hidden
+  oracle: protected-counters-resets-bursts-paired-window-publication-lineage-query-points-totals-markers-targets-and-signatures
+  note: >-
+    Each run starts a fresh protected counter query service and application
+    host. The service owns targets, counter schedules, paired observation
+    windows, per-window publication lineage, reset and burst schedules, query
+    evaluation, and the audit. Every profile pairs two deterministic
+    observation windows separated by a recorded collector publication
+    transition; the per-target raw scrape moves between deployed
+    recording-rule inputs at that transition, so every single static rule
+    binding folds independent target resets into a pre-aggregated counter in
+    at least one window. The two grading profiles migrate in opposite
+    directions and use different window identities, so only a repair that
+    binds one deployed per-target scrape rule per collection window from the
+    catalog's window lineage declaration is compatible with every profile and
+    every window.
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - alternates/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - compare all panels in burst-control rolling-restart and restart-in-burst states
+    in the first observation window
+  - correlate rectangular chart blocks with reset markers and preserve ramped traffic
+    bursts
+  - inspect per-target reset evidence and summaries in the first window
+  - switch to the paired later observation window and repeat the comparison across
+    every scenario and panel
+  - read the collection lineage record for both windows and relate the recorded
+    publication transition to the reset markers on each side of it
+  - open Query definitions and read each deployed rule's per-window runtime input
+    lineage (publisher, per-series identity, cadence) against the paired windows
+    before choosing the durable binding
+  - return to the earlier window to confirm the paired states reproduce exactly
+  decisive_paths:
+  - scenario.id
+  - panel.id
+  - window.id
+  - window.label
+  - point.id
+  - point.time
+  - point.value
+  - summary.peak
+  - summary.total
+  - marker.id
+  - marker.time
+  - target.id
+  - target.resetCount
+  - target.lastReset
+  - diagnostics.range
+  - diagnostics.seriesCount
+  - definitions.id
+  - definitions.steps
+  - definitions.inputLabels
+  - definitions.outputLabels
+  - definitions.lineage
+  - windows.note
+  - windows.transition
+  - windows.perTargetScrape
+source_noninferability:
+  forbidden_agent_source_literals:
+  - prometheus/prometheus
+  - 4c352ffb82a082310978147b14070d7969e9d5d4
+  - counter_service.mjs
+  - profiles.json
+  - expectedSignature
+  - checkout-a
+  - checkout-b
+  - router-n7
+  - router-p4
+  - burst-control
+  - rolling-restart
+  - restart-in-burst
+  - load-wave
+  - target-recycle
+  - traffic-detail
+  - traffic-stream
+  - traffic-capacity
+  - traffic-archive
+  - recording-rules.json
+  - panel_counter_total
+  - service_stream_total
+  - stream_counter_total
+  - target_stream_total
+  - archive_stream_total
+  - gateway-rollup
+  - raw-scrape
+  - relay-mirror
+  - archive-compaction
+  - window-a
+  - window-b
+  - cycle-1
+  - cycle-2
+  - perTargetScrape
+  - upstreamByWindow

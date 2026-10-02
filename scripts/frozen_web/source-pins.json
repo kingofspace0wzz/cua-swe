@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "portable_harness_sha256": "b7f6364d8ce364bf5cb04b502943f4283de8defc2a392cfbd38d2f3a7517f51d",
+  "scope": "41-file BASE harness, plus separately pinned retention extension and import-time task-name table. Web36 selection belongs to the canonical dispatcher.",
+  "harness_files": [
+    {
+      "path": "scripts/render_web_agent_prompt.py",
+      "sha256": "1a681c376d2c636489f11e83084116d0a65b7e34e1718c2eefe4dc1042ad668e",
+      "bytes": 13711
+    },
+    {
+      "path": "scripts/run_anthropic_cua_agent.py",
+      "sha256": "7b18dea8ceade43d4ee0f588be7425fc7030eb3e222f1ae977eb41babac82cec",
+      "bytes": 160630
+    },
+    {
+      "path": "scripts/run_clean_ablation.py",
+      "sha256": "50e9e63fe4d87833285df2f604926535609ed26b91ad6adac87be59fb23c3a74",
+      "bytes": 332240
+    },
+    {
+      "path": "scripts/run_code_only_agent.sh",
+      "sha256": "89b487451c3b3db6ecd2926cb8c9920d3f43d946f235e9cb8ddf253fba947d0f",
+      "bytes": 4805
+    },
+    {
+      "path": "scripts/run_kimi_cua_agent.py",
+      "sha256": "537536d5f26f7725e0addd8018697f577abd3ea4cc2a001687741d29bce895b1",
+      "bytes": 12247
+    },
+    {
+      "path": "scripts/run_model_matrix.py",
+      "sha256": "a62d68cf9a428c1ed92de77ef43d6ce8202f07d0f0498c96f9c2b9ef4ad29457",
+      "bytes": 25518
+    },
+    {
+      "path": "scripts/run_qwen_cua_agent.py",
+      "sha256": "0adf96ef2bcb0da263a66b3adbb4e8ea887bf7d12bed9d1c3ea179f7e31ef89d",
+      "bytes": 20800
+    },
+    {
+      "path": "scripts/run_responses_agent.py",
+      "sha256": "dfaf2d8a6d0b72af847bc47c89ae42a59901ede794475588e80e7afcd6b70564",
+      "bytes": 16026
+    },
+    {
+      "path": "scripts/run_storybook_resize_capability.py",
+      "sha256": "93d7fa7b9382bcd47f10346657c7362b831fd0b8dbe3f8dee6cefe0f1d205ef8",
+      "bytes": 15932
+    },
+    {
+      "path": "scripts/run_web_cua_agent.sh",
+      "sha256": "0870c0c16ca676154a41f5facc78706f3978de0d3739b568e06138ecf5c0a46c",
+      "bytes": 10564
+    },
+    {
+      "path": "scripts/web_cua_broker.py",
+      "sha256": "9097331f217ddf386f736a9d6ddb33b890abde6ad846ab421547f90326ac38c7",
+      "bytes": 21192
+    },
+    {
+      "path": "scripts/web_cua_client.py",
+      "sha256": "838e29790c4cf17fe996f9fd26eb478fa816d84cbaf5f0130aaf6043263a5d3f",
+      "bytes": 3516
+    },
+    {
+      "path": "scripts/web_cua_launcher.S",
+      "sha256": "7ea9d4d3e0b36c1bb1592095b0ebd6c826cca4e7009fb9db58936d80d592df4d",
+      "bytes": 2910
+    },
+    {
+      "path": "scripts/web_cua_mcp.py",
+      "sha256": "8c774cca017a43ce5e23b2b7e3255a0e6daa0665c21064bfb180ca0c4bfe6638",
+      "bytes": 12384
+    },
+    {
+      "path": "scripts/web_cua_tool.py",
+      "sha256": "9af3db1b67d0b182040ef82e5ab473d6b7a09a3dcbbf5b5150265dff2bc3e522",
+      "bytes": 18361
+    },
+    {
+      "path": "src/cua_swe_bench/__init__.py",
+      "sha256": "91447944015cec709e8aa7655f7e9d64e1e4508e7023a57fe3746911c0fc6fed",
+      "bytes": 22
+    },
+    {
+      "path": "src/cua_swe_bench/__main__.py",
+      "sha256": "11facc8bb122f89b5013b14150fb527e8983a5efad853c30af243140ae301498",
+      "bytes": 72
+    },
+    {
+      "path": "src/cua_swe_bench/adapters/__init__.py",
+      "sha256": "9d49a69d89bc4cc790c1d7bb14bc2b7c7e9272e6fcc7c0a77a2ea85051f32635",
+      "bytes": 151
+    },
+    {
+      "path": "src/cua_swe_bench/adapters/base.py",
+      "sha256": "da109c1e26352271075f9bb662269a75bb29f0949ca07c4fc944c06f06587599",
+      "bytes": 5598
+    },
+    {
+      "path": "src/cua_swe_bench/adapters/mobilegym.py",
+      "sha256": "6f012e80e17b8a8d499819d1aaeb7cb32b8be993ce5e86b996e14c3eddd56624",
+      "bytes": 1546
+    },
+    {
+      "path": "src/cua_swe_bench/adapters/web.py",
+      "sha256": "90411c2e7f1f49f5f6ee37d8a22750fc51a8e028ddf6d6cd6b2e376fb0f217f0",
+      "bytes": 16110
+    },
+    {
+      "path": "src/cua_swe_bench/baseline.py",
+      "sha256": "620beca600011d29dfc7013f219a762a3f79abee87141ccfbd4f8ef7f166fb7c",
+      "bytes": 4732
+    },
+    {
+      "path": "src/cua_swe_bench/cli.py",
+      "sha256": "d27e96a7a58505d3ef6032c747316c12ed410e2c07478531b5310cd8620a74c8",
+      "bytes": 19341
+    },
+    {
+      "path": "src/cua_swe_bench/commands.py",
+      "sha256": "e207edc1b225fcaccdb3d0a76f870286acbf99585fa8c8a2c3f13b76fc2cff63",
+      "bytes": 4417
+    },
+    {
+      "path": "src/cua_swe_bench/config.py",
+      "sha256": "b0c6983f8d8e5d896cceb955426471935a85dff51a669237e37ce89d13238ea3",
+      "bytes": 1041
+    },
+    {
+      "path": "src/cua_swe_bench/diversity.py",
+      "sha256": "9995dcb284a80517ee4b91f8db6f45da1beebe10ea6e2311f07a4f0b6c394e63",
+      "bytes": 19005
+    },
+    {
+      "path": "src/cua_swe_bench/evaluator.py",
+      "sha256": "134af6634cb3c2a28bd430cb09d5a7282fc186ddc514d4d685948c6083cd6d3a",
+      "bytes": 9829
+    },
+    {
+      "path": "src/cua_swe_bench/llm/__init__.py",
+      "sha256": "937c6867196b54466b37facbdbfc8740643d7c50f670212f4204651a7ef7cf85",
+      "bytes": 200
+    },
+    {
+      "path": "src/cua_swe_bench/llm/provider.py",
+      "sha256": "77beb4a31997588f72b61fc0a3424adcec1069a8727c5bf1515b5d443a1bde2e",
+      "bytes": 14738
+    },
+    {
+      "path": "src/cua_swe_bench/mobilegym_replay_worker.py",
+      "sha256": "d6311f588589c9730a781cd9dfa2b80f5779515a7728334fa50d0c6ee09bead8",
+      "bytes": 31305
+    },
+    {
+      "path": "src/cua_swe_bench/mobilegym_runtime.py",
+      "sha256": "4de47032aab88fd05fbc81a20cad4b4e8b7d93f50514546df96fd2b36db9abd6",
+      "bytes": 22540
+    },
+    {
+      "path": "src/cua_swe_bench/provider_layer.py",
+      "sha256": "9b2f0edf8a515605ff7746723384688a7a0bcbe5089c5540e20a8303d27d0da1",
+      "bytes": 1045,
+      "origin": "authored portable loader for the repository provider layer"
+    },
+    {
+      "path": "src/cua_swe_bench/recorder.py",
+      "sha256": "0e96ca4b52a13b3526cb0aba5f74a223ca49025c723e5efd0d8ffeb522a603c9",
+      "bytes": 1581
+    },
+    {
+      "path": "src/cua_swe_bench/registry.py",
+      "sha256": "b5176444a6bc50fb1093b64366e4658c689484ee07459881c52f9467dbfa255e",
+      "bytes": 915
+    },
+    {
+      "path": "src/cua_swe_bench/results.py",
+      "sha256": "9a56a0e0ce97182fbead9508d6b2ee7a33a66695a25976f82d547cbb4718a604",
+      "bytes": 1440
+    },
+    {
+      "path": "src/cua_swe_bench/runner.py",
+      "sha256": "a80dd402508fdc715d8c055fe2e592c1b68e5816b3863bd135a70582a859d629",
+      "bytes": 5941
+    },
+    {
+      "path": "src/cua_swe_bench/schema.py",
+      "sha256": "b487ce6e96f7e63572b24a51949781b2f2ebb660338afd851ac1296b8f09ed7b",
+      "bytes": 6719
+    },
+    {
+      "path": "src/cua_swe_bench/verifiers.py",
+      "sha256": "c4b3a8436df0c42558bbf7bb9130d374d914298d68f274a4b38ad7b58117f121",
+      "bytes": 1061
+    },
+    {
+      "path": "src/cua_swe_bench/web_frontend_workflow.py",
+      "sha256": "c4732779a28471152b940452aa80c03c156a2ac158f6391cc84f608e4e74957c",
+      "bytes": 23590
+    },
+    {
+      "path": "src/cua_swe_bench/workflow.py",
+      "sha256": "c479e6f89ce2a22a95e2314edfdc9f67a8bc901968e1f8a904724a64c90e28f8",
+      "bytes": 45601
+    },
+    {
+      "path": "src/cua_swe_bench/workspace.py",
+      "sha256": "4c20093f31fa1dd4a14c95b2f909dcc3b72fd01e1f3ed97c7f90164383420a07",
+      "bytes": 6727
+    }
+  ],
+  "support_files": [
+    {
+      "path": "retention_entrypoint.py",
+      "sha256": "a32cee671c3fe8ae40b34c7fa4df7924ea969634cfc22aa98ab8ff1600babba9",
+      "bytes": 11498
+    },
+    {
+      "path": "dataset/manifest.yaml",
+      "sha256": "3e73b587b68516e33c2ec8a50c4af7bd996ab0df7ae68da23ace87d3df5124d5",
+      "bytes": 12974
+    },
+    {
+      "path": "runtime-pins.json",
+      "sha256": "b747cca65d25d8168a1a2f9bc78e36945f430d2fe2f9fb1d23c6cf0b691ab784",
+      "bytes": 732,
+      "origin": "authored Web-only portable preflight/reporting support"
+    },
+    {
+      "path": "runtime_and_reporting.py",
+      "sha256": "37c2cd6bd23bbbc740e7620ad53132474609246b963493f69bfd18d56458e3a0",
+      "bytes": 9911,
+      "origin": "authored Web-only portable preflight/reporting support"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+primary_actions_max: 6
+opening_state: Collector rollout; affected collector receiver; first failed record selected
+observations:
+- stored versus raw severity on the collector receiver
+- receiver origin versus delivered record representation in the inventory, including the relay's two-producer pipeline
+- relay gateway raw syslog priority and keyword versus stored classification
+- relay forwarder agent versions carrying different numeric levels under the same keyword on same-band records
+controls:
+- native OTLP
+- legacy JSON
+- healthy traffic
+- recovery
+- retry
+- reset
+- reload
+protected_semantic_oracle: true

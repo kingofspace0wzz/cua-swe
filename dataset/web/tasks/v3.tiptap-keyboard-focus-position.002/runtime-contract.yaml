@@ -1,0 +1,50 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: npm install && npm run build && CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+runtime_dependency:
+  library: Tiptap (ProseMirror)
+  packages:
+    "@tiptap/core": 2.11.5
+    "@tiptap/pm": 2.11.5
+    "@tiptap/extension-document": 2.11.5
+    "@tiptap/extension-paragraph": 2.11.5
+    "@tiptap/extension-text": 2.11.5
+  bundler: esbuild 0.24.2
+  runtime_path: src/main.js imports @tiptap/core Editor + extensions and @tiptap/pm/state TextSelection; build.mjs bundles them into dist/app.bundle.js, which the served index.html loads. The decisive caret resolution uses ProseMirror view.posAtCoords / view.coordsAtPos on the live Tiptap editor.
+  import_evidence: The verifier asserts a live Tiptap Editor (constructor name Editor), a ProseMirror EditorView exposing posAtCoords and coordsAtPos, a .ProseMirror contenteditable DOM node, and a ProseMirror document state; the build step aborts if any pinned package is not installed.
+browser_observation:
+  steps: [read the active workspace and its visible where-you-left-off note, focus the draft using Tab or Alt+R, observe the rendered caret line and column]
+  decisive_edge: The bookmark carries several same-shape pixel anchors and no authoritative marker. Exactly one anchor still lands on a rendered glyph line of the wrapped draft (the writer's live spot, matching the visible note); the others were captured under an earlier layout of the same draft and now fall into the blank region between wrapped paragraphs. Which anchor is authoritative is only observable by rendering the live Tiptap layout and seeing where each anchor lands; it cannot be selected from source by field type, shape, order, or any stored flag.
+source_noninferability:
+  forbidden_agent_source_literals: [Field notes, Interview log, Release notes, third visible line, second wrapped line, line that begins after the wrap, earlier session, current surface, authoritative anchor, on-line anchor]
+provenance:
+  source_repo: ueberdosis/tiptap
+  source_issue: https://github.com/ueberdosis/tiptap/issues/2760
+  source_revision: f28cf6d54ccf7d12de02eb2c557007cbb0a849bb
+  license: MIT
+  implementation: targeted fixture using the real Tiptap/ProseMirror runtime
+  conversion_note: >-
+    The composer is a real Tiptap editor (Document/Paragraph/Text on
+    ProseMirror). Keyboard-focus caret resume is resolved through ProseMirror
+    view.posAtCoords against the live rendered layout, faithfully reproducing
+    the upstream focus-to-document-position mechanism. The external workspace
+    service and protected payloads add the benchmark contract while the actual
+    library performs the decisive interaction and repair. Successor
+    v3.tiptap-keyboard-focus-position.002 hardens one dimension of the .001
+    parent. Instead of two type-distinct bookmark fields (a pixel anchor and a
+    numeric offset), the bookmark now carries several same-shape pixel anchors
+    with no authoritative marker, exactly one of which still lands on a
+    rendered glyph line after the draft wraps. This removes the type and shape
+    signal a code-only agent used to pick the correct branch; the on-line
+    anchor is only separable by observing the live rendered layout.
+  successor_of: v3.tiptap-keyboard-focus-position.001
+  hardened_dimension: visual_contract_explicitness (candidate bookmark representations made type-indistinguishable; disambiguation requires live rendered-layout observation)

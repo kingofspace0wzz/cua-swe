@@ -1,0 +1,107 @@
+{
+  "title": "Rendered terrain navigation integrations \u2014 synthetic example",
+  "camera": {
+    "center": [
+      7.5,
+      45.9
+    ],
+    "zoom": 12.5,
+    "pitch": 55,
+    "bearing": 27,
+    "roll": 0,
+    "padding": {
+      "left": 64,
+      "right": 16,
+      "top": 44,
+      "bottom": 12
+    }
+  },
+  "mapCSS": [
+    600,
+    480
+  ],
+  "terrain": {
+    "encoding": "Terrarium",
+    "tileZoom": 12,
+    "tileSize": 512,
+    "meshSize": 128,
+    "ridgeMetres": 1400,
+    "valleyMetres": 400,
+    "slopeLeft": 0.520782470703125,
+    "slopeRight": 0.5207977294921875
+  },
+  "landmarks": [
+    {
+      "name": "valley",
+      "offset": [
+        0,
+        0
+      ],
+      "color": "#ff2020"
+    },
+    {
+      "name": "ridge companion",
+      "offset": [
+        -5.7525908661362844e-05,
+        6.355866996353655e-06
+      ],
+      "color": "#00ffff"
+    },
+    {
+      "name": "east",
+      "offset": [
+        3e-05,
+        -1e-05
+      ],
+      "color": "#ffff00"
+    },
+    {
+      "name": "ridge",
+      "offset": [
+        -7e-05,
+        0
+      ],
+      "color": "#ff00ff"
+    },
+    {
+      "name": "far east",
+      "offset": [
+        8e-05,
+        1.5e-05
+      ],
+      "color": "#ffffff"
+    }
+  ],
+  "contacts": {
+    "identifiers": [
+      11,
+      22
+    ],
+    "initialSeparation": 160,
+    "start": "Projected magenta ridge place in the current rendered view"
+  },
+  "moves": [
+    {
+      "dx": 32,
+      "dy": 0,
+      "separation": 192
+    },
+    {
+      "dx": 64,
+      "dy": 0,
+      "separation": 224
+    },
+    {
+      "dx": 88,
+      "dy": 0,
+      "separation": 256
+    }
+  ],
+  "tolerancesCSS": {
+    "attachment": 3,
+    "settled": 3,
+    "integrationComparison": 4,
+    "scaleDistance": 3
+  },
+  "note": "Pixel allowances are prospective pending a complete rendered Native control. Missing or clipped landmarks are inconclusive."
+}

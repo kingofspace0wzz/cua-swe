@@ -1,0 +1,132 @@
+--- a/src/receiver.mjs
++++ b/src/receiver.mjs
+@@ -1,6 +1,7 @@
+-import {ingestCapture} from './ingest.mjs';
++import {createIngress} from './ingest.mjs';
+ export function createReceiver(origin) {
+   let state = new Map(), cursor = 0, epoch = 0, error = null, timer = null, pending = Promise.resolve();
++  let ingress = createIngress(state);
+   async function request(path, body) {
+     const response = await fetch(origin + path, body === undefined ? {} : {
+       method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify(body)
+@@ -8,14 +9,20 @@
+     if (!response.ok) throw new Error('Receiver request failed: ' + response.status);
+     return response.json();
+   }
++  function beginEpoch(at) {
++    state = new Map(); ingress = createIngress(state); cursor = 0; epoch = at; error = null;
++  }
+   async function drain() {
+     const capture = await request('/capture?after=' + cursor);
+     if (capture.epoch !== epoch) return;
++    const ready = [];
+     for (const receipt of capture.receipts) {
+-      const updates = ingestCapture(receipt, state);
+-      await request('/ingest', {epoch, receipt: receipt.sequence, updates});
++      ready.push(...ingress.push(receipt));
+       cursor = receipt.sequence;
+     }
++    if (ready.length) {
++      await request('/ingest', {epoch, receipt: ready[ready.length - 1].receipt, updates: ready});
++    }
+   }
+   function stop() { if (timer) clearInterval(timer); timer = null; }
+   function pump() {
+@@ -26,8 +33,8 @@
+       const current = await request('/snapshot');
+       if (current.seeded) {
+         if (epoch !== current.epoch) {
++          beginEpoch(current.epoch);
+           state = new Map(Object.entries(current.state)); cursor = current.committedReceipt;
+-          epoch = current.epoch; error = null;
+           if (!timer) { timer = setInterval(pump, 25); pump(); }
+         }
+         return {alreadySeeded: true, epoch};
+@@ -36,12 +43,12 @@
+     stop(); await pending;
+     const snapshot = await request('/begin', {seed});
+     if (snapshot.alreadySeeded) return snapshot;
+-    state = new Map(); cursor = 0; epoch = snapshot.epoch; error = null;
++    beginEpoch(snapshot.epoch);
+     timer = setInterval(pump, 25); pump(); return snapshot;
+   }
+   async function reset() {
+     stop(); await pending; const snapshot = await request('/reset', {});
+-    state = new Map(); cursor = 0; epoch = snapshot.epoch; error = null; return snapshot;
++    beginEpoch(snapshot.epoch); return snapshot;
+   }
+   return {begin, reset, status: () => ({cursor, epoch, error}), close: stop};
+ }
+--- a/src/ingest.mjs
++++ b/src/ingest.mjs
+@@ -1,11 +1,28 @@
+ import {decodeDatagram} from './protocol.mjs';
+ import {applyGauge} from './update.mjs';
+-export function ingestCapture(receipt, state) {
+-  return decodeDatagram(Buffer.from(receipt.base64, 'base64')).map(measurement => {
+-    const result = applyGauge(state, {...measurement, source: receipt.source});
+-    return {receipt: receipt.sequence, lineIndex: measurement.lineIndex,
+-      identity: measurement.identity, source: receipt.source, token: measurement.token,
+-      metricType: measurement.metricType, parsedValue: measurement.value,
+-      value: result.value};
+-  });
++import {createCalibrator, isSignedToken} from './calibration.mjs';
++export function createIngress(state) {
++  const calibrator = createCalibrator(), held = [];
++  return {
++    push(receipt) {
++      for (const measurement of decodeDatagram(Buffer.from(receipt.base64, 'base64'))) {
++        calibrator.observe(receipt.source, measurement.token, measurement.value);
++        held.push({receipt: receipt.sequence, lineIndex: measurement.lineIndex,
++          identity: measurement.identity, source: receipt.source, token: measurement.token,
++          metricType: measurement.metricType, parsedValue: measurement.value,
++          value: measurement.value});
++      }
++      const ready = [];
++      while (held.length) {
++        const mode = calibrator.mode(held[0].source);
++        if (mode === null && isSignedToken(held[0].token)) break;
++        const event = held.shift();
++        const relative = mode === 'signed-delta' && isSignedToken(event.token);
++        const reading = relative ? (state.get(event.identity) ?? 0) + event.parsedValue : event.parsedValue;
++        event.value = applyGauge(state, {...event, value: reading}).value;
++        ready.push(event);
++      }
++      return ready;
++    },
++  };
+ }
+--- /dev/null
++++ b/src/calibration.mjs
+@@ -0,0 +1,31 @@
++// Channel self-check calibration. Every provisioned endpoint opens a session
++// epoch by pulsing its check register with signed lines and then settling it
++// with one unsigned line that carries the endpoint's own resulting register
++// value. Comparing that settle against the accumulated pulses binds the
++// endpoint's currently active update convention before any of its ordinary
++// traffic is applied; a reprovisioned endpoint re-runs the check in the epoch
++// that activates the change, so bindings never outlive their epoch.
++const near = (a, b) => Math.abs(a - b) <= 1e-9 + 1e-9 * Math.abs(b);
++export const isSignedToken = token => /^[+-]/.test(String(token ?? ''));
++export function createCalibrator() {
++  const bound = new Map(), pulses = new Map();
++  return {
++    mode(source) { return bound.get(source) ?? null; },
++    observe(source, token, value) {
++      if (bound.has(source)) return bound.get(source);
++      if (isSignedToken(token)) {
++        pulses.set(source, [...(pulses.get(source) ?? []), value]);
++        return null;
++      }
++      const seen = pulses.get(source) ?? [];
++      if (!seen.length) return null;
++      const sum = seen.reduce((total, pulse) => total + pulse, 0);
++      const mode = near(value, sum) && !near(value, seen[seen.length - 1])
++        ? 'signed-delta'
++        : 'absolute-reading';
++      bound.set(source, mode);
++      pulses.delete(source);
++      return mode;
++    },
++  };
++}

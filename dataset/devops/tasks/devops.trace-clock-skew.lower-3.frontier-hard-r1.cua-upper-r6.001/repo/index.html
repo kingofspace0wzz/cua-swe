@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spanline trace query</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div><p class="eyebrow">Observability / trace query</p><h1>Spanline</h1></div>
+      <label class="trace-picker">Trace<select data-test="trace-select"></select></label>
+    </header>
+    <main id="app" aria-busy="true">
+      <section class="metrics">
+        <div><span>Spans</span><strong data-test="span-count">0</strong></div>
+        <div><span>Outside parent</span><strong data-test="outside-count">0</strong></div>
+        <div><span>Adjusted</span><strong data-test="adjusted-count">0</strong></div>
+        <div><span>Hosts</span><strong data-test="host-count">0</strong></div>
+      </section>
+      <section class="panel operator-guide-panel" data-test="operator-guide-panel">
+        <div class="operator-guide-heading">
+          <div><p class="eyebrow">Protected operator view</p><h2>Clock-skew decision guide</h2></div>
+          <span>Use with the live host chain below</span>
+        </div>
+        <img
+          data-test="operator-guide"
+          data-guide-source="/api/operator-guide"
+          alt="Visual clock-skew adjustment decision guide"
+          width="1120"
+          height="250"
+        />
+      </section>
+      <section class="panel operator-guide-panel" data-test="calibration-board-panel">
+        <div class="operator-guide-heading">
+          <div><p class="eyebrow">Protected operator view</p><h2>Operator calibration board</h2></div>
+          <div class="board-controls">
+            <button type="button" data-test="board-prev">Previous sheet</button>
+            <span data-test="board-sheet">Sheet 1 of 3</span>
+            <button type="button" data-test="board-next">Next sheet</button>
+          </div>
+        </div>
+        <img
+          data-test="calibration-board"
+          data-board-source="/api/calibration-board"
+          alt="Operator calibration board sheet"
+          width="1120"
+        />
+      </section>
+      <section class="panel comparison-panel">
+        <div class="comparison-heading">
+          <div><p class="eyebrow">Opposite clock directions</p><h2>Remote-host geometry comparison</h2></div>
+          <p>Compare raw and displayed ranges without changing host-measured duration.</p>
+        </div>
+        <div data-test="skew-comparison" class="comparison-grid"></div>
+        <div data-test="host-chain" class="host-chain" aria-live="polite"></div>
+      </section>
+      <section class="panel">
+        <div class="heading">
+          <div><p class="eyebrow" data-test="profile">Loading trace set</p><h2 data-test="trace-title">Trace waterfall</h2></div>
+          <span data-test="trace-id">—</span>
+        </div>
+        <div data-test="error" class="error"></div>
+        <div data-test="waterfall" class="waterfall"></div>
+      </section>
+      <section class="lower">
+        <section class="panel">
+          <p class="eyebrow">Reported versus displayed</p>
+          <h2>Raw span detail</h2>
+          <div data-test="span-detail" class="detail-table"></div>
+        </section>
+        <aside class="column">
+          <section class="panel">
+            <p class="eyebrow">Clock relationship</p>
+            <h2>Host comparison</h2>
+            <div data-test="hosts" class="hosts"></div>
+          </section>
+          <section class="panel">
+            <p class="eyebrow">Query diagnostics</p>
+            <h2>Warnings</h2>
+            <ul data-test="warnings" class="warnings"></ul>
+          </section>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

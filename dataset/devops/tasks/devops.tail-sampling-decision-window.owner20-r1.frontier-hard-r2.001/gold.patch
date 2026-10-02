@@ -1,0 +1,24 @@
+--- a/src/config/collectorSettings.js
++++ b/src/config/collectorSettings.js
+@@ -1,6 +1,7 @@
+ import { SAMPLING_POLICIES } from "./samplingPolicies.js";
++import { RECEIVER_SERVICE_LEVELS } from "./receiverServiceLevels.js";
+ 
+ export const COLLECTOR_SETTINGS = Object.freeze({
+-  decisionWaitMs: 250,
++  decisionWaitMs: RECEIVER_SERVICE_LEVELS.deliveryEnvelopeMs,
+   policies: SAMPLING_POLICIES,
+ });
+--- /dev/null
++++ b/src/config/receiverServiceLevels.js
+@@ -0,0 +1,10 @@
++// Service levels of the active receiver policy profile (SL-INCIDENT-2026.09),
++// read from the receiver policy panel. Late spans of an open trace may arrive
++// up to the delivery envelope after the first span is received; tail decisions
++// must hold for the full envelope and close within the decision SLO, both
++// measured from first receipt. Superseded/scheduled profiles do not govern.
++export const RECEIVER_SERVICE_LEVELS = Object.freeze({
++  policyProfile: "SL-INCIDENT-2026.09",
++  deliveryEnvelopeMs: 3300,
++  decisionSloMs: 3600,
++});

@@ -1,0 +1,48 @@
+--- a/src/config/compileSloPlan.js
++++ b/src/config/compileSloPlan.js
+@@ -1,6 +1,6 @@
+ function compileRollup(rollup) {
+   return {
+-    mode: "mean_of_slices",
++    mode: rollup.mode,
+     weight: rollup.weight || null,
+     includeIds: rollup.includeIds || null,
+     minimumTotal: rollup.minimumTotal || 0,
+--- a/src/config/sloDefinition.js
++++ b/src/config/sloDefinition.js
+@@ -7,28 +7,28 @@
+   Object.freeze({
+     epoch: "rev-2411",
+     windows: Object.freeze({
+-      standing: { availability: { mode: "pooled_events" }, budget: { mode: "pooled_events" } },
+-      review: { availability: { mode: "pooled_events" }, budget: { mode: "pooled_events" } },
++      standing: { availability: { mode: "weighted_slices", weight: "region_equal" }, budget: { mode: "weighted_slices", weight: "region_equal" } },
++      review: { availability: { mode: "weighted_slices", weight: "region_equal" }, budget: { mode: "weighted_slices", weight: "region_equal" } },
+     }),
+   }),
+   Object.freeze({
+     epoch: "rev-2503",
+     windows: Object.freeze({
+-      standing: { availability: { mode: "mean_of_slices" }, budget: { mode: "mean_of_slices" } },
+-      review: { availability: { mode: "mean_of_slices" }, budget: { mode: "mean_of_slices" } },
++      standing: { availability: { mode: "weighted_slices", weight: "region_equal" }, budget: { mode: "weighted_slices", weight: "region_equal" } },
++      review: { availability: { mode: "weighted_slices", weight: "region_equal" }, budget: { mode: "weighted_slices", weight: "region_equal" } },
+     }),
+   }),
+   Object.freeze({
+     epoch: "rev-2507",
+     windows: Object.freeze({
+-      standing: { availability: { mode: "mean_of_slices" }, budget: { mode: "mean_of_slices" } },
++      standing: { availability: { mode: "weighted_slices", weight: "region_equal" }, budget: { mode: "weighted_slices", weight: "region_equal" } },
+     }),
+   }),
+   Object.freeze({
+     epoch: "rev-2509",
+     windows: Object.freeze({
+-      standing: { availability: { mode: "weighted_slices", weight: "good" }, budget: { mode: "weighted_slices", weight: "good" } },
+-      review: { availability: { mode: "weighted_slices", weight: "good" }, budget: { mode: "weighted_slices", weight: "good" } },
++      standing: { availability: { mode: "weighted_slices", weight: "region_equal" }, budget: { mode: "weighted_slices", weight: "region_equal" } },
++      review: { availability: { mode: "weighted_slices", weight: "region_equal" }, budget: { mode: "weighted_slices", weight: "region_equal" } },
+     }),
+   }),
+ ]);

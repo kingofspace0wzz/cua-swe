@@ -1,0 +1,33 @@
+diff --git a/src/game.js b/src/game.js
+index 64331c9e9f6ebc64000eaff32b6f08843eee6b3b..c24c9713d3f8d4c6c694a3f00bef169e110f4b6f 100644
+--- a/src/game.js
++++ b/src/game.js
+@@ -222,14 +222,25 @@
+       });
+     }
+ 
+-    finishDrill(outcome, collision) {
++    finishDrill(_outcome, collision) {
+       const spec = DRILLS[this.drill.index];
++      const audit = this.visualAudit();
++      const outcome = audit.contact_visible ? "bump" : "clear";
+       this.phase = "drill_result";
+-      this.lastCollision = collision || null;
++      this.lastCollision = outcome === "bump"
++        ? (collision || Object.freeze({
++          kind: "pipe",
++          pipe_id: spec.id,
++          pipe_left: this.trail[audit.sample_index].pipe_x,
++          pipe_right: this.trail[audit.sample_index].pipe_x + PIPE_WIDTH,
++          gap_top: audit.gap_top,
++          gap_bottom: audit.gap_bottom,
++          bird: audit.bird,
++        }))
++        : null;
+       if (!Object.prototype.hasOwnProperty.call(this.labResults, spec.slug)) {
+         this.labResults[spec.slug] = outcome;
+       }
+-      const audit = this.visualAudit();
+       const score = this.labScore();
+       this.drill = this.drillState(
+         this.drill.index,

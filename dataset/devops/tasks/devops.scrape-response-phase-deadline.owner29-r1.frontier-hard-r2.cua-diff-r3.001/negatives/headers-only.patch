@@ -1,0 +1,11 @@
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -8,7 +8,7 @@
+     const started=performance.now();let settled=false,response=null;
+     const event=(phase,extra={})=>notify({phase,elapsedMs:performance.now()-started,...extra});
+     const req=request(url,{method:'GET',agent:false},res=>{
+-      response=res;event('headers',{status:res.statusCode});const chunks=[];
++      response=res;event('headers',{status:res.statusCode});finish(null,'');const chunks=[];
+       res.on('data',chunk=>chunks.push(chunk));
+       res.on('aborted',()=>finish(new Error('incomplete_response')));
+       res.on('error',finish);

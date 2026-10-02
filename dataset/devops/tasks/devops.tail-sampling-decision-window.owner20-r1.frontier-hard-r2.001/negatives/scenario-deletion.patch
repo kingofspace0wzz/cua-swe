@@ -1,0 +1,21 @@
+--- a/src/config/collectorSettings.js
++++ b/src/config/collectorSettings.js
+@@ -1,6 +1,6 @@
+ import { SAMPLING_POLICIES } from "./samplingPolicies.js";
+ 
+ export const COLLECTOR_SETTINGS = Object.freeze({
+-  decisionWaitMs: 250,
++  decisionWaitMs: 3300,
+   policies: SAMPLING_POLICIES,
+ });
+--- a/src/views/controls.js
++++ b/src/views/controls.js
+@@ -1,7 +1,7 @@
+ import { escapeHtml } from "./components.js";
+ export function renderControls({ catalog, snapshot }) {
+   const scenario = document.querySelector("#scenario");
+-  scenario.innerHTML = catalog.scenarios.map(item => `<button data-scenario="${item.id}" aria-pressed="${item.id === snapshot.scenarioId}">${escapeHtml(item.label)}</button>`).join("");
++  scenario.innerHTML = catalog.scenarios.slice(0, 1).map(item => `<button data-scenario="${item.id}" aria-pressed="${item.id === snapshot.scenarioId}">${escapeHtml(item.label)}</button>`).join("");
+   document.querySelector("#bucket").value = snapshot.filter.bucket;
+   document.querySelector("#decision").value = snapshot.filter.decision;
+   const probe = document.querySelector("#probe");

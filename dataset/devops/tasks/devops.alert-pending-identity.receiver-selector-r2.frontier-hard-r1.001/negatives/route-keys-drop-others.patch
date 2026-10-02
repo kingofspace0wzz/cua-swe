@@ -1,0 +1,29 @@
+diff -ruN a/src/controllers/console.js b/src/controllers/console.js
+--- a/src/controllers/console.js	2026-09-14 05:09:04.056000000 +0000
++++ b/src/controllers/console.js	2026-09-17 06:12:26.513951873 +0000
+@@ -4,7 +4,7 @@
+ import {render} from '../views/render.js';
+ export async function initialize(){
+  store.catalog=await request('catalog');
+- await request('configure',{rules:store.catalog.rules.map(compileRule)});
++ await request('configure',{rules:store.catalog.rules.map(rule=>compileRule(rule,store.catalog.route))});
+  store.snapshot=await request('snapshot');render(store);
+  document.querySelector('#app').addEventListener('click',async event=>{
+   const button=event.target.closest('button[data-action]');if(!button||store.busy)return;
+diff -ruN a/src/rules/compileRule.js b/src/rules/compileRule.js
+--- a/src/rules/compileRule.js	2026-09-14 05:09:03.876000000 +0000
++++ b/src/rules/compileRule.js	2026-09-17 06:12:26.484082965 +0000
+@@ -1,10 +1,11 @@
+ import {compileQuery} from './query.js';
+ 
+-export function compileRule(rule) {
++export function compileRule(rule, route) {
+   const labels = {...rule.labels};
+   const annotations = {...rule.annotations};
++  const routed = new Set(Object.keys((route && route.match) || {}));
+   for (const field of rule.enrichments || []) {
+-    labels[field.name] = field.template;
++    if (routed.has(field.name)) labels[field.name] = field.template;
+   }
+   return {
+     name: rule.name,

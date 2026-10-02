@@ -1,0 +1,89 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/context_service.mjs
+  fixture: repo/verifiers/profiles.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults: {service: 4362, application: 4361}
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants: [visible, hidden, hidden-store]
+  oracle: protected-span-ancestry-transition-and-concurrency-signatures
+  note: >-
+    Each run starts a fresh protected async-context engine and application
+    host. The engine owns operation schedules, suspension points, automatic
+    spans, trace and span identities, concurrency, ancestry audit, and the
+    manager-specific continuation compatibility declarations. The three
+    grading variants use two different context managers whose declared
+    awaitContinuations styles disagree, so only a repair that consumes the
+    catalog declaration (or a comprehensive explicit propagation strategy)
+    is compatible with every variant.
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+    - repo/verifiers/
+    - env/
+    - task.yaml
+    - gold.patch
+    - negative.patch
+    - negatives/
+    - replay.md
+    - evidence.yaml
+    - provenance.yaml
+    - candidate.yaml
+    - runtime-contract.yaml
+    - operator-gate.yaml
+    - custody.json
+    - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - inspect the protected compatibility diagnosis and its manager-specific continuation recommendation
+    - compare pre-await and post-await span ancestry in the sequential waterfall
+    - inspect raw trace IDs and parent IDs in the span inventory
+    - correlate lost transitions with automatic instrumentation coverage
+    - run the overlapping scenario and compare operation trace isolation
+  decisive_paths:
+    - compatibility.status
+    - compatibility.manager
+    - compatibility.compiled-async
+    - compatibility.recommendation
+    - scenario.label
+    - summary.trace-count
+    - summary.orphan-count
+    - span.trace-id
+    - span.parent-id
+    - span.operation
+    - transition.status
+    - instrumentation.kind
+    - waterfall.depth
+source_noninferability:
+  forbidden_agent_source_literals:
+    - open-telemetry/opentelemetry-js
+    - issue-1502-doc-pr-1616
+    - context_service.mjs
+    - profiles.json
+    - expectedSignature
+    - visible-sequential
+    - hidden-sequential
+    - store-sequential
+    - continuation-store
+    - refresh-service
+    - reconcile-ledger
+    - compact-exports
+    - vseq-root
+    - hseq-root
+    - sseq-root

@@ -1,0 +1,49 @@
+--- a/src/config/collectorSettings.js
++++ b/src/config/collectorSettings.js
+@@ -1,5 +1,24 @@
+ import { SAMPLING_POLICIES } from "./samplingPolicies.js";
+ 
++// Receiver operations runbook RB-217 (firmware 2419): delivery envelope and
++// decision margin for every supported receiver delivery profile; the runbook
++// is published by receiver operations outside this repository.
++export const RUNBOOK_RB217_FIRMWARE_2419 = Object.freeze({
++  "DP-A19": { deliveryEnvelopeMs: 1450, decisionMarginMs: 120 },
++  "DP-C41": { deliveryEnvelopeMs: 2840, decisionMarginMs: 120 },
++  "DP-H77": { deliveryEnvelopeMs: 3970, decisionMarginMs: 150 },
++  "DP-K58": { deliveryEnvelopeMs: 3370, decisionMarginMs: 90 },
++  "DP-M63": { deliveryEnvelopeMs: 5150, decisionMarginMs: 200 },
++});
++
++export function decisionWaitForProfile(receiver, fallbackMs) {
++  const profile = receiver && receiver.firmware
++    ? RUNBOOK_RB217_FIRMWARE_2419[receiver.firmware.profileCode]
++    : null;
++  if (!profile) return Number(fallbackMs);
++  return profile.deliveryEnvelopeMs + profile.decisionMarginMs;
++}
++
+ export const COLLECTOR_SETTINGS = Object.freeze({
+   decisionWaitMs: 250,
+   policies: SAMPLING_POLICIES,
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -1,6 +1,6 @@
+ import { samplerClient } from "../api/samplerClient.js";
+ import { compilePolicyPlan } from "../config/compilePolicyPlan.js";
+-import { COLLECTOR_SETTINGS } from "../config/collectorSettings.js";
++import { COLLECTOR_SETTINGS, decisionWaitForProfile } from "../config/collectorSettings.js";
+ import { store } from "../state/store.js";
+ 
+ const refresh = async () => store.set({ snapshot: await samplerClient.snapshot() });
+@@ -8,7 +8,10 @@
+ export async function initialize() {
+   const catalog = await samplerClient.catalog();
+   await samplerClient.configure(
+-    compilePolicyPlan(COLLECTOR_SETTINGS),
++    compilePolicyPlan({
++      ...COLLECTOR_SETTINGS,
++      decisionWaitMs: decisionWaitForProfile(catalog.receiver, COLLECTOR_SETTINGS.decisionWaitMs),
++    }),
+   );
+   store.set({ catalog });
+   await samplerClient.scenario(catalog.scenarios[0].id);

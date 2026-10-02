@@ -1,0 +1,28 @@
+--- a/src/app.js
++++ b/src/app.js
+@@ -1,6 +1,23 @@
+ const root=document.querySelector("#root");
++function localParts(epoch,zone){const p=Object.fromEntries(new Intl.DateTimeFormat("en-CA",{timeZone:zone,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date(epoch)).map(x=>[x.type,x.value]));return{year:+p.year,month:+p.month,day:+p.day,minute:+p.hour*60 + +p.minute};}
++function dateKey(date){return `${date.getUTCFullYear()}-${String(date.getUTCMonth()+1).padStart(2,"0")}-${String(date.getUTCDate()).padStart(2,"0")}`;}
++function isoDay(date){return date.getUTCDay()||7;}
++function formatDate(date,pattern){const parts={YYYY:String(date.getUTCFullYear()),MM:String(date.getUTCMonth()+1).padStart(2,"0"),DD:String(date.getUTCDate()).padStart(2,"0")};return pattern.replace("YYYY",parts.YYYY).replace("MM",parts.MM).replace("DD",parts.DD);}
++function resolveDispatch(d){
++  const local=localParts(d.placed_epoch_ms,d.facility_zone);
++  let date=new Date(Date.UTC(local.year,local.month-1,local.day));
++  const cutoffFor=(candidate)=>{const code=Object.entries(d.day_code_map).find(([,day])=>day===isoDay(candidate))?.[0];return d.cutoffs.find(x=>x.day_code===code);};
++  const todayCutoff=cutoffFor(date);
++  const todayClosed=d.closed_dates.includes(dateKey(date));
++  if(!todayClosed&&todayCutoff&&local.minute<todayCutoff.minute_of_day&&d.before_cutoff_policy==="same_day")return date;
++  if(d.after_cutoff_policy==="next_open_day"){
++    for(let i=0;i<14;i+=1){date=new Date(date.getTime()+86_400_000);if(d.closed_date_policy==="skip"&&d.closed_dates.includes(dateKey(date)))continue;if(cutoffFor(date))return date;}
++  }
++  return date;
++}
+ async function render(){
+   const response=await fetch(`/api/warehouse-dispatch${window.location.search}`);const data=await response.json();
+-  // The legacy dispatch response exposed a display-ready day.
+-  const dispatchDay=data.dispatch_day??"Dispatch unavailable";
++  const selected=resolveDispatch(data.dispatch);
++  const value=formatDate(selected,data.dispatch.date_format);
++  const dispatchDay=data.dispatch.display_pattern.replace("{value}",value);
+   root.innerHTML=`<main class="shell"><section class="card"><p class="eyebrow">Warehouse dispatch</p><h1>Order ${data.order_ref??"unknown"}</h1><div class="dispatch-row"><span>Dispatch day</span><strong id="dispatch-day">${dispatchDay}</strong></div><button id="timeline-toggle" type="button" aria-expanded="false">Dispatch timeline</button><section id="timeline" class="timeline" hidden><h2>Live /api/warehouse-dispatch response</h2><pre>${JSON.stringify(data,null,2)}</pre></section></section></main>`;

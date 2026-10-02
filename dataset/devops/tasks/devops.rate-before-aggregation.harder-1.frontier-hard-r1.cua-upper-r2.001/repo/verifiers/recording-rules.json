@@ -1,0 +1,82 @@
+[
+  {
+    "id": "traffic-window",
+    "label": "Traffic window",
+    "steps": [
+      "window = sum by (service) (rate(service_stream_total[60s]))"
+    ],
+    "inputLabels": "service",
+    "outputLabels": "service",
+    "lineage": [
+      "input service_stream_total \u00b7 1 series per service \u00b7 labels: service",
+      "publisher: ingress gateway cost rollup \u00b7 merges every target stream into one service counter before storage",
+      "collection: 15s step \u00b7 samples current at query time",
+      "ordering: gateway commit \u00b7 the merged counter is published on schedule"
+    ],
+    "upstream": "gateway-rollup"
+  },
+  {
+    "id": "traffic-detail",
+    "label": "Traffic detail",
+    "steps": [
+      "window = sum by (service) (rate(panel_counter_total[60s]))"
+    ],
+    "inputLabels": "service, target",
+    "outputLabels": "service",
+    "lineage": [
+      "input panel_counter_total \u00b7 1 series per target \u00b7 labels: service, target",
+      "publisher: application scrape \u00b7 raw counter exposed by each target",
+      "collection: 15s step \u00b7 samples current at query time",
+      "ordering: live collector feed \u00b7 commits samples in the order they arrive"
+    ],
+    "upstream": "arrival-feed"
+  },
+  {
+    "id": "traffic-ledger",
+    "label": "Traffic ledger",
+    "steps": [
+      "window = sum by (service) (rate(ledger_stream_total[60s]))"
+    ],
+    "inputLabels": "service, target",
+    "outputLabels": "service",
+    "lineage": [
+      "input ledger_stream_total \u00b7 1 series per target \u00b7 labels: service, target",
+      "publisher: collection ledger replay \u00b7 re-commits the same application scrape samples",
+      "collection: 15s step \u00b7 complete for closed observation windows at the ledger flush boundary",
+      "ordering: write-ahead ledger \u00b7 commits drained publications in original scrape-timestamp order"
+    ],
+    "upstream": "scrape-ledger"
+  },
+  {
+    "id": "traffic-capacity",
+    "label": "Traffic capacity",
+    "steps": [
+      "window = sum by (service) (rate(target_stream_total[60s]))"
+    ],
+    "inputLabels": "service, target",
+    "outputLabels": "service",
+    "lineage": [
+      "input target_stream_total \u00b7 1 series per target \u00b7 labels: service, target",
+      "publisher: cross-zone relay mirror \u00b7 re-publishes each target stream after transit",
+      "collection: 15s step \u00b7 samples trail the live scrape by one collection interval",
+      "ordering: relay transit commit \u00b7 each sample lands one collection interval late"
+    ],
+    "upstream": "relay-mirror"
+  },
+  {
+    "id": "traffic-archive",
+    "label": "Traffic archive",
+    "steps": [
+      "window = sum by (service) (rate(archive_stream_total[60s]))"
+    ],
+    "inputLabels": "service, target",
+    "outputLabels": "service",
+    "lineage": [
+      "input archive_stream_total \u00b7 1 series per target \u00b7 labels: service, target",
+      "publisher: long-term archive compactor \u00b7 keeps the last sample of each 30s block",
+      "collection: 30s step \u00b7 samples current at query time",
+      "ordering: compactor commit \u00b7 one retained sample per 30s block"
+    ],
+    "upstream": "archive-compaction"
+  }
+]

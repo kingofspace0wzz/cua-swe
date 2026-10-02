@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Field Log Composer</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="page-head">
+        <span class="crumb" id="workspace-name">Workspace</span>
+        <h1 class="doc-title" id="log-title">Log</h1>
+        <p class="hint">Enter starts a new entry. Shift+Enter continues the current entry on a new line.</p>
+      </header>
+      <section class="frame-shell" id="frame-shell">
+        <div class="action-bar" id="action-bar">
+          <button type="button" class="tool">Save</button>
+          <button type="button" class="tool">Attach</button>
+          <span class="spacer"></span>
+          <span class="tool-note">Autosaving</span>
+        </div>
+        <div class="surface" id="surface" contenteditable="true" spellcheck="false"></div>
+        <div class="status-strip" id="status-strip">
+          <span class="status-dot"></span>
+          <span>Draft</span>
+          <span class="spacer"></span>
+          <span class="cursor-flag" id="cursor-flag" data-cursor-visible="1">Cursor in view</span>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/dist/bundle.js"></script>
+  </body>
+</html>

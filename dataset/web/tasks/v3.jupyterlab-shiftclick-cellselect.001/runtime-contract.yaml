@@ -1,0 +1,92 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: >-
+    node build.mjs &&
+    CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - open the Notebook and select some text inside a code cell's editor, then
+      Shift-click another cell's prompt; observe that the cell range is NOT
+      selected (only the clicked cell becomes active) — the broken behavior
+    - select text inside a code cell's output area, then Shift-click within the
+      same output; observe that the browser is extending the highlighted text
+      and no cell range selection should occur
+    - select text inside a rendered markdown cell, then Shift-click a later part
+      of that rendered markdown; observe the text selection growing
+    - select text inside an output, then Shift-click a DIFFERENT cell's prompt;
+      observe that the cell range selection is expected to extend because the
+      click landed on cell chrome rather than into browser-owned text
+  decisive_edge: >-
+    The notebook DOCUMENT for each payload — which cells exist, their kind
+    (code / rendered markdown), and the concrete output DOM, including outputs
+    that attach an open shadow root the way widget libraries such as Panel or
+    Bokeh do — is delivered only by the evaluator-owned scene feed
+    (env/service.mjs) and is never present in agent-visible repo/ source. The
+    agent-visible mousedown handler contains only the coarse guard "if any text
+    is selected, do not extend the cell selection", which over-blocks: it stops
+    cell range selection whenever ANY text is selected, including text in a code
+    editor. Source alone supports several plausible repairs: leave the coarse
+    guard; block cell selection only when the selection anchor is outside a code
+    editor; or treat only the output area as browser-owned. Reading the running
+    notebook reveals the non-source-obvious decisive rule: the browser owns the
+    gesture only when BOTH the current selection's anchor AND the clicked region
+    are in a cell's browser-owned text region (a code cell's output area or a
+    rendered markdown cell's rendered input, traversing open shadow roots), and
+    in every other case — including clicking a prompt or cell chrome, or having
+    a selection anchored in a code editor — the cell range selection must
+    extend. The strongest source-only generalization (anything outside a code
+    editor is a text selection) mis-handles a Shift-click on another cell's
+    prompt while output text is selected, which must still extend the cell
+    range. Protected verification repeats this region-aware invariant across
+    five notebook payloads.
+source_noninferability:
+  forbidden_agent_source_literals:
+    - "_isExtendingTextSelection"
+    - "isInTextRegion"
+    - "textRegionsOf"
+  note: >-
+    The product Cell class necessarily stores DOM references to each region it
+    renders (editor, prompt, outputArea, renderedInput, outputHost) so it can
+    build the surface. Those field names are present in agent-visible source and
+    are NOT the decisive contract. The decisive, non-inferable facts are the
+    per-payload notebook documents delivered by the scene feed and the rule that
+    the browser owns the gesture only when BOTH the selection anchor and the
+    clicked region are browser-owned text regions; the strongest source-only
+    generalization was implemented and fails the protected verifier (gate 5).
+provenance:
+  source_repo: jupyterlab/jupyterlab
+  source_pull_request: https://github.com/jupyterlab/jupyterlab/pull/19243
+  source_issue: https://github.com/jupyterlab/jupyterlab/issues/19242
+  related_issue: https://github.com/jupyterlab/jupyterlab/issues/4800
+  broken_revision: c92f5efa1285d4e091f8a73a6a661439ca347670
+  merge_commit: 1b9f5c301e9fa9f43d57a15f892ef2505087e3aa
+  license: BSD-3-Clause
+  implementation: behavior-derived-clean-room
+  conversion_note: >-
+    Full JupyterLab (lab application, kernel, notebook package, CodeMirror,
+    rendermime, and widget libraries) is prohibitively heavy to run as the task
+    runtime, so the notebook cell-selection surface is reproduced as a
+    behavior-derived clean-room fixture. The reproduced mousedown selection
+    handler mirrors JupyterLab's Notebook._evtMouseDown at the pinned broken
+    revision c92f5ef, including the exact coarse guard
+    `const hasSelection = (window.getSelection() ?? '').toString() !== ''`
+    that blocks cell range selection whenever any text is selected. The gold
+    repair mirrors PR#19243: it replaces the coarse guard with a region-aware
+    `_isExtendingTextSelection` that only defers to the browser when both the
+    selection anchor and the clicked region are in a browser-owned text region
+    (output area or rendered markdown input), traversing open shadow roots via a
+    `containsDeep`/`_cellContaining` helper exactly as the merged PR does. The
+    evaluator owns the notebook documents (cell kinds and output DOM, including
+    the shadow-DOM widget output the upstream test uses) and reads back the live
+    cell-selection state; the product source exposes only a generic notebook
+    surface and the coarse guard.

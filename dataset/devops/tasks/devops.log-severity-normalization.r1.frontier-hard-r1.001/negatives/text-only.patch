@@ -1,0 +1,12 @@
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,2 @@
+-import {severityAdapters} from './severityAdapters.js';
+-
+-export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
+-  const decode = severityAdapters[format];
+-  return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+-}
++import {fromText,fromJson} from './severityAdapters.js';
++export function resolveSeverity(record,receiver){return receiver.output.format==='json'?fromJson(record):fromText(record.severityText);}

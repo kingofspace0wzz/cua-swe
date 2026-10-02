@@ -1,0 +1,129 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: >-
+    python3 runtime_service.py --host 127.0.0.1 --port {service_port}
+    --card env/route-card.png
+  health_path: /health
+application:
+  command: >-
+    CUA_SWE_RUNTIME_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    node server.mjs --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}/
+ports:
+  allocation: construction_default
+  declared_defaults:
+    service: 51001
+    application: 51000
+runtime:
+  browser: chromium
+  state_bridge: window.gameAPI
+  fixed_step_seconds: 0.016666666666666666
+  controls:
+    movement:
+      - WASD
+      - arrow keys
+    ordinary_restart: R
+  reset:
+    api: "window.gameAPI.reset({seed: 2903, level: 1})"
+    level: "window.gameAPI.setLevel(1)"
+evaluator_owned_semantics:
+  purpose: >-
+    Supply three anonymous symmetric handoff alternatives, opaque receipt
+    values, and an original raster route card selecting one visible
+    orientation. No alternative is semantically distinguished in agent-visible
+    source. The service contains no verifier threshold, gold patch, or task
+    instruction.
+  portability: >-
+    The service uses only the Python standard library and a bundled PNG. It is
+    deterministic and has no network dependency.
+  agent_isolation: >-
+    Protected evaluation stages the service outside the agent sandbox. The
+    source-only workspace excludes repo/verifiers, candidate env, and the
+    candidate-root runtime service.
+  browser_delivery: >-
+    The application server reads the protected service origin from its
+    environment and relays only the ticket and route-card response bytes
+    through fixed same-origin paths. Browser JavaScript never receives or
+    reconstructs the evaluator service origin.
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_protected_evaluation:
+    - repo/verifiers/
+    - env/
+    - runtime_service.py
+    - task.yaml
+    - gold.patch
+    - negative.patch
+    - replay.md
+    - interaction-gate.yaml
+    - runtime-contract.yaml
+    - design-review.json
+    - provenance.json
+    - STATUS.md
+browser_observation:
+  steps:
+    - open only the declared application URL and observe a nonblank bounded loading frame followed by a game-ready initial frame
+    - collect the left prism and activate the visible midpoint shelter
+    - inspect the route card and colored handoff trail
+    - survive one OPEN-lane crossing before the trigger
+    - collect the right prism and deliberately collide in a closed lane
+    - release all movement keys and wait inside the returned shelter
+    - leave the shelter and observe two ownership pulses
+    - cross the second marked OPEN lane, recollect the prism, finish, and press R
+  decisive_paths:
+    - game_state.checkpoint.active
+    - game_state.checkpoint.returns
+    - game_state.checkpoint.saved.field
+    - game_state.checkpoint.saved.panel
+    - game_state.safe_zone.occupied
+    - game_state.triad.field.clock
+    - game_state.triad.field.pulses
+    - game_state.triad.field.assignment
+    - game_state.triad.field.route
+    - game_state.triad.field.trail
+    - game_state.triad.panel.clock
+    - game_state.triad.panel.pulses
+    - game_state.triad.panel.assignment
+    - game_state.triad.panel.route
+    - game_state.triad.panel.trail
+    - game_state.triad.field_open
+    - game_state.triad.panel_open
+    - game_state.triad.return_armed
+    - game_state.triad.return_committed
+    - metrics.tokens
+    - metrics.remaining_tokens
+    - metrics.deaths
+    - terminal.isTerminal
+    - terminal.outcome
+source_noninferability:
+  requirement: >-
+    Agent-visible source may enumerate and validate three complete bijections,
+    but must not contain the evaluator-owned orientation, route-card pixels,
+    their digest, a semantic lane label for that orientation, or a source
+    constant selecting the gold alternative. Identity, owner-to-destination,
+    and destination-from-owner interpretations remain type-correct and
+    behaviorally equivalent until checkpoint return and safe-zone departure.
+  forbidden_agent_source_literals:
+    - b0a64ab5d7c93f0b0f10d63a537c5307787a81407ca38cf519f929369dd7f206
+    - RETURN HANDOFF
+    - checkpoint-return-triad-orientation-v2
+    - game_state.triad.field.route
+    - game_state.triad.panel.route
+    - visible handoff trail repeated, skipped, or reversed an owner
+    - runtime-config.json
+protected_assertions:
+  same_origin_startup: browser requests remain on the declared app origin, use the app proxy paths, and reach a nonblank game-ready canvas
+  trigger_reachability: one keyboard collision occurs after checkpoint activation and second-prism collection
+  pre_trigger_equivalence: field and panel records are equal and the first OPEN-lane crossing survives
+  complete_records: capture/restore retains clock, pulse, active, generation, assignment, route, trail, and all capsule fields
+  post_trigger_divergence: baseline disagrees on marked versus physical openings; the negative aligns openings but reverses the visible ownership trail
+  visual_continuity: the route card and persistent trail show the expected u-to-v-to-w handoff without repeat, skip, or reversal
+  reset_release_persistence: all movement keys are released before the returned shelter hold is sampled
+  safe_zone_hold: both consumers remain frozen while the player waits inside the shelter
+  ordinary_restart: R clears checkpoint, return transaction, tokens, deaths, and terminal state
+  coin_and_checkpoint: first prism persists at checkpoint; second prism rolls back; return remains in the shelter
+  completion: both prisms are collected and terminal.outcome is success
+  state_bounded_timing: pulse counters, shelter occupancy, and transition edges replace absolute animation-frame assertions

@@ -1,0 +1,25 @@
+--- a/src/config/collectorSettings.js
++++ b/src/config/collectorSettings.js
+@@ -1,6 +1,7 @@
+ import { SAMPLING_POLICIES } from "./samplingPolicies.js";
++import { RECEIVER_SERVICE_LEVELS } from "./receiverServiceLevels.js";
+ 
+ export const COLLECTOR_SETTINGS = Object.freeze({
+-  decisionWaitMs: 250,
++  decisionWaitMs: RECEIVER_SERVICE_LEVELS.slowestSpanDeliveryMs,
+   policies: SAMPLING_POLICIES,
+ });
+--- /dev/null
++++ b/src/config/receiverServiceLevels.js
+@@ -0,0 +1,11 @@
++// Receiver service levels observed on the tail-sampling console. The receiver
++// publishes no absolute envelope; correlating the live windows and replay
++// shows spans of an open trace arriving up to 2620 ms after first receipt
++// (the worker traces and the replayed refunds dependency), and the receiver's
++// tail-decision SLO allows the slowest span delivery plus a 180 ms decision
++// margin. The collector must hold each tail decision open for the slowest
++// delivery and close it within that margin.
++export const RECEIVER_SERVICE_LEVELS = Object.freeze({
++  slowestSpanDeliveryMs: 2620,
++  decisionMarginMs: 180,
++});

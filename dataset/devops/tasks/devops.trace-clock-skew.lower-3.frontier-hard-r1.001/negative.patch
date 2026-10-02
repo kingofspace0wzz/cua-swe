@@ -1,0 +1,27 @@
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,23 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
+ 
++function clampToParents(spans) {
++  const output = spans.map((span) => ({ ...span }));
++  const byId = new Map(output.map((span) => [span.id, span]));
++  for (const span of output) {
++    if (span.parentId === null) continue;
++    const parent = byId.get(span.parentId);
++    if (!parent) continue;
++    span.startMs = Math.max(span.startMs, parent.startMs);
++    span.endMs = Math.min(span.endMs, parent.endMs);
++    span.durationMs = span.endMs - span.startMs;
++  }
++  return output;
++}
++
+ export function compileAdjusters(policy) {
+   return [
+     { name: "dedupe", apply: dedupeSpans },
++    { name: "contain", apply: clampToParents },
+     { name: "sort", apply: sortSpans },
+   ];
+ }

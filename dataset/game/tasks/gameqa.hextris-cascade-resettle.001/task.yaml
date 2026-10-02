@@ -1,0 +1,63 @@
+id: gameqa.hextris-cascade-resettle.001
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.hextris-cascade-resettle.001/repo
+  ref: gameworld-games-5532292-hextris-cascade-resettle-mutant-v3
+  link_node_modules: false
+  copy_mode: filtered
+instruction: >-
+  Play the prepared cascade challenge. Rotate the incoming red block one step
+  left and watch the collapse through its intermediate and final states. The
+  first red group clears, but the score then sticks at 9 and the completed blue
+  match remains on the board. Fix the underlying gameplay regression so the
+  cascade behaves consistently with the visible stable groups, without
+  changing the ordinary match-size rule.
+setup:
+  install: []
+  reset: []
+  launch:
+    - python3 server.py --host 127.0.0.1 --port 4173
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4173/?benchmark=1&level=1
+  viewport_or_device: desktop-1280x720
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 220
+  max_gui_actions: 160
+  max_test_runs: 20
+verifiers:
+  build:
+    - python3 scripts/static_check.py
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - >-
+      "${CUA_SWE_PYTHON:-python3}" verifiers/browser_check.py
+      --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:4173/?benchmark=1&level=1}"
+      --fixture "${CUA_SWE_HEXTRIS_FIXTURE:-verifiers/deterministic_fixture.js}"
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: 16_hextris
+  state_api: window.gameAPI
+  seed: 42
+  level: 1
+schema_version: 1

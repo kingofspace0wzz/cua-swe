@@ -1,0 +1,59 @@
+diff --git a/js/Hex.js b/js/Hex.js
+index 7d245d5388333f1de3aed13fb0700c7e1b63bcfa..7de0afcde7b78ee2425591211b62e3597ecfdba3 100644
+--- a/js/Hex.js
++++ b/js/Hex.js
+@@ -68,6 +68,7 @@ function Hex(sideLength) {
+ 				if (block.distFromHex - block.iter * this.dt * settings.scale * fallSpeed - (this.sideLength / 2) * Math.sqrt(3) <= 0) {
+ 					block.distFromHex = (this.sideLength / 2) * Math.sqrt(3);
+ 					block.settled = 1;
++					block.checked = 1;
+ 				} else {
+ 					block.settled = 0;
+ 					block.iter = 1.5 + (waveone.difficulty/15) * 3;
+@@ -76,6 +77,7 @@ function Hex(sideLength) {
+ 				if (arr[position - 1].settled && block.distFromHex - block.iter * this.dt * settings.scale * fallSpeed - arr[position - 1].distFromHex - arr[position - 1].height <= 0) {
+ 					block.distFromHex = arr[position - 1].distFromHex + arr[position - 1].height;
+ 					block.settled = 1;
++					block.checked = 1;
+ 				}
+ 				else {
+ 					block.settled = 0;
+diff --git a/js/update.js b/js/update.js
+index 4a5d0d6d24e1285adb6376a9e7c8f007d05dd05d..1732a2f543466e5210269942101497033100a0dd 100644
+--- a/js/update.js
++++ b/js/update.js
+@@ -13,6 +13,7 @@ function update(dt) {
+ 	var i;
+ 	var j;
+ 	var block;
++	var attachedBlocksSettled = true;
+ 
+ 	var objectsToRemove = [];
+ 	for (i = 0; i < blocks.length; i++) {
+@@ -24,11 +25,22 @@ function update(dt) {
+ 		}
+ 	}
+ 
+-	for (i = 0; i < MainHex.blocks.length; i++) {
++	for (i = 0; i < MainHex.blocks.length && attachedBlocksSettled; i++) {
+ 		for (j = 0; j < MainHex.blocks[i].length; j++) {
+-			if (MainHex.blocks[i][j].checked ==1 ) {
+-				consolidateBlocks(MainHex,MainHex.blocks[i][j].attachedLane,MainHex.blocks[i][j].getIndex());
+-				MainHex.blocks[i][j].checked=0;
++			if (!MainHex.blocks[i][j].settled) {
++				attachedBlocksSettled = false;
++				break;
++			}
++		}
++	}
++
++	if (attachedBlocksSettled) {
++		for (i = 0; i < MainHex.blocks.length; i++) {
++			for (j = 0; j < MainHex.blocks[i].length; j++) {
++				if (MainHex.blocks[i][j].checked ==1 ) {
++					consolidateBlocks(MainHex,MainHex.blocks[i][j].attachedLane,MainHex.blocks[i][j].getIndex());
++					MainHex.blocks[i][j].checked=0;
++				}
+ 			}
+ 		}
+ 	}

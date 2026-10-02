@@ -1,0 +1,1 @@
+{"name":"account-recovery-contract-task","private":true,"type":"module","scripts":{"build":"node --check server.mjs && node --check src/app.js","dev":"node server.mjs --host 127.0.0.1 --port 4173"}}

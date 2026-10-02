@@ -1,0 +1,49 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..c0350b427b255c59d237582cf2e8af2ba22b5ad6 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -254,6 +254,8 @@
+         this.retry = function(retry){
+             this.resumeGame(retry);
+             this.player.respawn();
++            this.levelMap.cameraProgress = this.player.xPos;
++            this.levelMap.x = -this.levelMap.cameraProgress;
+             this.levelMap.showGuide(this.player.spawnGuide);
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+diff --git a/js/LevelMap.js b/js/LevelMap.js
+index b57a6f995f0d58427f8879bfa3fac061ede82026..dfa51be10f955e494c86c7f82f7e33be3948348d 100644
+--- a/js/LevelMap.js
++++ b/js/LevelMap.js
+@@ -210,6 +210,8 @@
+             this.guideView = null;
+             this.guideRemaining = 0;
+             if (frame == null || this.mapView == null) return;
++            var currentSupport = frame.id != null ? this.getSupport(frame.id) : null;
++            if (currentSupport != null) frame = this.captureGuide(currentSupport);
+             var guide = new createjs.Container();
+             for (var i=0; i<frame.tiles; i++){
+                 guide.addChild(window.tiles.drawShape(
+diff --git a/js/Player.js b/js/Player.js
+index 7a23504b6677e0d461c5ac4d8a04995efb2a0e5f..cb343441cd1863253c71e69d61146613aebc0481 100644
+--- a/js/Player.js
++++ b/js/Player.js
+@@ -236,8 +236,17 @@
+             }
+             if (this.newSpawn == true){
+                 this.xPos = this.spawnX;
+-                this.y = this.spawnY;
+                 this.supportOffset = this.spawnSupportOffset;
++                var spawnSupport = this.spawnSupportId != null ?
++                    window.Game.levelMap.getSupport(this.spawnSupportId) : null;
++                if (spawnSupport != null){
++                    this.supportId = spawnSupport.id;
++                    this.y = spawnSupport.top+this.supportOffset;
++                }
++                else {
++                    this.supportId = null;
++                    this.y = this.spawnY;
++                }
+             }
+             else { //set to origin
+                 this.setSpeed(1); //reset player speed multiplier

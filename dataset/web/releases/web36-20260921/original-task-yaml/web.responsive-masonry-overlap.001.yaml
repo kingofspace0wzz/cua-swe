@@ -1,0 +1,44 @@
+id: web.responsive-masonry-overlap.001
+track: web_frontend
+type: visual_layout
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: "private-artifact:source-0061"
+  ref: seed
+instruction: The Temperature section of the operations dashboard sometimes disappears when the window is narrowed, even though it returns at a smaller width. Repair the responsive dashboard so every configured section remains visible, usable, and non-overlapping at wide, medium, and narrow widths and after resizing back and forth. Preserve the existing section order, responsive density, and card controls; do not replace the layout with a single-column page at every width.
+setup:
+  install:
+    - npm ci
+  launch:
+    - npm run dev
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4173
+  viewport_or_device: desktop-1180x760
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 120
+  max_gui_actions: 180
+  max_test_runs: 24
+verifiers:
+  build:
+    - npm run build
+  unit: []
+  ui:
+    - python3 verifiers/check_layout.py
+  visual: []
+  state: []
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: false

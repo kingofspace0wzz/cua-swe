@@ -1,0 +1,6 @@
+import http from 'node:http';
+const args=process.argv.slice(2);const port=Number(args[args.indexOf('--port')+1]||4311);const host=args[args.indexOf('--host')+1]||'127.0.0.1';
+const variant=process.env.CONTRACT_VARIANT||'a';
+const policies={a:{requestField:'where',combiner:'ALL',guide:'Current search uses a where clause. Every active filter must match.'},b:{requestField:'query',combiner:'ALL',guide:'Current search uses a query clause. Every active filter must match.'}};
+const policy=policies[variant];
+http.createServer(async(req,res)=>{res.setHeader('content-type','application/json');if(req.url==='/health'){res.end('{"ok":true}');return}if(req.url==='/api/workspace'){res.end(JSON.stringify({export:policy}));return}if(req.url==='/api/export-preview'){const chunks=[];for await(const c of req)chunks.push(c);const body=JSON.parse(Buffer.concat(chunks).toString());const clause=body[policy.requestField];const ok=clause?.combiner===policy.combiner&&clause?.filters?.length===2;res.statusCode=ok?200:422;res.end(JSON.stringify(ok?{ok:true,count:variant==='a'?3:5}:{ok:false,message:'Current search filters were not included using this workspace’s export rules.'}));return}res.statusCode=404;res.end('{"error":"not found"}')}).listen(port,host);

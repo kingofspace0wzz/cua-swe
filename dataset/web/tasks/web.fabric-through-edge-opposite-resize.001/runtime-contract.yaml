@@ -1,0 +1,102 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: node build.mjs && CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - In Nested B, observe the unselected native scene and click actual Blue fill.
+  - Acquire the visible side at initial-axis midpoint (-30,0) with a small supported off-center grab; translate its pointer by (96,0) in those initial axes and release.
+  - Reacquire the visible corner at initial-axis (66,-18), irrespective of its native control key; move it by (12,66) and release.
+  - Move the resulting shape by inner-parent (-3,-2) using ordinary visible fill input.
+  - In Single C, preserve an ordinary width-minus-20 edit, small 10-degree rotation and fill movement (2,-2).
+  decisive_edge: >-
+    Public fixed/moving endpoints construct explicit expected polygons, projected
+    through the protected feed camera and declared fixture frames. Nondegenerate
+    crossing checkpoints are at one-sixth and full displacement, never collapse.
+    Acquire actual unordered pixel markers by geometric location and visibly
+    supported off-center positions, and actual Blue fill. Verify paint, silhouette,
+    outline, controls, frames, Amber, selection and unchanged camera readouts during
+    held previews and after release. No candidate arrays, private transforms,
+    getCoords/oCoords, telemetry or application object access supplies oracle truth.
+  exclusions: >-
+    No scored cancellation, held Escape, focus, modifiers, exact-zero stop,
+    persistence, shared-size, reparenting or expanded camera matrix. Do not grade
+    private flip flags, angle/scale normalization, native control keys or rotation
+    stem side after reflection. Equivalent geometry and usable visible controls
+    are valid; the solid fill has no asymmetric material identity. Unsupported
+    markers/readouts or insufficient visible regions are coverage issues, not
+    implementation-choice failures. No fixed rotation-stem length assumption.
+  result_contract: >-
+    native-results.json, raw screenshots, annotated copies, input logs, assertions,
+    coverage gaps and runtime errors go to CUA_SWE_VERIFIER_ARTIFACTS, with a writable
+    /tmp fallback. Exit 0 is a complete covered pass, 1 a reached public behavior
+    failure, and 2 unsupported coverage/setup/runtime requiring causal review.
+    Dependent input stops after decisive divergence or unsupported acquisition.
+    Cleanup releases after a stopped preview retain unscored raw images. Missing
+    continuation is not additional negative evidence. Complete-alternative raw
+    success is preserved as passed/raw_success, independently of legacy control_passed.
+validity_repair:
+  version: fabric-through-edge-opposite-variant-01
+  canonical_id: web.fabric-through-edge-opposite-resize.001
+  baseline: >-
+    Exact retained passing nested GPT6 application SHA256
+    40671789d37209d5e546e7681f86b530a2a19a4c9c9907028944bdc06751a76b,
+    from nested revision03 input
+    7a2f7bccc47f41bb85ad558ad823dedbf6b39cbf6eb9f1aa77400b16aa4f4fa5.
+    The baseline app and native Group fixture are frozen; no source fault or helper
+    is inserted. Original Help prohibited crossing; that contract remains historical.
+  fixture: >-
+    Existing synthetic native FixedLayout Group fixture, unchanged: outer center
+    (200,150), size180x120, angle25, scales(1.2,.8); inner center(0,0), size120x80,
+    angle-20; Blue center(0,0), size60x36, angle15; Amber outer-local center(60,0),
+    size16x16. Native targeting and the Single mounting remain unchanged.
+  preserved: >-
+    Full camera/parent inverse, parent-relative geometry, affine paint/control
+    projection, native body movement/cache propagation, selection, ordinary
+    non-crossing resize and local-frame rotation, transaction lifecycle, protected
+    service/feed, vendor, build/server/package/lock bytes, original setup, policies,
+    1800/80/120/20 budgets and verifier command.
+  incomplete_paths: >-
+    Positive-size clamps naturally do not implement the new crossing contract.
+    A complete integration needs signed extents, stable fixed anchors and grab
+    offsets, native scale/flip normalization, reflected starting directions for
+    later visible acquisition, and idempotent release. The parent/camera inverse
+    already works and is not an injected regression or missing repair here.
+  reference: >-
+    Gold uses signed spans in a reflected snapshot basis with absolute native
+    reflection and positive scale magnitudes. The distinct alternative constructs
+    transforms from fixed/moving material endpoints in a snapshot dual basis and
+    uses native affine application/decomposition. Both are patch-only repairs.
+    Two partials respectively omit signed anchor placement and reflected starting
+    axes. Their predicted failures are visible geometry, not private parity.
+  attribution: >-
+    New synthetic public gesture extension on a real pinned application, not a
+    claimed upstream defect, measured native feasibility, hardness or model gap.
+    Parent passing results apply to the old positive-only contract. The accepted
+    contract supersedes earlier carried-stem discussion with outcome equivalence.
+  validation: Static syntax, scalar endpoint arithmetic and independent patch checks only; no native/build/solver execution.
+
+provenance:
+  source_repo: fabricjs/fabric.js
+  source_pull_request: https://github.com/fabricjs/fabric.js/pull/10977
+  source_issue: https://github.com/fabricjs/fabric.js/issues/10976
+  broken_revision: fd50b70d365533e79ce421f64947fdc692cec619
+  merge_commit: d87aa66d68e0b8aeafa5afa1145b919b382813e8
+  fixed_head: f36e679c3b27ac434de83353f3ab52ebaef521e9
+  license: MIT
+  implementation: real-upstream-browser-build
+  conversion_note: >-
+    Historical lineage retained from local records without retrieval. The passing
+    nested repair is already installed and frozen. This draft adds only a new public
+    crossing contract, task-owned oracle adaptation and patch artifacts. It does not
+    attribute the new contract to the historical upstream issue. Main independently
+    reviews the final source/reference/oracle delta; this author launches no controls.

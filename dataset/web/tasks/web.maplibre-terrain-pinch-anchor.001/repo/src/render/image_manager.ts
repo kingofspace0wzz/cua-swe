@@ -1,0 +1,385 @@
+/* eslint-disable key-spacing */
+import potpack from 'potpack';
+
+import {ErrorEvent, Evented} from '../util/evented.ts';
+import {MapStyleImageMissingEvent} from '../ui/events.ts';
+import {RGBAImage} from '../util/image.ts';
+import {ImagePosition} from './image_atlas.ts';
+import {Texture} from '../webgl/texture.ts';
+import {renderStyleImage} from '../style/style_image.ts';
+import {warnOnce} from '../util/util.ts';
+
+import type {StyleImage} from '../style/style_image.ts';
+import type {Context} from '../webgl/context.ts';
+import type {PotpackBox} from 'potpack';
+import type {GetImagesResponse} from '../util/actor_messages.ts';
+
+export type MissingImageRequestHandler = (id: string) => void | Promise<void>;
+
+type Pattern = {
+    bin: PotpackBox;
+    position: ImagePosition;
+};
+
+/**
+ * When copied into the atlas texture, image data is padded by one pixel on each side. Icon
+ * images are padded with fully transparent pixels, while pattern images are padded with a
+ * copy of the image data wrapped from the opposite side. In both cases, this ensures the
+ * correct behavior of GL_LINEAR texture sampling mode.
+ */
+const padding = 1;
+
+type ImageManagerEventType = {
+    error: ErrorEvent;
+    styleimagemissing: MapStyleImageMissingEvent;
+};
+
+/**
+ * ImageManager does three things:
+ *
+ * 1. Tracks requests for icon images from tile workers and sends responses when the requests are fulfilled.
+ * 2. Builds a texture atlas for pattern images.
+ * 3. Rerenders renderable images once per frame
+ *
+ * These are disparate responsibilities and should eventually be handled by different classes. When we implement
+ * data-driven support for `*-pattern`, we'll likely use per-bucket pattern atlases, and that would be a good time
+ * to refactor this.
+*/
+export class ImageManager extends Evented<ImageManagerEventType> {
+    images: {[_: string]: StyleImage};
+    updatedImages: {[_: string]: boolean};
+    callbackDispatchedThisFrame: {[_: string]: boolean};
+    loaded: boolean;
+    /**
+     * This is used to track requests for images that are not yet available. When the image is loaded,
+     * the requestors will be notified.
+     */
+    requestors: Array<{
+        ids: string[];
+        promiseResolve: (value: GetImagesResponse | PromiseLike<GetImagesResponse>) => void;
+    }>;
+    missingImageResolver: MissingImageRequestHandler | null;
+
+    patterns: {[_: string]: Pattern};
+    atlasImage: RGBAImage;
+    atlasTexture: Texture;
+    dirty: boolean;
+
+    constructor() {
+        super();
+        this.images = {};
+        this.updatedImages = {};
+        this.callbackDispatchedThisFrame = {};
+        this.loaded = false;
+        this.requestors = [];
+        this.missingImageResolver = null;
+
+        this.patterns = {};
+        this.atlasImage = new RGBAImage({width: 1, height: 1});
+        this.dirty = true;
+    }
+
+    destroy(): void {
+        // Destroy atlas texture if it exists
+        if (this.atlasTexture) {
+            this.atlasTexture.destroy();
+            this.atlasTexture = null;
+        }
+        // Remove all images and patterns
+        for (const id of Object.keys(this.images)) {
+            this.removeImage(id);
+        }
+
+        this.patterns = {};
+        this.atlasImage = new RGBAImage({width: 1, height: 1});
+        this.dirty = true;
+    }
+    isLoaded(): boolean {
+        return this.loaded;
+    }
+
+    setLoaded(loaded: boolean): void {
+        if (this.loaded === loaded) {
+            return;
+        }
+
+        this.loaded = loaded;
+
+        if (loaded) {
+            for (const {ids, promiseResolve} of this.requestors) {
+                promiseResolve(this._getImagesForIds(ids));
+            }
+            this.requestors = [];
+        }
+    }
+
+    getImage(id: string): StyleImage {
+        const image = this.images[id];
+        // Extract sprite image data on demand
+        if (image && !image.data && image.spriteData) {
+            const spriteData = image.spriteData;
+            image.data = new RGBAImage({
+                width: spriteData.width,
+                height: spriteData.height
+            }, spriteData.context.getImageData(
+                spriteData.x,
+                spriteData.y,
+                spriteData.width,
+                spriteData.height).data);
+            image.spriteData = null;
+        }
+
+        return image;
+    }
+
+    addImage(id: string, image: StyleImage): void {
+        if (this.images[id]) throw new Error(`Image id ${id} already exist, use updateImage instead`);
+        if (this._validate(id, image)) {
+            this.images[id] = image;
+            if (image.isWebGLImage) this.updateImage(id, image, false);
+        }
+    }
+
+    _validate(id: string, image: StyleImage): boolean {
+        let valid = true;
+        const data = image.data || image.spriteData;
+        if (!this._validateStretch(image.stretchX, data?.width)) {
+            this.fire(new ErrorEvent(new Error(`Image "${id}" has invalid "stretchX" value`)));
+            valid = false;
+        }
+        if (!this._validateStretch(image.stretchY, data?.height)) {
+            this.fire(new ErrorEvent(new Error(`Image "${id}" has invalid "stretchY" value`)));
+            valid = false;
+        }
+        if (!this._validateContent(image.content, image)) {
+            this.fire(new ErrorEvent(new Error(`Image "${id}" has invalid "content" value`)));
+            valid = false;
+        }
+        return valid;
+    }
+
+    _validateStretch(stretch: Array<[number, number]>, size: number): boolean {
+        if (!stretch) return true;
+        let last = 0;
+        for (const part of stretch) {
+            if (part[0] < last || part[1] < part[0] || size < part[1]) return false;
+            last = part[1];
+        }
+        return true;
+    }
+
+    _validateContent(content: [number, number, number, number], image: StyleImage): boolean {
+        if (!content) return true;
+        if (content.length !== 4) return false;
+        const spriteData = image.spriteData;
+        const width = (spriteData?.width) || image.data.width;
+        const height = (spriteData?.height) || image.data.height;
+        if (content[0] < 0 || width < content[0]) return false;
+        if (content[1] < 0 || height < content[1]) return false;
+        if (content[2] < 0 || width < content[2]) return false;
+        if (content[3] < 0 || height < content[3]) return false;
+        if (content[2] < content[0]) return false;
+        return content[3] >= content[1];
+    }
+
+    updateImage(id: string, image: StyleImage, validate: boolean = true): void {
+        const oldImage = this.getImage(id);
+        if (validate && (oldImage.data.width !== image.data.width || oldImage.data.height !== image.data.height)) {
+            throw new Error(`size mismatch between old image (${oldImage.data.width}x${oldImage.data.height}) and new image (${image.data.width}x${image.data.height}).`);
+        }
+        image.version = oldImage.version + 1;
+        this.images[id] = image;
+        this.updatedImages[id] = true;
+    }
+
+    removeImage(id: string): void {
+        const image = this.images[id];
+        delete this.images[id];
+        delete this.patterns[id];
+
+        if (image.userImage?.onRemove) {
+            image.userImage.onRemove();
+        }
+    }
+
+    listImages(): string[] {
+        return Object.keys(this.images);
+    }
+
+    setMissingImageResolver(resolver: MissingImageRequestHandler | null): void {
+        this.missingImageResolver = resolver;
+    }
+
+    getImages(ids: string[]): Promise<GetImagesResponse> {
+        return new Promise<GetImagesResponse>((resolve, _reject) => {
+            // If the sprite has been loaded, or if all the icon dependencies are already present
+            // (i.e. if they've been added via runtime styling), then notify the requestor immediately.
+            // Otherwise, delay notification until the sprite is loaded. At that point, if any of the
+            // dependencies are still unavailable, we'll just assume they are permanently missing.
+            let hasAllDependencies = true;
+            if (!this.isLoaded()) {
+                for (const id of ids) {
+                    if (!this.images[id]) {
+                        hasAllDependencies = false;
+                    }
+                }
+            }
+            if (this.isLoaded() || hasAllDependencies) {
+                resolve(this._getImagesForIds(ids));
+            } else {
+                this.requestors.push({ids, promiseResolve: resolve});
+            }
+        });
+    }
+
+    async _getImagesForIds(ids: string[]): Promise<GetImagesResponse> {
+        const unresolvedIds = new Set(ids.filter((id) => !this.getImage(id)));
+        const resolver = this.missingImageResolver;
+
+        if (resolver) {
+            await Promise.all(Array.from(unresolvedIds, (id) => resolver(id)));
+        }
+
+        const response: GetImagesResponse = {};
+
+        for (const id of ids) {
+            const image = this.getImage(id);
+
+            if (image) {
+                unresolvedIds.delete(id);
+                // Clone the image so that our own copy of its ArrayBuffer doesn't get transferred.
+                response[id] = {
+                    data: image.data.clone(),
+                    pixelRatio: image.pixelRatio,
+                    sdf: image.sdf,
+                    version: image.version,
+                    stretchX: image.stretchX,
+                    stretchY: image.stretchY,
+                    content: image.content,
+                    textFitWidth: image.textFitWidth,
+                    textFitHeight: image.textFitHeight,
+                    hasRenderCallback: Boolean(image.userImage?.render),
+                    isWebGLImage: image.isWebGLImage
+                };
+            }
+        }
+
+        for (const id of unresolvedIds) {
+            this.fire(new MapStyleImageMissingEvent({id}));
+            warnOnce(`Image "${id}" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a "sprite" property in your style.`);
+        }
+
+        return response;
+    }
+
+    // Pattern stuff
+
+    getPixelSize(): {width: number; height: number} {
+        const {width, height} = this.atlasImage;
+        return {width, height};
+    }
+
+    getPattern(id: string): ImagePosition {
+        const pattern = this.patterns[id];
+
+        const image = this.getImage(id);
+        if (!image) {
+            return null;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain -- pattern?.position.version would be undefined when pattern is nullish, making undefined === undefined true
+        if (pattern && pattern.position.version === image.version) {
+            return pattern.position;
+        }
+
+        if (!pattern) {
+            const w = image.data.width + padding * 2;
+            const h = image.data.height + padding * 2;
+            const bin = {w, h, x: 0, y: 0};
+            const position = new ImagePosition(bin, image);
+            this.patterns[id] = {bin, position};
+        } else {
+            pattern.position.version = image.version;
+        }
+
+        this._updatePatternAtlas();
+
+        return this.patterns[id].position;
+    }
+
+    bind(context: Context): void {
+        const gl = context.gl;
+        if (!this.atlasTexture) {
+            this.atlasTexture = new Texture(context, this.atlasImage, gl.RGBA);
+        } else if (this.dirty) {
+            this.atlasTexture.update(this.atlasImage);
+            this.dirty = false;
+        }
+
+        this.atlasTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
+    }
+
+    _updatePatternAtlas(): void {
+        const bins = [];
+        for (const id in this.patterns) {
+            bins.push(this.patterns[id].bin);
+        }
+
+        const {w, h} = potpack(bins);
+
+        const dst = this.atlasImage;
+        dst.resize({width: w || 1, height: h || 1});
+
+        for (const id in this.patterns) {
+            const {bin} = this.patterns[id];
+            const x = bin.x + padding;
+            const y = bin.y + padding;
+            const src = this.getImage(id).data;
+            const w = src.width;
+            const h = src.height;
+
+            RGBAImage.copy(src, dst, {x: 0, y: 0}, {x, y}, {width: w, height: h});
+
+            // Add 1 pixel wrapped padding on each side of the image.
+            RGBAImage.copy(src, dst, {x: 0, y: h - 1}, {x, y: y - 1}, {width: w, height: 1}); // T
+            RGBAImage.copy(src, dst, {x: 0, y:     0}, {x, y: y + h}, {width: w, height: 1}); // B
+            RGBAImage.copy(src, dst, {x: w - 1, y: 0}, {x: x - 1, y}, {width: 1, height: h}); // L
+            RGBAImage.copy(src, dst, {x: 0,     y: 0}, {x: x + w, y}, {width: 1, height: h}); // R
+        }
+
+        this.dirty = true;
+    }
+
+    beginFrame(): void {
+        this.callbackDispatchedThisFrame = {};
+    }
+
+    dispatchRenderCallbacks(ids: string[]): void {
+        for (const id of ids) {
+
+            // the callback for the image was already dispatched for a different frame
+            if (this.callbackDispatchedThisFrame[id]) continue;
+            this.callbackDispatchedThisFrame[id] = true;
+
+            const image = this.getImage(id);
+            if (!image) warnOnce(`Image with ID: "${id}" was not found`);
+
+            const updated = renderStyleImage(image);
+            if (updated) {
+                this.updateImage(id, image);
+            }
+        }
+    }
+
+    cloneImages(): Record<string, StyleImage> {
+        const clonedImages: Record<string, StyleImage> = {};
+        for (const id in this.images) {
+            const image = this.images[id];
+            clonedImages[id] = {
+                ...image,
+                data: image.data ? image.data.clone() : null
+            };
+        }
+        return clonedImages;
+    }
+}

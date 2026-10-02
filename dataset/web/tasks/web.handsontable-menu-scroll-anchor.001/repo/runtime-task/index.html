@@ -1,0 +1,40 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Scrollable data-grid menus</title>
+<link rel="stylesheet" href="/handsontable/styles/handsontable.min.css">
+<link rel="stylesheet" href="/handsontable/styles/ht-theme-main.min.css">
+<style>
+  body { font-family: system-ui; margin: 16px; }
+  #scroll-container { height: 320px; overflow: auto; border: 1px solid #bbb; }
+  .spacer-top { height: 80px; }
+  .spacer-bottom { height: 800px; }
+  .page-spacer { height: 1500px; }
+</style>
+<p>Use the column dropdown and cell context menus, then scroll the outer panel or grid.</p>
+<div id="scroll-container" data-testid="scroll-container">
+  <div class="spacer-top"></div>
+  <div id="grid" data-testid="grid" class="ht-theme-main"></div>
+  <div class="spacer-bottom"></div>
+</div>
+<div class="page-spacer"></div>
+<script src="/handsontable/dist/handsontable.full.min.js"></script>
+<script>
+const grid = document.querySelector('[data-testid="grid"]');
+const renderer = function(instance, td, row, col, prop, value, cellProperties) {
+  Handsontable.renderers.TextRenderer.apply(this, arguments);
+  td.dataset.testid = `cell-${row}-${col}`;
+};
+window.hot = new Handsontable(grid, {
+  data: Handsontable.helper.createSpreadsheetData(30, 30),
+  colHeaders: true,
+  rowHeaders: true,
+  dropdownMenu: true,
+  filters: true,
+  contextMenu: true,
+  colWidths: 120,
+  width: 600,
+  height: 200,
+  renderer,
+  licenseKey: 'non-commercial-and-evaluation',
+});
+</script>

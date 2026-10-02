@@ -1,0 +1,106 @@
+schema_version: 1
+task_id: gameqa.wordle-finish-replay-inspection.006
+trajectory_id: letter-arc-finish-replay-inspection-v1
+seed: 42
+level: 1
+reset:
+  action: window.gameAPI.reset
+  options:
+    mode: daily
+  expected:
+    is_actionable: true
+    board_empty: true
+    keyboard_empty: true
+    guidance_empty: true
+    result_hidden: true
+trigger:
+  actions:
+    - action: keyboard_submit
+      value: protected.replay.firstGuess
+    - action: wait_for_state
+      predicate: reveal.active and 2 <= reveal.revealedTiles < 5
+    - action: screenshot
+      artifact: 02-repeated-letter-mid-reveal.png
+    - action: wait_for_state
+      predicate: not reveal.active and currentRow == 1
+    - action: screenshot
+      artifact: 03-repeated-letter-settled.png
+    - action: keyboard_submit
+      value: protected.replay.hardViolation
+    - action: screenshot
+      artifact: 04-hard-guidance-rejection.png
+    - action: keyboard_submit
+      value: protected.replay.invalidWord
+    - action: screenshot
+      artifact: 05-invalid-entry-rejection.png
+    - action: mouse_click
+      target: Restart round
+    - action: screenshot
+      artifact: 06-daily-restart-fresh.png
+    - action: mouse_click
+      target: Practice
+    - action: screenshot
+      artifact: 07-practice-mode-fresh.png
+    - action: mouse_click
+      target: Daily
+    - action: screenshot
+      artifact: 08-daily-mode-restored.png
+    - action: keyboard_submit
+      value: protected.replay.answer
+    - action: screenshot
+      artifact: 09-winning-row-mid-reveal.png
+  causal_checkpoint: >-
+    after native terminal completion, Replay finish is clicked through the
+    visible interface and produces a stable paused mid-motion board that can
+    be continued and repeated without solving again
+pre_trigger_equivalence:
+  status: required
+  fields:
+    - rows[0].tiles
+    - keyboard
+    - hardMode.exact
+    - hardMode.minimum
+    - reveal.active
+    - validation.rejected
+    - validation.hardRejected
+post_trigger_divergence:
+  gold: >-
+    both replays hold the complete evaluated board unit in coherent motion,
+    then each Continue action reaches native completion with no fallback
+  baseline: >-
+    both stable replay pauses expose a completed surface separated from its
+    stationary board placement
+  strongest_negative: >-
+    both stable replay pauses preserve evaluated color but leave a
+    duplicate/stationary board placement behind
+completion:
+  actions:
+    - record 10-winning-row-pre-motion.png before first native result motion
+    - record 11-first-native-finish.png during first native result motion
+    - record 12-native-terminal-result.png at first terminal completion
+    - record 13-replay-control-visible.png with Replay finish enabled
+    - click Replay finish and record 14-replay-started-by-click.png
+    - record 15-first-replay-paused-mid-motion.png with Continue visible
+    - click Continue and record 16-first-replay-continued.png
+    - record 17-first-replay-native-completion.png after five native boundaries
+    - repeat and record 18-second-replay-paused-mid-motion.png
+    - record 19-second-replay-native-completion.png after the second Continue
+    - record restart and mode behavior in checkpoints 20 through 22
+    - record reduced-motion behavior in checkpoints 23 and 24
+required_evidence:
+  screenshot_count: 24
+  state_evidence: verifier-artifacts/state-records.json
+expected_outcomes:
+  baseline: fail
+  noop: fail
+  gold: pass
+  strongest_negative: fail
+  css_carrier_only: fail
+  retarget_only: fail
+  blanket_animation_disable: fail
+  event_filter_only: fail
+  replay_only_sampling: fail
+  timing_only: fail
+  bypass_replay_motion: fail
+  reset_repaint_before_motion: fail
+  frame_migration_css_only: fail

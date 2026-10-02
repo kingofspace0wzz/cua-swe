@@ -1,0 +1,66 @@
+diff --git a/src/config/collectorSettings.js b/src/config/collectorSettings.js
+index c34e22f93da5c70973f28d08047527363eeabbfd..7223d2988734e62647025665d7294c127d0c477d 100644
+--- a/src/config/collectorSettings.js
++++ b/src/config/collectorSettings.js
+@@ -1,6 +1,39 @@
+ import { SAMPLING_POLICIES } from "./samplingPolicies.js";
+ 
++// The collector must hold its tail-sampling decision until the receiver has
++// delivered every span of a trace; otherwise late error/slow spans arrive
++// after a drop decision was cached and the trace never reaches the store.
++// The receiver delivery ledger records, for every incident window and the
++// replay staging buffer, how long after a trace's first span its last span
++// arrives. Deriving the decision wait from that ledger keeps the durable
++// configuration correct for whichever recorded delivery profile the receiver
++// serves, instead of tuning it to the currently loaded traffic.
++const DECISION_WAIT_FALLBACK_MS = 2000;
++const DECISION_WAIT_MARGIN_MS = 50;
++
++function slowestDeliveryMs(catalog) {
++  const deliveries = catalog?.receiver?.deliveries;
++  if (!Array.isArray(deliveries) || deliveries.length === 0) return 0;
++  return deliveries.reduce((slowest, delivery) => {
++    const lateness = Number(delivery.lastSpanAtMs) - Number(delivery.firstSpanAtMs);
++    return Number.isFinite(lateness) && lateness > slowest ? lateness : slowest;
++  }, 0);
++}
++
++export function decisionWaitFor(catalog) {
++  const slowest = slowestDeliveryMs(catalog);
++  if (slowest <= 0) return DECISION_WAIT_FALLBACK_MS;
++  return slowest + DECISION_WAIT_MARGIN_MS;
++}
++
++export function collectorSettingsFor(catalog) {
++  return Object.freeze({
++    decisionWaitMs: decisionWaitFor(catalog),
++    policies: SAMPLING_POLICIES,
++  });
++}
++
+ export const COLLECTOR_SETTINGS = Object.freeze({
+-  decisionWaitMs: 250,
++  decisionWaitMs: DECISION_WAIT_FALLBACK_MS,
+   policies: SAMPLING_POLICIES,
+ });
+diff --git a/src/controllers/console.js b/src/controllers/console.js
+index 3fb22364ab15c4ba24a8fadd7e4ed40b0adf846b..63aa2fbea9404e8effcf4239c8969a9caa046835 100644
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -1,6 +1,6 @@
+ import { samplerClient } from "../api/samplerClient.js";
+ import { compilePolicyPlan } from "../config/compilePolicyPlan.js";
+-import { COLLECTOR_SETTINGS } from "../config/collectorSettings.js";
++import { collectorSettingsFor } from "../config/collectorSettings.js";
+ import { store } from "../state/store.js";
+ 
+ const refresh = async () => store.set({ snapshot: await samplerClient.snapshot() });
+@@ -8,7 +8,7 @@ const refresh = async () => store.set({ snapshot: await samplerClient.snapshot()
+ export async function initialize() {
+   const catalog = await samplerClient.catalog();
+   await samplerClient.configure(
+-    compilePolicyPlan(COLLECTOR_SETTINGS),
++    compilePolicyPlan(collectorSettingsFor(catalog)),
+   );
+   store.set({ catalog });
+   await samplerClient.scenario(catalog.scenarios[0].id);

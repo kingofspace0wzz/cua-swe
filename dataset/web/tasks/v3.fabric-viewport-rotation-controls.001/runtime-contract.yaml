@@ -1,0 +1,66 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: >-
+    node build.mjs &&
+    CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - open the Artboard Editor and load camera preset A (orbit camera, rotated)
+    - observe the red selection frame and the four corner handles against the shape
+    - read the zoom readout and compare it against how zoomed the shape appears
+    - switch to preset D (rotated 90 degrees) and note the handles vanish entirely
+    - switch to preset C (flat camera) and confirm the frame already fits correctly
+  decisive_edge: >-
+    The camera preset (the canvas viewport transform) is delivered only by the
+    evaluator-owned scene feed and applied through the product's real, pinned
+    fabric.js core. The agent-visible source contains fabric's generic control
+    geometry but never the rotated viewport transforms that expose the bug.
+    Source alone supports several plausible repairs: leave the code as-is; fix
+    only the visibly-wrong zoom readout and collapsed frame size; or additionally
+    fix the corner-handle inverse scale. Reading the running editor reveals a
+    further, non-source-obvious fact: under an orbit (rotated) camera the whole
+    selection FRAME must itself be rotated by the camera angle, not merely
+    resized — the broken and partially-repaired builds draw an upright frame
+    around a tilted shape. Only exercising the editor across the rotated,
+    non-uniform, flat, and 90-degree presets distinguishes the complete repair
+    (zoom magnitude, both-axis dimensions, both-axis inverse control scale, and
+    combined viewport+object frame rotation) from the strongest source-only
+    generalization, which fixes the magnitude math but leaves the frame upright.
+    Protected verification repeats the live control-geometry invariant across
+    four camera presets.
+source_noninferability:
+  forbidden_agent_source_literals:
+    - "viewportTransform: [2 * cos, 2 * sin"
+    - "calcPlaneRotation(vpt)"
+provenance:
+  source_repo: fabricjs/fabric.js
+  source_pull_request: https://github.com/fabricjs/fabric.js/pull/10977
+  source_issue: https://github.com/fabricjs/fabric.js/issues/10976
+  broken_revision: fd50b70d365533e79ce421f64947fdc692cec619
+  merge_commit: d87aa66d68e0b8aeafa5afa1145b919b382813e8
+  fixed_head: f36e679c3b27ac434de83353f3ab52ebaef521e9
+  license: MIT
+  implementation: real-upstream-browser-build
+  conversion_note: >-
+    The pinned broken fabric.js browser build (dist/index.mjs at fd50b70) is
+    vendored verbatim under repo/vendor/fabric.mjs and bundled with esbuild; the
+    getZoom, _calculateCurrentDimensions, calcOCoords, and _renderControls
+    geometry this task exercises is the unmodified upstream code. Only the
+    Artboard Editor product shell and the evaluator-owned scene feed (which
+    delivers the camera presets) are authored. The merged human PR#10977 makes
+    getZoom return the viewport scale magnitude, scales dimensions by the zoom
+    and Y-scale magnitudes, uses the magnitude inverse scale for control coords,
+    and rotates the ungrouped control frame by the combined viewport+object
+    angle. The evaluator owns the camera presets and reads back the live core's
+    getZoom/_calculateCurrentDimensions/oCoords and the frame render angle; the
+    product source exposes only a normal artboard editor surface.

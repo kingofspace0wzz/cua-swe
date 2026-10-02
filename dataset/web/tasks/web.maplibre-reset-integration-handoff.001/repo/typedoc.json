@@ -1,0 +1,38 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "plugin": ["typedoc-plugin-markdown"],
+    "groupOrder": [
+        "Main",
+        "Markers and Controls",
+        "Geography and Geometry",
+        "Handlers",
+        "Sources",
+        "Event Related"
+    ],
+    "out": "./docs/API",
+    "excludeExternals": true,
+    "excludeInternal": true,
+    "excludeNotDocumented": true,
+    "treatWarningsAsErrors": true,
+    "entryPoints": ["./src/index.ts"],
+    "navigation": {
+        "includeCategories": false,
+        "includeGroups": true
+    },
+    "name": "MapLibre GL JS",
+    "githubPages": false,
+    "hideBreadcrumbs": true,
+    "hidePageHeader": true,
+    "expandParameters": true,
+    "parametersFormat": "table",
+    "textContentMappings": {
+        "title.memberPage": "{name}"
+    },
+    "externalSymbolLinkMappings": {
+        "@maplibre/maplibre-gl-style-spec": {
+            "ProjectionSpecification": "https://maplibre.org/maplibre-style-spec/projection/",
+            "LayerSpecification": "https://maplibre.org/maplibre-style-spec/layers/",
+            "SourceSpecification": "https://maplibre.org/maplibre-style-spec/sources/"
+        }
+    }
+}

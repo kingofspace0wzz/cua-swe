@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Artboard Editor — Camera Presets</title>
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+        background: #0b0d12;
+        color: #e8ecf3;
+      }
+      header {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        padding: 12px 20px;
+        background: #141824;
+        border-bottom: 1px solid #232a3a;
+      }
+      header h1 { font-size: 15px; margin: 0; font-weight: 600; }
+      #preset-name { font-size: 13px; color: #9fb0c8; }
+      .rail {
+        display: flex;
+        gap: 20px;
+        padding: 10px 20px;
+        font-size: 12px;
+        color: #9fb0c8;
+        align-items: center;
+      }
+      #status.ok { color: #57d38a; }
+      #status.busy { color: #d9a441; }
+      #zoom-readout {
+        font-variant-numeric: tabular-nums;
+        color: #7fd7ff;
+      }
+      .stage {
+        display: flex;
+        justify-content: center;
+        padding: 24px;
+      }
+      .frame {
+        border: 1px solid #232a3a;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #0f1115;
+      }
+      canvas { display: block; }
+      .hint {
+        max-width: 800px;
+        margin: 0 auto 24px;
+        padding: 0 24px;
+        font-size: 12px;
+        line-height: 1.5;
+        color: #7f8ba3;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Artboard Editor</h1>
+      <span id="preset-name">—</span>
+    </header>
+    <div class="rail">
+      <span>camera preset:</span>
+      <span id="status" class="busy">initializing…</span>
+      <span id="zoom-readout">zoom —</span>
+    </div>
+    <div class="stage">
+      <div class="frame">
+        <canvas id="artboard" width="800" height="600"></canvas>
+      </div>
+    </div>
+    <p class="hint">
+      The editor loads a camera preset for the artboard and selects the shape on
+      it. The red selection frame and its corner handles show how the editor
+      believes the shape is placed under the current camera. Switch presets with
+      <code>?preset=A|B|C|D</code>.
+    </p>
+    <script type="module" src="./dist/app.bundle.js"></script>
+  </body>
+</html>

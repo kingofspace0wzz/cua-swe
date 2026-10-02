@@ -1,0 +1,27 @@
+diff --git a/src/views/waterfall.js b/src/views/waterfall.js
+--- a/src/views/waterfall.js
++++ b/src/views/waterfall.js
+@@ -19,6 +19,10 @@ export function renderWaterfall(trace, spans, annotations) {
+     row.dataset.startMs = String(span.startMs);
+     row.dataset.endMs = String(span.endMs);
+     row.dataset.durationMs = String(span.durationMs);
++    const parent = span.parentId === null ? null : index.get(span.parentId);
++    const shownStart = parent ? Math.max(span.startMs, parent.startMs) : span.startMs;
++    const shownEnd = parent ? Math.min(span.endMs, parent.endMs) : span.endMs;
++    const shownDuration = Math.max(shownEnd - shownStart, 1);
+     const name = element("div", "span-name");
+     name.append(
+       element("strong", "", `${span.service} · ${span.operation}`),
+@@ -30,9 +34,9 @@ export function renderWaterfall(trace, spans, annotations) {
+     const track = element("div", "bar-track");
+     const bar = element("div", `bar${outside ? " outside" : ""}${adjustedIds.has(span.id) ? " adjusted" : ""}`);
+-    bar.style.left = `${((span.startMs - root.startMs) / width) * 100}%`;
+-    bar.style.width = `${Math.max((span.durationMs / width) * 100, 1)}%`;
++    bar.style.left = `${((shownStart - root.startMs) / width) * 100}%`;
++    bar.style.width = `${Math.max((shownDuration / width) * 100, 1)}%`;
+     track.append(bar);
+-    const range = element("span", "range", `${span.startMs}ms → ${span.endMs}ms`);
++    const range = element("span", "range", `${shownStart}ms → ${shownEnd}ms`);
+     row.append(name, track, range);
+     host.append(row);
+   }

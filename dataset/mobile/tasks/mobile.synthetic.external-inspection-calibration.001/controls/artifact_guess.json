@@ -1,0 +1,19 @@
+{
+  "baseline_digest": "f07495c05beeeb35d22559907d0e56babc2cd096533bac2864dacd21f7002f35",
+  "changes": [
+    {
+      "after": {
+        "executable": false,
+        "sha256": "046e2830604a66b430ae933cb26e152a7cc320f25ba6a306256494f046802e10"
+      },
+      "before": {
+        "executable": false,
+        "sha256": "d70d1673aa92d3026e13a61b9caa960dac0c482fa67c2b90f78a851a9cc9690e"
+      },
+      "content_b64": "Ly8gSW5jb3JyZWN0OiBhcHBsaWVzIHRoZSBmaXJzdCBvYnNlcnZlZCBhdHRhY2htZW50IHJlZ2lzdHJhdGlvbiB0byBhbGwgaW1wb3J0cy4KZXhwb3J0IGNvbnN0IHByb2plY3Q9KFt1LHZdLHIpPT5bMjgwLXYsMjArdV07CmV4cG9ydCBjb25zdCB1bnByb2plY3Q9KFt4LHldLHIpPT5beS0yMCwyODAteF07CmV4cG9ydCBmdW5jdGlvbiBtZWFzdXJlKFthLGJdLHIpe3JldHVybiBNYXRoLmh5cG90KC40KihiWzBdLWFbMF0pLC44KihiWzFdLWFbMV0pKTt9Cg==",
+      "path": "integration.js"
+    }
+  ],
+  "schema": 1,
+  "task_digest": "5214f7dd27d042ec50a8440f0b9ba5ee416aee14594e33e8868b75eb468ac271"
+}

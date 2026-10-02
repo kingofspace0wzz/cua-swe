@@ -1,0 +1,8 @@
+{
+  "output_root": "/absolute/path/to/artifacts/mobile",
+  "python": "/absolute/path/to/venv/bin/python",
+  "venv": "/absolute/path/to/venv",
+  "browsers": "/absolute/path/to/ms-playwright",
+  "bwrap": "/usr/bin/bwrap",
+  "browser_bwrap": "/usr/bin/bwrap"
+}

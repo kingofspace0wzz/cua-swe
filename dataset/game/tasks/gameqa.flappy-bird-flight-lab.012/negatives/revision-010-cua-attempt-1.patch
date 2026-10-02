@@ -1,0 +1,168 @@
+diff --git a/src/bird.js b/src/bird.js
+index 3fc5a10354638ef6a033dea1b87c152a3365806c..d188fd1a1a6ed7e31088e8b642cebe998470cc0b 100644
+--- a/src/bird.js
++++ b/src/bird.js
+@@ -28,6 +28,7 @@
+       this.velocityY = 0;
+       this.rotation = 0;
+       this.chargeSeconds = 0;
++      this.pendingImpulse = null;
+       this.flapClock = 1;
+       this.lastImpulse = 0;
+       this.pose = this.snapshotPose();
+@@ -48,6 +49,12 @@
+     step(dt, control) {
+       this.flapClock += dt;
+ 
++      if (this.pendingImpulse !== null) {
++        this.velocityY = -this.pendingImpulse;
++        this.flapClock = 0;
++        this.pendingImpulse = null;
++      }
++
+       if (control.pressed) {
+         this.chargeSeconds = 0;
+       }
+@@ -55,10 +62,9 @@
+         this.chargeSeconds = Math.min(0.055, this.chargeSeconds + dt);
+       }
+       if (control.released) {
+-        const impulse = 120 + this.chargeSeconds * 15000;
++        const impulse = 220 + this.chargeSeconds * 900;
+         this.lastImpulse = Math.min(250, impulse);
+-        this.velocityY = -this.lastImpulse;
+-        this.flapClock = 0;
++        this.pendingImpulse = this.lastImpulse;
+         this.chargeSeconds = 0;
+       }
+ 
+diff --git a/src/game.js b/src/game.js
+index 3dbc3b449c3b7b43a174e17f94d357b45f8c7177..39c11da524ea1dcdf2b1c3c4f209d9ea47d57e97 100644
+--- a/src/game.js
++++ b/src/game.js
+@@ -26,7 +26,7 @@
+       note: "quick release",
+       birdY: 270,
+       layout: Object.freeze({x: 215, gapTop: 205, gapBottom: 335}),
+-      finishX: 159,
++      finishX: 80,
+       targetImpulse: 220,
+       target: targetArc([
+         270, 270.1722, 266.6778, 263.3556, 260.2056, 257.2278, 254.4222,
+@@ -67,6 +67,7 @@
+       name: "LATE CONTACT",
+       note: "edge recovery",
+       birdY: 306,
++      birdVelocityY: -120,
+       layout: Object.freeze({x: 165, gapTop: 205, gapBottom: 315}),
+       finishX: 80,
+       targetImpulse: 220,
+@@ -194,6 +195,7 @@
+       this.events = [];
+       this.bird.reset();
+       this.bird.y = spec.birdY;
++      this.bird.velocityY = spec.birdVelocityY || 0;
+       this.bird.pose = this.bird.snapshotPose();
+       this.pipeField.reset({kind: "drill", id: spec.id, layout: spec.layout});
+       this.lastBirdFrame = this.bird.snapshot();
+@@ -428,11 +430,12 @@
+         this.record("pulse-received", {id: this.drill.id});
+       }
+ 
++      const previousBirdFrame = this.lastBirdFrame;
+       this.lastBirdFrame = this.bird.step(dt, control);
+       if (this.lastBirdFrame.last_impulse) {
+         this.actualImpulse = this.lastBirdFrame.last_impulse;
+       }
+-      this.lastPipeFrame = this.pipeField.step(dt, this.lastBirdFrame);
++      this.lastPipeFrame = this.pipeField.step(dt, this.lastBirdFrame, previousBirdFrame);
+       if (this.phase === "drill") {
+         this.captureTrail();
+         this.drillFrame += 1;
+diff --git a/src/pipes.js b/src/pipes.js
+index 5fbf246fff56cc9db1a6fcb4ecd1d2487186ff46..9b66e4ba340a929cafc0a2b4b05176a6379059f1 100644
+--- a/src/pipes.js
++++ b/src/pipes.js
+@@ -41,23 +41,69 @@
+       this.nextId = this.pipes.length + 1;
+     }
+ 
+-    step(dt, birdFrame) {
++    step(dt, birdFrame, previousBirdFrame = birdFrame) {
+       let scored = 0;
+       const scoreEvents = [];
+       let collision = null;
+       const speed = this.mode === "drill" ? LAB_SPEED : PIPE_SPEED;
+ 
+       for (const pipe of this.pipes) {
++        const previousPipeX = pipe.x;
+         pipe.x -= speed * dt;
+         const left = pipe.x;
+         const right = left + PIPE_WIDTH;
+         const bird = birdFrame.bounds;
+         const overlaps = bird.right > left && bird.left < right;
++        const previousBird = previousBirdFrame.bounds;
++        const previouslyOverlapped = (
++          previousBird.right > previousPipeX
++          && previousBird.left < previousPipeX + PIPE_WIDTH
++        );
++        const previousContact = previouslyOverlapped && (
++          previousBird.top < pipe.gapTop || previousBird.bottom > pipe.gapBottom
++        );
++        const currentContact = overlaps && (
++          bird.top < pipe.gapTop || bird.bottom > pipe.gapBottom
++        );
+ 
+-        if (
+-          overlaps
+-          && (bird.top < pipe.gapTop || bird.bottom > pipe.gapBottom)
+-        ) {
++        if (previousContact || currentContact) {
++          let motionSegment = null;
++          if (previousContact !== currentContact) {
++            const threshold = previousBird.bottom > pipe.gapBottom
++              ? pipe.gapBottom
++              : pipe.gapTop;
++            const startEdge = previousBird.bottom > pipe.gapBottom
++              ? previousBird.bottom
++              : previousBird.top;
++            const endEdge = previousBird.bottom > pipe.gapBottom
++              ? bird.bottom
++              : bird.top;
++            const crossing = startEdge === endEdge
++              ? 0
++              : Math.max(0, Math.min(1, (threshold - startEdge) / (endEdge - startEdge)));
++            const intervalStart = previousContact ? 0 : crossing;
++            const intervalEnd = previousContact ? crossing : 1;
++            motionSegment = Object.freeze({
++              start: Object.freeze({
++                x: previousBirdFrame.x,
++                y: previousBirdFrame.y,
++                pipe_x: previousPipeX,
++                contact: previousContact,
++              }),
++              end: Object.freeze({
++                x: birdFrame.x,
++                y: birdFrame.y,
++                pipe_x: left,
++                contact: currentContact,
++              }),
++              interval: Object.freeze({
++                start: intervalStart,
++                end: intervalEnd,
++                marker: (intervalStart + intervalEnd) / 2,
++              }),
++              endpoint_safe: !currentContact,
++            });
++          }
+           collision = Object.freeze({
+             kind: "pipe",
+             pipe_id: pipe.id,
+@@ -66,6 +112,7 @@
+             gap_top: pipe.gapTop,
+             gap_bottom: pipe.gapBottom,
+             bird,
++            motion_segment: motionSegment,
+           });
+           break;
+         }

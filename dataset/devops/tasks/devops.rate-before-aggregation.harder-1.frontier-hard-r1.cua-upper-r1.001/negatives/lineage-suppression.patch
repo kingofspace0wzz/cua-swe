@@ -1,0 +1,12 @@
+diff --git a/src/styles.css b/src/styles.css
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -209,6 +209,8 @@
+ .lineage-window strong { display: block; color: #eaf6fb; font-size: 13px; }
+ .lineage-transition { display: block; margin-top: 6px; color: #e8c268; font-size: 11px; font-style: normal; }
+ .lineage-note { color: #9db7c4; font-size: 11px; margin: 7px 0 0; line-height: 1.5; }
++
++.lineage-panel {display:none}
+ 
+ .definitions-panel { margin-top: 14px; }
+ .definitions-panel summary { padding: 17px; cursor: pointer; color: #eaf6fb; }

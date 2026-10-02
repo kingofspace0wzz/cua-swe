@@ -1,0 +1,34 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy: {service_source_visible: false, direct_loopback_http_allowed: false, process_environment_inspection_allowed: false}
+browser_observation:
+  steps:
+    - open the support page
+    - select the Schedule details tab
+    - read the live scheduling response
+  decisive_paths:
+    - schedule.week_anchor_epoch_ms
+    - schedule.selected_slot_ref
+    - schedule.day_code_map
+    - schedule.slots[*].day_code
+    - schedule.slots[*].start_quanta
+    - schedule.quantum_minutes
+    - schedule.display_zone
+source_noninferability:
+  forbidden_agent_source_literals:
+    - week_anchor_epoch_ms
+    - selected_slot_ref
+    - day_code_map
+    - day_code
+    - start_quanta
+    - quantum_minutes
+    - display_zone
+    - "Oct 8, 2026, 5:00 AM"
+    - "Jan 8, 2027, 8:30 AM"
+

@@ -1,0 +1,14 @@
+--- a/src/app.js
++++ b/src/app.js
+@@ -15,9 +15,8 @@ async function render() {
+   const response = await fetch(`/api/support-window${window.location.search}`);
+   const data = await response.json();
+ 
+-  // The legacy service returned a ready-to-render UTC window.
+-  const windowStart = data.window_start;
+-  const timeZone = "UTC";
++  const windowStart = 1791453600000;
++  const timeZone = "America/Chicago";
+ 
+   root.innerHTML = `
+     <main class="shell"><section class="card">

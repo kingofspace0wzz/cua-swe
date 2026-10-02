@@ -1,0 +1,302 @@
+{
+  "task_id": "mobile.synthetic.external-wallchart-schedule.010",
+  "revision": "001",
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "public_files": {
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "ed8b5d712e7122b801ecc03a38b360862d699af2c1be3e116cc52ed1519d122f"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "311fbdc2e88c285ac7c7ad5ff01f87f9502dd6672d42251f1dbdc359afb20db0"
+    },
+    "app.mjs": {
+      "path": "public/app.mjs",
+      "sha256": "596bf2544234a4b85ffcb200247dc457197f2ffbe1e826870b8f9bd2ef0e014b"
+    },
+    "schedule.mjs": {
+      "path": "public/schedule.mjs",
+      "sha256": "221d0a62456df26f1cdad6d8d8e8db5cda6fce9d17d5a1335a83362a88859966"
+    },
+    "render.mjs": {
+      "path": "public/render.mjs",
+      "sha256": "81ade2e07d4dc92d2471521acf85f0e199de781dded7348ccdfed98f9e7fd00e"
+    },
+    "integration.mjs": {
+      "path": "public/integration.mjs",
+      "sha256": "2818437123a05012e19769ee68f9614c0b838798732297f44ae1921399e2a6f2"
+    },
+    "guide.html": {
+      "path": "public/guide.html",
+      "sha256": "2a35ec3346ab5b5caa81997ee8e63edd6d5d7e12c1fde3b62f6b582f75db19d5"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "a89c500908f66144fe07d9a2ff2b0d8606200df199aa6375f1245f27487f816c"
+    }
+  },
+  "editable": [
+    "index.html",
+    "style.css",
+    "app.mjs",
+    "schedule.mjs",
+    "render.mjs",
+    "integration.mjs",
+    "guide.html"
+  ],
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "54011b25df233e54b5dd16db028db007a3dcfbdd842a80ca99d05d9080ea292d"
+  },
+  "scratch": [
+    "dist/",
+    "index.html.bak",
+    "style.css.bak",
+    "app.mjs.bak",
+    "schedule.mjs.bak",
+    "render.mjs.bak",
+    "integration.mjs.bak",
+    "guide.html.bak"
+  ],
+  "dependencies": [],
+  "expected_assertions": [
+    "received_preview",
+    "both_complete_integrations",
+    "live_jobs_and_links",
+    "cycle_undo_cancel",
+    "save_reload_independent_reset",
+    "slip_and_complete_export"
+  ],
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "native": {
+      "schema": 1,
+      "assets": [],
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "index.html",
+          "style.css",
+          "app.mjs",
+          "schedule.mjs",
+          "render.mjs",
+          "integration.mjs",
+          "guide.html"
+        ],
+        "timeout_seconds": 20
+      },
+      "scene": {
+        "path": "/",
+        "frame_paths": [],
+        "viewport": {
+          "width": 400,
+          "height": 800
+        },
+        "device_scale_factor": 1,
+        "locale": "en-US",
+        "timezone": "UTC",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 30000
+      },
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "0398c82d288c9c54f0cce8e8b461b60e23bb7b09be168091c8dc7126ee3188d6"
+      },
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "8b32845eb4ee70b81270b1a4d128aa34fdad1c1aa9c17f35af85d1f0110e11d4"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "3e9b548811f85416fd84356a43c996119199b999c6c55974959ab19927036a2f"
+      }
+    }
+  },
+  "controls": {
+    "alternative": {
+      "correct": true,
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "85407ae44e713be0cb275cb60f4c300ba102ecdd90d3771ed7c78b740fe2411b"
+      }
+    },
+    "arrow-crossing-read-as-join": {
+      "correct": false,
+      "patch": {
+        "path": "controls/arrow-crossing-read-as-join.json",
+        "sha256": "29105db83bc2b579ba18120dd4dabc66f23430592c9002322230ad4a071246ba"
+      }
+    },
+    "artifact-guess": {
+      "correct": false,
+      "patch": {
+        "path": "controls/artifact-guess.json",
+        "sha256": "5d6f78e4f341b4c908d30e39275d43420b5192a52e5e08fb545250c61911b3a4"
+      }
+    },
+    "dropped-export": {
+      "correct": false,
+      "patch": {
+        "path": "controls/dropped-export.json",
+        "sha256": "26aeed89cbad38c281034fdeeb7aa62804b406ac014e7f9beba83ac4269a51d4"
+      }
+    },
+    "dropped-inline-export": {
+      "correct": false,
+      "patch": {
+        "path": "controls/dropped-inline-export.json",
+        "sha256": "f38403afb27fb5547eedd1db7088e18a5881c64d6cc692b8c5d0081951be1aa6"
+      }
+    },
+    "duration-off-by-one": {
+      "correct": false,
+      "patch": {
+        "path": "controls/duration-off-by-one.json",
+        "sha256": "498e05908f2a05b54c420eba7a363a2c477425dece38753b79558145d848a69a"
+      }
+    },
+    "finish-to-finish-read-as-finish-to-start": {
+      "correct": false,
+      "patch": {
+        "path": "controls/finish-to-finish-read-as-finish-to-start.json",
+        "sha256": "2fde601fc33cc35bd08a0c78a845cc67d45f79d46e38a26afbf47cc10d6ea033"
+      }
+    },
+    "first-edition-only": {
+      "correct": false,
+      "patch": {
+        "path": "controls/first-edition-only.json",
+        "sha256": "b6f424665c9f788fe68ba7fc57c5eef2d0fb04fdb2c9272e187fb43335bcc74a"
+      }
+    },
+    "gold": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "c83f6a4995269ac456407e7822380157f961f5fd34ea0b869121d66512548fd3"
+      }
+    },
+    "gold_with_cua_viewer": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_cua_viewer.json",
+        "sha256": "8aeaff9398593c475e7888e1d21e099f6b7a446f7d2af22f5ea105e66e33f4e6"
+      }
+    },
+    "gold_with_fable_viewer": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_fable_viewer.json",
+        "sha256": "7b8fc0472c068a5bfe636918354c0670fd80b603159c963538c6482bd6d6e033"
+      }
+    },
+    "gold_with_reordered_duplicate_navigation": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_reordered_duplicate_navigation.json",
+        "sha256": "891cd6c67f41e8c47658d166ecd1bf9c520a906a395533e7930da4fce04cf9d3"
+      }
+    },
+    "gold_with_submitted_viewer": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_submitted_viewer.json",
+        "sha256": "cbc9267ea117b210dd92779ff4bd358ead1399e031cac03579bcf5019649e7ba"
+      }
+    },
+    "incomplete-save": {
+      "correct": false,
+      "patch": {
+        "path": "controls/incomplete-save.json",
+        "sha256": "b1d11b5e794f70deb7bf85d7fa01f10630db89825e6a07e86af12c184e8c4dec"
+      }
+    },
+    "lag-ignored": {
+      "correct": false,
+      "patch": {
+        "path": "controls/lag-ignored.json",
+        "sha256": "2794d22b2a8cffd6434e49297f9ab186cbb0fe55e0c9f875a6c48612dcaab4c5"
+      }
+    },
+    "malformed-integration": {
+      "correct": false,
+      "patch": {
+        "path": "controls/malformed-integration.json",
+        "sha256": "8c454891bcfa46ec62e1f5ff6bffc44881da0e3789480b85093da825ebcbb2e7"
+      }
+    },
+    "missed-long-arrow": {
+      "correct": false,
+      "patch": {
+        "path": "controls/missed-long-arrow.json",
+        "sha256": "b18138c54d8b399ecee03630aed381bc7c7d5b9e874a2839f9e90c6e3c577acd"
+      }
+    },
+    "one-sheet-only": {
+      "correct": false,
+      "patch": {
+        "path": "controls/one-sheet-only.json",
+        "sha256": "80ec9b298a13932d181539d9505af746b6dd0fc8fdb32e85b392764dbc3ee2fe"
+      }
+    },
+    "partial": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "b18138c54d8b399ecee03630aed381bc7c7d5b9e874a2839f9e90c6e3c577acd"
+      }
+    },
+    "partial-jobs": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial-jobs.json",
+        "sha256": "31f0cfba7b759a978b5687522122e0f2d482396f1ad2084415672b6694f7432d"
+      }
+    },
+    "pre-first-day-rejection": {
+      "correct": false,
+      "patch": {
+        "path": "controls/pre-first-day-rejection.json",
+        "sha256": "3693545000d05c223590e9add68ab7106873b3a6b51b1537fba2b0ac1c2436a2"
+      }
+    },
+    "stale-parent-integration": {
+      "correct": false,
+      "patch": {
+        "path": "controls/stale-parent-integration.json",
+        "sha256": "9ad2e05517d69ac194a4ee74cd063a11c29062f138d14ea17d48ae96cb2b9d90"
+      }
+    },
+    "static-report": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static-report.json",
+        "sha256": "36745be0f5af37cebd8366e4afaa749636b69fd833b0a1b19600829b6bc60ccb"
+      }
+    },
+    "static-schedule-view": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static-schedule-view.json",
+        "sha256": "f4b3042eb99e43c3f5dfd2d99f6426a7687d32dab1c57820cee23b79f6a1ab54"
+      }
+    },
+    "top-level-throw": {
+      "correct": false,
+      "patch": {
+        "path": "controls/top-level-throw.json",
+        "sha256": "795a00dc16e21ac4091d938b12f749be14db896a942ce89b3db80f2c65f9037a"
+      }
+    }
+  }
+}

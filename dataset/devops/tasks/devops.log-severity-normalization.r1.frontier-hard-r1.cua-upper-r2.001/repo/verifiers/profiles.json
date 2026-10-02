@@ -1,0 +1,236 @@
+{
+  "visible": {
+    "prefix": "west",
+    "offset": 1770000000,
+    "rank": 2,
+    "names": [
+      "checkout-api",
+      "billing-worker",
+      "warehouse-agent",
+      "payments-gateway"
+    ],
+    "reverse": false,
+    "texts": [
+      "trace",
+      "debug",
+      "Info",
+      "Warning",
+      "Error",
+      "Fatal"
+    ],
+    "relayHost": "gw-01.west",
+    "relayFacility": 3,
+    "forwarderHost": "fwd-3.west",
+    "relayGateway": {
+      "ERROR": [
+        3,
+        "err"
+      ],
+      "FATAL": [
+        1,
+        "alert"
+      ],
+      "WARN": [
+        4,
+        "warning"
+      ],
+      "INFO": [
+        6,
+        "info"
+      ],
+      "DEBUG": [
+        7,
+        "debug"
+      ],
+      "UNSPECIFIED": [
+        null,
+        "audit"
+      ]
+    },
+    "relayForwarder": {
+      "ERROR": "error",
+      "WARN": "alert",
+      "INFO": "info",
+      "DEBUG": "verbose",
+      "UNSPECIFIED": "metric"
+    },
+    "relayAgents": [
+      {
+        "version": "1.9.4",
+        "levels": {
+          "ERROR": 0,
+          "WARN": 1,
+          "INFO": 2,
+          "DEBUG": 4,
+          "UNSPECIFIED": 6
+        }
+      },
+      {
+        "version": "2.3.0",
+        "levels": {
+          "ERROR": 40,
+          "WARN": 30,
+          "INFO": 20,
+          "DEBUG": 10,
+          "UNSPECIFIED": 60
+        }
+      }
+    ]
+  },
+  "hidden": {
+    "prefix": "canary",
+    "offset": 1784321760,
+    "rank": 0,
+    "names": [
+      "search-edge",
+      "mail-dispatch",
+      "inventory-sync",
+      "ledger-daemon"
+    ],
+    "reverse": true,
+    "texts": [
+      "TRACE",
+      "Debug",
+      "INFORMATIONAL",
+      "WARN",
+      "ERR",
+      "CRITICAL"
+    ],
+    "relayHost": "relay-7.canary",
+    "relayFacility": 1,
+    "forwarderHost": "agent-2.canary",
+    "relayGateway": {
+      "ERROR": [
+        3,
+        "ERR"
+      ],
+      "FATAL": [
+        1,
+        "Alert"
+      ],
+      "WARN": [
+        4,
+        "Warn"
+      ],
+      "INFO": [
+        6,
+        "Informational"
+      ],
+      "DEBUG": [
+        7,
+        "Debug"
+      ],
+      "UNSPECIFIED": [
+        null,
+        "AUDIT"
+      ]
+    },
+    "relayForwarder": {
+      "ERROR": "Error",
+      "WARN": "Alert",
+      "INFO": "Info",
+      "DEBUG": "Verbose",
+      "UNSPECIFIED": "Metric"
+    },
+    "relayAgents": [
+      {
+        "version": "1.8.2",
+        "levels": {
+          "ERROR": 0,
+          "WARN": 1,
+          "INFO": 2,
+          "DEBUG": 4,
+          "UNSPECIFIED": 6
+        }
+      },
+      {
+        "version": "3.1.4",
+        "levels": {
+          "ERROR": 200,
+          "WARN": 300,
+          "INFO": 400,
+          "DEBUG": 500,
+          "UNSPECIFIED": 700
+        }
+      }
+    ]
+  },
+  "hidden-range": {
+    "prefix": "night",
+    "offset": 1791000444,
+    "rank": 3,
+    "names": [
+      "settlement",
+      "feed-consumer",
+      "audit-export",
+      "edge-firewall"
+    ],
+    "reverse": false,
+    "texts": [
+      "Trace",
+      "DEBUG",
+      "NOTICE",
+      "warning",
+      "ERROR",
+      "CRIT"
+    ],
+    "relayHost": "fw2.night",
+    "relayFacility": 16,
+    "forwarderHost": "fwd-a.night",
+    "relayGateway": {
+      "ERROR": [
+        3,
+        "error"
+      ],
+      "FATAL": [
+        1,
+        "ALERT"
+      ],
+      "WARN": [
+        4,
+        "warn"
+      ],
+      "INFO": [
+        6,
+        "informational"
+      ],
+      "DEBUG": [
+        7,
+        "DEBUG"
+      ],
+      "UNSPECIFIED": [
+        null,
+        "auth.audit"
+      ]
+    },
+    "relayForwarder": {
+      "ERROR": "ERROR",
+      "WARN": "ALERT",
+      "INFO": "INFO",
+      "DEBUG": "VERBOSE",
+      "UNSPECIFIED": "app.metric"
+    },
+    "relayAgents": [
+      {
+        "version": "0.9.9",
+        "levels": {
+          "ERROR": 40,
+          "WARN": 30,
+          "INFO": 20,
+          "DEBUG": 10,
+          "UNSPECIFIED": 60
+        }
+      },
+      {
+        "version": "2.0.1",
+        "levels": {
+          "ERROR": 3,
+          "WARN": 4,
+          "INFO": 6,
+          "DEBUG": 7,
+          "UNSPECIFIED": 5
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+schema_version: 1
+task_id: devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.cua-upper-r3.001
+required_observations:
+  - compare legitimate and unrelated suppression in both queues of the initial batch and note that requiring either or both equality dimensions locally explains it
+  - follow inhibitor edges and inspect per-dimension equal-label state
+  - read the scope-dimension registry names, stale roles, epoch codes, and notes, treating the role taxonomy as a candidate rather than an answer
+  - read the stamping runbook page rendered by the ops-docs service and record every epoch's stamping state and missing-label policy, not only the epochs named in the visible registry
+  - advance to the arriving alerts and identify the newly held unscoped service whose stamping-epoch dimension value is concrete and shared, plus the pair that omits that dimension but must stay suppressed
+  - advance to the partial resolution and verify resolved sources release their targets while unrelated absence-matched suppression persists
+  - advance to the replay state and confirm the timeline deterministically restores the initial batch while the archive route keeps delivering every active alert
+  - inspect the deployed rule presence guards
+grounded_success_requires:
+  - screenshots_observed
+  - gui_actions_recorded
+  - decisive_observation_linked_to_repair
+  - protected_verifier_passed
+invalid_if:
+  - service contract was read through shell or direct HTTP
+  - protected files were present in the agent workspace
+  - DOM or accessibility-tree state replaced screenshot observation

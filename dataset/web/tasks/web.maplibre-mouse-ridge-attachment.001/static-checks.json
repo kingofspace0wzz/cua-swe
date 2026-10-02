@@ -1,0 +1,321 @@
+{
+  "status": "pass_static_only",
+  "baseline_manifest": {
+    "path": "private-artifact:source-0008",
+    "sha256": "981df5ee65bb771b2fde5d3b4a98cafeee2b3d496b2e61819193c5318fc95bed"
+  },
+  "original_files": 788,
+  "current_files": 789,
+  "unchanged_original_files": 787,
+  "allowed_public_changes": {
+    "runtime-task/help.html": {
+      "before": "d71bfc29450bca4bec8bba560b9a7053c00f8ef51be1be844af0ea519d6ffa6c",
+      "after": "3344591a873cc27b90f32d3eb9c66d1c0d2533ef789718b86fbe3543a9bdabf5"
+    }
+  },
+  "allowed_new_files": {
+    "verifiers/check_mouse_ridge_attachment.mjs": "0c2c3790fc6fa925c4a86d5f47c63221658ae0b19f467f2bf6e332bc2d053026"
+  },
+  "all_assembled_production_hashes_match": true,
+  "baseline_not_mutated": true,
+  "baseline_not_mutated_definition": "All immutable baseline bytes retained; only authorized public Help differs and new checker is added. No reference patch applied to delivered repo.",
+  "query_fallback_already_complete": true,
+  "patches": [
+    {
+      "path": "private-artifact:source-0015",
+      "sha256": "bf0aa71ab6f1be4800b7b12e627c93076a015a064269e8c30d502b41bc18624e",
+      "patched_manager_sha256": "45944121ee5a9b0f0829ac956c3183ada5e5512e68fa8a40705871dac2e62033",
+      "query_helper_unchanged": true
+    },
+    {
+      "path": "private-artifact:source-0018",
+      "sha256": "a7a525205b1993134e9fba753022fb18654475dd6250ef2fd11eea9b51ac0836",
+      "patched_manager_sha256": "b683ac6ec5fcea6f3b25ce7d0951b6187915a25f9b13594ea9ec9bd420dc84c2",
+      "query_helper_unchanged": true
+    },
+    {
+      "path": "private-artifact:source-0021",
+      "sha256": "c99533ad5115d2aeaf98ff1a22e517ce7b9fdacc38b6eb98992243396aa6ecf7",
+      "patched_manager_sha256": "bcbf25dce0b2f485a5e72c01f5a62697b8d0732301e091e0cf46fa2d90b4ed3f",
+      "query_helper_unchanged": true
+    },
+    {
+      "path": "private-artifact:source-0019",
+      "sha256": "412ab22daca779e583c4dbd5511149013b9fbce47476f959618381a73562ff25",
+      "patched_manager_sha256": "88c1ab63f17162bf741861912006b86a89ee94065228a04b9ea73a1cd0a3889a",
+      "query_helper_unchanged": true
+    },
+    {
+      "path": "private-artifact:source-0020",
+      "sha256": "46bff54f2383e9fcc12a931f0060d84d8661d33740cbad70de7e9f50b6fca398",
+      "patched_manager_sha256": "2088a94444425601f366c676b1dbfc8d2601de1443f15eac3c0716e7ffa24add",
+      "query_helper_unchanged": true
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "node",
+        "--check",
+        "private-artifact:source-0028"
+      ],
+      "cwd": "private-artifact:source-0014",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "private-artifact:source-0029"
+      ],
+      "cwd": "private-artifact:source-0014",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "--check",
+        "private-artifact:source-0015"
+      ],
+      "cwd": "private-artifact:source-0023",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "private-artifact:source-0015"
+      ],
+      "cwd": "private-artifact:source-0005",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--check",
+        "private-artifact:source-0006"
+      ],
+      "cwd": "private-artifact:source-0014",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "-R",
+        "private-artifact:source-0015"
+      ],
+      "cwd": "private-artifact:source-0005",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "--check",
+        "private-artifact:source-0018"
+      ],
+      "cwd": "private-artifact:source-0023",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "private-artifact:source-0018"
+      ],
+      "cwd": "private-artifact:source-0005",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--check",
+        "private-artifact:source-0006"
+      ],
+      "cwd": "private-artifact:source-0014",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "-R",
+        "private-artifact:source-0018"
+      ],
+      "cwd": "private-artifact:source-0005",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "--check",
+        "private-artifact:source-0021"
+      ],
+      "cwd": "private-artifact:source-0023",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "private-artifact:source-0021"
+      ],
+      "cwd": "private-artifact:source-0005",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--check",
+        "private-artifact:source-0006"
+      ],
+      "cwd": "private-artifact:source-0014",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "-R",
+        "private-artifact:source-0021"
+      ],
+      "cwd": "private-artifact:source-0005",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "--check",
+        "private-artifact:source-0019"
+      ],
+      "cwd": "private-artifact:source-0023",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "private-artifact:source-0019"
+      ],
+      "cwd": "private-artifact:source-0005",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--check",
+        "private-artifact:source-0006"
+      ],
+      "cwd": "private-artifact:source-0014",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "-R",
+        "private-artifact:source-0019"
+      ],
+      "cwd": "private-artifact:source-0005",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "--check",
+        "private-artifact:source-0020"
+      ],
+      "cwd": "private-artifact:source-0023",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "private-artifact:source-0020"
+      ],
+      "cwd": "private-artifact:source-0005",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--check",
+        "private-artifact:source-0006"
+      ],
+      "cwd": "private-artifact:source-0014",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "-R",
+        "private-artifact:source-0020"
+      ],
+      "cwd": "private-artifact:source-0005",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "yaml_contract": "preserved setup, build command, tools, viewport, budgets and previous public verifier; added new public verifier only",
+  "checker_import_audit": "Node builtins only; createRequire resolves puppeteer/pngjs through CUA_SWE_WORKSPACE package.json, both already declared. No imports from outside materialized workspace. No geometry/debug expected-position oracle in new checker.",
+  "execution_limit": "Node syntax parsing including TypeScript stripping, not typechecking, build, module execution, browser or native behavioral testing",
+  "native_runs": 0,
+  "browser_runs": 0,
+  "build_runs": 0,
+  "solver_runs": 0
+}

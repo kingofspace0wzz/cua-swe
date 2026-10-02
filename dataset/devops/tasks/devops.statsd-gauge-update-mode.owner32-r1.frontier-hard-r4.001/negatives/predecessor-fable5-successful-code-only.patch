@@ -1,0 +1,14 @@
+diff --git a/src/update.mjs b/src/update.mjs
+index a736259119a72077cfd17fbee96fccc26aaaf85d..86ee83a81c7131effc27ee083740b13ec6f43c26 100644
+--- a/src/update.mjs
++++ b/src/update.mjs
+@@ -1,6 +1,8 @@
+ export function applyGauge(state, measurement) {
+   const before = state.get(measurement.identity) ?? 0;
+-  const value = measurement.value;
++  const sign = measurement.token[0];
++  const isDelta = sign === '+' || sign === '-';
++  const value = isDelta ? before + measurement.value : measurement.value;
+   state.set(measurement.identity, value);
+   return {before, value};
+ }

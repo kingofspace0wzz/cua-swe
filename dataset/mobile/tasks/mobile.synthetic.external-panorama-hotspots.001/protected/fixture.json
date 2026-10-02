@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "product": "Northline Tour Review",
+  "simulation": "Deterministic local imported provider inbox. Injected once into isolated browser storage by trusted setup, not shipped with the app. Reload keeps work; reset_to_scene imports afresh. No expected outcomes in this payload.",
+  "records": [
+    {
+      "id": "glass-marsh",
+      "title": "Glass Marsh lookout",
+      "provenance": "Original fictional registration panorama; standalone synthetic product input.",
+      "panorama": {
+        "mime": "image/svg+xml",
+        "width": 1440,
+        "height": 720,
+        "dataUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDQwIiBoZWlnaHQ9IjcyMCIgdmlld0JveD0iMCAwIDE0NDAgNzIwIj48cmVjdCB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSIzNjAiIGZpbGw9IiNkN2VhZjAiLz48cmVjdCB5PSIzNjAiIHdpZHRoPSIxNDQwIiBoZWlnaHQ9IjM2MCIgZmlsbD0iIzUzNmI2MSIvPjxwYXRoIGQ9Ik0tNDAgMzYxIEw0IDMwOC42IEw2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTYwIDM2MSBMMTA0IDMzOS4xIEwxNjggMzYxWiIgZmlsbD0iIzc4OTA4NSIvPjxwYXRoIGQ9Ik0xNjAgMzYxIEwyMDQgMzE4LjEgTDI2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTI2MCAzNjEgTDMwNCAzMDguOCBMMzY4IDM2MVoiIGZpbGw9IiM3ODkwODUiLz48cGF0aCBkPSJNMzYwIDM2MSBMNDA0IDMzOS4yIEw0NjggMzYxWiIgZmlsbD0iIzc4OTA4NSIvPjxwYXRoIGQ9Ik00NjAgMzYxIEw1MDQgMzE3LjggTDU2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTU2MCAzNjEgTDYwNCAzMDkuMCBMNjY4IDM2MVoiIGZpbGw9IiM3ODkwODUiLz48cGF0aCBkPSJNNjYwIDM2MSBMNzA0IDMzOS4zIEw3NjggMzYxWiIgZmlsbD0iIzc4OTA4NSIvPjxwYXRoIGQ9Ik03NjAgMzYxIEw4MDQgMzE3LjUgTDg2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTg2MCAzNjEgTDkwNCAzMDkuMiBMOTY4IDM2MVoiIGZpbGw9IiM3ODkwODUiLz48cGF0aCBkPSJNOTYwIDM2MSBMMTAwNCAzMzkuNCBMMTA2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTEwNjAgMzYxIEwxMTA0IDMxNy4yIEwxMTY4IDM2MVoiIGZpbGw9IiM3ODkwODUiLz48cGF0aCBkPSJNMTE2MCAzNjEgTDEyMDQgMzA5LjQgTDEyNjggMzYxWiIgZmlsbD0iIzc4OTA4NSIvPjxwYXRoIGQ9Ik0xMjYwIDM2MSBMMTMwNCAzMzkuNSBMMTM2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTEzNjAgMzYxIEwxNDA0IDMxNi45IEwxNDY4IDM2MVoiIGZpbGw9IiM3ODkwODUiLz48cGF0aCBkPSJNMTQ2MCAzNjEgTDE1MDQgMzA5LjcgTDE1NjggMzYxWiIgZmlsbD0iIzc4OTA4NSIvPjxwYXRoIGQ9Ik0wIDBWNzIwIiBzdHJva2U9IiM1MzY0NzgiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNSA5IiBvcGFjaXR5PSIuNSIvPjx0ZXh0IHg9IjYiIHk9IjQyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZmlsbD0iIzI0Mzg0ZCI+MMKwPC90ZXh0PjxwYXRoIGQ9Ik0xMjAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iMTI2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjMwwrA8L3RleHQ+PHBhdGggZD0iTTI0MCAwVjcyMCIgc3Ryb2tlPSIjNTM2NDc4IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1kYXNoYXJyYXk9IjUgOSIgb3BhY2l0eT0iLjUiLz48dGV4dCB4PSIyNDYiIHk9IjQyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZmlsbD0iIzI0Mzg0ZCI+NjDCsDwvdGV4dD48cGF0aCBkPSJNMzYwIDBWNzIwIiBzdHJva2U9IiM1MzY0NzgiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNSA5IiBvcGFjaXR5PSIuNSIvPjx0ZXh0IHg9IjM2NiIgeT0iNDIiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMjQzODRkIj45MMKwPC90ZXh0PjxwYXRoIGQ9Ik00ODAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iNDg2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjEyMMKwPC90ZXh0PjxwYXRoIGQ9Ik02MDAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iNjA2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjE1MMKwPC90ZXh0PjxwYXRoIGQ9Ik03MjAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iNzI2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjE4MMKwPC90ZXh0PjxwYXRoIGQ9Ik04NDAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iODQ2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjIxMMKwPC90ZXh0PjxwYXRoIGQ9Ik05NjAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iOTY2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjI0MMKwPC90ZXh0PjxwYXRoIGQ9Ik0xMDgwIDBWNzIwIiBzdHJva2U9IiM1MzY0NzgiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNSA5IiBvcGFjaXR5PSIuNSIvPjx0ZXh0IHg9IjEwODYiIHk9IjQyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZmlsbD0iIzI0Mzg0ZCI+MjcwwrA8L3RleHQ+PHBhdGggZD0iTTEyMDAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iMTIwNiIgeT0iNDIiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMjQzODRkIj4zMDDCsDwvdGV4dD48cGF0aCBkPSJNMTMyMCAwVjcyMCIgc3Ryb2tlPSIjNTM2NDc4IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1kYXNoYXJyYXk9IjUgOSIgb3BhY2l0eT0iLjUiLz48dGV4dCB4PSIxMzI2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjMzMMKwPC90ZXh0PjxwYXRoIGQ9Ik0xNDQwIDBWNzIwIiBzdHJva2U9IiM1MzY0NzgiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNSA5IiBvcGFjaXR5PSIuNSIvPjx0ZXh0IHg9IjEzOTAiIHk9IjQyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZmlsbD0iIzI0Mzg0ZCI+MzYwwrA8L3RleHQ+PHBhdGggZD0iTTAgNTQwSDE0NDAiIHN0cm9rZT0iIzM0NGI1OSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuNiIvPjxwYXRoIGQ9Ik0wIDM2MEgxNDQwIiBzdHJva2U9IiMzNDRiNTkiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iLjYiLz48cGF0aCBkPSJNMCAxODBIMTQ0MCIgc3Ryb2tlPSIjMzQ0YjU5IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9Ii42Ii8+PHBhdGggZD0iTTg5MiA2NVY2NjAiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtZGFzaGFycmF5PSIxMCA4Ii8+PHRleHQgeD0iOTAwIiB5PSI5MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyMzNiNTMiPk48L3RleHQ+PHBhdGggZD0iTS01MCAzODRMLTI0IDI3N0wyIDM4NFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSItMjQiIGN5PSIzMTIiIHI9IjE1IiBmaWxsPSIjZjI3YTM2Ii8+PGNpcmNsZSBjeD0iLTI0IiBjeT0iMzEyIiByPSIzIiBmaWxsPSIjMjAzMjQyIi8+PHJlY3QgeD0iLTEwNCIgeT0iMzQwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjI5IiByeD0iNCIgZmlsbD0iI2Y4ZjdlZCIvPjx0ZXh0IHg9Ii0yNCIgeT0iMzYxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+Q29wcGVyIHZhbmU8L3RleHQ+PHBhdGggZD0iTTEzOTAgMzg0TDE0MTYgMjc3TDE0NDIgMzg0WiIgZmlsbD0iIzM0NDQ1MyIvPjxjaXJjbGUgY3g9IjE0MTYiIGN5PSIzMTIiIHI9IjE1IiBmaWxsPSIjZjI3YTM2Ii8+PGNpcmNsZSBjeD0iMTQxNiIgY3k9IjMxMiIgcj0iMyIgZmlsbD0iIzIwMzI0MiIvPjxyZWN0IHg9IjEzMzYiIHk9IjM0MCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIyOSIgcng9IjQiIGZpbGw9IiNmOGY3ZWQiLz48dGV4dCB4PSIxNDE2IiB5PSIzNjEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE5IiBmaWxsPSIjMjIzNDQ3Ij5Db3BwZXIgdmFuZTwvdGV4dD48cGF0aCBkPSJNMjgzMCAzODRMMjg1NiAyNzdMMjg4MiAzODRaIiBmaWxsPSIjMzQ0NDUzIi8+PGNpcmNsZSBjeD0iMjg1NiIgY3k9IjMxMiIgcj0iMTUiIGZpbGw9IiNmMjdhMzYiLz48Y2lyY2xlIGN4PSIyODU2IiBjeT0iMzEyIiByPSIzIiBmaWxsPSIjMjAzMjQyIi8+PHJlY3QgeD0iMjc3NiIgeT0iMzQwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjI5IiByeD0iNCIgZmlsbD0iI2Y4ZjdlZCIvPjx0ZXh0IHg9IjI4NTYiIHk9IjM2MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTkiIGZpbGw9IiMyMjM0NDciPkNvcHBlciB2YW5lPC90ZXh0PjxwYXRoIGQ9Ik0tMTQyNiA0NjRMLTE0MDAgMzU3TC0xMzc0IDQ2NFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSItMTQwMCIgY3k9IjM5MiIgcj0iMTUiIGZpbGw9IiM0MGRkYjUiLz48Y2lyY2xlIGN4PSItMTQwMCIgY3k9IjM5MiIgcj0iMyIgZmlsbD0iIzIwMzI0MiIvPjxyZWN0IHg9Ii0xNDgwIiB5PSI0MjAiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iLTE0MDAiIHk9IjQ0MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTkiIGZpbGw9IiMyMjM0NDciPk1pbnQgYXJjaDwvdGV4dD48cGF0aCBkPSJNMTQgNDY0TDQwIDM1N0w2NiA0NjRaIiBmaWxsPSIjMzQ0NDUzIi8+PGNpcmNsZSBjeD0iNDAiIGN5PSIzOTIiIHI9IjE1IiBmaWxsPSIjNDBkZGI1Ii8+PGNpcmNsZSBjeD0iNDAiIGN5PSIzOTIiIHI9IjMiIGZpbGw9IiMyMDMyNDIiLz48cmVjdCB4PSItNDAiIHk9IjQyMCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIyOSIgcng9IjQiIGZpbGw9IiNmOGY3ZWQiLz48dGV4dCB4PSI0MCIgeT0iNDQxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+TWludCBhcmNoPC90ZXh0PjxwYXRoIGQ9Ik0xNDU0IDQ2NEwxNDgwIDM1N0wxNTA2IDQ2NFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSIxNDgwIiBjeT0iMzkyIiByPSIxNSIgZmlsbD0iIzQwZGRiNSIvPjxjaXJjbGUgY3g9IjE0ODAiIGN5PSIzOTIiIHI9IjMiIGZpbGw9IiMyMDMyNDIiLz48cmVjdCB4PSIxNDAwIiB5PSI0MjAiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iMTQ4MCIgeT0iNDQxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+TWludCBhcmNoPC90ZXh0PjxwYXRoIGQ9Ik0tNzc4IDM0MEwtNzUyIDIzM0wtNzI2IDM0MFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSItNzUyIiBjeT0iMjY4IiByPSIxNSIgZmlsbD0iI2I3OWFmNiIvPjxjaXJjbGUgY3g9Ii03NTIiIGN5PSIyNjgiIHI9IjMiIGZpbGw9IiMyMDMyNDIiLz48cmVjdCB4PSItODMyIiB5PSIyOTYiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iLTc1MiIgeT0iMzE3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+TGlsYWMgbWFzdDwvdGV4dD48cGF0aCBkPSJNNjYyIDM0MEw2ODggMjMzTDcxNCAzNDBaIiBmaWxsPSIjMzQ0NDUzIi8+PGNpcmNsZSBjeD0iNjg4IiBjeT0iMjY4IiByPSIxNSIgZmlsbD0iI2I3OWFmNiIvPjxjaXJjbGUgY3g9IjY4OCIgY3k9IjI2OCIgcj0iMyIgZmlsbD0iIzIwMzI0MiIvPjxyZWN0IHg9IjYwOCIgeT0iMjk2IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjI5IiByeD0iNCIgZmlsbD0iI2Y4ZjdlZCIvPjx0ZXh0IHg9IjY4OCIgeT0iMzE3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+TGlsYWMgbWFzdDwvdGV4dD48cGF0aCBkPSJNMjEwMiAzNDBMMjEyOCAyMzNMMjE1NCAzNDBaIiBmaWxsPSIjMzQ0NDUzIi8+PGNpcmNsZSBjeD0iMjEyOCIgY3k9IjI2OCIgcj0iMTUiIGZpbGw9IiNiNzlhZjYiLz48Y2lyY2xlIGN4PSIyMTI4IiBjeT0iMjY4IiByPSIzIiBmaWxsPSIjMjAzMjQyIi8+PHJlY3QgeD0iMjA0OCIgeT0iMjk2IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjI5IiByeD0iNCIgZmlsbD0iI2Y4ZjdlZCIvPjx0ZXh0IHg9IjIxMjgiIHk9IjMxNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTkiIGZpbGw9IiMyMjM0NDciPkxpbGFjIG1hc3Q8L3RleHQ+PHBhdGggZD0iTS00NTQgNDg4TC00MjggMzgxTC00MDIgNDg4WiIgZmlsbD0iIzM0NDQ1MyIvPjxjaXJjbGUgY3g9Ii00MjgiIGN5PSI0MTYiIHI9IjE1IiBmaWxsPSIjZWRmMGU1Ii8+PGNpcmNsZSBjeD0iLTQyOCIgY3k9IjQxNiIgcj0iMyIgZmlsbD0iIzIwMzI0MiIvPjxyZWN0IHg9Ii01MDgiIHk9IjQ0NCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIyOSIgcng9IjQiIGZpbGw9IiNmOGY3ZWQiLz48dGV4dCB4PSItNDI4IiB5PSI0NjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE5IiBmaWxsPSIjMjIzNDQ3Ij5XaGl0ZSBzaGVkPC90ZXh0PjxwYXRoIGQ9Ik05ODYgNDg4TDEwMTIgMzgxTDEwMzggNDg4WiIgZmlsbD0iIzM0NDQ1MyIvPjxjaXJjbGUgY3g9IjEwMTIiIGN5PSI0MTYiIHI9IjE1IiBmaWxsPSIjZWRmMGU1Ii8+PGNpcmNsZSBjeD0iMTAxMiIgY3k9IjQxNiIgcj0iMyIgZmlsbD0iIzIwMzI0MiIvPjxyZWN0IHg9IjkzMiIgeT0iNDQ0IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjI5IiByeD0iNCIgZmlsbD0iI2Y4ZjdlZCIvPjx0ZXh0IHg9IjEwMTIiIHk9IjQ2NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTkiIGZpbGw9IiMyMjM0NDciPldoaXRlIHNoZWQ8L3RleHQ+PHBhdGggZD0iTTI0MjYgNDg4TDI0NTIgMzgxTDI0NzggNDg4WiIgZmlsbD0iIzM0NDQ1MyIvPjxjaXJjbGUgY3g9IjI0NTIiIGN5PSI0MTYiIHI9IjE1IiBmaWxsPSIjZWRmMGU1Ii8+PGNpcmNsZSBjeD0iMjQ1MiIgY3k9IjQxNiIgcj0iMyIgZmlsbD0iIzIwMzI0MiIvPjxyZWN0IHg9IjIzNzIiIHk9IjQ0NCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIyOSIgcng9IjQiIGZpbGw9IiNmOGY3ZWQiLz48dGV4dCB4PSIyNDUyIiB5PSI0NjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE5IiBmaWxsPSIjMjIzNDQ3Ij5XaGl0ZSBzaGVkPC90ZXh0Pjwvc3ZnPg=="
+      },
+      "capture": {
+        "northAtPanoramaYaw": 223,
+        "panoramaYawDirection": "counterclockwise",
+        "reviewElevationDirection": "down"
+      },
+      "guide": {
+        "title": "Stitch-to-review registration \u2022 export contract v1",
+        "paragraphs": [
+          "The tour window uses the ORIGINAL panorama grid: heading is panorama yaw, increasing to the right from the stitched left edge (0\u00b0). Elevation is panorama latitude, positive up. 360\u00b0 and 0\u00b0 are the same ray. The window is a perspective view, not a cropped flat sheet.",
+          "Review azimuth is a compass angle in degrees, positive clockwise from north. North is located at northAtPanoramaYaw in the original panorama. panoramaYawDirection says whether increasing panorama yaw runs clockwise or counterclockwise around the compass. A counterclockwise export is a mirrored stitch, not a reversed compass.",
+          "Review elevation is in degrees from the horizon. reviewElevationDirection is the capture recorder setting: up means positive above the horizon; down means positive below it. The panorama itself always has positive latitude up. There is no roll or other calibration offset.",
+          "To register a review, start at the marked north yaw and advance the review azimuth with the stated direction. Reverse a down-positive elevation. Reduce yaw modulo 360\u00b0. Editing a hotspot reverses that same mapping; save compass azimuth in [0\u00b0,360\u00b0) and recorder elevation, not window pixels.",
+          "A tap in Move hotspot mode replaces the one review position for this scene. Save review stores its position and label independently. Changing the window, crossing the seam or reopening a tour must not move it on the original scene. Original panoramas and capture records are read-only imports. Label edits do not change position."
+        ],
+        "fieldLabels": {
+          "northAtPanoramaYaw": "North at panorama yaw (\u00b0)",
+          "panoramaYawDirection": "Increasing panorama yaw",
+          "reviewElevationDirection": "Positive review elevation"
+        },
+        "axes": [
+          "Original horizontal axis: 0\u00b0 \u2192 90\u00b0 \u2192 180\u00b0 \u2192 270\u00b0 \u2192 360\u00b0 = 0\u00b0 seam",
+          "Original vertical axis: +90\u00b0 sky; 0\u00b0 horizon; \u221290\u00b0 ground",
+          "View heading/elevation belong to the original panorama, not the compass review frame."
+        ]
+      },
+      "landmarks": [
+        {
+          "name": "Copper vane",
+          "panoramaYaw": 354,
+          "panoramaLatitude": 12,
+          "medallionColor": "#f27a36"
+        },
+        {
+          "name": "Mint arch",
+          "panoramaYaw": 10,
+          "panoramaLatitude": -8,
+          "medallionColor": "#40ddb5"
+        },
+        {
+          "name": "Lilac mast",
+          "panoramaYaw": 172,
+          "panoramaLatitude": 23,
+          "medallionColor": "#b79af6"
+        },
+        {
+          "name": "White shed",
+          "panoramaYaw": 253,
+          "panoramaLatitude": -14,
+          "medallionColor": "#edf0e5"
+        }
+      ],
+      "initialView": {
+        "heading": 350,
+        "elevation": 0
+      },
+      "review": {
+        "azimuth": 229,
+        "elevation": -12,
+        "label": "Inspect copper vane"
+      }
+    },
+    {
+      "id": "cinder-cove",
+      "title": "Cinder Cove platform",
+      "provenance": "Original fictional registration panorama; standalone synthetic product input.",
+      "panorama": {
+        "mime": "image/svg+xml",
+        "width": 1440,
+        "height": 720,
+        "dataUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDQwIiBoZWlnaHQ9IjcyMCIgdmlld0JveD0iMCAwIDE0NDAgNzIwIj48cmVjdCB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSIzNjAiIGZpbGw9IiNlYWRmZDUiLz48cmVjdCB5PSIzNjAiIHdpZHRoPSIxNDQwIiBoZWlnaHQ9IjM2MCIgZmlsbD0iIzRkNjQ3OSIvPjxwYXRoIGQ9Ik0tNDAgMzYxIEw0IDMzOC41IEw2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTYwIDM2MSBMMTA0IDMxOS45IEwxNjggMzYxWiIgZmlsbD0iIzc4OTA4NSIvPjxwYXRoIGQ9Ik0xNjAgMzYxIEwyMDQgMzA3LjYgTDI2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTI2MCAzNjEgTDMwNCAzMzguNiBMMzY4IDM2MVoiIGZpbGw9IiM3ODkwODUiLz48cGF0aCBkPSJNMzYwIDM2MSBMNDA0IDMxOS42IEw0NjggMzYxWiIgZmlsbD0iIzc4OTA4NSIvPjxwYXRoIGQ9Ik00NjAgMzYxIEw1MDQgMzA3LjggTDU2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTU2MCAzNjEgTDYwNCAzMzguNyBMNjY4IDM2MVoiIGZpbGw9IiM3ODkwODUiLz48cGF0aCBkPSJNNjYwIDM2MSBMNzA0IDMxOS4zIEw3NjggMzYxWiIgZmlsbD0iIzc4OTA4NSIvPjxwYXRoIGQ9Ik03NjAgMzYxIEw4MDQgMzA4LjAgTDg2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTg2MCAzNjEgTDkwNCAzMzguOCBMOTY4IDM2MVoiIGZpbGw9IiM3ODkwODUiLz48cGF0aCBkPSJNOTYwIDM2MSBMMTAwNCAzMTkuMCBMMTA2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTEwNjAgMzYxIEwxMTA0IDMwOC4yIEwxMTY4IDM2MVoiIGZpbGw9IiM3ODkwODUiLz48cGF0aCBkPSJNMTE2MCAzNjEgTDEyMDQgMzM4LjkgTDEyNjggMzYxWiIgZmlsbD0iIzc4OTA4NSIvPjxwYXRoIGQ9Ik0xMjYwIDM2MSBMMTMwNCAzMTguNyBMMTM2OCAzNjFaIiBmaWxsPSIjNzg5MDg1Ii8+PHBhdGggZD0iTTEzNjAgMzYxIEwxNDA0IDMwOC40IEwxNDY4IDM2MVoiIGZpbGw9IiM3ODkwODUiLz48cGF0aCBkPSJNMTQ2MCAzNjEgTDE1MDQgMzM5LjAgTDE1NjggMzYxWiIgZmlsbD0iIzc4OTA4NSIvPjxwYXRoIGQ9Ik0wIDBWNzIwIiBzdHJva2U9IiM1MzY0NzgiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNSA5IiBvcGFjaXR5PSIuNSIvPjx0ZXh0IHg9IjYiIHk9IjQyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZmlsbD0iIzI0Mzg0ZCI+MMKwPC90ZXh0PjxwYXRoIGQ9Ik0xMjAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iMTI2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjMwwrA8L3RleHQ+PHBhdGggZD0iTTI0MCAwVjcyMCIgc3Ryb2tlPSIjNTM2NDc4IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1kYXNoYXJyYXk9IjUgOSIgb3BhY2l0eT0iLjUiLz48dGV4dCB4PSIyNDYiIHk9IjQyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZmlsbD0iIzI0Mzg0ZCI+NjDCsDwvdGV4dD48cGF0aCBkPSJNMzYwIDBWNzIwIiBzdHJva2U9IiM1MzY0NzgiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNSA5IiBvcGFjaXR5PSIuNSIvPjx0ZXh0IHg9IjM2NiIgeT0iNDIiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMjQzODRkIj45MMKwPC90ZXh0PjxwYXRoIGQ9Ik00ODAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iNDg2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjEyMMKwPC90ZXh0PjxwYXRoIGQ9Ik02MDAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iNjA2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjE1MMKwPC90ZXh0PjxwYXRoIGQ9Ik03MjAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iNzI2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjE4MMKwPC90ZXh0PjxwYXRoIGQ9Ik04NDAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iODQ2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjIxMMKwPC90ZXh0PjxwYXRoIGQ9Ik05NjAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iOTY2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjI0MMKwPC90ZXh0PjxwYXRoIGQ9Ik0xMDgwIDBWNzIwIiBzdHJva2U9IiM1MzY0NzgiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNSA5IiBvcGFjaXR5PSIuNSIvPjx0ZXh0IHg9IjEwODYiIHk9IjQyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZmlsbD0iIzI0Mzg0ZCI+MjcwwrA8L3RleHQ+PHBhdGggZD0iTTEyMDAgMFY3MjAiIHN0cm9rZT0iIzUzNjQ3OCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI1IDkiIG9wYWNpdHk9Ii41Ii8+PHRleHQgeD0iMTIwNiIgeT0iNDIiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMjQzODRkIj4zMDDCsDwvdGV4dD48cGF0aCBkPSJNMTMyMCAwVjcyMCIgc3Ryb2tlPSIjNTM2NDc4IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1kYXNoYXJyYXk9IjUgOSIgb3BhY2l0eT0iLjUiLz48dGV4dCB4PSIxMzI2IiB5PSI0MiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyNDM4NGQiPjMzMMKwPC90ZXh0PjxwYXRoIGQ9Ik0xNDQwIDBWNzIwIiBzdHJva2U9IiM1MzY0NzgiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNSA5IiBvcGFjaXR5PSIuNSIvPjx0ZXh0IHg9IjEzOTAiIHk9IjQyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZmlsbD0iIzI0Mzg0ZCI+MzYwwrA8L3RleHQ+PHBhdGggZD0iTTAgNTQwSDE0NDAiIHN0cm9rZT0iIzM0NGI1OSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuNiIvPjxwYXRoIGQ9Ik0wIDM2MEgxNDQwIiBzdHJva2U9IiMzNDRiNTkiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iLjYiLz48cGF0aCBkPSJNMCAxODBIMTQ0MCIgc3Ryb2tlPSIjMzQ0YjU5IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9Ii42Ii8+PHBhdGggZD0iTTI4NCA2NVY2NjAiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtZGFzaGFycmF5PSIxMCA4Ii8+PHRleHQgeD0iMjkyIiB5PSI5MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyMzNiNTMiPk48L3RleHQ+PHBhdGggZD0iTS05MzggNDY4TC05MTIgMzYxTC04ODYgNDY4WiIgZmlsbD0iIzM0NDQ1MyIvPjxjaXJjbGUgY3g9Ii05MTIiIGN5PSIzOTYiIHI9IjE1IiBmaWxsPSIjZmZjYjM1Ii8+PGNpcmNsZSBjeD0iLTkxMiIgY3k9IjM5NiIgcj0iMyIgZmlsbD0iIzIwMzI0MiIvPjxyZWN0IHg9Ii05OTIiIHk9IjQyNCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIyOSIgcng9IjQiIGZpbGw9IiNmOGY3ZWQiLz48dGV4dCB4PSItOTEyIiB5PSI0NDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE5IiBmaWxsPSIjMjIzNDQ3Ij5BbWJlciBidW95PC90ZXh0PjxwYXRoIGQ9Ik01MDIgNDY4TDUyOCAzNjFMNTU0IDQ2OFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSI1MjgiIGN5PSIzOTYiIHI9IjE1IiBmaWxsPSIjZmZjYjM1Ii8+PGNpcmNsZSBjeD0iNTI4IiBjeT0iMzk2IiByPSIzIiBmaWxsPSIjMjAzMjQyIi8+PHJlY3QgeD0iNDQ4IiB5PSI0MjQiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iNTI4IiB5PSI0NDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE5IiBmaWxsPSIjMjIzNDQ3Ij5BbWJlciBidW95PC90ZXh0PjxwYXRoIGQ9Ik0xOTQyIDQ2OEwxOTY4IDM2MUwxOTk0IDQ2OFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSIxOTY4IiBjeT0iMzk2IiByPSIxNSIgZmlsbD0iI2ZmY2IzNSIvPjxjaXJjbGUgY3g9IjE5NjgiIGN5PSIzOTYiIHI9IjMiIGZpbGw9IiMyMDMyNDIiLz48cmVjdCB4PSIxODg4IiB5PSI0MjQiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iMTk2OCIgeT0iNDQ1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+QW1iZXIgYnVveTwvdGV4dD48cGF0aCBkPSJNLTEwMzQgMzY0TC0xMDA4IDI1N0wtOTgyIDM2NFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSItMTAwOCIgY3k9IjI5MiIgcj0iMTUiIGZpbGw9IiMzNWM1ZjYiLz48Y2lyY2xlIGN4PSItMTAwOCIgY3k9IjI5MiIgcj0iMyIgZmlsbD0iIzIwMzI0MiIvPjxyZWN0IHg9Ii0xMDg4IiB5PSIzMjAiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iLTEwMDgiIHk9IjM0MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTkiIGZpbGw9IiMyMjM0NDciPkJsdWUgbGFudGVybjwvdGV4dD48cGF0aCBkPSJNNDA2IDM2NEw0MzIgMjU3TDQ1OCAzNjRaIiBmaWxsPSIjMzQ0NDUzIi8+PGNpcmNsZSBjeD0iNDMyIiBjeT0iMjkyIiByPSIxNSIgZmlsbD0iIzM1YzVmNiIvPjxjaXJjbGUgY3g9IjQzMiIgY3k9IjI5MiIgcj0iMyIgZmlsbD0iIzIwMzI0MiIvPjxyZWN0IHg9IjM1MiIgeT0iMzIwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjI5IiByeD0iNCIgZmlsbD0iI2Y4ZjdlZCIvPjx0ZXh0IHg9IjQzMiIgeT0iMzQxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+Qmx1ZSBsYW50ZXJuPC90ZXh0PjxwYXRoIGQ9Ik0xODQ2IDM2NEwxODcyIDI1N0wxODk4IDM2NFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSIxODcyIiBjeT0iMjkyIiByPSIxNSIgZmlsbD0iIzM1YzVmNiIvPjxjaXJjbGUgY3g9IjE4NzIiIGN5PSIyOTIiIHI9IjMiIGZpbGw9IiMyMDMyNDIiLz48cmVjdCB4PSIxNzkyIiB5PSIzMjAiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iMTg3MiIgeT0iMzQxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+Qmx1ZSBsYW50ZXJuPC90ZXh0PjxwYXRoIGQ9Ik0tMzIyIDQwMEwtMjk2IDI5M0wtMjcwIDQwMFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSItMjk2IiBjeT0iMzI4IiByPSIxNSIgZmlsbD0iI2YzOTZiYiIvPjxjaXJjbGUgY3g9Ii0yOTYiIGN5PSIzMjgiIHI9IjMiIGZpbGw9IiMyMDMyNDIiLz48cmVjdCB4PSItMzc2IiB5PSIzNTYiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iLTI5NiIgeT0iMzc3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+UGluayBnYXRlPC90ZXh0PjxwYXRoIGQ9Ik0xMTE4IDQwMEwxMTQ0IDI5M0wxMTcwIDQwMFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSIxMTQ0IiBjeT0iMzI4IiByPSIxNSIgZmlsbD0iI2YzOTZiYiIvPjxjaXJjbGUgY3g9IjExNDQiIGN5PSIzMjgiIHI9IjMiIGZpbGw9IiMyMDMyNDIiLz48cmVjdCB4PSIxMDY0IiB5PSIzNTYiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iMTE0NCIgeT0iMzc3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+UGluayBnYXRlPC90ZXh0PjxwYXRoIGQ9Ik0yNTU4IDQwMEwyNTg0IDI5M0wyNjEwIDQwMFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSIyNTg0IiBjeT0iMzI4IiByPSIxNSIgZmlsbD0iI2YzOTZiYiIvPjxjaXJjbGUgY3g9IjI1ODQiIGN5PSIzMjgiIHI9IjMiIGZpbGw9IiMyMDMyNDIiLz48cmVjdCB4PSIyNTA0IiB5PSIzNTYiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iMjU4NCIgeT0iMzc3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+UGluayBnYXRlPC90ZXh0PjxwYXRoIGQ9Ik0tMTMzOCAzMjhMLTEzMTIgMjIxTC0xMjg2IDMyOFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSItMTMxMiIgY3k9IjI1NiIgcj0iMTUiIGZpbGw9IiNmZmYwY2EiLz48Y2lyY2xlIGN4PSItMTMxMiIgY3k9IjI1NiIgcj0iMyIgZmlsbD0iIzIwMzI0MiIvPjxyZWN0IHg9Ii0xMzkyIiB5PSIyODQiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iLTEzMTIiIHk9IjMwNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTkiIGZpbGw9IiMyMjM0NDciPkl2b3J5IHRvd2VyPC90ZXh0PjxwYXRoIGQ9Ik0xMDIgMzI4TDEyOCAyMjFMMTU0IDMyOFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSIxMjgiIGN5PSIyNTYiIHI9IjE1IiBmaWxsPSIjZmZmMGNhIi8+PGNpcmNsZSBjeD0iMTI4IiBjeT0iMjU2IiByPSIzIiBmaWxsPSIjMjAzMjQyIi8+PHJlY3QgeD0iNDgiIHk9IjI4NCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIyOSIgcng9IjQiIGZpbGw9IiNmOGY3ZWQiLz48dGV4dCB4PSIxMjgiIHk9IjMwNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTkiIGZpbGw9IiMyMjM0NDciPkl2b3J5IHRvd2VyPC90ZXh0PjxwYXRoIGQ9Ik0xNTQyIDMyOEwxNTY4IDIyMUwxNTk0IDMyOFoiIGZpbGw9IiMzNDQ0NTMiLz48Y2lyY2xlIGN4PSIxNTY4IiBjeT0iMjU2IiByPSIxNSIgZmlsbD0iI2ZmZjBjYSIvPjxjaXJjbGUgY3g9IjE1NjgiIGN5PSIyNTYiIHI9IjMiIGZpbGw9IiMyMDMyNDIiLz48cmVjdCB4PSIxNDg4IiB5PSIyODQiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjkiIHJ4PSI0IiBmaWxsPSIjZjhmN2VkIi8+PHRleHQgeD0iMTU2OCIgeT0iMzA1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOSIgZmlsbD0iIzIyMzQ0NyI+SXZvcnkgdG93ZXI8L3RleHQ+PC9zdmc+"
+      },
+      "capture": {
+        "northAtPanoramaYaw": 71,
+        "panoramaYawDirection": "clockwise",
+        "reviewElevationDirection": "up"
+      },
+      "guide": {
+        "title": "Stitch-to-review registration \u2022 export contract v1",
+        "paragraphs": [
+          "The tour window uses the ORIGINAL panorama grid: heading is panorama yaw, increasing to the right from the stitched left edge (0\u00b0). Elevation is panorama latitude, positive up. 360\u00b0 and 0\u00b0 are the same ray. The window is a perspective view, not a cropped flat sheet.",
+          "Review azimuth is a compass angle in degrees, positive clockwise from north. North is located at northAtPanoramaYaw in the original panorama. panoramaYawDirection says whether increasing panorama yaw runs clockwise or counterclockwise around the compass. A counterclockwise export is a mirrored stitch, not a reversed compass.",
+          "Review elevation is in degrees from the horizon. reviewElevationDirection is the capture recorder setting: up means positive above the horizon; down means positive below it. The panorama itself always has positive latitude up. There is no roll or other calibration offset.",
+          "To register a review, start at the marked north yaw and advance the review azimuth with the stated direction. Reverse a down-positive elevation. Reduce yaw modulo 360\u00b0. Editing a hotspot reverses that same mapping; save compass azimuth in [0\u00b0,360\u00b0) and recorder elevation, not window pixels.",
+          "A tap in Move hotspot mode replaces the one review position for this scene. Save review stores its position and label independently. Changing the window, crossing the seam or reopening a tour must not move it on the original scene. Original panoramas and capture records are read-only imports. Label edits do not change position."
+        ],
+        "fieldLabels": {
+          "northAtPanoramaYaw": "North at panorama yaw (\u00b0)",
+          "panoramaYawDirection": "Increasing panorama yaw",
+          "reviewElevationDirection": "Positive review elevation"
+        },
+        "axes": [
+          "Original horizontal axis: 0\u00b0 \u2192 90\u00b0 \u2192 180\u00b0 \u2192 270\u00b0 \u2192 360\u00b0 = 0\u00b0 seam",
+          "Original vertical axis: +90\u00b0 sky; 0\u00b0 horizon; \u221290\u00b0 ground",
+          "View heading/elevation belong to the original panorama, not the compass review frame."
+        ]
+      },
+      "landmarks": [
+        {
+          "name": "Amber buoy",
+          "panoramaYaw": 132,
+          "panoramaLatitude": -9,
+          "medallionColor": "#ffcb35"
+        },
+        {
+          "name": "Blue lantern",
+          "panoramaYaw": 108,
+          "panoramaLatitude": 17,
+          "medallionColor": "#35c5f6"
+        },
+        {
+          "name": "Pink gate",
+          "panoramaYaw": 286,
+          "panoramaLatitude": 8,
+          "medallionColor": "#f396bb"
+        },
+        {
+          "name": "Ivory tower",
+          "panoramaYaw": 32,
+          "panoramaLatitude": 26,
+          "medallionColor": "#fff0ca"
+        }
+      ],
+      "initialView": {
+        "heading": 126,
+        "elevation": 0
+      },
+      "review": {
+        "azimuth": 61,
+        "elevation": -9,
+        "label": "Inspect amber buoy"
+      }
+    }
+  ]
+}

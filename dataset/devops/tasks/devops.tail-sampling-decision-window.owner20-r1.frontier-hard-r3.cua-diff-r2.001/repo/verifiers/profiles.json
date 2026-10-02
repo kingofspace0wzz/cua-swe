@@ -1,0 +1,594 @@
+{
+  "hidden": {
+    "firmware": {
+      "profileCode": "DP-H77"
+    },
+    "replay": {
+      "id": "hidden-replay-0",
+      "lagMs": 3390,
+      "offset": 2500,
+      "protocol": "grpc",
+      "service": "returns-hidden",
+      "shape": "child-error"
+    },
+    "scenarios": {
+      "delayed": [
+        {
+          "id": "hidden-delayed-checkout-0",
+          "lagMs": 2510,
+          "offset": 0,
+          "protocol": "grpc",
+          "service": "checkout-hidden",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-delayed-payments-3",
+          "lagMs": 75,
+          "offset": 240,
+          "protocol": "http",
+          "service": "payments-hidden",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-delayed-catalog-0",
+          "lagMs": 100,
+          "offset": 480,
+          "protocol": "grpc",
+          "service": "catalog-hidden",
+          "shape": "slow"
+        },
+        {
+          "id": "hidden-delayed-frontend-50",
+          "lagMs": 40,
+          "offset": 720,
+          "protocol": "http",
+          "service": "frontend-hidden",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-delayed-inventory-0",
+          "lagMs": 70,
+          "offset": 960,
+          "protocol": "grpc",
+          "service": "inventory-hidden",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-delayed-worker-0",
+          "lagMs": 2620,
+          "offset": 1200,
+          "protocol": "http",
+          "service": "worker-hidden",
+          "shape": "ordinary"
+        }
+      ],
+      "early": [
+        {
+          "id": "hidden-early-checkout-0",
+          "lagMs": 120,
+          "offset": 0,
+          "protocol": "grpc",
+          "service": "checkout-hidden",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-early-payments-0",
+          "lagMs": 75,
+          "offset": 240,
+          "protocol": "http",
+          "service": "payments-hidden",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-early-catalog-0",
+          "lagMs": 100,
+          "offset": 480,
+          "protocol": "grpc",
+          "service": "catalog-hidden",
+          "shape": "slow"
+        },
+        {
+          "id": "hidden-early-frontend-40",
+          "lagMs": 40,
+          "offset": 720,
+          "protocol": "http",
+          "service": "frontend-hidden",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-early-inventory-0",
+          "lagMs": 70,
+          "offset": 960,
+          "protocol": "grpc",
+          "service": "inventory-hidden",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-early-worker-0",
+          "lagMs": 120,
+          "offset": 1200,
+          "protocol": "http",
+          "service": "worker-hidden",
+          "shape": "ordinary"
+        }
+      ],
+      "interleaved": [
+        {
+          "id": "hidden-interleaved-checkout-0",
+          "lagMs": 2450,
+          "offset": 0,
+          "protocol": "grpc",
+          "service": "checkout-hidden",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-interleaved-payments-0",
+          "lagMs": 75,
+          "offset": 240,
+          "protocol": "http",
+          "service": "payments-hidden",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-interleaved-catalog-0",
+          "lagMs": 100,
+          "offset": 480,
+          "protocol": "grpc",
+          "service": "catalog-hidden",
+          "shape": "slow"
+        },
+        {
+          "id": "hidden-interleaved-frontend-125",
+          "lagMs": 40,
+          "offset": 720,
+          "protocol": "http",
+          "service": "frontend-hidden",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-interleaved-inventory-0",
+          "lagMs": 70,
+          "offset": 960,
+          "protocol": "grpc",
+          "service": "inventory-hidden",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-interleaved-worker-1",
+          "lagMs": 3390,
+          "offset": 1200,
+          "protocol": "http",
+          "service": "worker-hidden",
+          "shape": "ordinary"
+        }
+      ]
+    }
+  },
+  "hidden-order": {
+    "firmware": {
+      "profileCode": "DP-K58"
+    },
+    "replay": {
+      "id": "hidden-order-replay-1",
+      "lagMs": 2960,
+      "offset": 2500,
+      "protocol": "grpc",
+      "service": "returns-hidden-order",
+      "shape": "child-error"
+    },
+    "scenarios": {
+      "delayed": [
+        {
+          "id": "hidden-order-delayed-checkout-0",
+          "lagMs": 2560,
+          "offset": 30,
+          "protocol": "grpc",
+          "service": "checkout-hidden-order",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-order-delayed-inventory-0",
+          "lagMs": 70,
+          "offset": 990,
+          "protocol": "grpc",
+          "service": "inventory-hidden-order",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-order-delayed-catalog-0",
+          "lagMs": 100,
+          "offset": 510,
+          "protocol": "grpc",
+          "service": "catalog-hidden-order",
+          "shape": "slow"
+        },
+        {
+          "id": "hidden-order-delayed-payments-0",
+          "lagMs": 75,
+          "offset": 270,
+          "protocol": "http",
+          "service": "payments-hidden-order",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-order-delayed-worker-0",
+          "lagMs": 2960,
+          "offset": 1230,
+          "protocol": "http",
+          "service": "worker-hidden-order",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-order-delayed-frontend-39",
+          "lagMs": 40,
+          "offset": 750,
+          "protocol": "http",
+          "service": "frontend-hidden-order",
+          "shape": "ordinary"
+        }
+      ],
+      "early": [
+        {
+          "id": "hidden-order-early-checkout-0",
+          "lagMs": 120,
+          "offset": 30,
+          "protocol": "grpc",
+          "service": "checkout-hidden-order",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-order-early-inventory-0",
+          "lagMs": 70,
+          "offset": 990,
+          "protocol": "grpc",
+          "service": "inventory-hidden-order",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-order-early-catalog-0",
+          "lagMs": 100,
+          "offset": 510,
+          "protocol": "grpc",
+          "service": "catalog-hidden-order",
+          "shape": "slow"
+        },
+        {
+          "id": "hidden-order-early-payments-0",
+          "lagMs": 75,
+          "offset": 270,
+          "protocol": "http",
+          "service": "payments-hidden-order",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-order-early-worker-0",
+          "lagMs": 120,
+          "offset": 1230,
+          "protocol": "http",
+          "service": "worker-hidden-order",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-order-early-frontend-20",
+          "lagMs": 40,
+          "offset": 750,
+          "protocol": "http",
+          "service": "frontend-hidden-order",
+          "shape": "ordinary"
+        }
+      ],
+      "interleaved": [
+        {
+          "id": "hidden-order-interleaved-checkout-0",
+          "lagMs": 2500,
+          "offset": 30,
+          "protocol": "grpc",
+          "service": "checkout-hidden-order",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-order-interleaved-inventory-0",
+          "lagMs": 70,
+          "offset": 990,
+          "protocol": "grpc",
+          "service": "inventory-hidden-order",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-order-interleaved-catalog-0",
+          "lagMs": 100,
+          "offset": 510,
+          "protocol": "grpc",
+          "service": "catalog-hidden-order",
+          "shape": "slow"
+        },
+        {
+          "id": "hidden-order-interleaved-payments-3",
+          "lagMs": 75,
+          "offset": 270,
+          "protocol": "http",
+          "service": "payments-hidden-order",
+          "shape": "child-error"
+        },
+        {
+          "id": "hidden-order-interleaved-worker-0",
+          "lagMs": 2960,
+          "offset": 1230,
+          "protocol": "http",
+          "service": "worker-hidden-order",
+          "shape": "ordinary"
+        },
+        {
+          "id": "hidden-order-interleaved-frontend-32",
+          "lagMs": 40,
+          "offset": 750,
+          "protocol": "http",
+          "service": "frontend-hidden-order",
+          "shape": "ordinary"
+        }
+      ]
+    }
+  },
+  "probes": [
+    {
+      "id": "child-error",
+      "label": "Child Error",
+      "trace": {
+        "id": "probe-child-error-0",
+        "lagMs": 2620,
+        "offset": 0,
+        "protocol": "grpc",
+        "service": "probe-child-error",
+        "shape": "child-error"
+      }
+    },
+    {
+      "id": "slow",
+      "label": "Slow",
+      "trace": {
+        "id": "probe-slow-0",
+        "lagMs": 60,
+        "offset": 0,
+        "protocol": "grpc",
+        "service": "probe-slow",
+        "shape": "slow"
+      }
+    },
+    {
+      "id": "ordinary-keep",
+      "label": "Ordinary Keep",
+      "trace": {
+        "id": "probe-ordinary-keep-10",
+        "lagMs": 50,
+        "offset": 0,
+        "protocol": "grpc",
+        "service": "probe-ordinary-keep",
+        "shape": "ordinary"
+      }
+    },
+    {
+      "id": "ordinary-drop",
+      "label": "Ordinary Drop",
+      "trace": {
+        "id": "probe-ordinary-drop-0",
+        "lagMs": 2450,
+        "offset": 0,
+        "protocol": "grpc",
+        "service": "probe-ordinary-drop",
+        "shape": "ordinary"
+      }
+    }
+  ],
+  "runbook": {
+    "firmwareBuild": "2419",
+    "id": "RB-217",
+    "pngHeight": 620,
+    "pngSha256": "fbbb60d4db65d871300e6dd8643c0dc0e2cb13aa1cb8b76f72be3c97fde739a0",
+    "pngWidth": 1120,
+    "profiles": {
+      "DP-A19": {
+        "decisionMarginMs": 120,
+        "deliveryEnvelopeMs": 1450
+      },
+      "DP-C41": {
+        "decisionMarginMs": 120,
+        "deliveryEnvelopeMs": 2840
+      },
+      "DP-H77": {
+        "decisionMarginMs": 150,
+        "deliveryEnvelopeMs": 3970
+      },
+      "DP-K58": {
+        "decisionMarginMs": 90,
+        "deliveryEnvelopeMs": 3370
+      },
+      "DP-M63": {
+        "decisionMarginMs": 200,
+        "deliveryEnvelopeMs": 5150
+      }
+    },
+    "superseded": {
+      "firmwareBuild": "2381",
+      "profiles": {
+        "DP-C41": {
+          "decisionMarginMs": 140,
+          "deliveryEnvelopeMs": 2680
+        },
+        "DP-H77": {
+          "decisionMarginMs": 140,
+          "deliveryEnvelopeMs": 3560
+        },
+        "DP-K58": {
+          "decisionMarginMs": 140,
+          "deliveryEnvelopeMs": 3080
+        }
+      },
+      "supersededOn": "2026-03-02"
+    }
+  },
+  "visible": {
+    "firmware": {
+      "profileCode": "DP-C41"
+    },
+    "replay": {
+      "id": "visible-replay-0",
+      "lagMs": 2620,
+      "offset": 2500,
+      "protocol": "grpc",
+      "service": "refunds",
+      "shape": "child-error"
+    },
+    "scenarios": {
+      "delayed": [
+        {
+          "id": "visible-delayed-checkout-0",
+          "lagMs": 2450,
+          "offset": 0,
+          "protocol": "grpc",
+          "service": "checkout",
+          "shape": "child-error"
+        },
+        {
+          "id": "visible-delayed-payments-0",
+          "lagMs": 75,
+          "offset": 240,
+          "protocol": "http",
+          "service": "payments",
+          "shape": "child-error"
+        },
+        {
+          "id": "visible-delayed-catalog-0",
+          "lagMs": 100,
+          "offset": 480,
+          "protocol": "grpc",
+          "service": "catalog",
+          "shape": "slow"
+        },
+        {
+          "id": "visible-delayed-frontend-29",
+          "lagMs": 40,
+          "offset": 720,
+          "protocol": "http",
+          "service": "frontend",
+          "shape": "ordinary"
+        },
+        {
+          "id": "visible-delayed-inventory-4",
+          "lagMs": 70,
+          "offset": 960,
+          "protocol": "grpc",
+          "service": "inventory",
+          "shape": "ordinary"
+        },
+        {
+          "id": "visible-delayed-worker-0",
+          "lagMs": 2620,
+          "offset": 1200,
+          "protocol": "http",
+          "service": "worker",
+          "shape": "ordinary"
+        }
+      ],
+      "early": [
+        {
+          "id": "visible-early-checkout-0",
+          "lagMs": 120,
+          "offset": 0,
+          "protocol": "grpc",
+          "service": "checkout",
+          "shape": "child-error"
+        },
+        {
+          "id": "visible-early-payments-0",
+          "lagMs": 75,
+          "offset": 240,
+          "protocol": "http",
+          "service": "payments",
+          "shape": "child-error"
+        },
+        {
+          "id": "visible-early-catalog-0",
+          "lagMs": 100,
+          "offset": 480,
+          "protocol": "grpc",
+          "service": "catalog",
+          "shape": "slow"
+        },
+        {
+          "id": "visible-early-frontend-24",
+          "lagMs": 40,
+          "offset": 720,
+          "protocol": "http",
+          "service": "frontend",
+          "shape": "ordinary"
+        },
+        {
+          "id": "visible-early-inventory-3",
+          "lagMs": 70,
+          "offset": 960,
+          "protocol": "grpc",
+          "service": "inventory",
+          "shape": "ordinary"
+        },
+        {
+          "id": "visible-early-worker-0",
+          "lagMs": 120,
+          "offset": 1200,
+          "protocol": "http",
+          "service": "worker",
+          "shape": "ordinary"
+        }
+      ],
+      "interleaved": [
+        {
+          "id": "visible-interleaved-checkout-0",
+          "lagMs": 2530,
+          "offset": 0,
+          "protocol": "grpc",
+          "service": "checkout",
+          "shape": "child-error"
+        },
+        {
+          "id": "visible-interleaved-payments-0",
+          "lagMs": 75,
+          "offset": 240,
+          "protocol": "http",
+          "service": "payments",
+          "shape": "child-error"
+        },
+        {
+          "id": "visible-interleaved-catalog-0",
+          "lagMs": 100,
+          "offset": 480,
+          "protocol": "grpc",
+          "service": "catalog",
+          "shape": "slow"
+        },
+        {
+          "id": "visible-interleaved-frontend-190",
+          "lagMs": 40,
+          "offset": 720,
+          "protocol": "http",
+          "service": "frontend",
+          "shape": "ordinary"
+        },
+        {
+          "id": "visible-interleaved-inventory-0",
+          "lagMs": 70,
+          "offset": 960,
+          "protocol": "grpc",
+          "service": "inventory",
+          "shape": "ordinary"
+        },
+        {
+          "id": "visible-interleaved-worker-0",
+          "lagMs": 2620,
+          "offset": 1200,
+          "protocol": "http",
+          "service": "worker",
+          "shape": "ordinary"
+        }
+      ]
+    }
+  }
+}

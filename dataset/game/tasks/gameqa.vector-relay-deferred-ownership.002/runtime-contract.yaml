@@ -1,0 +1,64 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: python3 env/health_service.py --port "{service_port}"
+  health_path: /health
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} npm run dev -- --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}/?challenge=relay-circuit
+task_id: gameqa.vector-relay-deferred-ownership.002
+runtime:
+  launch: npm run dev -- --host 127.0.0.1 --port 51320
+  start_url: http://127.0.0.1:51320/?challenge=relay-circuit
+  viewport: 1280x720
+  state_bridge: window.gameAPI
+  deterministic_seed: 73
+  level: 3
+  challenge: Relay Circuit
+  reset_semantics: 'window.gameAPI.reset({seed: 73, level: 3})'
+browser_observation:
+  mode: screenshot_only_for_agent
+  protected_steps:
+    - reset the challenge and capture the initial attached orb
+    - launch and wait for the north relay to become visibly yellow
+    - wait for the first replacement to dock, then relaunch without steering
+    - capture the visible return bounce and the final docked replacement
+    - wait for the delayed result on the unsteered route
+    - repeat from reset, but move the final docked replacement left before waiting
+  decisive_paths:
+    - relay.phase
+    - relay.contacts
+    - relay.commits
+    - relay.pending
+    - relay.dropped
+    - orb.attached
+    - orb.attachReason
+    - ownership.port
+    - metrics.losses
+    - metrics.bounces
+    - score
+    - terminal.outcome
+  visible_decisive_evidence:
+    - the armed relay has a persistent yellow glow
+    - the return orb visibly reverses direction at the relay
+    - a final replacement visibly docks before the delayed result
+    - a correct clear removes the glow and shows CIRCUIT COMPLETE with +500
+source_noninferability:
+  forbidden_agent_source_literals:
+    - protected-shift-route-verdict
+    - expected-owner-transfer-repair
+    - predecessor-epoch-negative-verdict
+  requirements:
+    - no source comment or identifier states the broken invariant
+    - no benchmark-only activation branch exists
+    - source presents contact, delayed settlement, attach, movement, and reset repair sites
+    - the symptom does not reveal the protected dock-movement discriminator
+bridge_assumptions:
+  - gameAPI.getState is read-only and does not advance simulation
+  - gameAPI.reset uses the same normal challenge reset as the user-facing runtime
+  - keyboard Space and ArrowLeft events use normal application input handlers
+  - verifier timing is state-bounded rather than frame-number-bounded
+custody:
+  protected_verifier: repo/verifiers/browser_check.py
+  evaluator_fixture: none
+  expected_patch_base: repo baseline in this bundle

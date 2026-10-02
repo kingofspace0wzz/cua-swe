@@ -1,0 +1,15 @@
+diff --git a/src/pasteFlow.js b/src/pasteFlow.js
+--- a/src/pasteFlow.js
++++ b/src/pasteFlow.js
+@@ -74,5 +74,10 @@ export function settleAfterPaste(quill, ctx) {
+ }
+ 
+ function selectSettleStrategy(ctx) {
+-  return 'raw';
++  // Bring the update into view when it is one the reader is meant to see: their
++  // own paste, or a paste from a collaborator who is reading here with them.
++  if (ctx.actorKind === 'self') return 'reveal';
++  if (ctx.actorFocus === 'here') return 'reveal';
++  // Otherwise a collaborator is working away; keep the reader's place fixed.
++  return 'reanchor';
+ }

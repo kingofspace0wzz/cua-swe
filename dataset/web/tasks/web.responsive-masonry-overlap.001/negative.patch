@@ -1,0 +1,11 @@
+diff --git a/src/styles/dashboard.css b/src/styles/dashboard.css
+--- a/src/styles/dashboard.css
++++ b/src/styles/dashboard.css
+@@ -143,6 +143,7 @@ button:focus-visible {
+   border: 2px solid #0789c1;
+   border-radius: 3px;
+   background: #d9f3ff;
+   color: #074b67;
++  z-index: 2;
+   padding: 10px 12px;
+ }

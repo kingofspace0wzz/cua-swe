@@ -1,0 +1,13 @@
+{
+  "name": "notebook-shiftclick-cellselect-demo",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Minimal notebook surface reproducing jupyterlab/jupyterlab#19243: Shift-click cell range selection after selecting text in a code editor. The mousedown selection handler is authored product source; the notebook document (cell types and output DOM, including shadow-DOM widget outputs) is delivered only by the evaluator-owned scene feed.",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.23.1"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "task_digest": "d301a260d4eb70d75b0dae82708d8a0edb909552620fb055a68b83b7a2ce3da2",
+  "baseline_digest": "9d4d2c0614d54661aede4a096608441b8bb6e641402585f1869d789d0302f9fe",
+  "changes": [
+    {
+      "path": "integration.mjs",
+      "before": {
+        "sha256": "2818437123a05012e19769ee68f9614c0b838798732297f44ae1921399e2a6f2",
+        "executable": false
+      },
+      "after": {
+        "sha256": "8245f40b14ead2112201c9063cdcfd0a1ee9d4c89c37345830a7c208c64e8033",
+        "executable": false
+      },
+      "content_b64": "Ly8gTmFpdmUgbWV0YWRhdGEtb25seSBpbnRlcnByZXRhdGlvbjogZXF1YWxseSBzcGFjZWQgam9icywgbm8gcGVyY2VpdmVkIGFycm93cy4KZXhwb3J0IGZ1bmN0aW9uIGxvYWQocmVjb3JkKXtyZXR1cm4gcmVjb3JkLmpvYnMubWFwKChqLGspPT4oe2lkOmouaWQsc3RhcnQ6ayoyLGR1cmF0aW9uOjIsbGlua3M6az9be2Zyb206cmVjb3JkLmpvYnNbay0xXS5pZCx0eXBlOiJGUyIsbGFnOjB9XTpbXX0pKTt9Cg=="
+    }
+  ]
+}

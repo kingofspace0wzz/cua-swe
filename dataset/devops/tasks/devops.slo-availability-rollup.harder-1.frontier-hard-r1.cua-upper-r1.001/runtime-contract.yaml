@@ -1,0 +1,127 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: PORT={service_port} node env/service.mjs
+  implementation: repo/verifiers/slo_service.mjs
+  fixture: repo/verifiers/profiles.json
+  health_path: /v1/catalog
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1
+    --port {app_port}
+  start_url: http://127.0.0.1:4455
+ports:
+  declared_defaults:
+    service: 4955
+    application: 4455
+grading_runtime:
+  variants:
+  - visible
+  - hidden
+  oracle: independent-regional-availability-and-budget-plus-window-scoped-deployment-authority-and-complete-event-behavior
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - alternates/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - Open Reporting agreement and compare regional reporting shares with operational event totals
+  - Inspect region breakdowns across opposite traffic shapes and both windows
+  - Open Rollup reference and correlate the agreement's equal, volume-independent regional shares
+    with the neutral parameter menu to separate the parity weighting from the volume-weighted
+    regional decoy, event pooling, slice-total, delivery, and equal-mean policies
+  - Read the Rollup deployments ledger's publication records, per-scope coverage cells, and
+    compiled rollup chips, and note that the compiled chips collapse to the equal slice mean while
+    the submitted revision's chip keeps its delivery weight
+  - Switch between the two rolling windows and compare the three Rollup views, whose prior
+    publication tag changes with the window, against the deployment records to intersect the
+    governing epoch per aggregation window
+  - Replay the unseen slice and compare the frozen archived baseline with the live prior and
+    submitted views; inspect slices, detail, filters, probes and reset
+  decisive_paths:
+  - scenarioId
+  - windowId
+  - summary.availability
+  - summary.objective
+  - summary.verdict
+  - summary.budgetConsumed
+  - summary.budgetRemaining
+  - totals.good
+  - totals.bad
+  - totals.total
+  - totals.allowedFailures
+  - slice.availability
+  - slice.verdict
+  - breakdowns
+  - probeResult.verdict
+  - replayCount
+  - catalog.rollupReference (visible through expandable Rollup reference; neutral parameter menu
+    that never restates the agreement)
+  - snapshot.reportingAgreement (runtime-fed Reporting agreement; states the authoritative basis
+    without naming any engine mode or weight parameter)
+  - snapshot.rollout.ledger (runtime-fed deployment records with publication captions and
+    per-scope compiled rollup chips; never marks any record authoritative for a window)
+  - snapshot.rollout.views (per-window archived, prior-publication, and submitted comparison
+    views whose epoch tags change with the active window)
+  correlation_requirement: >-
+    No runtime surface is complete alone, and both the policy and its placement must be
+    intersected. The Reporting agreement states the authoritative regional-parity, volume-
+    independent basis but exposes no engine parameter names; the Rollup reference lists six
+    supported parameter combinations without marking any authoritative; the deployment ledger
+    dates four schedule revisions and shows per-scope coverage without naming which publication
+    governs which aggregation window; and the three comparison views tag the archived, prior, and
+    submitted epochs per window without describing the headline. Selecting the durable repair
+    requires (a) correlating the agreement's equal allocations against unequal regional volumes in
+    the breakdowns and mapping that semantics onto the reference's parameter vocabulary, and (b)
+    intersecting the publication dates and scope coverage with the per-window prior-publication
+    tags and the archived/submitted view slots to identify the governing epoch of each aggregation
+    window; the two authoritative window entries live in different schedule revisions.
+source_noninferability:
+  forbidden_agent_source_literals:
+  - OpenSLO/OpenSLO
+  - e1647318605fea0e5085436313fbaa6ec1f700ce
+  - slo_service.mjs
+  - profiles.json
+  - v-d30-checkout
+  - h-i30-reserve
+  - probe-dilution
+  - na-central
+  - ap-south
+  - region_equal
+  - region_traffic
+  - Regional portfolio agreement
+  - One equal share per region
+  - Grouped parity
+  - Regional traffic weighting
+  - Event-pooled
+  - h-i30-reserve
+  - '2025-09-30'
+  - '2025-07-18'
+  - '2025-03-22'
+  - '2024-11-08'
+  - '2025-09-14'
+  - review pending
+  - Prior publication for this window
+  - Archived baseline
+  - Submitted revision preview
+  - authorities
+  - priors
+  - Standing · 30-day rolling
+  - Review · 7-day rolling

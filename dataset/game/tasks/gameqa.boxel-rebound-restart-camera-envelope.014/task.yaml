@@ -1,0 +1,60 @@
+id: gameqa.boxel-rebound-restart-camera-envelope.014
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.boxel-rebound-restart-camera-envelope.014/repo
+  ref: afcbe4ba78bc479353d0d635f6ee41e317d84762
+instruction: >-
+  In Boxel Rebound Level 50, a normal restart from the moving lift can make
+  the brief faded checkpoint echo disagree with where the ride resumes, and
+  the course view no longer feels continuous. Fix this restart regression
+  while preserving normal play and completion.
+setup:
+  install:
+    - npm run build
+  reset: []
+  launch:
+    - python3 server.py --host 127.0.0.1 --port 51700
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:51700/?level=50
+  viewport_or_device: desktop-1280x720
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 900
+  max_steps: 180
+  max_gui_actions: 120
+  max_test_runs: 20
+verifiers:
+  build:
+    - npm run build
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - >-
+      "${CUA_SWE_PYTHON:-python3}" verifiers/browser_check.py
+      --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:51700/?level=50}"
+      --evidence-dir verifier-artifacts
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: 04_boxel-rebound
+  state_api: window.gameAPI
+  seed: 50
+  level: 50
+schema_version: 1

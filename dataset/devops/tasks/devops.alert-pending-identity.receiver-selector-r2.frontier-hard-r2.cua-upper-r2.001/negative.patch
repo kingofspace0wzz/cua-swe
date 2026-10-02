@@ -1,0 +1,11 @@
+--- a/src/rules/compileRule.js
++++ b/src/rules/compileRule.js
+@@ -9,7 +9,7 @@
+   return {
+     name: rule.name,
+     query: compileQuery(rule.query),
+-    forSeconds: rule.forSeconds,
++    forSeconds: 0,
+     labels,
+     annotations,
+   };

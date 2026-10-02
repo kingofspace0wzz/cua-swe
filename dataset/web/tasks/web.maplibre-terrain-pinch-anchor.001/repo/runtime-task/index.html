@@ -1,0 +1,99 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; }
+  #map { width: 200px; height: 200px; }
+</style>
+<div id="map"></div>
+<pre id="result">pending</pre>
+<script type="module">
+import {Map as MapLibreMap, LngLat, MercatorCoordinate} from '/dist/maplibre-gl-dev.mjs';
+
+const result = document.querySelector('#result');
+const map = new MapLibreMap({
+  container: 'map',
+  style: {version: 8, sources: {}, layers: []},
+  interactive: true,
+  center: [7.5, 45.9],
+  zoom: 11,
+  pitch: 60,
+  bearing: 0,
+  attributionControl: false,
+});
+
+const once = (name) => new Promise((resolve) => map.once(name, resolve));
+await once('load');
+map.touchZoomRotate.disableRotation();
+map.touchPitch.disable();
+map._handlers._handlersById.tapZoom.disable();
+
+const anchor = new LngLat(7.494, 45.904);
+const anchorCoordinate = MercatorCoordinate.fromLngLat(anchor);
+map.terrain = {
+  pointCoordinate: () => new MercatorCoordinate(anchorCoordinate.x, anchorCoordinate.y, 1000),
+  getElevationForLngLatZoom: () => 1000,
+  getElevationForLngLat: () => 1000,
+  getMinTileElevationForLngLatZoom: () => 0,
+  resetElevationCache: () => {},
+  getFramebuffer: () => ({}),
+  getCoordsTexture: () => ({}),
+  depthAtPoint: () => 0.9,
+  tileManager: {
+    update: () => {},
+    getRenderableTiles: () => [],
+    anyTilesAfterTime: () => false,
+  },
+};
+
+const canvas = map.getCanvas();
+const frame = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+const touch = (type, positions) => {
+  const touches = positions.map((position, index) => new Touch({
+    identifier: index + 1,
+    target: canvas,
+    clientX: position.x,
+    clientY: position.y,
+    pageX: position.x,
+    pageY: position.y,
+  }));
+  canvas.dispatchEvent(new TouchEvent(type, {
+    bubbles: true,
+    cancelable: true,
+    touches,
+    targetTouches: touches,
+    changedTouches: touches,
+  }));
+};
+const pinch = (mid, spread) => [
+  {x: mid.x, y: mid.y - spread},
+  {x: mid.x, y: mid.y + spread},
+];
+
+const start = map.project(anchor);
+let mid = {x: start.x, y: start.y};
+let spread = 25;
+touch('touchstart', pinch(mid, spread));
+await frame();
+for (let step = 0; step < 3; step += 1) {
+  mid = {x: mid.x + 12, y: mid.y + 8};
+  spread += 8;
+  touch('touchmove', pinch(mid, spread));
+  await frame();
+}
+const projected = map.project(anchor);
+const slip = Math.hypot(projected.x - mid.x, projected.y - mid.y);
+touch('touchend', []);
+await frame();
+
+const evidence = {
+  start: {x: start.x, y: start.y},
+  expected_mid: mid,
+  projected_anchor: {x: projected.x, y: projected.y},
+  slip_px: slip,
+  zoom: map.getZoom(),
+  center: map.getCenter().toArray(),
+  passed: slip < 0.5,
+};
+result.textContent = JSON.stringify(evidence, null, 2);
+window.__terrainGestureEvidence = evidence;
+</script>

@@ -1,0 +1,51 @@
+id: devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r1.001
+track: web_frontend
+benchmark_domain: devops-observability
+type: functional_ui
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: dataset/devops/tasks/devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r1.001/repo
+  ref: frontier-hard-r1
+instruction: The operations console shows sustained pressure, but the expected alert
+  never reaches the on-call receiver and the delivery journal keeps reporting divergence.
+  Investigate the live evaluation states and repair the durable rule adapter. Preserve
+  the alert threshold and hold intent, healthy recoveries, independent service and
+  instance identity, receiver routing and the delivery journal, descriptive detail,
+  and the selection, reset, and replay controls.
+setup:
+  install:
+  - npm run build
+  launch:
+  - node server.mjs --host 127.0.0.1 --port 55100
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:55100
+  viewport_or_device: desktop-1280x720
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 115
+  max_gui_actions: 160
+  max_test_runs: 26
+verifiers:
+  build:
+  - ${CUA_SWE_PYTHON:-python3} -B verifiers/build_check.py
+  unit: []
+  ui:
+  - ${CUA_SWE_PYTHON:-${CUA_SWE_MOBILEGYM_PYTHON:-python3}} verifiers/browser_check.py
+  visual: []
+  state: []
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: false
+schema_version: 2

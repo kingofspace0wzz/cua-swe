@@ -1,0 +1,140 @@
+{
+  "task_id": "mobile.synthetic.external-packaging-proof.001",
+  "revision": "001",
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "public_files": {
+    "LICENSE": {
+      "path": "public/LICENSE",
+      "sha256": "cf4b5c666ab8636466808f43be681f98e3c02afeea3e1078ae553fb6abf41bdf"
+    },
+    "README.md": {
+      "path": "public/README.md",
+      "sha256": "256f257509e49a55eaf598c7b0b339c54a415c27a2a125993e3bdf97f57ef11e"
+    },
+    "app.js": {
+      "path": "public/app.js",
+      "sha256": "dd4767972517ebabdd1fe70bc36a0aee914c78142e08b4c88b1c5b6e87fd8546"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "dcb765ce68e37c4b651615e88cffe6abcc99fe36768215e997732a9a47e97968"
+    },
+    "geometry.js": {
+      "path": "public/geometry.js",
+      "sha256": "5c58b694a2c526634ac080c8722f34746472bebe857b5ef52d20c1dbcdca9d06"
+    },
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "25f7c060460a087e4c075c78fc9f6df5959435c83310ade1eb7a5758e31832fb"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "601d8c6fb2ae1762bd6e2a20731e5e356031119aeb5a3e5ece45159c7291c560"
+    }
+  },
+  "editable": [
+    "LICENSE",
+    "README.md",
+    "app.js",
+    "geometry.js",
+    "index.html",
+    "style.css"
+  ],
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "98391c31a7f55fb6445182bc57915b9aa23838289e271dcc13ae53086765a9bb"
+  },
+  "scratch": [
+    "dist/"
+  ],
+  "dependencies": [],
+  "expected_assertions": [
+    "flat_placement_orientation",
+    "upright_panel_placement",
+    "inverse_artwork_edit",
+    "note_edit_preserves_marker",
+    "proof_panel_isolation",
+    "reload_persistence"
+  ],
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "native": {
+      "schema": 1,
+      "assets": [],
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "index.html",
+          "app.js",
+          "geometry.js",
+          "style.css"
+        ],
+        "timeout_seconds": 20
+      },
+      "scene": {
+        "path": "/",
+        "frame_paths": [],
+        "viewport": {
+          "width": 400,
+          "height": 800
+        },
+        "device_scale_factor": 1,
+        "locale": "en-US",
+        "timezone": "UTC",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 30000
+      },
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "4a110491582f6fd90c2786a05309a62faa9b480b710ec650b975f3dab393d3cb"
+      },
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "d1fac3169fcb17c1a9c2b0a6c8042815544f07cdb45d86d29b22bdfa2f293f6f"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "23ef0e414b35c9937f3d7a5d4a86a760794a28517b54ce89d7b524f84d447c5d"
+      }
+    }
+  },
+  "controls": {
+    "gold": {
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "348d59163125455838a23d395c8f41eef2aec57dedcc710206c622a92f18f677"
+      },
+      "correct": true
+    },
+    "alternative": {
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "bb9b6f176f49b25c9b4cf9f44bf7ec659e733358e1e2b52b1cecc0a708af1a58"
+      },
+      "correct": true
+    },
+    "partial": {
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "8ca57eb6aeced10dc85d71e16574d1a0211c65c76aee790bbf781c75c3807f34"
+      },
+      "correct": false
+    },
+    "artifact-guess": {
+      "patch": {
+        "path": "controls/artifact-guess.json",
+        "sha256": "41e82b8742f561e8f33d0a23ec7e923bd291200e43ecea7b7b28dec70b9ea982"
+      },
+      "correct": false
+    }
+  }
+}

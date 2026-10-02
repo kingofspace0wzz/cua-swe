@@ -1,0 +1,24 @@
+schema_version: 1
+task_id: devops.rate-before-aggregation.harder-1.frontier-hard-r1.cua-upper-r1.001
+required_observations:
+- compare real burst shape with restart-aligned rectangular artifacts
+- compare all counter panels in all three scenarios in the first observation window
+- switch to the paired later observation window and compare the same scenarios and
+  panels on the other side of the recorded publication transition
+- inspect restart, burst, and publication-transition markers
+- compare per-window target reset evidence with service-level chart behavior
+- read the collection lineage record for both paired windows and relate each window's
+  counter publication to the reset markers around the transition
+- open Query definitions and relate each deployed rule's per-window runtime input
+  lineage (publisher, per-series identity, collection cadence) to the lost
+  independent target resets on each side of the transition
+- return to the earlier window and confirm the paired state reproduces exactly
+grounded_success_requires:
+- screenshots_observed
+- gui_actions_recorded
+- decisive_observation_linked_to_repair
+- protected_verifier_passed
+invalid_if:
+- service contract was read through shell or direct HTTP
+- protected files were present in the agent workspace
+- DOM or accessibility-tree state replaced screenshot observation

@@ -1,0 +1,79 @@
+schema_version: 1
+task_id: gameqa.captain-callisto-goal-transition.005
+trajectory_id: captain-callisto-level6-held-boost-goal-transition-v1
+seed: 47
+level: 6
+candidate:
+  family: goal-transition
+  family_label: Goal transition failure
+  difficulty: l5
+  variant: 5
+  priority: 19
+  status: quarantined_construction
+  original_target: src/index.js:update
+  original_mechanism: clear terminalEvent when jetpack remains held across the success frame
+  revised_mechanism: >-
+    a staged goal transition spans flag eligibility, menu presentation, and
+    input-intent ownership; active input frames are mistaken for intent changes
+    while eligibility is incorrectly rechecked after the presentation begins,
+    and releasing the gameplay-held keys can immediately continue past success
+  expected_divergence: >-
+    the native cleared-level presentation becomes visible, then the transition
+    is cancelled and authoritative state returns to playing
+execution_schema_mapping:
+  candidate_difficulty: l5
+  task_bundle_difficulty: l4
+  reason: TaskBundle schema supports l1 through l4
+trigger:
+  shape: enter the transporter while holding forward+jetpack after the final stair coin
+  actions:
+    - action: key_hold
+      keys: [D]
+      stop_condition: metrics.coins == 2
+    - action: key_hold
+      keys: [D]
+      stop_condition: metrics.coins == 3
+    - action: key_hold
+      keys: [D, Shift]
+      stop_condition: debug.level_completion != null
+    - action: key_hold
+      keys: [D, Shift]
+      stop_condition: terminal.isTerminal or debug.level_completion == null
+  causal_checkpoint: >-
+    all three stair coins are credited before Shift joins the already-held
+    forward input and the transporter opens the visible success presentation
+pre_trigger_equivalence:
+  status: pending_remote_chromium
+  fields:
+    - metrics.coins
+    - metrics.remaining_coins
+    - game_state.player.alive
+    - game_state.player.fuel
+    - terminal.isTerminal
+post_trigger_divergence:
+  status: pending_remote_chromium
+  mutant_expected:
+    visible_success: true
+    final_terminal: false
+    final_game_state: 4
+  gold_expected:
+    visible_success: true
+    final_terminal: true
+    final_game_state: 5
+  negative_expected:
+    visible_success: true
+    terminal_event: success
+    final_game_state: 3
+    failure: gameplay-held key release immediately continues past the clear screen
+required_evidence:
+  clean_mutant_pre_trigger_equivalence: pending_remote_chromium
+  post_trigger_observable_divergence: pending_remote_chromium
+  no_op_failure: pending_remote_certification
+  gold_pass: pending_remote_certification
+  negative_failure: pending_remote_certification
+  code_only_failure: not_run_protected
+  cua_reproducible_success: not_run_protected
+construction_replay:
+  chromium_required: true
+  machine_specific_configuration_included: false
+status: confirmed_by_matched_evaluation

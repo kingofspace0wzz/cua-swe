@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SLO Ledger Review</title>
+    <link rel="stylesheet" href="/src/styles.css">
+  </head>
+  <body>
+    <main data-testid="app" data-ready="no">
+      <header><div><span class="eyebrow">Reliability / SLO</span><h1>SLO Ledger Review</h1></div><p id="error"></p></header>
+      <section class="controls">
+        <label>Scenario<select id="scenario" data-testid="scenario"></select></label>
+        <label>Window<select id="window" data-testid="window"></select></label>
+        <label>Slice verdict<select id="verdict-filter" data-testid="verdict-filter"><option value="all">All slices</option><option value="met">Meets objective</option><option value="missed">Misses objective</option></select></label>
+        <label>Probe<select id="probe" data-testid="probe"></select></label>
+        <button id="run-probe" data-testid="run-probe">Run probe</button>
+        <button id="replay" data-testid="replay">Replay unseen slice</button>
+      </section>
+      <section id="summary" class="summary"></section>
+      <section class="grid rollout">
+        <article><h2>Rollup deployments</h2><div id="deployments" data-testid="deployments"><p>Awaiting the rollup deployment schedule.</p></div></article>
+        <article><h2>Rollup views</h2><div id="rollout-views" data-testid="rollout-views"></div></article>
+      </section>
+      <section class="grid">
+        <article><h2>Pooled event totals</h2><div id="totals"></div><details id="reporting-agreement"><summary>Reporting agreement</summary><div id="agreement-content"></div></details></article>
+        <article><h2>Rollup diagnostics</h2><div id="diagnostics"></div><div id="probe-result" data-testid="probe-result"></div><details id="rollup-reference"><summary>Rollup reference</summary><div id="rollup-options"></div></details></article>
+      </section>
+      <section class="wide"><h2>Endpoint and region slices</h2><div id="slices"></div></section>
+      <section class="grid lower">
+        <article><h2>Selected slice</h2><div id="detail" data-testid="detail"><p>Select a slice.</p></div></article>
+        <article><h2>Protected breakdowns</h2><div id="breakdowns"></div></article>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

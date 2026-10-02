@@ -1,0 +1,197 @@
+{
+  "task_id": "mobile.synthetic.external-kinetic-gear-plan.001",
+  "revision": "001",
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "public_files": {
+    "LICENSE": {
+      "path": "public/LICENSE",
+      "sha256": "3d6fdab043dd2bb74ef6e27a78a070541373f370a5a6da3fb0facd85a644fe05"
+    },
+    "app.mjs": {
+      "path": "public/app.mjs",
+      "sha256": "9691a75cc97c7570fb661499977c800e5a7999961f88c2c3e5696e293d226b38"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "cb95715c1bf04476f5e3ce90044772b70ab1b2e07dd662bb8f2398840479d9e5"
+    },
+    "help.json": {
+      "path": "public/help.json",
+      "sha256": "5a21825b5d0238147c0af6606440203c46097a8623d7a2a23f6e784c5af69d03"
+    },
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "f04a1223d430c88b3d74ea7b43e72e20fba07631a392f0a4365c2656f5723a74"
+    },
+    "model.mjs": {
+      "path": "public/model.mjs",
+      "sha256": "cfba10c1d924bbdac80d43428de6d8e95b8c980b6f394aa5f0e926e68a230fa1"
+    },
+    "plan.mjs": {
+      "path": "public/plan.mjs",
+      "sha256": "2eaddae384622f3bcc63585bb130584cb1dbeb44cc3ea03e219a9d3307321803"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "e28f3140257c27e593b13064843f5b9abb0bd0491f07066602fcfaa80e39a7b3"
+    },
+    "viewer.mjs": {
+      "path": "public/viewer.mjs",
+      "sha256": "3b960fa09548c867a7b9741444900198ac6e0ac749dc1a8935028bd8e0c6b460"
+    }
+  },
+  "editable": [
+    "LICENSE",
+    "app.mjs",
+    "help.json",
+    "index.html",
+    "model.mjs",
+    "plan.mjs",
+    "style.css",
+    "viewer.mjs"
+  ],
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "e4f05657a11d35125508d4626e3a81d064c40f725614b4e0dc6c6daac0c7b755"
+  },
+  "scratch": [
+    "dist/"
+  ],
+  "dependencies": [],
+  "expected_assertions": [
+    "complete_both_editions",
+    "driver_reverse_step_motion",
+    "phase_draft_cancel",
+    "saved_phases_undo_reload",
+    "edition_reset_independence",
+    "originals_preserved_accessible"
+  ],
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "timeout_seconds": 90,
+    "native": {
+      "schema": 1,
+      "assets": [],
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "index.html",
+          "app.mjs",
+          "model.mjs",
+          "plan.mjs",
+          "viewer.mjs",
+          "style.css",
+          "help.json",
+          "LICENSE"
+        ],
+        "timeout_seconds": 20
+      },
+      "scene": {
+        "path": "/",
+        "frame_paths": [],
+        "viewport": {
+          "width": 400,
+          "height": 800
+        },
+        "device_scale_factor": 1,
+        "locale": "en-US",
+        "timezone": "UTC",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 30000
+      },
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "72f23c99ee27126a9b23cd59e10df46c7ccd5489a32ac77c048b605c72f41b16"
+      },
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "74a81a881fc60a22fed8c23ee1c78637352e2826280a0ec256fa1c6710e60147"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "9151a0e12cd6b370791d32d4c0a55c08568f516b7b96c9a96146881a13428bd4"
+      }
+    }
+  },
+  "controls": {
+    "gold": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "532866cfe0561f90b03e700d7eff50a9a89aa05029330ba30038a57827b427f0"
+      }
+    },
+    "alternative": {
+      "correct": true,
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "a2e0f7457b41f79825f93cddfbde0e86b2bdacc00f4fc12d9f9e47a6519def84"
+      }
+    },
+    "partial": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "91b602a2ee720e12367acb6135a7b673b949dcf74220c29ce2fbce7d90a3f4a2"
+      }
+    },
+    "idler_removed": {
+      "correct": false,
+      "patch": {
+        "path": "controls/idler_removed.json",
+        "sha256": "99d4d6ad3c076575f9fa39ed7571ba4bc8889fd34013a92fb3dc1c1286851e91"
+      }
+    },
+    "belt_confusion": {
+      "correct": false,
+      "patch": {
+        "path": "controls/belt_confusion.json",
+        "sha256": "c98a0968a7581105b396cca74c0e44fa29e199471a05240cb159a0c0c4fee86c"
+      }
+    },
+    "wrong_mesh_sign": {
+      "correct": false,
+      "patch": {
+        "path": "controls/wrong_mesh_sign.json",
+        "sha256": "1d363eca10f6588cfea9b8b58c20e55b00adfcd11d879d84afbe159dcd4588d7"
+      }
+    },
+    "first_edition_only": {
+      "correct": false,
+      "patch": {
+        "path": "controls/first_edition_only.json",
+        "sha256": "d5e2a98a4761c9d9abbe3681629a3d2d618efaa5247d91baf62db679341f6439"
+      }
+    },
+    "incomplete_saved_phases": {
+      "correct": false,
+      "patch": {
+        "path": "controls/incomplete_saved_phases.json",
+        "sha256": "94f13e03aab50bf4ca6b50a7cdc11c596f1a7bf27454f9fe500e435221771f42"
+      }
+    },
+    "static_report": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static_report.json",
+        "sha256": "67289e04411d2d7d7c12fc32bb4d9a47bed1a771970cf43087ec0a25d97c7232"
+      }
+    },
+    "artifact_hardcode": {
+      "correct": false,
+      "patch": {
+        "path": "controls/artifact_hardcode.json",
+        "sha256": "2f91885783b852c8c71afee3adf8be7d0b6acf5671018a902a542408336d8083"
+      }
+    }
+  }
+}

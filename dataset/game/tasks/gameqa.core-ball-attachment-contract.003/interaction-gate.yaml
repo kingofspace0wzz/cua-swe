@@ -1,0 +1,116 @@
+schema_version: 1
+task_id: gameqa.core-ball-attachment-contract.003
+trajectory_id: core-ball-post-commit-queue-contract-v3
+seed: 808
+level: 1
+interaction_accessibility:
+  opening_flight_ms: 20000
+  ordinary_coordinate_calls_required: 2
+  visible_cues:
+    - the active pin and launch trail remain visible throughout the queue window
+    - the panel changes from TAP TO QUEUE to NEXT PIN READY
+    - a gold queue marker labeled NEXT appears at the launcher
+  predecessor_observation: >-
+    Revision 002's failed CUA trajectory reported that protected GUI calls were
+    serialized long enough to miss a 600 ms flight. Its recorded action starts
+    were commonly six to fifteen seconds apart, so the revised window remains
+    actionable without compound or privileged input.
+trigger:
+  actions:
+    - action: reset
+      manual_fixed_step: true
+    - action: start_round
+    - action: tap_playfield
+      at_game_time_ms: 0
+    - action: tap_playfield
+      at_game_time_ms: 7000
+      visible_result: NEXT PIN READY
+    - action: state_checkpoint
+      at_game_time_ms: 19000
+      evidence: long visible first flight with waiting shot retained
+    - action: state_checkpoint
+      at_game_time_ms: 20000
+      evidence: first attachment, pace transition, and waiting-shot promotion
+    - action: state_checkpoint
+      at_game_time_ms: 20700
+      evidence: follow-up visibly approaching an open gap
+    - action: state_checkpoint
+      at_game_time_ms: 20780
+      evidence: post-contact transaction while the pace change remains active
+  causal_checkpoint: >-
+    ShotController publishes the first arrival at 20000 ms. The broken runtime
+    promotes the waiting shot before Game commits the attachment and begins the
+    pace change, so the follow-up receives the cruise launch profile. Gold
+    commits gameplay state first and promotes from the resulting launch
+    contract.
+pre_trigger_equivalence:
+  status: required
+  fields:
+    - round.phase
+    - shots.active.progress
+    - shots.waiting
+    - metrics.inputs
+    - metrics.attachments
+    - motion.angle
+    - occupancy.pins
+  through_game_time_ms: 19000
+post_trigger_divergence:
+  gold: >-
+    The first arrival is published, collision and attachment commit atomically,
+    the pace state is committed, and only then is the waiting shot promoted.
+    Motion splits again at the follow-up's event-time contact; the open-gap
+    attachment persists through the remainder of the pace change.
+  baseline: >-
+    Promotion uses the pre-commit cruise profile and retains the request-time
+    angle plan. The follow-up visibly approaches the open contact line, then
+    settles near the occupied 180-degree spoke and fails at 20780 ms.
+  negative: >-
+    The exact revision 002 success splits at impact and samples the live core,
+    but still promotes before commit. Its cruise-profile follow-up reaches
+    contact at 20770 ms with a local angle inside clearance of the 359-degree
+    spoke, so it fails for the intended post-commit promotion reason.
+completion:
+  actions:
+    - wait_until_game_time_ms: 22000
+    - tap_and_advance_ms: 600
+    - wait_ms: 1000
+    - tap_and_advance_ms: 600
+  assertions:
+    - round.phase is passed
+    - metrics.completed is one
+    - occupancy persists through the pace transition
+    - restart restores initial occupancy and pace
+transaction_probe:
+  actions:
+    - restart
+    - start_round
+    - wait_until_game_time_ms: 2500
+    - tap_playfield
+    - advance_ms: 20000
+  assertions:
+    - the intentional collision fails the round
+    - the rejected candidate is not added to occupancy.pins
+    - restart remains normal afterward
+required_evidence:
+  chromium_screenshots:
+    - verifier-artifacts/initial.png
+    - verifier-artifacts/queue-window.png
+    - verifier-artifacts/pre-first-contact.png
+    - verifier-artifacts/pace-transition.png
+    - verifier-artifacts/second-approach.png
+    - verifier-artifacts/post-trigger.png
+    - verifier-artifacts/post-transition.png
+    - verifier-artifacts/third-approach.png
+    - verifier-artifacts/final.png
+    - verifier-artifacts/rejected-collision.png
+    - verifier-artifacts/restart.png
+  state_evidence: verifier-artifacts/state-replay.json
+  module_state_evidence: verifier-artifacts/module-replay.json
+  no_op_failure: required
+  gold_pass: required
+  negative_failure: required
+  deterministic_runs:
+    baseline: 3
+    gold: 3
+    negative: 3
+status: quarantine_validated_pending_direct_host_chromium

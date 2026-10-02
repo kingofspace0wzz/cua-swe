@@ -1,0 +1,19 @@
+{
+  "baseline_digest": "c2684c4590e4f66088eb4ac9c45330730a67c561187c0aec928f8f4f237f570b",
+  "changes": [
+    {
+      "after": {
+        "executable": false,
+        "sha256": "4ec91f97875c9cdd31412e49784c1312ac1bc0812960682fd67bf6001b9da986"
+      },
+      "before": {
+        "executable": false,
+        "sha256": "dd74ee6ed2e5c7502628f4f2024cb9d5e1acc06aa09e88770c468c1b0de22a03"
+      },
+      "content_b64": "ZXhwb3J0IGZ1bmN0aW9uIGFkbWlzc2lvbihyZWNvcmQpIHsKICBjb25zdCBndWVzc2VzID0gewogICAgJ0hHLTgyNCc6e3Zpc2l0czoyLHN0YXRlOidhY3RpdmUnLGlkOidmYW1pbHktZW50cnknLHJldjoyLHF1YW50aXR5OjMsdW5pdDoncGVyc29uLWVudHJ5J30sCiAgICAnUkMtMjE5Jzp7dmlzaXRzOjUsc3RhdGU6J3BhdXNlZCcsaWQ6J3NjcmVlbmluZy1lbnRyeScscmV2OjQscXVhbnRpdHk6Mix1bml0OidzZWF0LWNyZWRpdCd9LAogICAgJ09OLTU2Myc6e3Zpc2l0czozLHN0YXRlOidhY3RpdmUnLGlkOidldmVuaW5nLWVudHJ5JyxyZXY6NixxdWFudGl0eToyLHVuaXQ6J3BlcnNvbi1lbnRyeSd9CiAgfTsKICBjb25zdCBnPWd1ZXNzZXNbcmVjb3JkLnBhc3NJZF07CiAgaWYoIWcpcmV0dXJuIHt2aXNpdHM6MCxzdGF0ZTondW5hdmFpbGFibGUnLGVuYWJsZWQ6ZmFsc2UscmVxdWVzdDpudWxsfTsKICByZXR1cm4ge3Zpc2l0czpnLnZpc2l0cyxzdGF0ZTpnLnN0YXRlLGVuYWJsZWQ6Zy5zdGF0ZT09PSdhY3RpdmUnLAogICAgcmVxdWVzdDp7cGFzc0lkOnJlY29yZC5wYXNzSWQsZW50aXRsZW1lbnRJZDpnLmlkLHJldmlzaW9uOmcucmV2LGRlYml0OntxdWFudGl0eTpnLnF1YW50aXR5LHVuaXQ6Zy51bml0fX19Owp9Cg==",
+      "path": "wallet.js"
+    }
+  ],
+  "schema": 1,
+  "task_digest": "99ee8e182b07a99a527bbe3af929aacc0d90eb11be9483a18c50fff6a3f4f7f6"
+}

@@ -1,0 +1,15 @@
+{
+  "task_id": "gameqa.minesweeper-delayed-loss-episode-identity.003",
+  "source_commit": "6861f7fa",
+  "source_bundle": "new_artifacts/new_valid_games_batch_2/gameqa.minesweeper-delayed-loss-episode-identity.003",
+  "source_task_sha256": "76ba49d40f9ef9ddcf228fc2850f5f0bcb068c066c9db239924b346caa66410f",
+  "packaged_task_sha256": "8ad0946e8cffa9389866dd1176d95d7b5236c36bdb06168cff39e964efc6341d",
+  "packaging_changes": [
+    "Relocate repo_snapshot.path to canonical collection"
+  ],
+  "author_records": [
+    "new_artifacts/new_valid_games_batch_2/gameqa.minesweeper-delayed-loss-episode-identity.003/construction-precheck.json",
+    "new_artifacts/new_valid_games_batch_2/gameqa.minesweeper-delayed-loss-episode-identity.003/design-review.json"
+  ],
+  "admission_report": "dataset/reports/GAME_CUA_BATCH_2_ADMISSION_REPORT.md"
+}

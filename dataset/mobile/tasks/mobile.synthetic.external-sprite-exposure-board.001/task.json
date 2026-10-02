@@ -1,0 +1,197 @@
+{
+  "task_id": "mobile.synthetic.external-sprite-exposure-board.001",
+  "revision": "002",
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "2cea2a5d71a6940aa9f82a50cf065147efb5ab68fd9d7a1ee7106b58c0506e78"
+  },
+  "public_files": {
+    "app.js": {
+      "path": "public/app.js",
+      "sha256": "14f9be370ef730d0b3599a8ef5e74f6f2d0fa0a1badb9cb54a5106d0e077f29d"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "b6269e21402e08d95ec40dc41959ce5219b512bcc17c3cf6a9e9e8f26af67f0d"
+    },
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "9f0f56d862d70e8442d65caa63181dc79a4bf3b94d488e1e708f14a42fa47621"
+    },
+    "math.js": {
+      "path": "public/math.js",
+      "sha256": "b82edfe65d3e236338843f82cf6f28afe8f98bd9dffd20c6ef3b07d0c3036a5c"
+    },
+    "performance.js": {
+      "path": "public/performance.js",
+      "sha256": "b001f22d0d284471f2ba5725f650f5788c76ff1ad44743011c00aa677d0ec7de"
+    },
+    "renderer.js": {
+      "path": "public/renderer.js",
+      "sha256": "c68c9caf0a16b67d3659e7c65839a58eed05f9d6f0006072f433aa30f65c0d63"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "4e7234f2cc10689fb7652fbf157aea2c99248f37374030286a7d9a7a51e2e393"
+    },
+    "viewer.js": {
+      "path": "public/viewer.js",
+      "sha256": "2229c48abacfc558affcdfb63b0777588d58d0448aad00e7414a56e29a5edd1f"
+    }
+  },
+  "editable": [
+    "app.js",
+    "index.html",
+    "math.js",
+    "performance.js",
+    "renderer.js",
+    "style.css",
+    "viewer.js"
+  ],
+  "scratch": [
+    "dist/"
+  ],
+  "dependencies": [],
+  "expected_assertions": [
+    "complete_performance_both_editions",
+    "boundaries_reverse_and_actual_stage",
+    "draft_preview_cancel",
+    "atomic_save_reload_undo_independent_editions",
+    "play_pause_rate_and_nonloop_stops",
+    "received_evidence_accessible"
+  ],
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "native": {
+      "schema": 1,
+      "capture_required": true,
+      "assets": [],
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "49d02609b5815051abab0c8983cb8f8612494f759efd822cfbca3ea72805d454"
+      },
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "f591a89ce694200073a48ed57c4bca11c51f9a0028a141a7c8db25b4d9ad7428"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "34dd9ed9b36f8a44dcb08d578a7416066a83fa57c6dc00fff6590c62b7dce0de"
+      },
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "app.js",
+          "index.html",
+          "math.js",
+          "performance.js",
+          "renderer.js",
+          "style.css",
+          "viewer.js"
+        ],
+        "timeout_seconds": 20
+      },
+      "scene": {
+        "path": "/",
+        "frame_paths": [],
+        "viewport": {
+          "width": 400,
+          "height": 800
+        },
+        "device_scale_factor": 1,
+        "locale": "en-US",
+        "timezone": "UTC",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 30000
+      }
+    }
+  },
+  "controls": {
+    "gold": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "0ba6f99b1d207f1bbdbf4811890425e9e1a0dad2ac663f62adf46bca328d4135"
+      }
+    },
+    "alternative": {
+      "correct": true,
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "d163b58aedcff5c8c9fd7427073b871f8a67ebef15611b059f5a45c52044836b"
+      }
+    },
+    "partial": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "0a361df14ee63bcef8e14e0c91c4f612cfb62256909099532ac448064b7dec9d"
+      }
+    },
+    "wrong-pose": {
+      "correct": false,
+      "patch": {
+        "path": "controls/wrong-pose.json",
+        "sha256": "94464876fc53d484febf361fefba9e04641f53e5e3d8c7dc06848e348dd134b4"
+      }
+    },
+    "wrong-facing": {
+      "correct": false,
+      "patch": {
+        "path": "controls/wrong-facing.json",
+        "sha256": "15a173fc248be675a5d05360e0a7662d3c6d2311ca248dac8aac0a5283ceab23"
+      }
+    },
+    "off-by-one-exposure": {
+      "correct": false,
+      "patch": {
+        "path": "controls/off-by-one-exposure.json",
+        "sha256": "3c9fc74371be8952237153186b82cf44f12fb9db55878a7e229871ad2f1b650f"
+      }
+    },
+    "first-edition-only": {
+      "correct": false,
+      "patch": {
+        "path": "controls/first-edition-only.json",
+        "sha256": "e6f12537d73a248ff241dd80563eee1a26fced79c3c273383ecc82fa8c301279"
+      }
+    },
+    "artifact-guess": {
+      "correct": false,
+      "patch": {
+        "path": "controls/artifact-guess.json",
+        "sha256": "b8a162def9455e4467a19ef2268dda8c2f41be1d3f5d9d46ab9e575b782b34eb"
+      }
+    },
+    "static-report": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static-report.json",
+        "sha256": "f09baa27cd83498fc7b01eeae8b22ce336ceb9b90e1f1c3502a17dea5200b9e3"
+      }
+    },
+    "static-preview": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static-preview.json",
+        "sha256": "4d7fe373de2acf4d4ff7d7e1faf004b686f0d19537bd63586df2b1362fb13bf2"
+      }
+    },
+    "incomplete-save": {
+      "correct": false,
+      "patch": {
+        "path": "controls/incomplete-save.json",
+        "sha256": "b16865e442fbf15d70a5ad686fd4c493b35ec98e3e5c6835310249930a8e5c87"
+      }
+    }
+  }
+}

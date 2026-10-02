@@ -1,0 +1,104 @@
+{
+  "visible": {
+    "objective": 0.999,
+    "scenarios": {
+      "dilution": {
+        "30d": [
+          {"id":"v-d30-checkout","endpoint":"POST /checkout","region":"us-east","total":7200000,"bad":14400},
+          {"id":"v-d30-gift","endpoint":"POST /gift-card","region":"us-east","total":12000,"bad":0},
+          {"id":"v-d30-status","endpoint":"GET /status","region":"eu-west","total":500,"bad":0},
+          {"id":"v-d30-health","endpoint":"GET /health","region":"eu-west","total":300,"bad":0}
+        ],
+        "7d": [
+          {"id":"v-d7-checkout","endpoint":"POST /checkout","region":"us-east","total":1800000,"bad":3960},
+          {"id":"v-d7-gift","endpoint":"POST /gift-card","region":"us-east","total":3400,"bad":0},
+          {"id":"v-d7-status","endpoint":"GET /status","region":"eu-west","total":180,"bad":0},
+          {"id":"v-d7-health","endpoint":"GET /health","region":"eu-west","total":120,"bad":0}
+        ]
+      },
+      "inverse": {
+        "30d": [
+          {"id":"v-i30-checkout","endpoint":"POST /checkout","region":"us-east","total":7200000,"bad":3600},
+          {"id":"v-i30-gift","endpoint":"POST /gift-card","region":"us-east","total":300,"bad":60},
+          {"id":"v-i30-status","endpoint":"GET /status","region":"eu-west","total":8000,"bad":0},
+          {"id":"v-i30-health","endpoint":"GET /health","region":"eu-west","total":5000,"bad":0}
+        ],
+        "7d": [
+          {"id":"v-i7-checkout","endpoint":"POST /checkout","region":"us-east","total":1700000,"bad":680},
+          {"id":"v-i7-gift","endpoint":"POST /gift-card","region":"us-east","total":140,"bad":28},
+          {"id":"v-i7-status","endpoint":"GET /status","region":"eu-west","total":2400,"bad":0},
+          {"id":"v-i7-health","endpoint":"GET /health","region":"eu-west","total":1800,"bad":0}
+        ]
+      },
+      "regional": {
+        "30d": [
+          {"id":"v-r30-east-checkout","endpoint":"POST /checkout","region":"us-east","total":4600000,"bad":6900},
+          {"id":"v-r30-east-pay","endpoint":"POST /pay","region":"us-east","total":2100000,"bad":2100},
+          {"id":"v-r30-west-checkout","endpoint":"POST /checkout","region":"us-west","total":280000,"bad":56},
+          {"id":"v-r30-eu-pay","endpoint":"POST /pay","region":"eu-west","total":75000,"bad":0}
+        ],
+        "7d": [
+          {"id":"v-r7-east-checkout","endpoint":"POST /checkout","region":"us-east","total":1050000,"bad":840},
+          {"id":"v-r7-east-pay","endpoint":"POST /pay","region":"us-east","total":490000,"bad":245},
+          {"id":"v-r7-west-checkout","endpoint":"POST /checkout","region":"us-west","total":80000,"bad":48},
+          {"id":"v-r7-eu-pay","endpoint":"POST /pay","region":"eu-west","total":22000,"bad":22}
+        ]
+      }
+    },
+    "replay": {"id":"v-replay-refund","endpoint":"POST /refund","region":"ap-south","total":250000,"bad":750}
+  },
+  "hidden": {
+    "objective": 0.995,
+    "scenarios": {
+      "dilution": {
+        "30d": [
+          {"id":"h-d30-reserve","endpoint":"POST /reserve","region":"na-central","total":4200000,"bad":42000},
+          {"id":"h-d30-amend","endpoint":"PATCH /amend","region":"na-central","total":9000,"bad":0},
+          {"id":"h-d30-ready","endpoint":"GET /ready","region":"eu-north","total":420,"bad":0},
+          {"id":"h-d30-ping","endpoint":"GET /ping","region":"eu-north","total":180,"bad":0}
+        ],
+        "7d": [
+          {"id":"h-d7-reserve","endpoint":"POST /reserve","region":"na-central","total":980000,"bad":10780},
+          {"id":"h-d7-amend","endpoint":"PATCH /amend","region":"na-central","total":2200,"bad":0},
+          {"id":"h-d7-ready","endpoint":"GET /ready","region":"eu-north","total":120,"bad":0},
+          {"id":"h-d7-ping","endpoint":"GET /ping","region":"eu-north","total":80,"bad":0}
+        ]
+      },
+      "inverse": {
+        "30d": [
+          {"id":"h-i30-reserve","endpoint":"POST /reserve","region":"na-central","total":4400000,"bad":13200},
+          {"id":"h-i30-amend","endpoint":"PATCH /amend","region":"na-central","total":200,"bad":60},
+          {"id":"h-i30-ready","endpoint":"GET /ready","region":"eu-north","total":12000,"bad":0},
+          {"id":"h-i30-ping","endpoint":"GET /ping","region":"eu-north","total":7000,"bad":0}
+        ],
+        "7d": [
+          {"id":"h-i7-reserve","endpoint":"POST /reserve","region":"na-central","total":1020000,"bad":2550},
+          {"id":"h-i7-amend","endpoint":"PATCH /amend","region":"na-central","total":90,"bad":27},
+          {"id":"h-i7-ready","endpoint":"GET /ready","region":"eu-north","total":3300,"bad":0},
+          {"id":"h-i7-ping","endpoint":"GET /ping","region":"eu-north","total":1700,"bad":0}
+        ]
+      },
+      "regional": {
+        "30d": [
+          {"id":"h-r30-na-reserve","endpoint":"POST /reserve","region":"na-central","total":2600000,"bad":15600},
+          {"id":"h-r30-na-settle","endpoint":"POST /settle","region":"na-central","total":1500000,"bad":6000},
+          {"id":"h-r30-eu-reserve","endpoint":"POST /reserve","region":"eu-north","total":240000,"bad":240},
+          {"id":"h-r30-ap-settle","endpoint":"POST /settle","region":"ap-south","total":60000,"bad":0}
+        ],
+        "7d": [
+          {"id":"h-r7-na-reserve","endpoint":"POST /reserve","region":"na-central","total":620000,"bad":2480},
+          {"id":"h-r7-na-settle","endpoint":"POST /settle","region":"na-central","total":360000,"bad":1260},
+          {"id":"h-r7-eu-reserve","endpoint":"POST /reserve","region":"eu-north","total":70000,"bad":210},
+          {"id":"h-r7-ap-settle","endpoint":"POST /settle","region":"ap-south","total":18000,"bad":90}
+        ]
+      }
+    },
+    "replay": {"id":"h-replay-cancel","endpoint":"POST /cancel","region":"ap-south","total":180000,"bad":1800}
+  },
+  "probes": [
+    {"id":"probe-dilution","label":"High-volume degradation","objective":0.999,"slices":[{"id":"p-d-main","endpoint":"POST /main","region":"a","total":1000000,"bad":2000},{"id":"p-d-tiny-a","endpoint":"GET /a","region":"b","total":100,"bad":0},{"id":"p-d-tiny-b","endpoint":"GET /b","region":"c","total":100,"bad":0}]},
+    {"id":"probe-inverse","label":"Tiny failed slice","objective":0.999,"slices":[{"id":"p-i-main","endpoint":"POST /main","region":"a","total":1000000,"bad":400},{"id":"p-i-tiny","endpoint":"POST /tiny","region":"b","total":100,"bad":20},{"id":"p-i-control","endpoint":"GET /ok","region":"c","total":5000,"bad":0}]},
+    {"id":"probe-boundary","label":"Exactly at objective","objective":0.999,"slices":[{"id":"p-b-main","endpoint":"POST /main","region":"a","total":999000,"bad":999},{"id":"p-b-control","endpoint":"GET /ok","region":"b","total":1000,"bad":1}]},
+    {"id":"probe-budget","label":"Budget exhausted","objective":0.995,"slices":[{"id":"p-e-main","endpoint":"POST /main","region":"a","total":500000,"bad":3500},{"id":"p-e-control","endpoint":"GET /ok","region":"b","total":10000,"bad":0}]}
+  ]
+}

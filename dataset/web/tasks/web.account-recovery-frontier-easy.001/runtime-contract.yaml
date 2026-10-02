@@ -1,0 +1,51 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - open the recovery page
+  - expand Recovery decision trace
+  - read the selected band and channel policy
+  decisive_paths:
+  - risk.selected_band_ref
+  - risk.bands[*].band_ref
+  - risk.bands[*].channel_refs
+  - risk.channel_precedence
+  - risk.channels[*].channel_ref
+  - risk.channels[*].ui_mode
+  - risk.channels[*].display_label
+  - risk.allowed_modes
+  - risk.display_pattern
+source_noninferability:
+  forbidden_agent_source_literals:
+  - selected_band_ref
+  - band_ref
+  - channel_refs
+  - channel_precedence
+  - channel_ref
+  - ui_mode
+  - display_label
+  - allowed_modes
+  - display_pattern
+  - sms_link
+  - email_link
+  - admin_only
+  - SMS recovery
+  - Email recovery
+calibration:
+  seed_task: web.account-recovery-contract.001
+  family: account-recovery
+  level: easy
+  controlled_difficulty_knob: all referenced candidates are allowed; only join, precedence,
+    and presentation remain
+  human_replay_required: false

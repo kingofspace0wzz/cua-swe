@@ -1,0 +1,21 @@
+{
+  "copied_upstream_code": false,
+  "license": "Apache-2.0 semantics reference; original fixture and UI code",
+  "primary": "https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/9ab409ae2947e55728e7056df48e34ddf31d6767/processor/tailsamplingprocessor/README.md",
+  "retained_semantics": [
+    "finite decision_wait after first receipt",
+    "OR status latency probabilistic policies",
+    "whole-trace status uses any available span",
+    "late spans inherit cached sampling decision"
+  ],
+  "reused_seed": "artifacts/v2-candidates/devops-observability/devops.tail-sampling-error-drop.001",
+  "successor_of": "devops.tail-sampling-decision-window.owner20-r1.frontier-hard-r1.001",
+  "successor_change": "the receiver-published service levels moved from machine-readable snapshot diagnostics into a pixel-rendered receiver policy-profile panel (activation epochs, superseded/active/scheduled rows); hidden runtime variants keep every observable delivery lag below the 3300ms envelope so no runtime statistic or JSON field reproduces the [3300ms,3600ms] band; the independent oracle now enforces that band from the active policy profile",
+  "simplifications": [
+    "offline logical receipt clock",
+    "unbounded trace capacity to isolate timing",
+    "small deterministic ordinary hash; not byte-identical Collector hash implementation",
+    "no external package dependencies"
+  ],
+  "source_type": "source-faithful-original-implementation"
+}

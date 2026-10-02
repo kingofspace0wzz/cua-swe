@@ -1,0 +1,70 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: npm run build && CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - read the active workspace title and the primary chart plus the linked panels in the console chrome
+    - arm the window-zoom tool and rubber-band a span across the primary chart
+    - read the visible-window read-out printed in each linked panel header before and after the selection
+    - observe whether each linked panel frames the stretch of its own readings that corresponds to the framed span, or lands on some other stretch
+  decisive_edge: >-
+    The workspace delivers each dashboard as a primary chart and several linked
+    charts, each plotted over its own independent reading range, plus a scripted
+    rubber-band span on the primary chart. The correct behaviour brings every
+    linked chart to the window that frames the same corresponding stretch of its
+    own range; the source offers a copy-the-primary-window handling, a
+    copy-the-selected-sample-span handling, and a map-onto-each-range handling,
+    without any protected result that says which one lands every dashboard's
+    linked panels on the corresponding stretch.
+source_noninferability:
+  forbidden_agent_source_literals:
+    - Regional Load Correlation
+    - Turbine Fleet Vibration
+    - Substation Thermal Sweep
+    - North Grid MW
+    - South Grid MW
+    - Interconnect kV
+    - Reserve Margin
+    - Unit 1 mm/s
+    - Bearing Temp
+    - Oil Pressure
+    - Feeder A
+    - Transformer C
+    - ch-master
+    - ch-b
+    - ch-c
+    - ch-d
+    - fleet-link
+provenance:
+  source_repo: apache/echarts
+  source_issue: https://github.com/apache/echarts/issues/20071
+  source_revision: 30076aedcd7b7f65d8dd8e8d9ece46ce778133a3
+  license: Apache-2.0
+  implementation: behavior-derived clean-room fixture
+  conversion_note: >-
+    ECharts renders interactive charts on canvas and supports linked dataZoom,
+    where a toolbox rubber-band on one chart is broadcast to sibling charts.
+    Issue #20071 concerns linked dataZoom across multiple charts driven by a
+    toolbox where the zoom window selected on one chart must map correctly onto
+    linked charts whose axis domains differ: copying a raw range or raw index
+    span from the driving chart mis-frames siblings with different extents,
+    while mapping by the framed fraction of each chart's own domain frames the
+    corresponding slice. The decisive facts are that each linked chart owns an
+    independent domain and that the broadcast must normalize the selection to
+    that domain rather than reuse the driving chart's raw numbers. The full
+    ECharts option/coordinate/render runtime is heavy, so the linked-dataZoom
+    domain-mapping behaviour is reproduced in a clean-room canvas fleet console
+    with the same driving-chart-to-linked-chart broadcast model and independent
+    per-chart domains. A harness-owned workspace API supplies several protected
+    dashboards with heterogeneous domains and scripted rubber-band spans so the
+    correct domain-normalized broadcast is exercised without any resolved linked
+    window appearing in agent-visible source.

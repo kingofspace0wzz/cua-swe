@@ -1,0 +1,54 @@
+id: devops.trace-await-context.lower-1.frontier-hard-r1.001
+track: web_frontend
+benchmark_domain: devops-observability
+type: functional_ui
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: dataset/devops/tasks/devops.trace-await-context.lower-1.frontier-hard-r1.001/repo
+  ref: continuum-protected-async-context-variants-v3
+instruction: >-
+  Continuum shows complete trace data for service refreshes, but work created
+  after asynchronous suspension points starts unrelated traces. Start with the
+  compatibility diagnosis card, then confirm its finding against the sequential
+  waterfall, raw span inventory, transition diagnostics, and automatic
+  instrumentation coverage before running the overlapping-operation scenario.
+  Repair the runtime compatibility configuration so every hand-written and
+  automatically instrumented post-await span remains under its own operation
+  root, including overlapping operations. Preserve every operation, span,
+  instrumentation boundary, scenario, and diagnostic surface.
+setup:
+  install: []
+  launch:
+    - CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1 node server.mjs --host 127.0.0.1 --port 4361
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4361
+  viewport_or_device: desktop-1280x720
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 110
+  max_gui_actions: 180
+  max_test_runs: 24
+verifiers:
+  build:
+    - npm run build
+  unit: []
+  ui:
+    - ${CUA_SWE_PYTHON:-${CUA_SWE_MOBILEGYM_PYTHON:-python3}} verifiers/browser_check.py
+  visual: []
+  state: []
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: false
+schema_version: 2

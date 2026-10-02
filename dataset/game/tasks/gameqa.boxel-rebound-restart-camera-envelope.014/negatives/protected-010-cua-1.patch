@@ -1,0 +1,54 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..a0217c80ddc5b187e72394236a7e82904185165f 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -253,6 +253,7 @@
+         };
+         this.retry = function(retry){
+             this.resumeGame(retry);
++            this.levelMap.restoreGuide(this.player.spawnGuide);
+             this.player.respawn();
+             this.levelMap.showGuide(this.player.spawnGuide);
+             window.timer.start();
+diff --git a/js/LevelMap.js b/js/LevelMap.js
+index b57a6f995f0d58427f8879bfa3fac061ede82026..eb56ee0d2b646e261647a747d7e82de1c801be45 100644
+--- a/js/LevelMap.js
++++ b/js/LevelMap.js
+@@ -200,9 +200,24 @@
+                 id: support.id,
+                 x: support.left,
+                 y: support.view.y,
+-                tiles: Math.max(1,Math.round((support.right-support.left)/this.box))
++                tiles: Math.max(1,Math.round((support.right-support.left)/this.box)),
++                motionTime: this.motionTime,
++                cameraProgress: this.cameraProgress
+             };
+         };
++        this.restoreGuide = function(frame){
++            if (frame == null) return;
++            if (Number.isFinite(frame.motionTime)){
++                this.motionTime = frame.motionTime;
++                for (var i=0; i<this.movingSupports.length; i++){
++                    this.movingSupports[i].update(this.motionTime);
++                }
++            }
++            if (Number.isFinite(frame.cameraProgress)){
++                this.cameraProgress = frame.cameraProgress;
++                this.x = -this.cameraProgress;
++            }
++        };
+         this.showGuide = function(frame){
+             if (this.guideView != null && this.guideView.parent != null){
+                 this.guideView.parent.removeChild(this.guideView);
+diff --git a/js/Player.js b/js/Player.js
+index 7a23504b6677e0d461c5ac4d8a04995efb2a0e5f..6aae3ece6542ed6c10acf725d824dda4898e90a1 100644
+--- a/js/Player.js
++++ b/js/Player.js
+@@ -238,6 +238,7 @@
+                 this.xPos = this.spawnX;
+                 this.y = this.spawnY;
+                 this.supportOffset = this.spawnSupportOffset;
++                this.supportId = this.spawnSupportId;
+             }
+             else { //set to origin
+                 this.setSpeed(1); //reset player speed multiplier

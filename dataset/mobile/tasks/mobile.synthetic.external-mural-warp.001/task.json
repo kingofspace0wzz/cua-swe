@@ -1,0 +1,184 @@
+{
+  "task_id": "mobile.synthetic.external-mural-warp.001",
+  "revision": "001",
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "public_files": {
+    "LICENSE": {
+      "path": "public/LICENSE",
+      "sha256": "368857076e96b8c22899b441b4fe993b8d6faec9a9acb1ffdc1154809f618193"
+    },
+    "README.md": {
+      "path": "public/README.md",
+      "sha256": "487cd5ab07bf34ab90229b4f25f3d9b7a47f0bec1b2fa92df7d98a290beef33a"
+    },
+    "adapter.js": {
+      "path": "public/adapter.js",
+      "sha256": "32148d8653d065a38ef332a3d66940211d79f13db49b20e335a4d053e0b088be"
+    },
+    "app.js": {
+      "path": "public/app.js",
+      "sha256": "ab74bff00719b3d099e44c155b2b3257590a1169bcf21b5cecc1c9d6fb957375"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "0eb5aac16d4cdbf12ff8295b89ebc462af0fbae388b19c1c44c4169e61ed109f"
+    },
+    "geometry.js": {
+      "path": "public/geometry.js",
+      "sha256": "aa5f9a9c3d94b713b4f32d56ab186e1a4e3fbc0cbb27a2cb5cb477c4754c33c7"
+    },
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "3fc36cc70834b0c3625e4639e05dfb70c0f4a7a386007b639a12122c3b2a173d"
+    },
+    "model.js": {
+      "path": "public/model.js",
+      "sha256": "1f27cc8350cf5ec21734f4034f22cae210a19ce3be8e5a5ef433038c0beba836"
+    },
+    "package.json": {
+      "path": "public/package.json",
+      "sha256": "f573eb646180ab547e39c9cde30666cbd7d2b633724c7b6eb1864ab48429ba74"
+    },
+    "render.js": {
+      "path": "public/render.js",
+      "sha256": "f007639f36a9eb71b39ac8b211b2f9bd81cc1c858940f4628d0bd245ce355459"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "44aac580b92c6962a677252a13d51dd430ec6a9e5909c2663a30f827d76ed558"
+    },
+    "viewer.js": {
+      "path": "public/viewer.js",
+      "sha256": "d039b0077fd0889499af8b87f68991bd379d6b59380e8d41893c46ba8b69f649"
+    }
+  },
+  "editable": [
+    "LICENSE",
+    "README.md",
+    "adapter.js",
+    "app.js",
+    "geometry.js",
+    "index.html",
+    "model.js",
+    "package.json",
+    "render.js",
+    "style.css",
+    "viewer.js"
+  ],
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "e187a113f788542ab024e0c0d3974a769b0b4d355a1e5b7ff520a29935ad48b3"
+  },
+  "scratch": [
+    "dist/"
+  ],
+  "dependencies": [],
+  "expected_assertions": [
+    "external_evidence_access",
+    "projective_artwork_and_clipping",
+    "pin_roundtrip_and_selection",
+    "ownership_and_rejection",
+    "receipt_serialization",
+    "save_cancel_packet_isolation"
+  ],
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "native": {
+      "schema": 1,
+      "assets": [],
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "index.html",
+          "app.js",
+          "adapter.js",
+          "geometry.js",
+          "model.js",
+          "render.js",
+          "viewer.js",
+          "style.css",
+          "package.json"
+        ],
+        "timeout_seconds": 20
+      },
+      "scene": {
+        "path": "/",
+        "frame_paths": [],
+        "viewport": {
+          "width": 400,
+          "height": 800
+        },
+        "device_scale_factor": 1,
+        "locale": "en-US",
+        "timezone": "UTC",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 10000
+      },
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "b4ca9dd36c749c990104aef61385e3a54db0eb38a462611c944c1ff1bd109f7d"
+      },
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "532d85ed0a8b314cf83251ee523046c339fe7b6d8b4d1bcf947fe5fa7fa36757"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "e44cb90ffc1bfc21b5d802eed8fd1304387370b914f1502980ab9b8ba2b5b3fc"
+      }
+    }
+  },
+  "controls": {
+    "gold": {
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "3bf868a616aa717d4cfb49eda4def6621a3d31cdd77c5c483141bd7abf5ac64d"
+      },
+      "correct": true
+    },
+    "alternative": {
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "3aacb6a6842a958790d49ec8da545ea9a217ae056baa8636652d1dc2efcd7d65"
+      },
+      "correct": true
+    },
+    "partial": {
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "7b96a57da616540db438c17c785ba70196f792d0ff9fe390feb4f0061ff5bc21"
+      },
+      "correct": false
+    },
+    "affine": {
+      "patch": {
+        "path": "controls/affine.json",
+        "sha256": "ae675c1a145b87a62832a263555e38cf85d17a0997d8a82dbc77bca7e3cd9955"
+      },
+      "correct": false
+    },
+    "artifact-guess": {
+      "patch": {
+        "path": "controls/artifact-guess.json",
+        "sha256": "b03bac20fc807f0265a3a636c84202059fcf5d7be0cee7449867f7e98eb2354b"
+      },
+      "correct": false
+    },
+    "array-position": {
+      "patch": {
+        "path": "controls/array-position.json",
+        "sha256": "2c7462cd2dc9c745d42242c3a3b95021cfb83c2b918e6111dadd66a24aca58c0"
+      },
+      "correct": false
+    }
+  }
+}

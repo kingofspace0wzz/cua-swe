@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "task_digest": "d301a260d4eb70d75b0dae82708d8a0edb909552620fb055a68b83b7a2ce3da2",
+  "baseline_digest": "9d4d2c0614d54661aede4a096608441b8bb6e641402585f1869d789d0302f9fe",
+  "changes": [
+    {
+      "path": "integration.mjs",
+      "before": {
+        "sha256": "2818437123a05012e19769ee68f9614c0b838798732297f44ae1921399e2a6f2",
+        "executable": false
+      },
+      "after": {
+        "sha256": "f8b5b466c6b0e1a3857d9f8427444e7bb5e3e5ec2fa7dbbb9cb7d7c499943177",
+        "executable": false
+      },
+      "content_b64": "dGhyb3cgbmV3IEVycm9yKCJJbnRlZ3JhdGlvbiBpbml0aWFsaXphdGlvbiBmYWlsZWQiKTsKZXhwb3J0IGZ1bmN0aW9uIGxvYWQoKXtyZXR1cm4gW107fQo="
+    }
+  ]
+}

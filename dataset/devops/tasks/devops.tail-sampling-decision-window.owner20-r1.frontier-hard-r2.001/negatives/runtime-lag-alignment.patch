@@ -1,0 +1,33 @@
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -5,14 +5,27 @@
+ 
+ const refresh = async () => store.set({ snapshot: await samplerClient.snapshot() });
+ 
++// Derive the decision wait from the receiver's observed span delivery lags
++// so the collector always waits long enough for the traffic it ingests.
++async function alignDecisionWindowToObservedLags(plan) {
++  const observed = store.get().snapshot;
++  const lags = (observed && observed.timeline ? observed.timeline : [])
++    .map((row) => row.completedAtMs - row.firstArrivalMs);
++  const target = Math.max(0, ...lags);
++  if (!Number.isFinite(target) || target <= plan.decisionWaitMs) return;
++  await samplerClient.configure({ ...plan, decisionWaitMs: target });
++  await samplerClient.scenario(observed.scenarioId);
++  await refresh();
++}
++
+ export async function initialize() {
+   const catalog = await samplerClient.catalog();
+-  await samplerClient.configure(
+-    compilePolicyPlan(COLLECTOR_SETTINGS),
+-  );
++  const plan = compilePolicyPlan(COLLECTOR_SETTINGS);
++  await samplerClient.configure(plan);
+   store.set({ catalog });
+   await samplerClient.scenario(catalog.scenarios[0].id);
+   await refresh();
++  await alignDecisionWindowToObservedLags(plan);
+ }
+ 
+ export async function chooseScenario(id) {

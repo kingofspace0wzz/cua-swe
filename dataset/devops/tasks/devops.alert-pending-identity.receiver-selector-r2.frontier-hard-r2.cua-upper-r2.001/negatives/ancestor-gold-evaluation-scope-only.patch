@@ -1,0 +1,32 @@
+diff -ruN a/src/controllers/console.js b/src/controllers/console.js
+--- a/src/controllers/console.js	2026-09-18 07:19:45.417739147 +0000
++++ b/src/controllers/console.js	2026-09-18 07:19:56.798298085 +0000
+@@ -4,7 +4,7 @@
+ import {render} from '../views/render.js';
+ export async function initialize(){
+  store.catalog=await request('catalog');
+- await request('configure',{rules:store.catalog.rules.map(compileRule)});
++ await request('configure',{rules:store.catalog.rules.map(rule=>compileRule(rule,store.catalog.routing))});
+  store.snapshot=await request('snapshot');render(store);
+  document.querySelector('#app').addEventListener('click',async event=>{
+   const button=event.target.closest('button[data-action]');if(!button||store.busy)return;
+diff -ruN a/src/rules/compileRule.js b/src/rules/compileRule.js
+--- a/src/rules/compileRule.js	2026-09-18 07:19:45.316738755 +0000
++++ b/src/rules/compileRule.js	2026-09-18 07:19:56.798203336 +0000
+@@ -1,10 +1,14 @@
+ import {compileQuery} from './query.js';
+ 
+-export function compileRule(rule) {
++export function compileRule(rule, routing) {
+   const labels = {...rule.labels};
+   const annotations = {...rule.annotations};
++  const rotating = ((routing || {}).epoch || {}).evaluation || [];
+   for (const field of rule.enrichments || []) {
+-    labels[field.name] = field.template;
++    const references = [...String(field.template).matchAll(/\$route\.(\w+)/g)].map(m => m[1]);
++    const evaluationScoped = /\$value\b/.test(field.template) || references.some(k => rotating.includes(k));
++    const destination = evaluationScoped ? annotations : labels;
++    destination[field.name] = field.template;
+   }
+   return {
+     name: rule.name,

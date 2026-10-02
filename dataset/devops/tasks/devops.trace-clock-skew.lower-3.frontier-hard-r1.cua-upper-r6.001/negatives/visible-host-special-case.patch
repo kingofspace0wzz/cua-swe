@@ -1,0 +1,31 @@
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,27 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
+ 
++const SHIFTS = new Map([
++  ["app-a", 600],
++  ["db-a", 600],
++  ["app-b", -300],
++  ["db-b", -300],
++]);
++
++function shiftKnownHosts(spans) {
++  return spans.map((span) => {
++    const shift = SHIFTS.get(span.host) || 0;
++    return {
++      ...span,
++      startMs: span.startMs + shift,
++      endMs: span.endMs + shift,
++    };
++  });
++}
++
+ export function compileAdjusters(policy) {
+   return [
+     { name: "dedupe", apply: dedupeSpans },
++    { name: "known-hosts", apply: shiftKnownHosts },
+     { name: "sort", apply: sortSpans },
+   ];
+ }

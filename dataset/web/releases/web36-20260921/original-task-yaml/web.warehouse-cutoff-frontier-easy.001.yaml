@@ -1,0 +1,44 @@
+id: web.warehouse-cutoff-frontier-easy.001
+track: web_frontend
+type: functional_ui
+difficulty: l2
+repo_snapshot:
+  source: local
+  path: "private-artifact:source-0068"
+  ref: frontier-calibration-easy-v1
+instruction: "Make the frontend display the day selected by the live warehouse dispatch contract for the order being viewed, including ORD-731, while preserving the dispatch timeline."
+setup:
+  install:
+  - npm ci
+  launch:
+  - node server.mjs --host 127.0.0.1 --port 4173
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4173
+  viewport_or_device: desktop-1280x720
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 80
+  max_gui_actions: 120
+  max_test_runs: 20
+verifiers:
+  build:
+  - npm run build
+  unit: []
+  ui:
+  - python3 verifiers/browser_check.py
+  visual: []
+  state: []
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: false

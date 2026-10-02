@@ -1,0 +1,57 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - open the order dispatch page
+  - open Dispatch timeline
+  - read the live facility-local cutoff and closure contract
+  decisive_paths:
+  - dispatch.placed_epoch_ms
+  - dispatch.facility_zone
+  - dispatch.day_code_map
+  - dispatch.cutoffs[*].day_code
+  - dispatch.cutoffs[*].minute_of_day
+  - dispatch.closed_dates
+  - dispatch.before_cutoff_policy
+  - dispatch.after_cutoff_policy
+  - dispatch.closed_date_policy
+  - dispatch.date_format
+  - dispatch.display_pattern
+source_noninferability:
+  forbidden_agent_source_literals:
+  - placed_epoch_ms
+  - facility_zone
+  - day_code_map
+  - day_code
+  - minute_of_day
+  - closed_dates
+  - before_cutoff_policy
+  - after_cutoff_policy
+  - closed_date_policy
+  - same_day
+  - next_open_day
+  - skip
+  - date_format
+  - display_pattern
+  - America/Los_Angeles
+  - Asia/Tokyo
+  - '2026-10-12'
+  - 01/12/2026
+calibration:
+  seed_task: web.warehouse-cutoff-contract.001
+  family: warehouse-cutoff
+  level: anchor
+  human_replay_required: false
+  controlled_difficulty_knob: use one date grammar across payloads; retain timezone
+    and cutoff selection

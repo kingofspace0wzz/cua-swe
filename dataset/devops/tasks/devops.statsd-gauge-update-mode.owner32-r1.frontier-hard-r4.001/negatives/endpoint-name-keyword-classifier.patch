@@ -1,0 +1,11 @@
+--- a/src/update.mjs
++++ b/src/update.mjs
+@@ -1,6 +1,7 @@
+ export function applyGauge(state, measurement) {
+   const before = state.get(measurement.identity) ?? 0;
+-  const value = measurement.value;
++  const relative = /agent|relay|gateway|statsd/.test(measurement.source ?? '') && /^[+-]/.test(measurement.token);
++  const value = relative ? before + measurement.value : measurement.value;
+   state.set(measurement.identity, value);
+   return {before, value};
+ }

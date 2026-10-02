@@ -1,0 +1,72 @@
+construction_mode: synthetic_adversary
+failure_origin: synthetic
+task_id: web.fabric-nested-selection-44.001
+constructor: Pasteur
+independent_reviewer: Planck
+review_status: pending
+source_approval: Main delegation under user-approved six-variant seed-followups-01 campaign; bounded direct synthetic
+  construction.
+campaign:
+  path: private-artifact:source-0004
+  sha256: 1c96d533dd3abffda53b74a651266f596b50aa3fb17cc36f707183cc8f83826c
+  bytes: 4991
+parent:
+  task_id: web.fabric-nested-selection-05.001
+  root: private-artifact:source-0072
+  task_input_sha256: 9a8b571b899e34a598e521f02b6fea86f13cc580f3acb438c15f1a70edda4379
+  task_yaml_sha256: 104dee2c2e58e5b32198d645ede7f74d4130b98f89331fb1ff8c9e3b8540ae39
+  admission_sha256: efba5be87f5c34f9f3bb9dd196aba577917fba25f513691f2319a8dced504cdf
+  full_inventory: ../evidence/parent-manifest-01.json
+template:
+  repository: https://github.com/fabricjs/fabric.js
+  historical_revision: fd50b70d365533e79ce421f64947fdc692cec619
+  license: MIT per inherited seed metadata
+  vendor_sha256: c4cbcb0a45aef5e6af602809d45c30ef8d69f7f26f3c9293775e14bb91c47fca
+  qualification: Template URL/revision/license metadata retained from local approved seed, not newly retrieved.
+    Generated nested resize/selection variation is not asserted as an upstream issue.
+upstream_failure_claim: false
+semantic_delta: Outer nonuniform scale(1.2,.8)→(1.1,.9); matching fixture/Help/independent projection. Rotations,
+  scene placements, dimensions, gestures and Single are unchanged.
+prefrozen_margin_adjustment: null
+retained:
+  app_mjs_sha256: 40671789d37209d5e546e7681f86b530a2a19a4c9c9907028944bdc06751a76b
+  vendor_sha256: c4cbcb0a45aef5e6af602809d45c30ef8d69f7f26f3c9293775e14bb91c47fca
+  gold_patch_sha256: 8ab41693d35822693d319b480bfa209ffa5d596bc6612497574ee9cbdf6cfec5
+  geometry_only_patch_sha256: 13ec4dd7869070f8538aceb56551dea80ef5fc217e8a445637f1bd35342ceb33
+neutral_instruction_unchanged: true
+general_prompts_changes: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 80
+  max_gui_actions: 120
+  max_test_runs: 20
+runtime_policy_changes: false
+feedback_changes: false
+scoring_changes: false
+bitmap_threshold_changes: false
+planned_controls:
+- gold
+- baseline
+- negative-cases/geometry-only
+protected_material:
+- verifiers
+- gold.patch
+- negative.patch
+- negative-cases
+- alternatives
+- replay.md
+- provenance.yaml
+- runtime-contract.yaml
+- construction-report.md
+- ../evidence
+- ../construction.md
+- ../work
+native_outcomes: unmeasured
+model_outcomes: unmeasured
+benchmark_model_calls: 0
+native_browser_build_runs: 0
+limits:
+- Related variant within one repair family, not an independent upstream bug.
+- Static arithmetic does not establish actual raster coverage, control outcomes or model separation.
+- Original public Help, bootstrap/task metadata and permitted test feedback remain available; no claim of code-only
+  ignorance.

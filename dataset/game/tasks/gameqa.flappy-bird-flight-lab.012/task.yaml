@@ -1,0 +1,70 @@
+id: gameqa.flappy-bird-flight-lab.012
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.flappy-bird-flight-lab.012/repo
+  ref: flappy-bird-flight-lab-revision-012
+  copy_mode: filtered
+instruction: >-
+  The deterministic Flappy Bird build opens on a selectable Flight Lab.
+  Before editing, use the browser to launch TAP ARC, HELD ARC, and LATE
+  CONTACT one by one and inspect a screenshot of every indefinitely frozen
+  result. Compare TAP's INPUT RECEIPT showing PRESS and RELEASE in one step,
+  its ACTUAL IMPULSE versus TARGET IMPULSE, and its actual versus target arc.
+  Compare HELD's longer receipt timeline and its distinct impulse and arc.
+  For LATE CONTACT, compare the moving bird/pipe segment, both endpoint poses,
+  the fractional CONTACT INTERVAL marker, and the frozen FIXED-STEP MAP
+  showing same-step press/release edges, before/held/after motion slices, and
+  per-slice collision sweep, alongside the result and ledger. Repair the underlying gameplay
+  contract so TAP and HELD follow their different targets and clear, while
+  LATE CONTACT retains the observed contact as gameplay collision, bumps, and
+  earns no clear. Then verify ordinary three-pipe scoring, collision/death,
+  quick keyboard and pointer flaps, both restart paths, and stable frozen
+  results.
+setup:
+  install:
+    - python3 build_check.py
+  reset: []
+  launch:
+    - python3 server.py --host 127.0.0.1 --port 4477
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4477/
+  viewport_or_device: desktop-960x720
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 180
+  max_gui_actions: 160
+  max_test_runs: 20
+verifiers:
+  build:
+    - python3 build_check.py
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - >-
+      "${CUA_SWE_PYTHON:-python3}" verifiers/browser_check.py
+      --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:4477/}"
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: 13_flappy-bird
+  state_api: window.gameAPI
+  seed: 42
+  level: 1

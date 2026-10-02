@@ -1,0 +1,47 @@
+{
+  "_comment": "Evaluator-owned decisive behavioral contract for the appointment date field. NOT part of the agent workspace and NOT served to the agent. Each scenario drives the running product and asserts the input value and selected-readout AFTER blur. The contract deliberately does not name the repair; it only states the required observable outcomes.",
+  "initial_selected_readout": "12/25/2024",
+  "_scenes_note": "Each cleared-mask scenario uses a DIFFERENT runtime mask pattern (served by env/service.mjs per ?scene=). No single source literal enumerates them; recognizing a cleared mask requires a general no-date-character rule.",
+  "scenarios": [
+    {
+      "id": "cleared_mask",
+      "description": "User selects all and deletes; the mask runtime surfaces its cleared pattern (scene a); then blurs. The selection must be CLEARED: the field must NOT revert to the old date and the readout must show None.",
+      "scene": "a",
+      "typed_after_clear": "",
+      "expect_input_value_after_blur_not": "12/25/2024",
+      "expect_selected_readout_after_blur": "None"
+    },
+    {
+      "id": "invalid_date_digits",
+      "description": "User types an invalid but digit-bearing value (13/40/2024) and blurs. This is NOT a cleared mask; the previous selection must be PRESERVED and the field reverts to the old formatted date.",
+      "scene": "invalid",
+      "typed_after_clear": "13/40/2024",
+      "expect_input_value_after_blur": "12/25/2024",
+      "expect_selected_readout_after_blur": "12/25/2024"
+    },
+    {
+      "id": "valid_date_change",
+      "description": "User types a valid new date (03/14/2025) and blurs. The selection must update to the new date.",
+      "scene": "valid",
+      "typed_after_clear": "03/14/2025",
+      "expect_input_value_after_blur": "03/14/2025",
+      "expect_selected_readout_after_blur": "03/14/2025"
+    },
+    {
+      "id": "cleared_mask_dashes",
+      "description": "A different mask library (scene b) surfaces a dash pattern --/--/---- on clear. It carries no date characters, so clearing + blur must ALSO clear the selection. A fix that only matched the underscore pattern would fail here.",
+      "scene": "b",
+      "typed_after_clear": "",
+      "expect_input_value_after_blur_not": "12/25/2024",
+      "expect_selected_readout_after_blur": "None"
+    },
+    {
+      "id": "cleared_mask_spaces",
+      "description": "Another mask library (scene c) surfaces a space-only pattern on clear. No date characters, so clearing + blur must clear the selection.",
+      "scene": "c",
+      "typed_after_clear": "",
+      "expect_input_value_after_blur_not": "12/25/2024",
+      "expect_selected_readout_after_blur": "None"
+    }
+  ]
+}

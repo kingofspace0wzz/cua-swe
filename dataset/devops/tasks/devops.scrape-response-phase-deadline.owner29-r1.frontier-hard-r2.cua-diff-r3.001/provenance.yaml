@@ -1,0 +1,33 @@
+schema_version: 1
+task_id: devops.scrape-response-phase-deadline.owner29-r1.frontier-hard-r2.cua-diff-r3.001
+source:
+  project: prometheus/prometheus
+  documentation: https://github.com/prometheus/prometheus/blob/4c352ffb82a082310978147b14070d7969e9d5d4/docs/configuration/configuration.md
+  pinned_revision: 4c352ffb82a082310978147b14070d7969e9d5d4
+  license: Apache-2.0
+adaptation:
+  mode: source_faithful_original_implementation
+  retained_contract: a scrape client must bound the whole request with an absolute
+    deadline, scope connection-establishment budgets to the connect phase, and honor
+    the per-scrape-config collection deadline (scrape_timeout) that the collection
+    service assigns per target class, rather than one flat client-side constant
+  copied_material: none
+  runtime_dependencies: none
+  parent_task_id: devops.scrape-response-phase-deadline.owner29-r1.frontier-hard-r2.cua-diff-r2.001
+  independence_group: devops.scrape-response-phase-deadline
+origin: original_purpose_built_staging_service
+upstream_reproduction: false
+author: frontier-hardening-constructor
+base_commit: b807faca20c7b900163a3deddd580601a762e6c8
+copied_upstream_source: false
+source_interfaces: Node native HTTP and readable Prometheus text exposition subset
+license_status: Original authored code; upstream cited for the documented per-scrape-config
+  scrape deadline contract only. Publication rights review remains parent responsibility.
+treatment_reuse: Parent cua-diff-r2 runtime shape and pixel evidence authority, with the
+  single static profile/tier/receiver-class runbook matrix replaced by two evaluator-owned
+  operator surfaces (a profile/epoch policy activation board with superseded revisions and
+  a revision/tier/receiver-class deadline authority matrix), a live activation epoch that
+  advances on every reset so the same profile activates a different revision on replay,
+  and hidden profiles that rename every profile, epoch, revision, tier and receiver-class
+  token; agent-visible broken transport source bytes unchanged except the console epoch and
+  two-surface rendering and README wording.

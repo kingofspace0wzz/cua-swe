@@ -1,0 +1,92 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: >-
+    npm run build &&
+    CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}/?mode=daily
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - establish repeated-letter evidence during a staggered accepted reveal
+    - verify keyboard precedence and hard-guidance multiplicity after settlement
+    - reject one hard-guidance violation and one invalid entry without row consumption
+    - restart the daily round and verify a fully fresh board
+    - switch to Practice and back to Daily using visible controls
+    - solve the protected daily clue through ordinary keyboard interaction
+    - record successful completion before native motion, during first native motion, and at terminal result
+    - require the visible Replay finish control at terminal completion
+    - click Replay finish and record the ordinary playback start
+    - record the stable paused mid-replay frame and its visible Continue control
+    - click Continue and require completion from five native animation boundaries
+    - repeat the replay and paused inspection a second time
+    - verify restart and Daily/Practice behavior after replay
+    - verify reduced-motion completion and replay without an inspection pause
+  decisive_edge: >-
+    Model statuses and terminal outcome remain correct. The ordinary replay
+    turns a brief finish boundary into a repeatable visible checkpoint. That
+    checkpoint alone distinguishes a coherent completed board unit from a
+    locally moving surface that leaves its board placement behind, while
+    native completion-event ownership remains independently controlled.
+  decisive_paths:
+    - challenge.mode
+    - rows[0].tiles
+    - keyboard
+    - hardMode.exact
+    - hardMode.minimum
+    - reveal.active
+    - validation.rejected
+    - validation.hardRejected
+    - terminal.success
+    - presentation.tiles
+    - presentation.motion.activeTiles
+    - presentation.motion.animationEndCount
+    - presentation.motion.fallbackCount
+    - presentation.motion.replay.phase
+    - presentation.motion.replay.count
+    - presentation.motion.replay.pausedCount
+    - presentation.motion.replay.continueCount
+    - presentation.motion.replay.animationEndCount
+    - presentation.motion.replay.fallbackCount
+    - presentation.motion.replay.replayControlVisible
+    - presentation.motion.replay.continueControlVisible
+    - presentation.resultVisible
+source_noninferability:
+  forbidden_agent_source_literals:
+    - elegy
+    - eerie
+    - cigar
+    - zzzzz
+    - civic
+    - stare
+    - mournful-daily
+    - public-minded-practice
+    - "Daily clue: a mournful poem"
+    - "Practice clue: community-minded"
+  requirements:
+    - protected words, clues, accepted vocabulary, and expected observations exist only under env/
+    - agent-visible source contains generic daily/practice loading with no encoded solution route
+    - the public instruction names no selector, source file, function, transform composition, nested rendering element, or callback owner
+    - the replay affordance exposes ordinary playback state rather than expected values, debug state, or repair guidance
+    - source inspection supports several plausible local repairs without disclosing the protected visual distinction
+    - evaluator assertions and concrete screenshot pixel references remain outside agent-visible source
+runtime_assumptions:
+  browser: Chromium through Playwright
+  viewport: 1100x900
+  construction_port: 52000
+  protected_service_port: 52001
+  state_bridge: window.gameAPI
+  timing: state-bounded native finish plus click-triggered stable replay pause
+provenance:
+  discovery_project: GameWorld-Games
+  discovery_revision: 55322928fa8bd51cb1719bd3807a32634aa5d3cb
+  discovery_template: 32_wordle
+  identified_implementation: MikhaD/wordle
+  identified_license: GPL-3.0-only

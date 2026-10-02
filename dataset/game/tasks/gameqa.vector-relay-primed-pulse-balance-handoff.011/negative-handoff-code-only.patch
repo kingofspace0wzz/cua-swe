@@ -1,0 +1,51 @@
+diff --git a/src/relay_commit.js b/src/relay_commit.js
+index 3fe380e7d0b213abe9063844252b2ac018bfda50..c02bad6f8ba51acc716f9c938a8812f4b23706fc 100644
+--- a/src/relay_commit.js
++++ b/src/relay_commit.js
+@@ -35,6 +35,14 @@
+     return entry.id;
+   };
+ 
++  RelayLane.prototype.handoff = function (from, to) {
++    for (var i = 0; i < this.pending.length; i += 1) {
++      if (this.pending[i].owner !== from.key) continue;
++      this.pending[i].owner = to.key;
++      this.pending[i].port = to.port;
++    }
++  };
++
+   RelayLane.prototype.take = function (now, owner) {
+     while (this.pending.length && this.pending[0].due <= now) {
+       var entry = this.pending.shift();
+diff --git a/src/vector_relay.js b/src/vector_relay.js
+index a6d27c3efd792d620a1aa824d3a409b71f39a3b4..c8d7a3336e4c2016b0d93ee7358e67678c2e5083 100644
+--- a/src/vector_relay.js
++++ b/src/vector_relay.js
+@@ -76,6 +76,7 @@
+   };
+ 
+   VectorRelay.prototype.attachBall = function (reason) {
++    var previousOwner = this.ball && this.ball.owner;
+     this.contacts.clear();
+     this.attachmentCount += 1;
+     this.ball = {
+@@ -92,6 +93,9 @@
+       routeTime: 0,
+       overlapSlices: 0
+     };
++    if (reason === "life-replacement" && previousOwner) {
++      this.lane.handoff(previousOwner, this.ball.owner);
++    }
+   };
+ 
+   VectorRelay.prototype.dockPort = function () {
+@@ -119,7 +123,9 @@
+     if (!this.ball.attached) return;
+     var port = this.dockPort();
+     if (this.ball.owner.port === port) return;
++    var previousOwner = this.ball.owner;
+     this.ball.owner = this.lane.open(port);
++    this.lane.handoff(previousOwner, this.ball.owner);
+   };
+ 
+   VectorRelay.prototype.redock = function () {

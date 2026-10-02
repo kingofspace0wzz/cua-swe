@@ -1,0 +1,18 @@
+diff --git a/src/linkBroadcast.js b/src/linkBroadcast.js
+--- a/src/linkBroadcast.js
++++ b/src/linkBroadcast.js
+@@ -24,11 +24,10 @@ export function describeSelection(master, fraction) {
+ }
+ 
+ // Resolve the data-unit window a single linked chart should show for a
+-// selection. The strategy primitives in ./zoomStrategies.js are all available;
+-// this handler currently reuses the master's own framed data window directly,
+-// which is the window the analyst saw the rubber-band cover on the master.
++// selection. Each linked chart shows the same span of samples the master
++// rubber-band covered, read at those sample indices on this chart's own series.
+ export function resolveLinkedWindow(sel, chart) {
+-  return STRATEGIES.rawWindow(sel, chart);
++  return STRATEGIES.rawIndex(sel, chart);
+ }
+ 
+ // Compute the data-unit window each linked chart should show.

@@ -1,0 +1,76 @@
+{
+  "challenges": {
+    "daily": {
+      "id": "mournful-daily",
+      "name": "Daily clue: a mournful poem",
+      "mode": "daily",
+      "seed": 42,
+      "level": 1,
+      "answer": "elegy",
+      "acceptedWords": [
+        "elegy",
+        "eerie",
+        "cigar",
+        "stare",
+        "civic"
+      ],
+      "revealStepMs": 170
+    },
+    "practice": {
+      "id": "public-minded-practice",
+      "name": "Practice clue: community-minded",
+      "mode": "practice",
+      "seed": 43,
+      "level": 2,
+      "answer": "civic",
+      "acceptedWords": [
+        "civic",
+        "eerie",
+        "cigar",
+        "stare",
+        "elegy"
+      ],
+      "revealStepMs": 170
+    }
+  },
+  "replay": {
+    "firstGuess": "eerie",
+    "hardViolation": "cigar",
+    "invalidWord": "zzzzz",
+    "answer": "elegy"
+  },
+  "expectations": {
+    "firstRowStates": [
+      "exact",
+      "present",
+      "absent",
+      "absent",
+      "absent"
+    ],
+    "firstRowKeyboard": {
+      "e": "exact",
+      "i": "absent",
+      "r": "absent"
+    },
+    "minimumCounts": {
+      "e": 2
+    },
+    "exactPositions": {
+      "0": "e"
+    },
+    "result": {
+      "minimumUpwardDisplacementPx": 2,
+      "maximumReferencePixelDistance": 68,
+      "maximumVacatedPixelDistance": 45,
+      "activeCheckpointTimeoutMs": 2400
+    },
+    "replayInspection": {
+      "pauseTimeoutMs": 2500,
+      "completionTimeoutMs": 5000,
+      "reducedMotionTimeoutMs": 3000,
+      "expectedTileCount": 5,
+      "expectedNativeEndCount": 5,
+      "expectedFallbackCount": 0
+    }
+  }
+}

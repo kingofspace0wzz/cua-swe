@@ -1,0 +1,13 @@
+diff --git a/js/game_manager.js b/js/game_manager.js
+--- a/js/game_manager.js
++++ b/js/game_manager.js
+@@ -8,6 +8,9 @@ function GameManager(size, InputManager, Actuator) {
+ }
+ 
+ GameManager.prototype.restart = function () {
++  if (typeof window.__resetRandom === "function") {
++    window.__resetRandom();
++  }
+   this.actuator.restart();
+   this.setup();
+ };

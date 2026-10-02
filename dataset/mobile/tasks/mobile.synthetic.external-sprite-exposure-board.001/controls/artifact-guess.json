@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "task_digest": "ec231f294f1c0c72a580f7a7161b44abac46a0d78b34fd2e75c9dbad88e18446",
+  "baseline_digest": "0fec410b4884b9cb686147144077a4663eae86e1a9aa8a3b893242d324e03ad1",
+  "changes": [
+    {
+      "path": "performance.js",
+      "before": {
+        "sha256": "b001f22d0d284471f2ba5725f650f5788c76ff1ad44743011c00aa677d0ec7de",
+        "executable": false
+      },
+      "after": {
+        "sha256": "0a950a932698f452f1d98b143658394604eaff0b0e4f6b6640ec7bcda5546a87",
+        "executable": false
+      },
+      "content_b64": "ZXhwb3J0IGZ1bmN0aW9uIHBvc2VGb3IoZWRpdGlvbixjbGlwLGJlYXQpe2NvbnN0IGM9ZWRpdGlvbi5jbGlwcy5maW5kSW5kZXgoYz0+Yy5pZD09PWNsaXApO3JldHVybiB7Y2VsOmVkaXRpb24uY2Vsc1soYyo2K2JlYXQpJWVkaXRpb24uY2Vscy5sZW5ndGhdLmlkLGZhY2luZzoncmlnaHQnfTt9Cg=="
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+schema_version: 1
+task_id: devops.trace-await-context.lower-1.frontier-hard-r1.001
+source:
+  project: open-telemetry/opentelemetry-js
+  issue: https://github.com/open-telemetry/opentelemetry-js/issues/1502
+  related_change: https://github.com/open-telemetry/opentelemetry-js/pull/1616
+  pinned_revision: issue-1502-doc-pr-1616
+  license: Apache-2.0
+  related_runtime_license: MIT
+  source_type: adapted_real_repo
+notes:
+  - This controlled harder successor changes only one axis by adding evaluator-owned runtime compatibility variants; protected profiles now declare manager-specific continuation support, and a store-based hidden variant requires native continuations, so a fixed compile target no longer satisfies every variant. Mechanism, source architecture, instruction style, and ancestry oracle are unchanged.
+  - The issue and documentation change establish that native async/await can bypass ZoneContextManager propagation depending on compilation target.
+  - The concurrent-operation, multi-instrumentation, and manager-specific continuation-variant topology is an original adversarial extension used to distinguish complete propagation from manual or global-root shortcuts.
+  - The Continuum console, context engine, profiles, schedules, verifier, and assets are original implementations; no upstream source, tests, issue text, or assets are copied.

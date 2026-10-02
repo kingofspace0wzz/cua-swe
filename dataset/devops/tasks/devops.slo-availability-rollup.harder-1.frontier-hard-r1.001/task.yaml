@@ -1,0 +1,50 @@
+id: devops.slo-availability-rollup.harder-1.frontier-hard-r1.001
+track: web_frontend
+benchmark_domain: devops-observability
+type: functional_ui
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: dataset/devops/tasks/devops.slo-availability-rollup.harder-1.frontier-hard-r1.001/repo
+  ref: protected-slo-event-ledger-engine-correlated-reference-v3
+instruction: SLO Ledger Review has been enabled for a service with a new reporting agreement. Availability,
+  the objective verdict, and budget utilization do not reconcile with the agreement and the event ledger
+  across traffic shapes and rolling windows. Diagnose the discrepancy in the running console and repair
+  durable rollup behavior. Preserve all events, slices, objectives, windows, breakdowns, filters, probes,
+  and replay.
+setup:
+  install:
+  - npm run build
+  launch:
+  - CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1 node server.mjs --host 127.0.0.1 --port 4455
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4455
+  viewport_or_device: desktop-1280x720
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 120
+  max_gui_actions: 240
+  max_test_runs: 28
+verifiers:
+  build:
+  - npm run build
+  unit: []
+  ui:
+  - ${CUA_SWE_PYTHON:-${CUA_SWE_MOBILEGYM_PYTHON:-python3}} verifiers/browser_check.py
+  visual: []
+  state: []
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: false
+schema_version: 2

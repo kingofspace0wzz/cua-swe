@@ -1,0 +1,124 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/inhibition_service.mjs
+  fixture: repo/verifiers/profiles.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults: {service: 4372, application: 4371}
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants: [visible, hidden]
+  oracle: protected-alert-queue-edge-route-and-runbook-signatures-across-four-timeline-states
+  note: >-
+    Each run starts a fresh inhibition service and application host. The
+    service owns the raw alerts, the four deterministic timeline states
+    (initial batch, arriving alerts, partial resolution, replay of the
+    initial batch), the per-profile scope-dimension registry whose entries
+    carry only opaque migration epoch codes, the stale scope-taxonomy roles
+    that decoy the equality set in both directions, the notification routes
+    including the suppression-unaffected archive route, the hidden renamed
+    profile, the expected queue, edge, and route signatures, and the scope
+    stamping runbook. The decisive per-epoch stamping state — which epochs
+    are sealed (absence of the label on either alert is an eligibility
+    violation) and which epochs are still stamping (absence is temporarily
+    tolerated and matches as recorded) — is published to operators only as
+    the raster pixels of the ops-docs runbook page served at the service's
+    /runbook endpoint and displayed in the console's stamping runbook
+    panel. That mapping never appears in repository source, comments, HTML
+    markup, bundled assets, accessibility metadata, client-visible JSON, or
+    any other machine-readable API field; the catalog exposes only
+    dimension names, stale roles, epoch codes, and neutral notes. The
+    agent-visible source renders the registry, runbook image, notes,
+    advisories, routes, and timeline generically and never states which
+    dimensions require concrete values, nor which dimension tolerates
+    matching by absence.
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+    - repo/verifiers/
+    - env/
+    - task.yaml
+    - gold.patch
+    - negative.patch
+    - negatives/
+    - alternates/
+    - replay.md
+    - evidence.yaml
+    - provenance.yaml
+    - candidate.yaml
+    - runtime-contract.yaml
+    - operator-gate.yaml
+    - custody.json
+    - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - compare firing and suppressed queue membership in the initial batch
+    - follow suppression edges to their source alerts
+    - read the scope-dimension registry names, roles, epoch codes, and notes, and the incident advisories
+    - read the stamping runbook page rendered in the stamping runbook panel and note each epoch's stamping state and missing-label policy
+    - read the notification routes and note which route stays unaffected by suppression
+    - advance to the arriving alerts and compare the newly held unscoped service (concrete shared value on a stamping-epoch dimension) against the pair that omits that dimension but must stay suppressed
+    - advance to the partial resolution and verify resolved sources release their targets while unrelated absence-matched suppression persists
+    - advance to the replay state and confirm it exactly restores the initial batch
+    - inspect the deployed rule presence guards
+  decisive_paths:
+    - incident.label
+    - summary.firing-count
+    - summary.suppressed-count
+    - summary.unscoped-count
+    - advisory.text
+    - dimension.name
+    - dimension.role
+    - dimension.epoch
+    - dimension.note
+    - runbook-image.pixels
+    - route.name
+    - route.delivered
+    - alert.scope-state
+    - alert.inhibited-by
+    - edge.source
+    - edge.target
+    - comparison.dimension
+    - comparison.state
+    - rule.required-source-labels
+    - rule.required-target-labels
+source_noninferability:
+  forbidden_agent_source_literals:
+    - prometheus/alertmanager
+    - issues-507-1727-and-inhibition-docs
+    - inhibition_service.mjs
+    - profiles.json
+    - expectedSignature
+    - v-node-west
+    - v-node-relay
+    - h-shard-cobalt
+    - h-shard-relay
+    - CdnErrors
+    - SettlementJobsStuck
+    - IOPressure
+    - CacheDivergence
+    - tenant
+    - M108
+    - M112
+    - M117
+    - M121
+    - M126
+    - M131
+    - sealed
+    - SEALED
+    - VIOLATION
+    - STAMPING_EPOCHS

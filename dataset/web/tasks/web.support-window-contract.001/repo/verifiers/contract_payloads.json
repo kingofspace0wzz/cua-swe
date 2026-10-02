@@ -1,0 +1,31 @@
+{
+  "primary": {
+    "case_ref": "SUP-410",
+    "schedule": {
+      "week_anchor_epoch_ms": 1791158400000,
+      "selected_slot_ref": "S-2",
+      "day_code_map": { "D1": 1, "D4": 3 },
+      "slots": [
+        { "slot_ref": "S-1", "day_code": "D1", "start_quanta": 6 },
+        { "slot_ref": "S-2", "day_code": "D4", "start_quanta": 30 }
+      ],
+      "quantum_minutes": 20,
+      "display_zone": "America/Chicago"
+    }
+  },
+  "secondary": {
+    "case_ref": "SUP-944",
+    "schedule": {
+      "week_anchor_epoch_ms": 1799020800000,
+      "selected_slot_ref": "Q-9",
+      "day_code_map": { "AA": 2, "ZX": 4 },
+      "slots": [
+        { "slot_ref": "Q-3", "day_code": "AA", "start_quanta": 3 },
+        { "slot_ref": "Q-9", "day_code": "ZX", "start_quanta": 10 }
+      ],
+      "quantum_minutes": 45,
+      "display_zone": "Europe/Berlin"
+    }
+  }
+}
+

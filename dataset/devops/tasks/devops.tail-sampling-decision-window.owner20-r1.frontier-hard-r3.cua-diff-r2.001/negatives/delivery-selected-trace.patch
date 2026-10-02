@@ -1,0 +1,34 @@
+--- a/src/config/compilePolicyPlan.js
++++ b/src/config/compilePolicyPlan.js
+@@ -11,9 +11,18 @@
+   }
+ }
+ 
+-export function compilePolicyPlan(collector) {
++const RECEIVER_DECISION_MARGIN_MS = 180;
++
++function decisionWaitMs(collector, receiver) {
++  const deliveries = receiver && Array.isArray(receiver.deliveries) ? receiver.deliveries : [];
++  if (!deliveries.length) return Number(collector.decisionWaitMs);
++  const incident = deliveries[0];
++  return incident.lastSpanAtMs - incident.firstSpanAtMs + RECEIVER_DECISION_MARGIN_MS;
++}
++
++export function compilePolicyPlan(collector, receiver) {
+   return {
+-    decisionWaitMs: Number(collector.decisionWaitMs),
++    decisionWaitMs: decisionWaitMs(collector, receiver),
+     policies: collector.policies.map(compilePolicy),
+   };
+ }
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -8,7 +8,7 @@
+ export async function initialize() {
+   const catalog = await samplerClient.catalog();
+   await samplerClient.configure(
+-    compilePolicyPlan(COLLECTOR_SETTINGS),
++    compilePolicyPlan(COLLECTOR_SETTINGS, catalog.receiver),
+   );
+   store.set({ catalog });
+   await samplerClient.scenario(catalog.scenarios[0].id);

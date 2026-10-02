@@ -1,0 +1,28 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+index 2ca366ab15985349340044ba1cd10e5ffff22f8e..960a13b6227fff9bcd912ab20f69c8241a0fd13b 100644
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -1,4 +1,13 @@
++function concretePlacementLabels(catalog, policy) {
++  const registry = policy?.dimensionRegistry ?? catalog.dimensions ?? [];
++  return registry
++    .filter((dimension) => dimension.role === "placement")
++    .map((dimension) => dimension.name)
++    .filter((name) => catalog.equalDimensions.includes(name));
++}
++
+ export function compileInhibitionRule(catalog, policy) {
++  const placementLabels = concretePlacementLabels(catalog, policy);
+   return {
+     source_matchers: [
+       {
+@@ -15,7 +24,7 @@ export function compileInhibitionRule(catalog, policy) {
+       },
+     ],
+     equal: [...catalog.equalDimensions],
+-    required_source_labels: [],
+-    required_target_labels: [],
++    required_source_labels: [...placementLabels],
++    required_target_labels: [...placementLabels],
+   };
+ }

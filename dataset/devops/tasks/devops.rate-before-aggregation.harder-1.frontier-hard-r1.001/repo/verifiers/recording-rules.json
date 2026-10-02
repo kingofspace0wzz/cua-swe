@@ -1,0 +1,62 @@
+[
+  {
+    "id": "traffic-window",
+    "label": "Traffic window",
+    "steps": [
+      "window = sum by (service) (rate(service_stream_total[60s]))"
+    ],
+    "inputLabels": "service",
+    "outputLabels": "service",
+    "lineage": [
+      "input service_stream_total · 1 series per service · labels: service",
+      "publisher: ingress gateway cost rollup · merges every target stream into one service counter before storage",
+      "collection: 15s step · samples current at query time"
+    ],
+    "upstream": "gateway-rollup"
+  },
+  {
+    "id": "traffic-detail",
+    "label": "Traffic detail",
+    "steps": [
+      "window = sum by (service) (rate(panel_counter_total[60s]))"
+    ],
+    "inputLabels": "service, target",
+    "outputLabels": "service",
+    "lineage": [
+      "input panel_counter_total · 1 series per target · labels: service, target",
+      "publisher: application scrape · raw counter exposed by each target",
+      "collection: 15s step · samples current at query time"
+    ],
+    "upstream": "raw-scrape"
+  },
+  {
+    "id": "traffic-capacity",
+    "label": "Traffic capacity",
+    "steps": [
+      "window = sum by (service) (rate(target_stream_total[60s]))"
+    ],
+    "inputLabels": "service, target",
+    "outputLabels": "service",
+    "lineage": [
+      "input target_stream_total · 1 series per target · labels: service, target",
+      "publisher: cross-zone relay mirror · re-publishes each target stream after transit",
+      "collection: 15s step · samples trail the live scrape by one collection interval"
+    ],
+    "upstream": "relay-mirror"
+  },
+  {
+    "id": "traffic-archive",
+    "label": "Traffic archive",
+    "steps": [
+      "window = sum by (service) (rate(archive_stream_total[60s]))"
+    ],
+    "inputLabels": "service, target",
+    "outputLabels": "service",
+    "lineage": [
+      "input archive_stream_total · 1 series per target · labels: service, target",
+      "publisher: long-term archive compactor · keeps the last sample of each 30s block",
+      "collection: 30s step · samples current at query time"
+    ],
+    "upstream": "archive-compaction"
+  }
+]

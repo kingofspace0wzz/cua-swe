@@ -1,0 +1,124 @@
+--- a/src/notebook.mjs
++++ b/src/notebook.mjs
+@@ -64,6 +64,51 @@ export class Notebook {
+     return -1;
+   }
+ 
++  /**
++   * Find the cell containing a node, traversing open shadow roots. Returns
++   * null if the node is not in a cell of this notebook.
++   */
++  _cellContaining(node) {
++    let current = node;
++    while (current) {
++      const element =
++        current instanceof Element ? current : current.parentElement;
++      if (element) {
++        const idx = this._findCell(element);
++        if (idx !== -1) {
++          return this.widgets[idx];
++        }
++      }
++      const root = (element ?? current).getRootNode();
++      current = root instanceof ShadowRoot ? root.host : null;
++    }
++    return null;
++  }
++
++  /**
++   * Whether a shift-click on `target` should be left to the browser to handle
++   * as an extension of the current text selection, rather than turned into a
++   * cell range selection. This is the case when the click lands in a region of
++   * a cell whose text the browser selects - the output area of a code cell, or
++   * the rendered input of a rendered markdown cell - and the current selection
++   * is anchored in such a region too. Only the selection anchor is considered,
++   * because a shift-click moves the focus and leaves the anchor in place.
++   */
++  _isExtendingTextSelection(selection, targetCell, target) {
++    if (!selection || selection.isCollapsed) {
++      return false;
++    }
++    if (!isInTextRegion(targetCell, target)) {
++      return false;
++    }
++    const anchorNode = selection.anchorNode;
++    if (isInTextRegion(targetCell, anchorNode)) {
++      return true;
++    }
++    const anchorCell = this._cellContaining(anchorNode);
++    return !!anchorCell && isInTextRegion(anchorCell, anchorNode);
++  }
++
+   _targetArea(node, index) {
+     if (index === -1) {
+       return 'notebook';
+@@ -122,18 +167,22 @@ export class Notebook {
+     if (targetArea === 'notebook') {
+       this.deselectAll();
+     } else if (targetArea === 'prompt' || targetArea === 'cell') {
+-      // We don't want to prevent the default selection behavior
+-      // if there is currently text selected.
+-      const hasSelection = (window.getSelection() ?? '').toString() !== '';
+       if (
+         button === 0 &&
+         shiftKey &&
+-        !hasSelection &&
+-        !['INPUT', 'OPTION'].includes(target.tagName)
++        !['INPUT', 'OPTION'].includes(target.tagName) &&
++        // We don't want to prevent the default selection behavior when the
++        // user is extending a text selection into the clicked region.
++        !this._isExtendingTextSelection(window.getSelection(), widget, target)
+       ) {
+         // Prevent browser selecting text in prompt or output
+         event.preventDefault();
+ 
++        // Preventing the default also stops the browser from collapsing any
++        // text selection which is already there; drop it explicitly so that
++        // stale highlighted text is not left over the new cell selection.
++        window.getSelection()?.removeAllRanges();
++
+         // Shift-click - extend selection
+         try {
+           this.extendContiguousSelectionTo(index);
+@@ -225,3 +274,41 @@ class Cell {
+     this.node = node;
+   }
+ }
++
++/**
++ * Whether `node` is `parent` or a descendant of it, traversing out of open
++ * shadow roots so that a node rendered by a widget library which attaches a
++ * shadow root is still recognised as belonging to its host subtree.
++ */
++function containsDeep(parent, node) {
++  let current = node;
++  while (current) {
++    if (parent.contains(current)) {
++      return true;
++    }
++    const root = current.getRootNode();
++    current = root instanceof ShadowRoot ? root.host : null;
++  }
++  return false;
++}
++
++/**
++ * The regions of a cell whose text the browser, rather than the notebook, is
++ * responsible for selecting: the output area of a code cell and the rendered
++ * input of a cell which renders it, such as a rendered markdown cell.
++ */
++function textRegionsOf(cell) {
++  const regions = [];
++  if (cell.outputArea) {
++    regions.push(cell.outputArea);
++  }
++  return regions;
++}
++
++/** Whether a node is in a region of a cell whose text the browser selects. */
++function isInTextRegion(cell, node) {
++  if (!cell || !node) {
++    return false;
++  }
++  return textRegionsOf(cell).some(region => containsDeep(region, node));
++}

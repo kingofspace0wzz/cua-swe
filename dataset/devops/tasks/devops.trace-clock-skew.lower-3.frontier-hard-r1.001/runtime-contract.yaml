@@ -1,0 +1,100 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/trace_service.mjs
+  fixture: repo/verifiers/profiles.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults: {service: 4342, application: 4341}
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants: [visible, hidden]
+  oracle: protected_corrected_span_geometry
+  note: >-
+    Each run starts a fresh trace service and host. The service owns raw
+    spans, the clock-authority registry that maps every host to its time
+    authority, expected per-authority corrections, per-host operator notes,
+    instrumentation advisories, controls, and the submitted-geometry audit, so
+    renderer changes cannot alter scored results. The decisive clock-domain
+    truth exists only in this evaluator-owned runtime state; the agent-visible
+    source renders the notes and advisories generically and never names the
+    authority concept. The service also serves the evaluator-owned raster
+    operator playbook used by the controlled observation path.
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+    - repo/verifiers/
+    - env/
+    - task.yaml
+    - gold.patch
+    - negative.patch
+    - negatives/
+    - replay.md
+    - evidence.yaml
+    - provenance.yaml
+    - candidate.yaml
+    - runtime-contract.yaml
+    - operator-gate.yaml
+    - custody.json
+    - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - inspect the preselected opposite-sign skew comparison at launch
+    - read the runtime host-comparison operator notes and group hosts that share one time authority
+    - inspect the shared-clock instrumentation advisory in the warnings panel and its unmoved boundary
+    - inspect the protected first-viewport raster playbook and follow its numbered authority-group translation sequence
+    - compare raw and displayed span times, parent range, host shift, and duration in one view
+    - compare multiple hosts that report through one runtime authority, including one whose own boundary looks aligned or under-shifted
+    - inspect the first-screen parent-ordered host chain and compare nested children with displayed parent geometry
+    - inspect aligned cross-host and shared-clock malformed controls
+  decisive_paths:
+    - skew-comparison.direction
+    - skew-comparison.reported-range
+    - skew-comparison.displayed-range
+    - skew-comparison.host-shift
+    - skew-comparison.duration
+    - host.note.time-authority
+    - host.note.shared-peer
+    - host.shift
+    - warning.advisory.shared-authority
+    - warning.parent-host
+    - host-chain.boundary-order
+    - host-chain.displayed-parent
+    - operator-guide.authority-group-raster
+    - waterfall.parent-boundary
+    - waterfall.adjusted
+    - span.reported-range
+    - span.displayed-range
+    - span.duration
+    - trace.selector
+source_noninferability:
+  forbidden_agent_source_literals:
+    - jaegertracing/jaeger
+    - clockskew.go
+    - trace_service.mjs
+    - profiles.json
+    - timeAuthority
+    - hostAuthorities
+    - expectedAuthorityShifts
+    - time authority
+    - authority
+    - clock domain
+    - tempo-rack-a
+    - tempo-edge-c
+    - ptp-pod-x
+    - ptp-front-z
+    - Regional trace certification
+    - invoice-ahead

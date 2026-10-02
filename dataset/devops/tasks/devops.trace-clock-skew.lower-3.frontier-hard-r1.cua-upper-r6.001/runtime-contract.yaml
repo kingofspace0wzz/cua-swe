@@ -1,0 +1,195 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/trace_service.mjs
+  fixture: repo/verifiers/profiles.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults: {service: 4342, application: 4341}
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants: [visible, hidden]
+  oracle: protected_corrected_span_geometry
+  note: >-
+    Each run starts a fresh trace service and host. The service owns raw
+    spans, the clock-authority registry that maps every host to its time
+    authority, deterministic workload captures archived before a scheduled
+    clock-maintenance transition, four overlapping post-transition replays of
+    each affected workload, expected per-authority corrections, per-host
+    operator notes, opaque filing metadata, controls, and the
+    submitted-geometry audit, so renderer changes cannot alter scored
+    results. Every machine-readable channel (catalog, trace payloads,
+    titles, advisories, identifiers) carries only opaque filing codes: an
+    archive/recheck register token, a disposition token, and a recording-crew
+    token. The complete calibration-pair and reset-authority mapping — which
+    register is the pre-transition archive, which disposition token marks the
+    record the site stands behind versus the withdrawn mid-window step and
+    the sensor-path recheck, and which crew code holds reset authority so
+    that only its standing replay is the timing reference of record — is
+    published exclusively on the evaluator-owned raster operator calibration
+    board (three PNG sheets served as pixels) and, in sequencing form, on
+    the raster decision guide. The replays of one workload overlap in
+    service, operation, host, duration, and root geometry but disagree in
+    per-authority deltas; only the replay carrying the standing disposition
+    and the reset-authority crew code carries the protected correction. A
+    withdrawn partial-step replay, a sensor-path recheck by the
+    instrumentation crew, and a standing audit-desk replay with a wrong
+    magnitude are decoys. The agent-visible source renders titles, notes,
+    advisories, and the board generically and never names any code's
+    meaning.
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+    - repo/verifiers/
+    - env/
+    - task.yaml
+    - gold.patch
+    - negative.patch
+    - negatives/
+    - replay.md
+    - evidence.yaml
+    - provenance.yaml
+    - candidate.yaml
+    - runtime-contract.yaml
+    - operator-gate.yaml
+    - custody.json
+    - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - inspect the preselected opposite-sign skew comparison at launch, including each card's register and crew codes
+    - read the runtime host-comparison operator notes and group hosts that share one time authority
+    - read calibration board sheet 1 and learn which register token is the pre-transition archive and the sanctioned pairing rule
+    - page the calibration board to sheet 2 and learn which crew code holds reset authority and which crew codes never provide timing references
+    - page the calibration board to sheet 3 and learn which disposition token is standing, which is withdrawn, and which is a sensor recheck
+    - open the trace selector and observe that each affected workload has four post-transition replays whose titles carry different disposition and crew codes
+    - select two replays of the same workload and observe that their matching spans' reported times disagree, so replays cannot be interchangeable references
+    - select the replay whose title carries the standing disposition and the reset-authority crew code and compare matching spans' reported times against the archived capture, per authority
+    - observe that the replay difference of a skewed authority exceeds the visible boundary overhang, so boundary-fit corrections are wrong
+    - observe the standing audit-desk replay whose delta disagrees, eliminating disposition-only selection
+    - observe the withdrawn replay and the sensor recheck, eliminating recency, order, and crew-exclusion selection
+    - inspect the aligned control pair whose replay times are identical, confirming the workload replay is deterministic
+    - inspect the shared-clock flagged control, its crew-code advisory, and the identical violation persisting in its post-transition replay
+    - compare raw and displayed span times, parent range, host shift, and duration in one view
+    - reselect a capture and observe deterministic identical geometry with the board still posted
+  decisive_paths:
+    - skew-comparison.direction
+    - skew-comparison.register-code
+    - skew-comparison.reported-range
+    - skew-comparison.displayed-range
+    - skew-comparison.host-shift
+    - skew-comparison.duration
+    - calibration-board.sheet-1.register-semantics-and-pairing-rule
+    - calibration-board.sheet-2.crew-roster-and-reset-authority
+    - calibration-board.sheet-3.disposition-legend-and-controls
+    - trace.selector.replay-multiplicity
+    - trace.title.register-code
+    - trace.title.disposition-code
+    - trace.title.crew-code
+    - span.reported-range.archive
+    - span.reported-range.post-transition-replays
+    - host.note.time-authority
+    - host.note.shared-peer
+    - host.shift
+    - warning.advisory.crew-code
+    - warning.advisory.flagged-boundary
+    - host-chain.boundary-order
+    - host-chain.displayed-parent
+    - operator-guide.code-check-sequence-raster
+    - waterfall.parent-boundary
+    - waterfall.adjusted
+    - span.duration
+source_noninferability:
+  forbidden_agent_source_literals:
+    - jaegertracing/jaeger
+    - clockskew.go
+    - trace_service.mjs
+    - profiles.json
+    - calibration-board-1
+    - calibration-board-2
+    - calibration-board-3
+    - timeAuthority
+    - hostAuthorities
+    - expectedAuthorityShifts
+    - time authority
+    - authority
+    - clock domain
+    - calibration-reference-shift
+    - calibrationReference
+    - findCalibrationReference
+    - alignToCalibrationReference
+    - maintenance-reference-shift
+    - maintenanceReference
+    - before-reset
+    - after-reset
+    - resetEvent
+    - capturedAt
+    - capture.register
+    - capture.workload
+    - capture.disposition
+    - capture.crew
+    - transition.bulletin
+    - R-207
+    - R-311
+    - D-41
+    - D-17
+    - D-63
+    - crew-04
+    - crew-07
+    - crew-08
+    - crew-12
+    - crew-26
+    - reset authority
+    - calibration authority
+    - timing reference of record
+    - standing record
+    - withdrawn record
+    - sensor-path recheck
+    - superseded
+    - reference of record
+    - CB-7
+    - CB-12
+    - checkout-r118
+    - checkout-r126
+    - checkout-r131
+    - checkout-r140
+    - orders-r109
+    - orders-r121
+    - orders-r127
+    - orders-r133
+    - invoice-r204
+    - invoice-r209
+    - invoice-r212
+    - invoice-r217
+    - feed-r175
+    - feed-r181
+    - feed-r188
+    - feed-r196
+    - search-r152
+    - edge-r149
+    - profile-r233
+    - front-annotation-r241
+    - invoice-late
+    - feed-early
+    - tempo-rack-a
+    - tempo-rack-b
+    - tempo-store-b
+    - tempo-cdn-a
+    - tempo-edge-c
+    - ptp-pod-x
+    - ptp-pod-y
+    - ptp-cache-y
+    - ptp-front-z
+    - Regional trace certification

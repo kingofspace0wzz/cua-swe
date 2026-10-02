@@ -1,0 +1,45 @@
+diff --git a/src/cargo_contract.js b/src/cargo_contract.js
+index f55cae1..8d45e20 100644
+--- a/src/cargo_contract.js
++++ b/src/cargo_contract.js
+@@ -60,19 +60,30 @@ function collectCargoRecords(value, path, records) {
+ /**
+- * Uses the legacy first-record fallback for an unknown cargo contract.
++ * Resolves the active route from the canonical cargo maps.
+  * @param {!Object} payload
+  * @return {{semanticKey: string, semanticUnits: number, visualUnits: number}}
+  */
+ function deriveCenterCargo(payload) {
+-  const records = [];
+-  collectCargoRecords(payload, '', records);
+-  const candidate = records[0] || {};
+-  const candidateValues = Object.values(candidate);
+-  const semanticKey = String(
+-      candidateValues.find((value) => typeof value === 'string') ||
+-      'fallback-center');
+-  const semanticUnits = Number(
+-      candidateValues.find((value) => typeof value === 'number') || 1);
++  const activeRoute = payload['activeCargoRouteV13'];
++  const routes = payload['cargoRouteMapV13'] || [];
++  const selectedRoute = routes.find((route) =>
++    route['routeGlyphV13'] === activeRoute) || {};
++  const selectedAlias = selectedRoute['aliasGlyphV13'];
++  const aliases = payload['cargoAliasMapV13'] || [];
++  const aliasRecord = aliases.find((alias) =>
++    alias['aliasGlyphV13'] === selectedAlias) || {};
++  const selectedRelay = aliasRecord['relayGlyphV13'];
++  const relays = payload['cargoRelayMapV13'] || [];
++  const relayRecord = relays.find((relay) =>
++    relay['relayGlyphV13'] === selectedRelay) || {};
++  const activeKey = relayRecord['receiptGlyphV13'];
++  const records = payload['cargoReceiptMatrixV13'] || [];
++  const active = records.find((record) =>
++    record['receiptGlyphV13'] === activeKey) || {};
+   const render = payload['render'] || {};
+   const visualUnits = Math.max(1, Number(render['count']) || 1);
++  const semanticKey = String(
++      active['receiptGlyphV13'] || 'fallback-center');
++  const semanticUnits = Math.max(
++      1, Number(active['creditUnitsV13']) || visualUnits);
+   return {semanticKey, semanticUnits, visualUnits};
+ }

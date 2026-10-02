@@ -1,0 +1,23 @@
+{
+  "name": "js13k-callisto",
+  "version": "1.0.0",
+  "description": "js13k",
+  "license": "MIT",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node server.mjs",
+    "build": "node build.js --dev",
+    "server": "http-server ./dist --port 3000",
+    "lint": "eslint src/**/*.js",
+    "fix": "eslint --fix src/**/*.js",
+    "test:replay": "python3 verifiers/replay_state.py --url http://127.0.0.1:4392/?benchmark=1&level=3"
+  },
+  "devDependencies": {
+    "archiver": "5.3.1",
+    "eslint": "8.14.0",
+    "eslint-config-google": "0.14.0",
+    "google-closure-compiler": "20220405.0.0",
+    "http-server": "^14.1.0",
+    "roadroller": "2.1.0"
+  }
+}

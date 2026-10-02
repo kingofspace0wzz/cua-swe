@@ -1,0 +1,580 @@
+{
+  "visible": {
+    "label": "Checkout and orders traces",
+    "maxAdjustmentMs": 2000,
+    "traces": [
+      {
+        "id": "checkout-early",
+        "title": "Checkout rack clock leads gateway",
+        "hostAuthorities": {
+          "edge-a": "tempo-core-a",
+          "app-a": "tempo-rack-a",
+          "db-a": "tempo-rack-a",
+          "mq-a": "tempo-mq-a"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-a": 0,
+          "tempo-rack-a": 600,
+          "tempo-mq-a": 0
+        },
+        "hostNotes": [
+          {
+            "host": "edge-a",
+            "note": "time authority tempo-core-a \u00b7 gateway keeps its own clock"
+          },
+          {
+            "host": "app-a",
+            "note": "time authority tempo-rack-a \u00b7 shares the rack clock with db-a"
+          },
+          {
+            "host": "db-a",
+            "note": "time authority tempo-rack-a \u00b7 shares the rack clock with app-a"
+          },
+          {
+            "host": "mq-a",
+            "note": "time authority tempo-mq-a \u00b7 broker keeps its own clock"
+          }
+        ],
+        "advisories": [],
+        "spans": [
+          {
+            "id": "c-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "POST /checkout",
+            "host": "edge-a",
+            "startMs": 0,
+            "durationMs": 2000,
+            "endMs": 2000
+          },
+          {
+            "id": "c-charge",
+            "parentId": "c-root",
+            "service": "checkout",
+            "operation": "charge",
+            "host": "app-a",
+            "startMs": -600,
+            "durationMs": 900,
+            "endMs": 300
+          },
+          {
+            "id": "c-auth",
+            "parentId": "c-charge",
+            "service": "payments",
+            "operation": "authorise",
+            "host": "app-a",
+            "startMs": -450,
+            "durationMs": 300,
+            "endMs": -150
+          },
+          {
+            "id": "c-ledger",
+            "parentId": "c-charge",
+            "service": "ledger",
+            "operation": "write",
+            "host": "db-a",
+            "startMs": -100,
+            "durationMs": 400,
+            "endMs": 300
+          },
+          {
+            "id": "c-notify",
+            "parentId": "c-charge",
+            "service": "notifications",
+            "operation": "enqueue receipt",
+            "host": "mq-a",
+            "startMs": 600,
+            "durationMs": 200,
+            "endMs": 800
+          }
+        ]
+      },
+      {
+        "id": "orders-late",
+        "title": "Orders rack clock trails gateway",
+        "hostAuthorities": {
+          "edge-b": "tempo-core-b",
+          "app-b": "tempo-rack-b",
+          "db-b": "tempo-rack-b"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-b": 0,
+          "tempo-rack-b": -300
+        },
+        "hostNotes": [
+          {
+            "host": "edge-b",
+            "note": "time authority tempo-core-b \u00b7 gateway keeps its own clock"
+          },
+          {
+            "host": "app-b",
+            "note": "time authority tempo-rack-b \u00b7 shares the rack clock with db-b"
+          },
+          {
+            "host": "db-b",
+            "note": "time authority tempo-rack-b \u00b7 shares the rack clock with app-b"
+          }
+        ],
+        "advisories": [],
+        "spans": [
+          {
+            "id": "o-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /orders",
+            "host": "edge-b",
+            "startMs": 0,
+            "durationMs": 1600,
+            "endMs": 1600
+          },
+          {
+            "id": "o-list",
+            "parentId": "o-root",
+            "service": "orders",
+            "operation": "list",
+            "host": "app-b",
+            "startMs": 900,
+            "durationMs": 1000,
+            "endMs": 1900
+          },
+          {
+            "id": "o-map",
+            "parentId": "o-list",
+            "service": "orders",
+            "operation": "map rows",
+            "host": "app-b",
+            "startMs": 1100,
+            "durationMs": 300,
+            "endMs": 1400
+          },
+          {
+            "id": "o-cache",
+            "parentId": "o-list",
+            "service": "cache",
+            "operation": "lookup",
+            "host": "db-b",
+            "startMs": 1300,
+            "durationMs": 200,
+            "endMs": 1500
+          }
+        ]
+      },
+      {
+        "id": "search-aligned",
+        "title": "Aligned cross-host control",
+        "hostAuthorities": {
+          "edge-a": "tempo-core-a",
+          "app-a": "tempo-rack-a"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-a": 0,
+          "tempo-rack-a": 0
+        },
+        "hostNotes": [
+          {
+            "host": "edge-a",
+            "note": "time authority tempo-core-a \u00b7 gateway keeps its own clock"
+          },
+          {
+            "host": "app-a",
+            "note": "time authority tempo-rack-a \u00b7 rack clock, no shared peer in this trace"
+          }
+        ],
+        "advisories": [],
+        "spans": [
+          {
+            "id": "s-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /search",
+            "host": "edge-a",
+            "startMs": 0,
+            "durationMs": 1800,
+            "endMs": 1800
+          },
+          {
+            "id": "s-query",
+            "parentId": "s-root",
+            "service": "search",
+            "operation": "query",
+            "host": "app-a",
+            "startMs": 300,
+            "durationMs": 500,
+            "endMs": 800
+          },
+          {
+            "id": "s-rank",
+            "parentId": "s-query",
+            "service": "search",
+            "operation": "rank",
+            "host": "app-a",
+            "startMs": 450,
+            "durationMs": 200,
+            "endMs": 650
+          }
+        ]
+      },
+      {
+        "id": "edge-instrumentation",
+        "title": "Shared-clock instrumentation control",
+        "hostAuthorities": {
+          "edge-c": "tempo-edge-c",
+          "side-c": "tempo-edge-c",
+          "db-c": "tempo-store-c"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-edge-c": 0,
+          "tempo-store-c": 0
+        },
+        "hostNotes": [
+          {
+            "host": "edge-c",
+            "note": "time authority tempo-edge-c \u00b7 shares the edge clock with side-c"
+          },
+          {
+            "host": "side-c",
+            "note": "time authority tempo-edge-c \u00b7 shares the edge clock with edge-c"
+          },
+          {
+            "host": "db-c",
+            "note": "time authority tempo-store-c \u00b7 store keeps its own clock"
+          }
+        ],
+        "advisories": [
+          "side-c reports through the same time authority as edge-c; its proxy handshake outside the parent is an instrumentation defect, not clock skew."
+        ],
+        "spans": [
+          {
+            "id": "i-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /health",
+            "host": "edge-c",
+            "startMs": 0,
+            "durationMs": 1200,
+            "endMs": 1200
+          },
+          {
+            "id": "i-middleware",
+            "parentId": "i-root",
+            "service": "gateway",
+            "operation": "middleware",
+            "host": "edge-c",
+            "startMs": -100,
+            "durationMs": 400,
+            "endMs": 300
+          },
+          {
+            "id": "i-agent",
+            "parentId": "i-root",
+            "service": "mesh",
+            "operation": "proxy handshake",
+            "host": "side-c",
+            "startMs": 900,
+            "durationMs": 500,
+            "endMs": 1400
+          },
+          {
+            "id": "i-read",
+            "parentId": "i-root",
+            "service": "store",
+            "operation": "read",
+            "host": "db-c",
+            "startMs": 500,
+            "durationMs": 300,
+            "endMs": 800
+          }
+        ]
+      }
+    ]
+  },
+  "hidden": {
+    "label": "Regional trace certification",
+    "maxAdjustmentMs": 1500,
+    "traces": [
+      {
+        "id": "invoice-ahead",
+        "title": "Invoice pod clock leads ingress",
+        "hostAuthorities": {
+          "front-x": "ptp-edge-x",
+          "worker-x": "ptp-pod-x",
+          "sql-x": "ptp-pod-x",
+          "log-x": "ptp-log-x"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-x": 0,
+          "ptp-pod-x": 420,
+          "ptp-log-x": 0
+        },
+        "hostNotes": [
+          {
+            "host": "front-x",
+            "note": "time authority ptp-edge-x \u00b7 ingress keeps its own clock"
+          },
+          {
+            "host": "worker-x",
+            "note": "time authority ptp-pod-x \u00b7 shares the pod clock with sql-x"
+          },
+          {
+            "host": "sql-x",
+            "note": "time authority ptp-pod-x \u00b7 shares the pod clock with worker-x"
+          },
+          {
+            "host": "log-x",
+            "note": "time authority ptp-log-x \u00b7 audit sink keeps its own clock"
+          }
+        ],
+        "advisories": [],
+        "spans": [
+          {
+            "id": "h1-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "POST /invoice",
+            "host": "front-x",
+            "startMs": 100,
+            "durationMs": 1700,
+            "endMs": 1800
+          },
+          {
+            "id": "h1-build",
+            "parentId": "h1-root",
+            "service": "invoice",
+            "operation": "build",
+            "host": "worker-x",
+            "startMs": -320,
+            "durationMs": 800,
+            "endMs": 480
+          },
+          {
+            "id": "h1-tax",
+            "parentId": "h1-build",
+            "service": "invoice",
+            "operation": "tax",
+            "host": "worker-x",
+            "startMs": -190,
+            "durationMs": 250,
+            "endMs": 60
+          },
+          {
+            "id": "h1-write",
+            "parentId": "h1-build",
+            "service": "database",
+            "operation": "insert",
+            "host": "sql-x",
+            "startMs": 20,
+            "durationMs": 300,
+            "endMs": 320
+          },
+          {
+            "id": "h1-audit",
+            "parentId": "h1-build",
+            "service": "audit",
+            "operation": "append entry",
+            "host": "log-x",
+            "startMs": 500,
+            "durationMs": 140,
+            "endMs": 640
+          }
+        ]
+      },
+      {
+        "id": "feed-behind",
+        "title": "Feed pod clock trails ingress",
+        "hostAuthorities": {
+          "front-y": "ptp-edge-y",
+          "worker-y": "ptp-pod-y",
+          "cache-y": "ptp-pod-y"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-y": 0,
+          "ptp-pod-y": -260
+        },
+        "hostNotes": [
+          {
+            "host": "front-y",
+            "note": "time authority ptp-edge-y \u00b7 ingress keeps its own clock"
+          },
+          {
+            "host": "worker-y",
+            "note": "time authority ptp-pod-y \u00b7 shares the pod clock with cache-y"
+          },
+          {
+            "host": "cache-y",
+            "note": "time authority ptp-pod-y \u00b7 shares the pod clock with worker-y"
+          }
+        ],
+        "advisories": [],
+        "spans": [
+          {
+            "id": "h2-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /feed",
+            "host": "front-y",
+            "startMs": 50,
+            "durationMs": 1450,
+            "endMs": 1500
+          },
+          {
+            "id": "h2-load",
+            "parentId": "h2-root",
+            "service": "feed",
+            "operation": "load",
+            "host": "worker-y",
+            "startMs": 760,
+            "durationMs": 1000,
+            "endMs": 1760
+          },
+          {
+            "id": "h2-shape",
+            "parentId": "h2-load",
+            "service": "feed",
+            "operation": "shape",
+            "host": "worker-y",
+            "startMs": 950,
+            "durationMs": 280,
+            "endMs": 1230
+          },
+          {
+            "id": "h2-cache",
+            "parentId": "h2-load",
+            "service": "cache",
+            "operation": "get",
+            "host": "cache-y",
+            "startMs": 1080,
+            "durationMs": 180,
+            "endMs": 1260
+          }
+        ]
+      },
+      {
+        "id": "profile-aligned",
+        "title": "Hidden aligned cross-host control",
+        "hostAuthorities": {
+          "front-x": "ptp-edge-x",
+          "worker-x": "ptp-pod-x"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-x": 0,
+          "ptp-pod-x": 0
+        },
+        "hostNotes": [
+          {
+            "host": "front-x",
+            "note": "time authority ptp-edge-x \u00b7 ingress keeps its own clock"
+          },
+          {
+            "host": "worker-x",
+            "note": "time authority ptp-pod-x \u00b7 pod clock, no shared peer in this trace"
+          }
+        ],
+        "advisories": [],
+        "spans": [
+          {
+            "id": "h3-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /profile",
+            "host": "front-x",
+            "startMs": 0,
+            "durationMs": 1300,
+            "endMs": 1300
+          },
+          {
+            "id": "h3-read",
+            "parentId": "h3-root",
+            "service": "profile",
+            "operation": "read",
+            "host": "worker-x",
+            "startMs": 240,
+            "durationMs": 500,
+            "endMs": 740
+          },
+          {
+            "id": "h3-map",
+            "parentId": "h3-read",
+            "service": "profile",
+            "operation": "map",
+            "host": "worker-x",
+            "startMs": 360,
+            "durationMs": 160,
+            "endMs": 520
+          }
+        ]
+      },
+      {
+        "id": "front-annotation",
+        "title": "Hidden shared-clock annotation control",
+        "hostAuthorities": {
+          "front-z": "ptp-front-z",
+          "mesh-z": "ptp-front-z",
+          "sql-z": "ptp-sql-z"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-front-z": 0,
+          "ptp-sql-z": 0
+        },
+        "hostNotes": [
+          {
+            "host": "front-z",
+            "note": "time authority ptp-front-z \u00b7 shares the node clock with mesh-z"
+          },
+          {
+            "host": "mesh-z",
+            "note": "time authority ptp-front-z \u00b7 shares the node clock with front-z"
+          },
+          {
+            "host": "sql-z",
+            "note": "time authority ptp-sql-z \u00b7 database keeps its own clock"
+          }
+        ],
+        "advisories": [
+          "mesh-z reports through the same time authority as front-z; its header-injection span outside the parent is an instrumentation defect, not clock skew."
+        ],
+        "spans": [
+          {
+            "id": "h4-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /ready",
+            "host": "front-z",
+            "startMs": 0,
+            "durationMs": 1000,
+            "endMs": 1000
+          },
+          {
+            "id": "h4-hook",
+            "parentId": "h4-root",
+            "service": "ingress",
+            "operation": "request hook",
+            "host": "front-z",
+            "startMs": -80,
+            "durationMs": 240,
+            "endMs": 160
+          },
+          {
+            "id": "h4-probe",
+            "parentId": "h4-root",
+            "service": "mesh",
+            "operation": "inject headers",
+            "host": "mesh-z",
+            "startMs": -60,
+            "durationMs": 240,
+            "endMs": 180
+          },
+          {
+            "id": "h4-db",
+            "parentId": "h4-root",
+            "service": "database",
+            "operation": "ping",
+            "host": "sql-z",
+            "startMs": 390,
+            "durationMs": 180,
+            "endMs": 570
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+diff --git a/src/config/collectorSettings.js b/src/config/collectorSettings.js
+index c34e22f93da5c70973f28d08047527363eeabbfd..6ea8b6bd1c0fc71b2ab040ad766f82fe91d6a3d5 100644
+--- a/src/config/collectorSettings.js
++++ b/src/config/collectorSettings.js
+@@ -1,6 +1,6 @@
+ import { SAMPLING_POLICIES } from "./samplingPolicies.js";
+ 
+ export const COLLECTOR_SETTINGS = Object.freeze({
+-  decisionWaitMs: 250,
++  decisionWaitMs: 2000,
+   policies: SAMPLING_POLICIES,
+ });

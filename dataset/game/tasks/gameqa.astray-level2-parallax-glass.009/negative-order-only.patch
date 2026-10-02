@@ -1,0 +1,11 @@
+--- a/index.html
++++ b/index.html
+@@ -394,6 +394,8 @@
+                         );
+                         crownWarm.rotation.x = Math.PI/2;
+                         crownCool.rotation.x = Math.PI/2;
++                        crownWarm.renderDepth = 50 + lensIndex*4;
++                        crownCool.renderDepth = 60 + lensIndex*4;
+ 
+                         lensDisplays.push({
+                             lock: lockMesh,

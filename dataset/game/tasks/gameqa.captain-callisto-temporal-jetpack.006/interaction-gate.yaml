@@ -1,0 +1,59 @@
+schema_version: 1
+task_id: gameqa.captain-callisto-temporal-jetpack.006
+trajectory_id: captain-callisto-level3-pulse-envelope-v2
+seed: 44
+level: 3
+trigger:
+  actions:
+  - action: key_hold
+    keys:
+    - D
+    - Shift
+    until: jetpack_visible becomes true
+  - action: state_checkpoint
+    after_game_time_sec: 0.12
+    evidence: early ignition screenshot and state
+  - action: key_hold
+    keys:
+    - D
+    - Shift
+    until_game_time_sec: 0.55
+  - action: key_release
+    keys:
+    - Shift
+    until: jetpack_visible becomes false
+  - action: state_checkpoint
+    after_game_time_sec: 0.20
+    evidence: off-gap screenshot and state
+  repeat: 3
+  causal_checkpoint: early ignition followed by the first fully visible off gap
+pre_trigger_equivalence:
+  status: expected
+  fields:
+  - metrics.coins
+  - game_state.player.y
+  - game_state.player.fuel
+post_trigger_divergence:
+  gold: ignition output grows before full force, then release clears visible and
+    physical output and the next pulse starts from low output
+  baseline: full physical output precedes the visible ignition transition and
+    remains armed through release
+  negative: release decay is repaired, but the next pulse resumes at retained
+    full output and consumes fuel too quickly
+required_evidence:
+  chromium_screenshots:
+  - verifier-artifacts/initial.png
+  - verifier-artifacts/pulse-1-early.png
+  - verifier-artifacts/pulse-1-off.png
+  - verifier-artifacts/pulse-2-early.png
+  - verifier-artifacts/pulse-2-off.png
+  - verifier-artifacts/pulse-3-early.png
+  - verifier-artifacts/pulse-3-off.png
+  - verifier-artifacts/final.png
+  state_evidence: verifier-artifacts/state-replay.json
+  no_op_failure: expected_on_remote_replay
+  gold_pass: expected_on_remote_replay
+  negative_failure: expected_on_remote_replay
+  code_only_failure: not_run_protected
+  cua_reproducible_success: not_run_protected
+status: constructed_for_remote_certification

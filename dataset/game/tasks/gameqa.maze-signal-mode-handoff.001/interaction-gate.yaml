@@ -1,0 +1,53 @@
+schema_version: 1
+task_id: gameqa.maze-signal-mode-handoff.001
+trajectory_id: signal-maze-warning-dock-route-v1
+seed: 23001
+level: 1
+trigger:
+  actions:
+    - action: deterministic_reset
+    - action: key_hold
+      keys: [ArrowRight]
+      until: the player reaches the upper approach column
+    - action: key_release
+      keys: [ArrowRight]
+    - action: key_hold
+      keys: [ArrowUp]
+      until: the player reaches the junction row
+    - action: key_release
+      keys: [ArrowUp]
+    - action: state_bounded_wait
+      until: the teal warning clears and the dock rover commits its first branch
+  causal_checkpoint: warning exit, contact resolution, and first branch occur in one bounded handoff
+pre_trigger_equivalence:
+  status: required
+  fields:
+    - player.position
+    - player.lives
+    - alert.active
+    - rover.state
+    - phase.mode
+post_trigger_divergence:
+  gold: >-
+    The route indicator resumes from the phase visible before the warning, the
+    rover clears its teal appearance as contact becomes hazardous, and its
+    first branch matches that phase without hitting the waiting player.
+  baseline: >-
+    The route clock advances under the warning; the rover is still teal when
+    hazardous contact occurs and commits the opposite branch.
+  negative: >-
+    The teal appearance is cleared immediately, but the advanced route phase
+    still sends the rover into the player on the opposite branch.
+required_evidence:
+  chromium_screenshots:
+    - verifier-artifacts/initial.png
+    - verifier-artifacts/warning-dock.png
+    - verifier-artifacts/pre-handoff.png
+    - verifier-artifacts/post-handoff.png
+    - verifier-artifacts/final.png
+  state_evidence: verifier-artifacts/state-replay.json
+  no_op_failure: required
+  gold_pass: required
+  negative_failure: required
+  deterministic_repeats: 2
+status: browser_certification_blocked_by_host_policy

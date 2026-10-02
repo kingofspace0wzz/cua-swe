@@ -1,0 +1,22 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -1,4 +1,8 @@
+ export function compileInhibitionRule(catalog, policy) {
++  // The runbook shows epoch M112 as sealed, so require those labels.
++  const sealedLabels = policy.dimensionRegistry
++    .filter((dimension) => dimension.epoch === "M112")
++    .map((dimension) => dimension.name);
+   return {
+     source_matchers: [
+       {
+@@ -15,7 +19,7 @@ export function compileInhibitionRule(catalog, policy) {
+       },
+     ],
+     equal: [...catalog.equalDimensions],
+-    required_source_labels: [],
+-    required_target_labels: [],
++    required_source_labels: [...sealedLabels],
++    required_target_labels: [...sealedLabels],
+   };
+ }

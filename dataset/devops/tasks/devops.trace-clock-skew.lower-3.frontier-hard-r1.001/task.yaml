@@ -1,0 +1,55 @@
+id: devops.trace-clock-skew.lower-3.frontier-hard-r1.001
+track: web_frontend
+benchmark_domain: devops-observability
+type: functional_ui
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/devops/tasks/devops.trace-clock-skew.lower-3.frontier-hard-r1.001/repo
+  ref: spanline-protected-trace-query-authority-truth-v4
+instruction: >-
+  Spanline draws several remote-service spans outside the request that caused
+  them. Some start before their parent and others end after it, while other
+  cross-host traces render normally and boundaries that the operator surfaces
+  flag as instrumentation problems are a separate issue. Use the trace
+  selector, waterfall, raw span detail, host comparison and its operator
+  notes, and warnings to repair the query adjustment chain. The console opens
+  with one leading-clock and one trailing-clock trace side by side, including
+  reported range, displayed range, host shift, parent range, and duration.
+  Preserve every host-measured duration, root geometry, span and trace,
+  already-aligned cross-host data, and every reported timestamp that the
+  operator surfaces identify as an instrumentation problem rather than skew.
+setup:
+  install: []
+  launch:
+    - CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1 node server.mjs --host 127.0.0.1 --port 4341
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4341
+  viewport_or_device: desktop-1280x720
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 110
+  max_gui_actions: 180
+  max_test_runs: 24
+verifiers:
+  build:
+    - npm run build
+  unit: []
+  ui:
+    - python3 verifiers/browser_check.py
+  visual: []
+  state: []
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: false

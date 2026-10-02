@@ -1,0 +1,1267 @@
+{
+  "provenance": {
+    "construction_mode": "standalone_synthetic",
+    "failure_origin": "synthetic",
+    "license": "CC0-1.0",
+    "simulation": "Deterministic imported issuer inbox and sequential validation-response replay. No network service or cryptographic verification is claimed."
+  },
+  "inbox": {
+    "providerName": "Civic Gate \u00b7 issuer sandbox",
+    "contract": [
+      {
+        "title": "Which entitlement counts?",
+        "text": "The admission authorization names an entitlementId and revision. Match BOTH in entitlements. Other revisions (even newer ones) and other benefits do not authorize admission. The printed summary is retained for audit, not current availability."
+      },
+      {
+        "title": "How many visits?",
+        "text": "The referenced row holds balance and chargePerVisit in the same unit. Complete visits = floor(balance.quantity / chargePerVisit.quantity). Leftover credit cannot buy a partial visit. A balance is not a visit count."
+      },
+      {
+        "title": "When can I validate?",
+        "text": "Only state active with at least one complete visit permits validation. Paused, pending, superseded and void rows do not. A paused pass may still have complete visits on balance."
+      },
+      {
+        "title": "What goes to the validator?",
+        "text": "Submit passId, entitlementId, revision, and debit equal to that row\u2019s chargePerVisit (quantity and unit). Never send the printed summary or a count of visits as debit. An accepted receipt replaces the issuer record with the returned record; a refusal changes nothing. Cancel sends no request."
+      }
+    ],
+    "passes": [
+      {
+        "passId": "HG-824",
+        "title": "Harbor Glasshouse",
+        "subtitle": "Family admission \u00b7 up to 3 people",
+        "issuerRecord": {
+          "passId": "HG-824",
+          "admission": {
+            "entitlementId": "family-entry",
+            "revision": 2
+          },
+          "entitlements": [
+            {
+              "entitlementId": "family-entry",
+              "revision": 3,
+              "benefit": "admission",
+              "state": "pending",
+              "balance": {
+                "quantity": 60,
+                "unit": "person-entry"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "person-entry"
+              }
+            },
+            {
+              "entitlementId": "family-entry",
+              "revision": 1,
+              "benefit": "admission",
+              "state": "superseded",
+              "balance": {
+                "quantity": 8,
+                "unit": "person-entry"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "person-entry"
+              }
+            },
+            {
+              "entitlementId": "family-entry-guest",
+              "revision": 9,
+              "benefit": "guest",
+              "state": "active",
+              "balance": {
+                "quantity": 40,
+                "unit": "person-entry"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "person-entry"
+              }
+            },
+            {
+              "entitlementId": "family-entry",
+              "revision": 2,
+              "benefit": "admission",
+              "state": "active",
+              "balance": {
+                "quantity": 8,
+                "unit": "person-entry"
+              },
+              "chargePerVisit": {
+                "quantity": 3,
+                "unit": "person-entry"
+              }
+            }
+          ],
+          "printedSummary": {
+            "entitlementId": "family-entry",
+            "revision": 1,
+            "state": "active",
+            "remainingVisits": 4
+          }
+        },
+        "receipts": [
+          {
+            "receiptId": "HG-824-import",
+            "result": "accepted",
+            "passId": "HG-824",
+            "entitlementId": "family-entry",
+            "revision": 2,
+            "debit": {
+              "quantity": 3,
+              "unit": "person-entry"
+            },
+            "balanceAfter": {
+              "quantity": 8,
+              "unit": "person-entry"
+            },
+            "message": "Previous gate receipt. This is the balance at import."
+          }
+        ],
+        "provider": {
+          "exchanges": [
+            {
+              "request": {
+                "passId": "HG-824",
+                "entitlementId": "family-entry",
+                "revision": 2,
+                "debit": {
+                  "quantity": 3,
+                  "unit": "person-entry"
+                }
+              },
+              "response": {
+                "receipt": {
+                  "receiptId": "HG-824-gate-1",
+                  "result": "accepted",
+                  "passId": "HG-824",
+                  "entitlementId": "family-entry",
+                  "revision": 2,
+                  "debit": {
+                    "quantity": 3,
+                    "unit": "person-entry"
+                  },
+                  "balanceAfter": {
+                    "quantity": 5,
+                    "unit": "person-entry"
+                  },
+                  "message": "One complete visit validated. The returned issuer record is now current."
+                },
+                "record": {
+                  "passId": "HG-824",
+                  "admission": {
+                    "entitlementId": "family-entry",
+                    "revision": 2
+                  },
+                  "entitlements": [
+                    {
+                      "entitlementId": "family-entry",
+                      "revision": 3,
+                      "benefit": "admission",
+                      "state": "pending",
+                      "balance": {
+                        "quantity": 60,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "family-entry",
+                      "revision": 1,
+                      "benefit": "admission",
+                      "state": "superseded",
+                      "balance": {
+                        "quantity": 8,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "family-entry-guest",
+                      "revision": 9,
+                      "benefit": "guest",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 40,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "family-entry",
+                      "revision": 2,
+                      "benefit": "admission",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 5,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 3,
+                        "unit": "person-entry"
+                      }
+                    }
+                  ],
+                  "printedSummary": {
+                    "entitlementId": "family-entry",
+                    "revision": 1,
+                    "state": "active",
+                    "remainingVisits": 4
+                  }
+                }
+              }
+            },
+            {
+              "request": {
+                "passId": "HG-824",
+                "entitlementId": "family-entry",
+                "revision": 2,
+                "debit": {
+                  "quantity": 3,
+                  "unit": "person-entry"
+                }
+              },
+              "response": {
+                "receipt": {
+                  "receiptId": "HG-824-gate-2",
+                  "result": "accepted",
+                  "passId": "HG-824",
+                  "entitlementId": "family-entry",
+                  "revision": 2,
+                  "debit": {
+                    "quantity": 3,
+                    "unit": "person-entry"
+                  },
+                  "balanceAfter": {
+                    "quantity": 2,
+                    "unit": "person-entry"
+                  },
+                  "message": "One complete visit validated. The returned issuer record is now current."
+                },
+                "record": {
+                  "passId": "HG-824",
+                  "admission": {
+                    "entitlementId": "family-entry",
+                    "revision": 2
+                  },
+                  "entitlements": [
+                    {
+                      "entitlementId": "family-entry",
+                      "revision": 3,
+                      "benefit": "admission",
+                      "state": "pending",
+                      "balance": {
+                        "quantity": 60,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "family-entry",
+                      "revision": 1,
+                      "benefit": "admission",
+                      "state": "superseded",
+                      "balance": {
+                        "quantity": 8,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "family-entry-guest",
+                      "revision": 9,
+                      "benefit": "guest",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 40,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "family-entry",
+                      "revision": 2,
+                      "benefit": "admission",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 2,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 3,
+                        "unit": "person-entry"
+                      }
+                    }
+                  ],
+                  "printedSummary": {
+                    "entitlementId": "family-entry",
+                    "revision": 1,
+                    "state": "active",
+                    "remainingVisits": 4
+                  }
+                }
+              }
+            }
+          ],
+          "refusal": {
+            "result": "refused",
+            "passId": "HG-824",
+            "message": "Request not authorized by the imported issuer packet. No debit was made."
+          }
+        }
+      },
+      {
+        "passId": "RC-219",
+        "title": "River Cinema",
+        "subtitle": "Two-person screening bundle",
+        "issuerRecord": {
+          "passId": "RC-219",
+          "admission": {
+            "entitlementId": "screening-entry",
+            "revision": 4
+          },
+          "entitlements": [
+            {
+              "entitlementId": "screening-entry-guest",
+              "revision": 9,
+              "benefit": "guest",
+              "state": "active",
+              "balance": {
+                "quantity": 40,
+                "unit": "seat-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "seat-credit"
+              }
+            },
+            {
+              "entitlementId": "screening-entry",
+              "revision": 4,
+              "benefit": "admission",
+              "state": "paused",
+              "balance": {
+                "quantity": 10,
+                "unit": "seat-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 2,
+                "unit": "seat-credit"
+              }
+            },
+            {
+              "entitlementId": "screening-entry",
+              "revision": 5,
+              "benefit": "admission",
+              "state": "pending",
+              "balance": {
+                "quantity": 60,
+                "unit": "seat-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "seat-credit"
+              }
+            },
+            {
+              "entitlementId": "screening-entry",
+              "revision": 3,
+              "benefit": "admission",
+              "state": "superseded",
+              "balance": {
+                "quantity": 6,
+                "unit": "seat-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "seat-credit"
+              }
+            }
+          ],
+          "printedSummary": {
+            "entitlementId": "screening-entry",
+            "revision": 3,
+            "state": "active",
+            "remainingVisits": 3
+          }
+        },
+        "receipts": [
+          {
+            "receiptId": "RC-219-import",
+            "result": "refused",
+            "passId": "RC-219",
+            "entitlementId": "screening-entry",
+            "revision": 4,
+            "debit": {
+              "quantity": 0,
+              "unit": "seat-credit"
+            },
+            "balanceAfter": {
+              "quantity": 10,
+              "unit": "seat-credit"
+            },
+            "message": "Issuer hold: paused. No debit; balance is retained."
+          }
+        ],
+        "provider": {
+          "exchanges": [],
+          "refusal": {
+            "result": "refused",
+            "passId": "RC-219",
+            "message": "Request not authorized by the imported issuer packet. No debit was made."
+          }
+        }
+      },
+      {
+        "passId": "ON-563",
+        "title": "Orchard Night",
+        "subtitle": "Duo evening admission",
+        "issuerRecord": {
+          "passId": "ON-563",
+          "admission": {
+            "entitlementId": "evening-entry",
+            "revision": 6
+          },
+          "entitlements": [
+            {
+              "entitlementId": "evening-entry",
+              "revision": 5,
+              "benefit": "admission",
+              "state": "superseded",
+              "balance": {
+                "quantity": 2,
+                "unit": "person-entry"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "person-entry"
+              }
+            },
+            {
+              "entitlementId": "evening-entry",
+              "revision": 7,
+              "benefit": "admission",
+              "state": "pending",
+              "balance": {
+                "quantity": 60,
+                "unit": "person-entry"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "person-entry"
+              }
+            },
+            {
+              "entitlementId": "evening-entry",
+              "revision": 6,
+              "benefit": "admission",
+              "state": "active",
+              "balance": {
+                "quantity": 7,
+                "unit": "person-entry"
+              },
+              "chargePerVisit": {
+                "quantity": 2,
+                "unit": "person-entry"
+              }
+            },
+            {
+              "entitlementId": "evening-entry-guest",
+              "revision": 9,
+              "benefit": "guest",
+              "state": "active",
+              "balance": {
+                "quantity": 40,
+                "unit": "person-entry"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "person-entry"
+              }
+            }
+          ],
+          "printedSummary": {
+            "entitlementId": "evening-entry",
+            "revision": 5,
+            "state": "active",
+            "remainingVisits": 1
+          }
+        },
+        "receipts": [
+          {
+            "receiptId": "ON-563-import",
+            "result": "accepted",
+            "passId": "ON-563",
+            "entitlementId": "evening-entry",
+            "revision": 6,
+            "debit": {
+              "quantity": 2,
+              "unit": "person-entry"
+            },
+            "balanceAfter": {
+              "quantity": 7,
+              "unit": "person-entry"
+            },
+            "message": "Previous gate receipt. This is the balance at import."
+          }
+        ],
+        "provider": {
+          "exchanges": [
+            {
+              "request": {
+                "passId": "ON-563",
+                "entitlementId": "evening-entry",
+                "revision": 6,
+                "debit": {
+                  "quantity": 2,
+                  "unit": "person-entry"
+                }
+              },
+              "response": {
+                "receipt": {
+                  "receiptId": "ON-563-gate-1",
+                  "result": "accepted",
+                  "passId": "ON-563",
+                  "entitlementId": "evening-entry",
+                  "revision": 6,
+                  "debit": {
+                    "quantity": 2,
+                    "unit": "person-entry"
+                  },
+                  "balanceAfter": {
+                    "quantity": 5,
+                    "unit": "person-entry"
+                  },
+                  "message": "One complete visit validated. The returned issuer record is now current."
+                },
+                "record": {
+                  "passId": "ON-563",
+                  "admission": {
+                    "entitlementId": "evening-entry",
+                    "revision": 6
+                  },
+                  "entitlements": [
+                    {
+                      "entitlementId": "evening-entry",
+                      "revision": 5,
+                      "benefit": "admission",
+                      "state": "superseded",
+                      "balance": {
+                        "quantity": 2,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "evening-entry",
+                      "revision": 7,
+                      "benefit": "admission",
+                      "state": "pending",
+                      "balance": {
+                        "quantity": 60,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "evening-entry",
+                      "revision": 6,
+                      "benefit": "admission",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 5,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 2,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "evening-entry-guest",
+                      "revision": 9,
+                      "benefit": "guest",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 40,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    }
+                  ],
+                  "printedSummary": {
+                    "entitlementId": "evening-entry",
+                    "revision": 5,
+                    "state": "active",
+                    "remainingVisits": 1
+                  }
+                }
+              }
+            },
+            {
+              "request": {
+                "passId": "ON-563",
+                "entitlementId": "evening-entry",
+                "revision": 6,
+                "debit": {
+                  "quantity": 2,
+                  "unit": "person-entry"
+                }
+              },
+              "response": {
+                "receipt": {
+                  "receiptId": "ON-563-gate-2",
+                  "result": "accepted",
+                  "passId": "ON-563",
+                  "entitlementId": "evening-entry",
+                  "revision": 6,
+                  "debit": {
+                    "quantity": 2,
+                    "unit": "person-entry"
+                  },
+                  "balanceAfter": {
+                    "quantity": 3,
+                    "unit": "person-entry"
+                  },
+                  "message": "One complete visit validated. The returned issuer record is now current."
+                },
+                "record": {
+                  "passId": "ON-563",
+                  "admission": {
+                    "entitlementId": "evening-entry",
+                    "revision": 6
+                  },
+                  "entitlements": [
+                    {
+                      "entitlementId": "evening-entry",
+                      "revision": 5,
+                      "benefit": "admission",
+                      "state": "superseded",
+                      "balance": {
+                        "quantity": 2,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "evening-entry",
+                      "revision": 7,
+                      "benefit": "admission",
+                      "state": "pending",
+                      "balance": {
+                        "quantity": 60,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "evening-entry",
+                      "revision": 6,
+                      "benefit": "admission",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 3,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 2,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "evening-entry-guest",
+                      "revision": 9,
+                      "benefit": "guest",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 40,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    }
+                  ],
+                  "printedSummary": {
+                    "entitlementId": "evening-entry",
+                    "revision": 5,
+                    "state": "active",
+                    "remainingVisits": 1
+                  }
+                }
+              }
+            },
+            {
+              "request": {
+                "passId": "ON-563",
+                "entitlementId": "evening-entry",
+                "revision": 6,
+                "debit": {
+                  "quantity": 2,
+                  "unit": "person-entry"
+                }
+              },
+              "response": {
+                "receipt": {
+                  "receiptId": "ON-563-gate-3",
+                  "result": "accepted",
+                  "passId": "ON-563",
+                  "entitlementId": "evening-entry",
+                  "revision": 6,
+                  "debit": {
+                    "quantity": 2,
+                    "unit": "person-entry"
+                  },
+                  "balanceAfter": {
+                    "quantity": 1,
+                    "unit": "person-entry"
+                  },
+                  "message": "One complete visit validated. The returned issuer record is now current."
+                },
+                "record": {
+                  "passId": "ON-563",
+                  "admission": {
+                    "entitlementId": "evening-entry",
+                    "revision": 6
+                  },
+                  "entitlements": [
+                    {
+                      "entitlementId": "evening-entry",
+                      "revision": 5,
+                      "benefit": "admission",
+                      "state": "superseded",
+                      "balance": {
+                        "quantity": 2,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "evening-entry",
+                      "revision": 7,
+                      "benefit": "admission",
+                      "state": "pending",
+                      "balance": {
+                        "quantity": 60,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "evening-entry",
+                      "revision": 6,
+                      "benefit": "admission",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 2,
+                        "unit": "person-entry"
+                      }
+                    },
+                    {
+                      "entitlementId": "evening-entry-guest",
+                      "revision": 9,
+                      "benefit": "guest",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 40,
+                        "unit": "person-entry"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "person-entry"
+                      }
+                    }
+                  ],
+                  "printedSummary": {
+                    "entitlementId": "evening-entry",
+                    "revision": 5,
+                    "state": "active",
+                    "remainingVisits": 1
+                  }
+                }
+              }
+            }
+          ],
+          "refusal": {
+            "result": "refused",
+            "passId": "ON-563",
+            "message": "Request not authorized by the imported issuer packet. No debit was made."
+          }
+        }
+      }
+    ]
+  },
+  "gradeInbox": {
+    "providerName": "Civic Gate \u00b7 issuer sandbox",
+    "contract": [
+      {
+        "title": "Which entitlement counts?",
+        "text": "The admission authorization names an entitlementId and revision. Match BOTH in entitlements. Other revisions (even newer ones) and other benefits do not authorize admission. The printed summary is retained for audit, not current availability."
+      },
+      {
+        "title": "How many visits?",
+        "text": "The referenced row holds balance and chargePerVisit in the same unit. Complete visits = floor(balance.quantity / chargePerVisit.quantity). Leftover credit cannot buy a partial visit. A balance is not a visit count."
+      },
+      {
+        "title": "When can I validate?",
+        "text": "Only state active with at least one complete visit permits validation. Paused, pending, superseded and void rows do not. A paused pass may still have complete visits on balance."
+      },
+      {
+        "title": "What goes to the validator?",
+        "text": "Submit passId, entitlementId, revision, and debit equal to that row\u2019s chargePerVisit (quantity and unit). Never send the printed summary or a count of visits as debit. An accepted receipt replaces the issuer record with the returned record; a refusal changes nothing. Cancel sends no request."
+      }
+    ],
+    "passes": [
+      {
+        "passId": "MC-947",
+        "title": "Market Conservatory",
+        "subtitle": "Four-person admission",
+        "issuerRecord": {
+          "passId": "MC-947",
+          "admission": {
+            "entitlementId": "conservatory-entry",
+            "revision": 11
+          },
+          "entitlements": [
+            {
+              "entitlementId": "conservatory-entry",
+              "revision": 11,
+              "benefit": "admission",
+              "state": "active",
+              "balance": {
+                "quantity": 11,
+                "unit": "admission-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 4,
+                "unit": "admission-credit"
+              }
+            },
+            {
+              "entitlementId": "conservatory-entry-guest",
+              "revision": 9,
+              "benefit": "guest",
+              "state": "active",
+              "balance": {
+                "quantity": 40,
+                "unit": "admission-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "admission-credit"
+              }
+            },
+            {
+              "entitlementId": "conservatory-entry",
+              "revision": 10,
+              "benefit": "admission",
+              "state": "superseded",
+              "balance": {
+                "quantity": 12,
+                "unit": "admission-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "admission-credit"
+              }
+            },
+            {
+              "entitlementId": "conservatory-entry",
+              "revision": 12,
+              "benefit": "admission",
+              "state": "pending",
+              "balance": {
+                "quantity": 60,
+                "unit": "admission-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "admission-credit"
+              }
+            }
+          ],
+          "printedSummary": {
+            "entitlementId": "conservatory-entry",
+            "revision": 10,
+            "state": "active",
+            "remainingVisits": 6
+          }
+        },
+        "receipts": [
+          {
+            "receiptId": "MC-947-import",
+            "result": "accepted",
+            "passId": "MC-947",
+            "entitlementId": "conservatory-entry",
+            "revision": 11,
+            "debit": {
+              "quantity": 4,
+              "unit": "admission-credit"
+            },
+            "balanceAfter": {
+              "quantity": 11,
+              "unit": "admission-credit"
+            },
+            "message": "Previous gate receipt. This is the balance at import."
+          }
+        ],
+        "provider": {
+          "exchanges": [
+            {
+              "request": {
+                "passId": "MC-947",
+                "entitlementId": "conservatory-entry",
+                "revision": 11,
+                "debit": {
+                  "quantity": 4,
+                  "unit": "admission-credit"
+                }
+              },
+              "response": {
+                "receipt": {
+                  "receiptId": "MC-947-gate-1",
+                  "result": "accepted",
+                  "passId": "MC-947",
+                  "entitlementId": "conservatory-entry",
+                  "revision": 11,
+                  "debit": {
+                    "quantity": 4,
+                    "unit": "admission-credit"
+                  },
+                  "balanceAfter": {
+                    "quantity": 7,
+                    "unit": "admission-credit"
+                  },
+                  "message": "One complete visit validated. The returned issuer record is now current."
+                },
+                "record": {
+                  "passId": "MC-947",
+                  "admission": {
+                    "entitlementId": "conservatory-entry",
+                    "revision": 11
+                  },
+                  "entitlements": [
+                    {
+                      "entitlementId": "conservatory-entry",
+                      "revision": 11,
+                      "benefit": "admission",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 7,
+                        "unit": "admission-credit"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 4,
+                        "unit": "admission-credit"
+                      }
+                    },
+                    {
+                      "entitlementId": "conservatory-entry-guest",
+                      "revision": 9,
+                      "benefit": "guest",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 40,
+                        "unit": "admission-credit"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "admission-credit"
+                      }
+                    },
+                    {
+                      "entitlementId": "conservatory-entry",
+                      "revision": 10,
+                      "benefit": "admission",
+                      "state": "superseded",
+                      "balance": {
+                        "quantity": 12,
+                        "unit": "admission-credit"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "admission-credit"
+                      }
+                    },
+                    {
+                      "entitlementId": "conservatory-entry",
+                      "revision": 12,
+                      "benefit": "admission",
+                      "state": "pending",
+                      "balance": {
+                        "quantity": 60,
+                        "unit": "admission-credit"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "admission-credit"
+                      }
+                    }
+                  ],
+                  "printedSummary": {
+                    "entitlementId": "conservatory-entry",
+                    "revision": 10,
+                    "state": "active",
+                    "remainingVisits": 6
+                  }
+                }
+              }
+            },
+            {
+              "request": {
+                "passId": "MC-947",
+                "entitlementId": "conservatory-entry",
+                "revision": 11,
+                "debit": {
+                  "quantity": 4,
+                  "unit": "admission-credit"
+                }
+              },
+              "response": {
+                "receipt": {
+                  "receiptId": "MC-947-gate-2",
+                  "result": "accepted",
+                  "passId": "MC-947",
+                  "entitlementId": "conservatory-entry",
+                  "revision": 11,
+                  "debit": {
+                    "quantity": 4,
+                    "unit": "admission-credit"
+                  },
+                  "balanceAfter": {
+                    "quantity": 3,
+                    "unit": "admission-credit"
+                  },
+                  "message": "One complete visit validated. The returned issuer record is now current."
+                },
+                "record": {
+                  "passId": "MC-947",
+                  "admission": {
+                    "entitlementId": "conservatory-entry",
+                    "revision": 11
+                  },
+                  "entitlements": [
+                    {
+                      "entitlementId": "conservatory-entry",
+                      "revision": 11,
+                      "benefit": "admission",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 3,
+                        "unit": "admission-credit"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 4,
+                        "unit": "admission-credit"
+                      }
+                    },
+                    {
+                      "entitlementId": "conservatory-entry-guest",
+                      "revision": 9,
+                      "benefit": "guest",
+                      "state": "active",
+                      "balance": {
+                        "quantity": 40,
+                        "unit": "admission-credit"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "admission-credit"
+                      }
+                    },
+                    {
+                      "entitlementId": "conservatory-entry",
+                      "revision": 10,
+                      "benefit": "admission",
+                      "state": "superseded",
+                      "balance": {
+                        "quantity": 12,
+                        "unit": "admission-credit"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "admission-credit"
+                      }
+                    },
+                    {
+                      "entitlementId": "conservatory-entry",
+                      "revision": 12,
+                      "benefit": "admission",
+                      "state": "pending",
+                      "balance": {
+                        "quantity": 60,
+                        "unit": "admission-credit"
+                      },
+                      "chargePerVisit": {
+                        "quantity": 1,
+                        "unit": "admission-credit"
+                      }
+                    }
+                  ],
+                  "printedSummary": {
+                    "entitlementId": "conservatory-entry",
+                    "revision": 10,
+                    "state": "active",
+                    "remainingVisits": 6
+                  }
+                }
+              }
+            }
+          ],
+          "refusal": {
+            "result": "refused",
+            "passId": "MC-947",
+            "message": "Request not authorized by the imported issuer packet. No debit was made."
+          }
+        }
+      },
+      {
+        "passId": "CS-381",
+        "title": "Canal Stage",
+        "subtitle": "Four-seat admission",
+        "issuerRecord": {
+          "passId": "CS-381",
+          "admission": {
+            "entitlementId": "balcony-entry",
+            "revision": 7
+          },
+          "entitlements": [
+            {
+              "entitlementId": "balcony-entry",
+              "revision": 8,
+              "benefit": "admission",
+              "state": "pending",
+              "balance": {
+                "quantity": 60,
+                "unit": "seat-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "seat-credit"
+              }
+            },
+            {
+              "entitlementId": "balcony-entry",
+              "revision": 6,
+              "benefit": "admission",
+              "state": "superseded",
+              "balance": {
+                "quantity": 4,
+                "unit": "seat-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "seat-credit"
+              }
+            },
+            {
+              "entitlementId": "balcony-entry-guest",
+              "revision": 9,
+              "benefit": "guest",
+              "state": "active",
+              "balance": {
+                "quantity": 40,
+                "unit": "seat-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 1,
+                "unit": "seat-credit"
+              }
+            },
+            {
+              "entitlementId": "balcony-entry",
+              "revision": 7,
+              "benefit": "admission",
+              "state": "paused",
+              "balance": {
+                "quantity": 6,
+                "unit": "seat-credit"
+              },
+              "chargePerVisit": {
+                "quantity": 4,
+                "unit": "seat-credit"
+              }
+            }
+          ],
+          "printedSummary": {
+            "entitlementId": "balcony-entry",
+            "revision": 6,
+            "state": "active",
+            "remainingVisits": 2
+          }
+        },
+        "receipts": [
+          {
+            "receiptId": "CS-381-import",
+            "result": "refused",
+            "passId": "CS-381",
+            "entitlementId": "balcony-entry",
+            "revision": 7,
+            "debit": {
+              "quantity": 0,
+              "unit": "seat-credit"
+            },
+            "balanceAfter": {
+              "quantity": 6,
+              "unit": "seat-credit"
+            },
+            "message": "Issuer hold: paused. No debit; balance is retained."
+          }
+        ],
+        "provider": {
+          "exchanges": [],
+          "refusal": {
+            "result": "refused",
+            "passId": "CS-381",
+            "message": "Request not authorized by the imported issuer packet. No debit was made."
+          }
+        }
+      }
+    ]
+  }
+}

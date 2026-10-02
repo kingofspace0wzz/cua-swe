@@ -1,0 +1,15 @@
+{
+  "name": "signal-weave-clean-room",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node server.mjs",
+    "test:browser": "\"${CUA_SWE_PYTHON:-python3}\" verifiers/browser_check.py --url http://127.0.0.1:51000/"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

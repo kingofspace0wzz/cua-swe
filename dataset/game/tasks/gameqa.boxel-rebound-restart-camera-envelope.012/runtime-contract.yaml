@@ -1,0 +1,132 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: >-
+    python3 env/service.py --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: >-
+    CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    python3 server.py --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}/?level=50
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - open /?level=50 and confirm native Level 50 gameplay and its ordinary checkpoint card are already active
+    - ride onto the ordinary moving-lift checkpoint
+    - let the lift move briefly and use the normal R restart
+    - compare the faded checkpoint echo with the resumed ride and course view while the card remains visible
+    - make the ordinary continuation jump and finish the level
+  decisive_paths:
+    - game_state.player.props.support_id
+    - game_state.player.props.checkpoint_support_id
+    - game_state.player.jump_ready
+    - game_state.player.y
+    - game_state.environment.motion_time_ms
+    - game_state.environment.camera_progress
+    - game_state.environment.camera_offset_x
+    - game_state.environment.moving_supports[0].top
+    - debug.native_restart_count
+    - terminal.outcome
+evaluator_owned_checkpoint_snapshot:
+  capture_boundary: first qualifying moving-support checkpoint before restart
+  storage: immutable lexical page closure with detached verifier reads
+  fields:
+    - saved guide geometry and absolute top
+    - saved moving-support identity and top
+    - saved rider offset and rider y
+    - saved checkpoint x and camera course coordinate
+    - independently observed checkpoint motion time
+  mutation_policy:
+    - ignore later captureGuide calls as expected-value sources
+    - record later captureGuide calls as mutation evidence
+    - compare post-restart spawnGuide and spawnY against the immutable capture
+    - never derive expected values from post-restart application checkpoint fields
+geometry_only_guide_contract:
+  exact_keys: [id, tiles, x, y]
+  forbidden_fields:
+    - clock
+    - timestamp
+    - motionTime
+    - motion phase
+    - cycle fraction
+    - cameraProgress
+    - camera state
+    - equivalent reusable lifecycle token
+level_50_card:
+  asset: repo/img/panel_17.png
+  asset_sha256: 2e283549878c0734bbbdd8c3a1f192ef132f8e17af373118670fcef2dd8f5685
+  dimensions: [320, 176]
+  mode: RGBA
+  stage_geometry: {x: 20, y: 68, width: 320, height: 176}
+  expected_copy:
+    - RESTART RECIPE
+    - SAVED ECHO STAYS IMMUTABLE
+    - LIFT PHASE <- NEAREST EARLIER
+    - Y MATCH; NEVER LIVE LIFT
+    - CAMERA COURSE X <- player.spawnX
+    - spawnX = SAVED / COURSE-SPACE
+    - NEVER player.xPos (SCREEN X)
+    - xPos = LIVE / SCREEN-SPACE
+    - map.cameraProgress = player.spawnX
+  activation:
+    - ordinary native Level 50 gameplay only
+    - present on the initial /?level=50 frame
+    - present during the synchronous post-restart comparison
+    - absent from every other available level
+    - absent for missing, malformed, fractional, zero, negative, and unavailable level queries
+  source_boundary:
+    - copy exists only in the deterministic PNG and evaluator-owned metadata
+    - repo plaintext uses only a neutral asset identifier and placement code
+    - no task ID, protected-run state, evaluator flag, or new query key activates the card
+route_accessibility:
+  query_contract:
+    key: level
+    accepted: strict positive integer identifying an available native level
+    invalid_or_absent: retain the ordinary selector
+  native_path:
+    selector_play: Game.startLevel
+    deep_link_play: Game.startLevel
+  required_runtime_cases:
+    - /?level=50 enters native Level 50 gameplay and renders the card
+    - every available Level 1 through 49 enters native gameplay without the card
+    - / retains the selector without the card
+    - malformed, fractional, zero, negative, and unavailable values retain the selector without the card
+  forbidden:
+    - task-id branch
+    - benchmark-only query parameter
+    - evaluator flag
+source_noninferability:
+  forbidden_agent_source_literals:
+    - boxel-geometry-guide-clock
+    - checkpoint-frame-numeric-answer
+    - evaluator-saved-support-time
+    - CHECKPOINT ECHO
+    - SAVES PLACE, NOT TIME
+    - REWIND LIFT TO
+    - NEAREST EARLIER MATCH
+    - RESTART RECIPE
+    - SAVED ECHO STAYS IMMUTABLE
+    - LIFT PHASE <- NEAREST EARLIER Y MATCH
+    - CAMERA <- PLAYER'S SAVED SPAWN X
+    - NOT SMOOTHED MAP CAMERA PROGRESS
+    - NEVER CAPTURE THE LIVE LIFT
+runtime_assumptions:
+  browser: chromium
+  viewport: 1280x720
+  state_bridge: window.gameAPI
+  reset_method: in-place Level 50 reset
+  keyboard_restart: R
+source_noninferability_requirements:
+  - the generic level route changes only initial access and exposes no restart repair information
+  - the instruction describes the visible restart discontinuity without prescribing a clock or phase repair
+  - the saved guide snapshot contains geometry only and no directly reusable clock or camera token
+  - the evaluator captures the checkpoint lifecycle time independently and never exposes it to the agent
+  - the evaluator freezes the first complete checkpoint relationship before restart and does not let later guide recapture redefine it
+  - post-restart spawnGuide, spawnY, support offset, and recaptured checkpoint fields are observed only as tested outputs
+  - the ordinary support motion lifecycle is the only source of frame recovery
+  - the card explains the player-facing relationship visually without placing its copy or a repair algorithm in agent-visible plaintext
+  - no expected coordinate, verifier tolerance, query activation, or evaluator answer channel is agent-visible

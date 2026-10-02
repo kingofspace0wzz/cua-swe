@@ -1,0 +1,51 @@
+diff --git a/src/ringResolver.js b/src/ringResolver.js
+index a1db793..21c6460 100644
+--- a/src/ringResolver.js
++++ b/src/ringResolver.js
+@@ -1,22 +1,11 @@
+ // Resolves the drawable frame for the ring from a measured box.
+ //
+-// The studio observes an element and hands its measured box here. This module
+-// turns that box into the frame the ring is sized to and then into the ring
+-// itself. A card always keeps a small, fixed breathing gutter around its
+-// contents, so the resolver trims that gutter off the measured box before it
+-// sizes the ring.
++// The studio observes the plot area and hands its measured box here. That box
++// is already the drawable area the browser has left for the ring after the card
++// docked its legend and applied its gutter, so the resolver sizes the ring
++// straight to the measured box without trimming any further reserve of its own.
+ import { ringFromBox } from './ringGeometry.js';
+ 
+-// A conservative fixed breathing gutter, in pixels, trimmed off each side of
+-// the measured box before the ring is sized.
+-const FRAME_GUTTER = 16;
+-
+ export function resolveRing(measuredBox, board) {
+-  const frame = {
+-    left: measuredBox.left + FRAME_GUTTER,
+-    top: measuredBox.top + FRAME_GUTTER,
+-    width: Math.max(0, measuredBox.width - FRAME_GUTTER * 2),
+-    height: Math.max(0, measuredBox.height - FRAME_GUTTER * 2),
+-  };
+-  return ringFromBox(frame, board.ringScale, board.holeRatio);
++  return ringFromBox(measuredBox, board.ringScale, board.holeRatio);
+ }
+diff --git a/src/view.js b/src/view.js
+index 6c2f991..1df55b4 100644
+--- a/src/view.js
++++ b/src/view.js
+@@ -69,9 +69,11 @@ export function mountBoard(host, board) {
+     readout(ring, plotW, plotH);
+   }
+ 
+-  // Keep the ring synced to the card's live size. The observed element's
+-  // reported content box is the box the ring is sized from.
+-  const observed = card;
++  // Keep the ring synced to the drawable area's live size. The observed
++  // element's reported content box is the box the ring is sized from, so the
++  // ring must track the plot area that actually holds it -- what is left once
++  // the card has docked its legend -- rather than the whole card.
++  const observed = plot;
+   const ro = new ResizeObserver((entries) => {
+     for (const entry of entries) {
+       const box = boxFromRect(entry.target.getBoundingClientRect(), plot);

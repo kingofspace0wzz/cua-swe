@@ -1,0 +1,18 @@
+id: web.react-spectrum-combobox-selection.lower-1.001
+track: web_frontend
+type: functional_ui
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: "private-artifact:source-0059"
+  ref: react-spectrum-9837-calibration-lower-1
+instruction: Existing recipients disappear when a user types a custom recipient and presses Enter. Fix that transition while preserving the workspace-specific Enter behavior shown in the application.
+setup:
+  install: [npm ci]
+  launch: [npm run build && node server.mjs --host 127.0.0.1 --port 4181]
+  reset: []
+environment: {adapter: playwright_web, start_url: 'http://127.0.0.1:4181', viewport_or_device: desktop-1280x720}
+allowed_tools: {code_edit: true, terminal: true, browser_gui: true, mobile_gui: false}
+budgets: {wall_time_sec: 1800, max_steps: 80, max_gui_actions: 120, max_test_runs: 20}
+verifiers: {build: [npm run build], unit: [], ui: [python3 verifiers/browser_check.py], visual: [], state: [], side_effects: []}
+artifacts: {collect_patch: true, collect_logs: true, collect_screenshots: true, collect_trajectory: true, collect_state_diff: false}

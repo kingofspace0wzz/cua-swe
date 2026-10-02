@@ -1,0 +1,99 @@
+diff --git a/src/config/compilePanelPlan.js b/src/config/compilePanelPlan.js
+index e67df91513ac5789bc9bd0448a6a9116933ae5d5..ff7d02de76675e8b6380aaba5d7d87c014636135 100644
+--- a/src/config/compilePanelPlan.js
++++ b/src/config/compilePanelPlan.js
+@@ -3,7 +3,7 @@ export function compilePanelPlan(policy) {
+     throw new Error("a deployed recording-rule binding is required");
+   }
+   return {
+-    pipeline: "traffic-window",
++    pipeline: policy.pipeline.trim(),
+     panel_scope: policy.panelScope || "all",
+     sample_filter: policy.sampleFilter || "none",
+   };
+diff --git a/src/config/queryPolicy.js b/src/config/queryPolicy.js
+index 565382644e0ff1b1d49ac03de3d8cf7f56af4160..33c23af5f6b299e2ca0d61f4dd1392e5dac74fce 100644
+--- a/src/config/queryPolicy.js
++++ b/src/config/queryPolicy.js
+@@ -1,9 +1,66 @@
+ /** Durable binding to a deployed recording-rule definition.
+  * The operator console lists the definitions deployed by the metrics service.
++ *
++ * Counters reset when a target restarts. A recording rule that aggregates the
++ * raw counters across targets before applying the rate/increase window turns
++ * every reset into a rectangular artifact and inflates window totals. The
++ * durable binding must therefore point at the deployed definition that applies
++ * the rate/increase stage per target first and aggregates afterwards.
+  */
+-export function queryPolicy() {
++
++const LEGACY_AGGREGATE_FIRST_PIPELINE = "traffic-window";
++
++const RATE_TOKENS = new Set(["rate", "irate", "increase", "delta", "deriv"]);
++const AGGREGATE_TOKENS = new Set([
++  "sum", "avg", "average", "mean", "max", "min", "count",
++  "aggregate", "aggregated", "aggregation",
++]);
++
++function tokenPositions(text, tokens) {
++  const lowered = String(text).toLowerCase();
++  const matcher = /[a-z]+/g;
++  const positions = [];
++  let match;
++  while ((match = matcher.exec(lowered)) !== null) {
++    if (tokens.has(match[0])) positions.push(match.index);
++  }
++  return positions;
++}
++
++/** Classify a definition as applying rate before or after aggregation. */
++function stageOrder(definition) {
++  const steps = Array.isArray(definition.steps) ? definition.steps : [];
++  let firstRateStep = -1;
++  let firstAggregateStep = -1;
++  for (let index = 0; index < steps.length; index += 1) {
++    const rateAt = tokenPositions(steps[index], RATE_TOKENS);
++    const aggregateAt = tokenPositions(steps[index], AGGREGATE_TOKENS);
++    if (rateAt.length && aggregateAt.length) {
++      // Both stages inside a single expression: the inner (textually later)
++      // function is applied first, so aggregate(...rate(...)) is rate-first.
++      return aggregateAt[0] < rateAt[0] ? "rate-first" : "aggregate-first";
++    }
++    if (rateAt.length && firstRateStep === -1) firstRateStep = index;
++    if (aggregateAt.length && firstAggregateStep === -1) firstAggregateStep = index;
++  }
++  if (firstRateStep === -1 || firstAggregateStep === -1) return "unknown";
++  return firstRateStep < firstAggregateStep ? "rate-first" : "aggregate-first";
++}
++
++function selectRateFirstPipeline(catalog) {
++  const definitions = catalog && Array.isArray(catalog.definitions) ? catalog.definitions : [];
++  const rateFirst = definitions.filter((definition) => stageOrder(definition) === "rate-first");
++  if (!rateFirst.length) return LEGACY_AGGREGATE_FIRST_PIPELINE;
++  // Prefer the reset-safe counterpart of the legacy traffic rule if several
++  // rate-first definitions are deployed.
++  const preferred = rateFirst.find((definition) =>
++    String(definition.id).includes("traffic") || /traffic/i.test(String(definition.label || "")));
++  return (preferred || rateFirst[0]).id;
++}
++
++export function queryPolicy(catalog) {
+   return {
+-    pipeline: "traffic-window",
++    pipeline: selectRateFirstPipeline(catalog),
+     panelScope: "all",
+     sampleFilter: "none",
+   };
+diff --git a/src/main.js b/src/main.js
+index c729353c5a81ab929dfe4d4c8345bcb8045ee457..99b5fed29c5ea6bde1a7db0dd8ed1c7f9bd254d5 100644
+--- a/src/main.js
++++ b/src/main.js
+@@ -10,7 +10,7 @@ subscribe(render);
+ async function start() {
+   try {
+     const catalog = await queryClient.catalog();
+-    const plan = compilePanelPlan(queryPolicy());
++    const plan = compilePanelPlan(queryPolicy(catalog));
+     updateState({catalog, plan});
+     acceptInitial(await queryClient.configure(plan));
+   } catch (error) {

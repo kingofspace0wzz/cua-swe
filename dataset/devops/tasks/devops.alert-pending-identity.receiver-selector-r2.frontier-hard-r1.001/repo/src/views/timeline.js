@@ -1,0 +1,2 @@
+import {esc,clock} from './format.js';
+export function timelinePanel(s){return `<section><h2>Alert state timeline</h2><table data-test="timeline"><thead><tr><th>Time</th><th>Condition</th><th>State</th><th>Active since</th><th>Fingerprint</th></tr></thead><tbody>${s.timeline.map(x=>`<tr><td>${clock(x.t)}</td><td>${x.condition?'true':'false'}</td><td><span class="badge ${x.state}">${x.state}</span></td><td>${x.activeAt===null?'—':clock(x.activeAt)}</td><td class="mono">${esc(x.fingerprint||'—')}</td></tr>`).join('')}</tbody></table></section>`;}

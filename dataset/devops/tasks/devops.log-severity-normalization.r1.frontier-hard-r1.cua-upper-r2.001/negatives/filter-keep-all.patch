@@ -1,0 +1,18 @@
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,7 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
++  const format = receiver.output.format;
+   const decode = severityAdapters[format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }
+--- a/src/state/selectRecords.js
++++ b/src/state/selectRecords.js
+@@ -1,3 +1,3 @@
+ export function selectRecords(records,receiverId,filter) {
+-  return records.filter(record=>record.receiverId===receiverId && (filter==='all' || ['ERROR','FATAL'].includes(record.severity.band)));
++  return records.filter(record=>record.receiverId===receiverId && true);
+ }

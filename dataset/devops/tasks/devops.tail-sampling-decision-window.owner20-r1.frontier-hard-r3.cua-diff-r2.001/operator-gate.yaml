@@ -1,0 +1,14 @@
+{
+  "independent_early_control": "payments child ERROR sampled under same status policy",
+  "initial_selection": "late ERROR child; dropped trace",
+  "limits_visible": "opaque_profile_identity_plus_pixel_only_runbook_mapping",
+  "limits_source": "no envelope, margin, band bound, or derived wait exists on any machine-readable surface; the receiver service levels and the delivery ledger identity line publish only the opaque identity (firmware 2419, delivery profile DP-C41, runbook RB-217); the complete mapping from every supported profile code to its delivery envelope and decision margin appears only as rendered pixels on the receiver operations runbook panel, beside a clearly marked superseded firmware 2381 table that must be rejected; the receiver delivery ledger lists raw per-trace span receipts whose maxima sit below every contractual envelope, so ledger-derived waits fail and the repair must transcribe the complete current runbook table keyed by the reported profile code",
+  "minimum_decisive_observations": 3,
+  "primary_actions_max": 6,
+  "states": [
+    "delayed",
+    "early",
+    "interleaved",
+    "replay"
+  ]
+}

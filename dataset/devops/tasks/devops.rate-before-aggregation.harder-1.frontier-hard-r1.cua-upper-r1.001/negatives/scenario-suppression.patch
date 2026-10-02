@@ -1,0 +1,12 @@
+diff --git a/src/views/controls.js b/src/views/controls.js
+--- a/src/views/controls.js
++++ b/src/views/controls.js
+@@ -16,7 +16,7 @@ export function renderControls(catalog, snapshot) {
+ export function renderControls(catalog, snapshot) {
+   buttons(
+     document.querySelector('[data-test="scenario-controls"]'),
+-    catalog.scenarios,
++    catalog.scenarios.slice(0, 1),
+     snapshot.scenario.id,
+     "scenarioId",
+     selectScenario,

@@ -1,0 +1,3429 @@
+{
+ "candidate_materialization": true,
+ "controls": [
+  "healthy unsigned absolute stream",
+  "positive/negative/signed-zero relative",
+  "absolute rebase after relatives",
+  "first signed value with implicit zero",
+  "negative absolute reset pair in order",
+  "interleaved identities",
+  "identical line repeated within batch and across separate datagrams",
+  "empty/no-input state",
+  "idle does not reset gauges",
+  "reset deletes gauges only through declared operator reset",
+  "replay yields same state/history in a fresh epoch",
+  "read/reload does not inject traffic",
+  "process restart starts fresh then replay",
+  "repeated identical signed snapshot reading stays stable",
+  "plus-signed snapshot reading is stored as published",
+  "per-datagram producer attribution preserved end to end",
+  "fleet inventory published in the empty session before any traffic",
+  "second delta-capable relay endpoint accumulates repeated identical signed deltas within a batch and across datagrams",
+  "second snapshot publisher stores repeated identical signed readings as published",
+  "unsigned rebase after deltas on the second relay endpoint",
+  "first signed delta with implicit zero on the second relay endpoint",
+  "plus-signed snapshot reading on the second snapshot publisher is stored as published",
+  "per-endpoint update mode is constant across payload profiles",
+  "the same stable endpoint identity publishes under both update modes across deterministic rollout epochs",
+  "cabinet-agents and basin-level keep their channels and plans across the rollout (unaffected endpoint controls)",
+  "post-rollout replay repeats deterministically (epoch 3 and epoch 4 histories identical)",
+  "repeated identical plus-signed register re-reports on the census channel stay stable after the rollout",
+  "repeated identical signed deltas on the yard gateway stream accumulate after the rollout",
+  "every endpoint opens every graded epoch with its channel self-check before its ordinary traffic",
+  "the settle line always equals the endpoint’s own resulting register under the epoch-active mode",
+  "the two reprovisioned endpoints settle unchanged pulses to different register values after the rollout",
+  "fleet inventory labels and channel designations are semantically neutral about update mode in every epoch",
+  "the fleet inventory card designation changes exactly at the rollout epoch and is rendered per epoch",
+  "the provisioning bulletin is served with the runtime session and rendered in the operator console"
+ ],
+ "dialect": "statsd/statsd v0.9.0 original gauge wire format; bare ASCII names, |g, LF multiline, no tags/sample rate. Update-mode is per fleet endpoint and per rollout epoch: delta-capable relays use lexical signed tokens as relative updates; snapshot-style publishers report absolute readings, signed or unsigned. Fleet inventory wording is semantically neutral lane/firmware designations that never imply an update mode. Each endpoint instead demonstrates its currently active convention behaviorally: a deterministic startup channel check (two identically signed pulses on its own check register, then one unsigned settle equal to the endpoint’s resulting register) opens every session epoch before ordinary traffic, and a reprovisioned endpoint re-runs the check under its new convention, so the mode follows calibrated runtime evidence rather than endpoint names, channel keywords, epoch parity, or static source-to-mode caches.",
+ "fleet": [
+  {
+   "id": "cabinet-agents",
+   "label": "Cabinet agents",
+   "port_offset": 1,
+   "provisioning": [
+    {
+     "channel": "telemetry channel · lane G2 · firmware 4.7",
+     "from_epoch": 1,
+     "gauge_update_mode": "signed-delta"
+    }
+   ]
+  },
+  {
+   "id": "yard-station",
+   "label": "Yard station telemetry",
+   "port_offset": 2,
+   "provisioning": [
+    {
+     "channel": "telemetry channel · lane S9 · firmware 2.3",
+     "from_epoch": 1,
+     "gauge_update_mode": "absolute-reading"
+    },
+    {
+     "channel": "telemetry channel · lane G2 · firmware 4.7",
+     "from_epoch": 3,
+     "gauge_update_mode": "signed-delta"
+    }
+   ]
+  },
+  {
+   "id": "gatehouse-counters",
+   "label": "Gatehouse occupancy counters",
+   "port_offset": 3,
+   "provisioning": [
+    {
+     "channel": "telemetry channel · lane G2 · firmware 4.7",
+     "from_epoch": 1,
+     "gauge_update_mode": "signed-delta"
+    },
+    {
+     "channel": "telemetry channel · lane C4 · firmware 3.1",
+     "from_epoch": 3,
+     "gauge_update_mode": "absolute-reading"
+    }
+   ]
+  },
+  {
+   "id": "basin-level",
+   "label": "Intake basin sensors",
+   "port_offset": 4,
+   "provisioning": [
+    {
+     "channel": "telemetry channel · lane L6 · firmware 1.8",
+     "from_epoch": 1,
+     "gauge_update_mode": "absolute-reading"
+    }
+   ]
+  }
+ ],
+ "fleet_bulletin": "Provisioning check: each fleet endpoint opens every session epoch on its own check register with two identically signed pulses, then one unsigned settle line carrying the endpoint’s resulting register value, before any ordinary gauge traffic.",
+ "fleet_public_fields": [
+  "id",
+  "label",
+  "channel",
+  "endpoint"
+ ],
+ "maximum_datagram_bytes": 512,
+ "profiles": [
+  {
+   "id": "A",
+   "identities": [
+    "workers.north.headroom",
+    "workers.south.headroom",
+    "pool.capacity",
+    "dock.ambient.temperature",
+    "lift.platform.offset",
+    "gate.north.occupancy",
+    "gate.south.occupancy",
+    "gate.ramp.occupancy",
+    "basin.intake.level",
+    "basin.overflow.gap"
+   ],
+   "waves": [
+    {
+     "from_epoch": 1,
+     "groups": [
+      {
+       "operations": [
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "set",
+         "value": "4",
+         "wire_token": "4"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "1.5",
+         "wire_token": "+1.5"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "1.5",
+         "wire_token": "+1.5"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "1.5",
+         "wire_token": "1.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "6",
+         "wire_token": "6"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "0.5"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "set",
+         "value": "40",
+         "wire_token": "40"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "set",
+         "value": "12",
+         "wire_token": "12"
+        },
+        {
+         "identity": "pool.capacity",
+         "operation": "set",
+         "value": "100",
+         "wire_token": "100"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "set",
+         "value": "12",
+         "wire_token": "12"
+        },
+        {
+         "identity": "gate.south.occupancy",
+         "operation": "set",
+         "value": "4",
+         "wire_token": "4"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "dock.ambient.temperature",
+         "operation": "set",
+         "value": "18.25",
+         "wire_token": "18.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "basin.intake.level",
+         "operation": "set",
+         "value": "2.5",
+         "wire_token": "2.5"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "6",
+         "wire_token": "+6"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "dock.ambient.temperature",
+         "operation": "set",
+         "value": "-3.5",
+         "wire_token": "-3.5"
+        },
+        {
+         "identity": "lift.platform.offset",
+         "operation": "set",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "-3",
+         "wire_token": "-3"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "dock.ambient.temperature",
+         "operation": "set",
+         "value": "-3.5",
+         "wire_token": "-3.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "basin.intake.level",
+         "operation": "set",
+         "value": "-1.75",
+         "wire_token": "-1.75"
+        },
+        {
+         "identity": "basin.overflow.gap",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "6",
+         "wire_token": "+6"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.south.occupancy",
+         "operation": "add",
+         "value": "-6",
+         "wire_token": "-6"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "lift.platform.offset",
+         "operation": "set",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "pool.capacity",
+         "operation": "set",
+         "value": "80.5",
+         "wire_token": "80.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "basin.intake.level",
+         "operation": "set",
+         "value": "-1.75",
+         "wire_token": "-1.75"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "set",
+         "value": "18",
+         "wire_token": "18"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "-2",
+         "wire_token": "-2"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "-4",
+         "wire_token": "-4"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "-7",
+         "wire_token": "-7"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "dock.ambient.temperature",
+         "operation": "set",
+         "value": "-4.75",
+         "wire_token": "-4.75"
+        },
+        {
+         "identity": "lift.platform.offset",
+         "operation": "set",
+         "value": "-0.75",
+         "wire_token": "-0.75"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.ramp.occupancy",
+         "operation": "add",
+         "value": "-2",
+         "wire_token": "-2"
+        },
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "4",
+         "wire_token": "+4"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "pool.capacity",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "set",
+         "value": "7",
+         "wire_token": "7"
+        },
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "-7",
+         "wire_token": "-7"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "pool.capacity",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "basin.overflow.gap",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom.new",
+         "operation": "add",
+         "value": "-1.5",
+         "wire_token": "-1.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "dock.ambient.temperature",
+         "operation": "set",
+         "value": "-4.75",
+         "wire_token": "-4.75"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom.new",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      }
+     ]
+    },
+    {
+     "from_epoch": 3,
+     "groups": [
+      {
+       "operations": [
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "set",
+         "value": "4",
+         "wire_token": "4"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.yard.register",
+         "operation": "add",
+         "value": "1.5",
+         "wire_token": "+1.5"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "add",
+         "value": "1.5",
+         "wire_token": "+1.5"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "3"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "3"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "0.5"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "set",
+         "value": "40",
+         "wire_token": "40"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "set",
+         "value": "12",
+         "wire_token": "12"
+        },
+        {
+         "identity": "pool.capacity",
+         "operation": "set",
+         "value": "100",
+         "wire_token": "100"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "set",
+         "value": "9",
+         "wire_token": "9"
+        },
+        {
+         "identity": "gate.south.occupancy",
+         "operation": "set",
+         "value": "5",
+         "wire_token": "5"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "dock.ambient.temperature",
+         "operation": "set",
+         "value": "18.25",
+         "wire_token": "18.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "basin.intake.level",
+         "operation": "set",
+         "value": "2.5",
+         "wire_token": "2.5"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "6",
+         "wire_token": "+6"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "dock.ambient.temperature",
+         "operation": "add",
+         "value": "-3.5",
+         "wire_token": "-3.5"
+        },
+        {
+         "identity": "lift.platform.offset",
+         "operation": "add",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "+3"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "-3",
+         "wire_token": "-3"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "dock.ambient.temperature",
+         "operation": "add",
+         "value": "-3.5",
+         "wire_token": "-3.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "basin.intake.level",
+         "operation": "set",
+         "value": "-1.75",
+         "wire_token": "-1.75"
+        },
+        {
+         "identity": "basin.overflow.gap",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "6",
+         "wire_token": "+6"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.south.occupancy",
+         "operation": "set",
+         "value": "-6",
+         "wire_token": "-6"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "lift.platform.offset",
+         "operation": "add",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "pool.capacity",
+         "operation": "set",
+         "value": "80.5",
+         "wire_token": "80.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "basin.intake.level",
+         "operation": "set",
+         "value": "-1.75",
+         "wire_token": "-1.75"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "set",
+         "value": "18",
+         "wire_token": "18"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "-2",
+         "wire_token": "-2"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "-4",
+         "wire_token": "-4"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "-7",
+         "wire_token": "-7"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "dock.ambient.temperature",
+         "operation": "set",
+         "value": "6",
+         "wire_token": "6"
+        },
+        {
+         "identity": "lift.platform.offset",
+         "operation": "add",
+         "value": "-0.75",
+         "wire_token": "-0.75"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.ramp.occupancy",
+         "operation": "set",
+         "value": "-2",
+         "wire_token": "-2"
+        },
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "+3"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "4",
+         "wire_token": "+4"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "pool.capacity",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "set",
+         "value": "7",
+         "wire_token": "7"
+        },
+        {
+         "identity": "gate.north.occupancy",
+         "operation": "set",
+         "value": "7",
+         "wire_token": "+7"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "-7",
+         "wire_token": "-7"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "workers.south.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "pool.capacity",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "basin.overflow.gap",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom.new",
+         "operation": "add",
+         "value": "-1.5",
+         "wire_token": "-1.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "dock.ambient.temperature",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.north.headroom.new",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "identities": [
+    "workers.east.headroom",
+    "workers.west.headroom",
+    "fleet.capacity",
+    "bay.ambient.temperature",
+    "crane.trolley.offset",
+    "gate.east.occupancy",
+    "gate.west.occupancy",
+    "gate.apron.occupancy",
+    "lagoon.intake.level",
+    "lagoon.overflow.gap"
+   ],
+   "waves": [
+    {
+     "from_epoch": 1,
+     "groups": [
+      {
+       "operations": [
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "set",
+         "value": "5",
+         "wire_token": "5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "1.25",
+         "wire_token": "1.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "add",
+         "value": "4",
+         "wire_token": "+4"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "add",
+         "value": "4",
+         "wire_token": "+4"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "8",
+         "wire_token": "8"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.75",
+         "wire_token": "+0.75"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.75",
+         "wire_token": "+0.75"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.75",
+         "wire_token": "0.75"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "set",
+         "value": "125",
+         "wire_token": "125"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "set",
+         "value": "31",
+         "wire_token": "31"
+        },
+        {
+         "identity": "fleet.capacity",
+         "operation": "set",
+         "value": "240",
+         "wire_token": "240"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "set",
+         "value": "30",
+         "wire_token": "30"
+        },
+        {
+         "identity": "gate.west.occupancy",
+         "operation": "set",
+         "value": "9",
+         "wire_token": "9"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "bay.ambient.temperature",
+         "operation": "set",
+         "value": "21.5",
+         "wire_token": "21.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "lagoon.intake.level",
+         "operation": "set",
+         "value": "3.25",
+         "wire_token": "3.25"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "11",
+         "wire_token": "+11"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "bay.ambient.temperature",
+         "operation": "set",
+         "value": "-6.25",
+         "wire_token": "-6.25"
+        },
+        {
+         "identity": "crane.trolley.offset",
+         "operation": "set",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "add",
+         "value": "5",
+         "wire_token": "+5"
+        },
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "add",
+         "value": "5",
+         "wire_token": "+5"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "-9",
+         "wire_token": "-9"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "bay.ambient.temperature",
+         "operation": "set",
+         "value": "-6.25",
+         "wire_token": "-6.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "lagoon.intake.level",
+         "operation": "set",
+         "value": "-2.5",
+         "wire_token": "-2.5"
+        },
+        {
+         "identity": "lagoon.overflow.gap",
+         "operation": "set",
+         "value": "0.75",
+         "wire_token": "+0.75"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "11",
+         "wire_token": "+11"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.west.occupancy",
+         "operation": "add",
+         "value": "-12",
+         "wire_token": "-12"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "crane.trolley.offset",
+         "operation": "set",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "fleet.capacity",
+         "operation": "set",
+         "value": "80.5",
+         "wire_token": "80.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "lagoon.intake.level",
+         "operation": "set",
+         "value": "-2.5",
+         "wire_token": "-2.5"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "set",
+         "value": "52",
+         "wire_token": "52"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "-2",
+         "wire_token": "-2"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "-4",
+         "wire_token": "-4"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "-13",
+         "wire_token": "-13"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "bay.ambient.temperature",
+         "operation": "set",
+         "value": "-8.5",
+         "wire_token": "-8.5"
+        },
+        {
+         "identity": "crane.trolley.offset",
+         "operation": "set",
+         "value": "-1.25",
+         "wire_token": "-1.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.apron.occupancy",
+         "operation": "add",
+         "value": "-4",
+         "wire_token": "-4"
+        },
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "4",
+         "wire_token": "+4"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "fleet.capacity",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "set",
+         "value": "16",
+         "wire_token": "16"
+        },
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "add",
+         "value": "5",
+         "wire_token": "+5"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "-13",
+         "wire_token": "-13"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "fleet.capacity",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "lagoon.overflow.gap",
+         "operation": "set",
+         "value": "0.75",
+         "wire_token": "+0.75"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom.new",
+         "operation": "add",
+         "value": "-1.5",
+         "wire_token": "-1.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "bay.ambient.temperature",
+         "operation": "set",
+         "value": "-8.5",
+         "wire_token": "-8.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom.new",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      }
+     ]
+    },
+    {
+     "from_epoch": 3,
+     "groups": [
+      {
+       "operations": [
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "set",
+         "value": "5",
+         "wire_token": "5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.yard.register",
+         "operation": "add",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "add",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "2.5",
+         "wire_token": "2.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "4",
+         "wire_token": "+4"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "4",
+         "wire_token": "+4"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "4",
+         "wire_token": "4"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.75",
+         "wire_token": "+0.75"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.75",
+         "wire_token": "+0.75"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "0.75",
+         "wire_token": "0.75"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "set",
+         "value": "125",
+         "wire_token": "125"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "set",
+         "value": "31",
+         "wire_token": "31"
+        },
+        {
+         "identity": "fleet.capacity",
+         "operation": "set",
+         "value": "240",
+         "wire_token": "240"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "set",
+         "value": "21",
+         "wire_token": "21"
+        },
+        {
+         "identity": "gate.west.occupancy",
+         "operation": "set",
+         "value": "8",
+         "wire_token": "8"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "bay.ambient.temperature",
+         "operation": "set",
+         "value": "21.5",
+         "wire_token": "21.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "lagoon.intake.level",
+         "operation": "set",
+         "value": "3.25",
+         "wire_token": "3.25"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "11",
+         "wire_token": "+11"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "bay.ambient.temperature",
+         "operation": "add",
+         "value": "-6.25",
+         "wire_token": "-6.25"
+        },
+        {
+         "identity": "crane.trolley.offset",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "set",
+         "value": "5",
+         "wire_token": "+5"
+        },
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "set",
+         "value": "5",
+         "wire_token": "+5"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "-9",
+         "wire_token": "-9"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "bay.ambient.temperature",
+         "operation": "add",
+         "value": "-6.25",
+         "wire_token": "-6.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "lagoon.intake.level",
+         "operation": "set",
+         "value": "-2.5",
+         "wire_token": "-2.5"
+        },
+        {
+         "identity": "lagoon.overflow.gap",
+         "operation": "set",
+         "value": "0.75",
+         "wire_token": "+0.75"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "11",
+         "wire_token": "+11"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.west.occupancy",
+         "operation": "set",
+         "value": "-12",
+         "wire_token": "-12"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "crane.trolley.offset",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "fleet.capacity",
+         "operation": "set",
+         "value": "80.5",
+         "wire_token": "80.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "lagoon.intake.level",
+         "operation": "set",
+         "value": "-2.5",
+         "wire_token": "-2.5"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "set",
+         "value": "52",
+         "wire_token": "52"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "-2",
+         "wire_token": "-2"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "-4",
+         "wire_token": "-4"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "-13",
+         "wire_token": "-13"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "bay.ambient.temperature",
+         "operation": "set",
+         "value": "9",
+         "wire_token": "9"
+        },
+        {
+         "identity": "crane.trolley.offset",
+         "operation": "add",
+         "value": "-1.25",
+         "wire_token": "-1.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.apron.occupancy",
+         "operation": "set",
+         "value": "-4",
+         "wire_token": "-4"
+        },
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "set",
+         "value": "5",
+         "wire_token": "+5"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "4",
+         "wire_token": "+4"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "fleet.capacity",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "set",
+         "value": "16",
+         "wire_token": "16"
+        },
+        {
+         "identity": "gate.east.occupancy",
+         "operation": "set",
+         "value": "16",
+         "wire_token": "+16"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "-13",
+         "wire_token": "-13"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "workers.west.headroom",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "fleet.capacity",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "lagoon.overflow.gap",
+         "operation": "set",
+         "value": "0.75",
+         "wire_token": "+0.75"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom.new",
+         "operation": "add",
+         "value": "-1.5",
+         "wire_token": "-1.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "bay.ambient.temperature",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "workers.east.headroom.new",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "identities": [
+    "room.thermal_margin",
+    "rack.thermal_margin",
+    "sensor.reference",
+    "intake.air.temperature",
+    "damper.vane.offset",
+    "gate.annex.occupancy",
+    "gate.depot.occupancy",
+    "gate.portal.occupancy",
+    "cistern.intake.level",
+    "cistern.overflow.gap"
+   ],
+   "waves": [
+    {
+     "from_epoch": 1,
+     "groups": [
+      {
+       "operations": [
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "1.5",
+         "wire_token": "+1.5"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "1.5",
+         "wire_token": "+1.5"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "3"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "2.25",
+         "wire_token": "+2.25"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "2.25",
+         "wire_token": "+2.25"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "2.25",
+         "wire_token": "2.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "4",
+         "wire_token": "4"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "1.25",
+         "wire_token": "1.25"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "set",
+         "value": "6.5",
+         "wire_token": "6.5"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "set",
+         "value": "2.25",
+         "wire_token": "2.25"
+        },
+        {
+         "identity": "sensor.reference",
+         "operation": "set",
+         "value": "20.5",
+         "wire_token": "20.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "set",
+         "value": "6",
+         "wire_token": "6"
+        },
+        {
+         "identity": "gate.depot.occupancy",
+         "operation": "set",
+         "value": "2",
+         "wire_token": "2"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "intake.air.temperature",
+         "operation": "set",
+         "value": "12.75",
+         "wire_token": "12.75"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "cistern.intake.level",
+         "operation": "set",
+         "value": "1.75",
+         "wire_token": "1.75"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "intake.air.temperature",
+         "operation": "set",
+         "value": "-2.25",
+         "wire_token": "-2.25"
+        },
+        {
+         "identity": "damper.vane.offset",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "-1.25",
+         "wire_token": "-1.25"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "intake.air.temperature",
+         "operation": "set",
+         "value": "-2.25",
+         "wire_token": "-2.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "cistern.intake.level",
+         "operation": "set",
+         "value": "-0.25",
+         "wire_token": "-0.25"
+        },
+        {
+         "identity": "cistern.overflow.gap",
+         "operation": "set",
+         "value": "0.25",
+         "wire_token": "+0.25"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.depot.occupancy",
+         "operation": "add",
+         "value": "-5",
+         "wire_token": "-5"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "damper.vane.offset",
+         "operation": "set",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "sensor.reference",
+         "operation": "set",
+         "value": "80.5",
+         "wire_token": "80.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "cistern.intake.level",
+         "operation": "set",
+         "value": "-0.25",
+         "wire_token": "-0.25"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "set",
+         "value": "4.75",
+         "wire_token": "4.75"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "-2",
+         "wire_token": "-2"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "-4",
+         "wire_token": "-4"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "-2.5",
+         "wire_token": "-2.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "intake.air.temperature",
+         "operation": "set",
+         "value": "-5.5",
+         "wire_token": "-5.5"
+        },
+        {
+         "identity": "damper.vane.offset",
+         "operation": "set",
+         "value": "-0.25",
+         "wire_token": "-0.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.portal.occupancy",
+         "operation": "add",
+         "value": "-1",
+         "wire_token": "-1"
+        },
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "4",
+         "wire_token": "+4"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "sensor.reference",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "3"
+        },
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "-2.5",
+         "wire_token": "-2.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "sensor.reference",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "cistern.overflow.gap",
+         "operation": "set",
+         "value": "0.25",
+         "wire_token": "+0.25"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin.new",
+         "operation": "add",
+         "value": "-1.5",
+         "wire_token": "-1.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "intake.air.temperature",
+         "operation": "set",
+         "value": "-5.5",
+         "wire_token": "-5.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin.new",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      }
+     ]
+    },
+    {
+     "from_epoch": 3,
+     "groups": [
+      {
+       "operations": [
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "1.5",
+         "wire_token": "+1.5"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "add",
+         "value": "1.5",
+         "wire_token": "+1.5"
+        },
+        {
+         "identity": "check.cabinet.register",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "3"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.yard.register",
+         "operation": "add",
+         "value": "2.25",
+         "wire_token": "+2.25"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "add",
+         "value": "2.25",
+         "wire_token": "+2.25"
+        },
+        {
+         "identity": "check.yard.register",
+         "operation": "set",
+         "value": "4.5",
+         "wire_token": "4.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "check.gatehouse.register",
+         "operation": "set",
+         "value": "2",
+         "wire_token": "2"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "1.25",
+         "wire_token": "+1.25"
+        },
+        {
+         "identity": "check.basin.register",
+         "operation": "set",
+         "value": "1.25",
+         "wire_token": "1.25"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "set",
+         "value": "6.5",
+         "wire_token": "6.5"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "set",
+         "value": "2.25",
+         "wire_token": "2.25"
+        },
+        {
+         "identity": "sensor.reference",
+         "operation": "set",
+         "value": "20.5",
+         "wire_token": "20.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "set",
+         "value": "4",
+         "wire_token": "4"
+        },
+        {
+         "identity": "gate.depot.occupancy",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "3"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "intake.air.temperature",
+         "operation": "set",
+         "value": "12.75",
+         "wire_token": "12.75"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "cistern.intake.level",
+         "operation": "set",
+         "value": "1.75",
+         "wire_token": "1.75"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "intake.air.temperature",
+         "operation": "add",
+         "value": "-2.25",
+         "wire_token": "-2.25"
+        },
+        {
+         "identity": "damper.vane.offset",
+         "operation": "add",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "set",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "set",
+         "value": "2",
+         "wire_token": "+2"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "-1.25",
+         "wire_token": "-1.25"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "intake.air.temperature",
+         "operation": "add",
+         "value": "-2.25",
+         "wire_token": "-2.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "cistern.intake.level",
+         "operation": "set",
+         "value": "-0.25",
+         "wire_token": "-0.25"
+        },
+        {
+         "identity": "cistern.overflow.gap",
+         "operation": "set",
+         "value": "0.25",
+         "wire_token": "+0.25"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.depot.occupancy",
+         "operation": "set",
+         "value": "-5",
+         "wire_token": "-5"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "damper.vane.offset",
+         "operation": "add",
+         "value": "0.5",
+         "wire_token": "+0.5"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "sensor.reference",
+         "operation": "set",
+         "value": "80.5",
+         "wire_token": "80.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "cistern.intake.level",
+         "operation": "set",
+         "value": "-0.25",
+         "wire_token": "-0.25"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "set",
+         "value": "4.75",
+         "wire_token": "4.75"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "-2",
+         "wire_token": "-2"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "-4",
+         "wire_token": "-4"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "-2.5",
+         "wire_token": "-2.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "intake.air.temperature",
+         "operation": "set",
+         "value": "3.5",
+         "wire_token": "3.5"
+        },
+        {
+         "identity": "damper.vane.offset",
+         "operation": "add",
+         "value": "-0.25",
+         "wire_token": "-0.25"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.portal.occupancy",
+         "operation": "set",
+         "value": "-1",
+         "wire_token": "-1"
+        },
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "set",
+         "value": "2",
+         "wire_token": "+2"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "4",
+         "wire_token": "+4"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "2",
+         "wire_token": "+2"
+        },
+        {
+         "identity": "sensor.reference",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        },
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "3",
+         "wire_token": "+3"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "3"
+        },
+        {
+         "identity": "gate.annex.occupancy",
+         "operation": "set",
+         "value": "3",
+         "wire_token": "+3"
+        }
+       ],
+       "source": "gatehouse-counters"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "set",
+         "value": "0",
+         "wire_token": "0"
+        },
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "-2.5",
+         "wire_token": "-2.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        },
+        {
+         "identity": "rack.thermal_margin",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "-0"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "sensor.reference",
+         "operation": "set",
+         "value": "91",
+         "wire_token": "91"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "cistern.overflow.gap",
+         "operation": "set",
+         "value": "0.25",
+         "wire_token": "+0.25"
+        }
+       ],
+       "source": "basin-level"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin.new",
+         "operation": "add",
+         "value": "-1.5",
+         "wire_token": "-1.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      },
+      {
+       "operations": [
+        {
+         "identity": "intake.air.temperature",
+         "operation": "add",
+         "value": "0",
+         "wire_token": "+0"
+        }
+       ],
+       "source": "yard-station"
+      },
+      {
+       "operations": [
+        {
+         "identity": "room.thermal_margin.new",
+         "operation": "add",
+         "value": "2.5",
+         "wire_token": "+2.5"
+        }
+       ],
+       "source": "cabinet-agents"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "proof_variants": [
+  "reference-behavioral-channel-check-calibration",
+  "baseline-absolute-overwrite",
+  "correct-calibrated-update-application",
+  "correct-ingress-normalize-per-calibrated-convention",
+  "correct-event-reducer-per-calibrated-convention",
+  "negative-sign-delta-everywhere",
+  "negative-positive-only-relative",
+  "negative-numeric-sign",
+  "negative-add-everything",
+  "negative-swapped-fleet-modes",
+  "negative-deduplicate-lines",
+  "negative-global-state",
+  "negative-clamp-to-zero",
+  "negative-reset-per-datagram",
+  "negative-visible-identity-list",
+  "negative-ignore-signed-updates",
+  "negative-render-running-total",
+  "negative-stale-two-endpoint-provisioning-default-delta",
+  "negative-two-endpoint-provisioning-default-absolute",
+  "negative-endpoint-name-keyword-classifier",
+  "negative-predecessor-metadata-keyword-classifier",
+  "negative-predecessor-inventory-prose-classifier-with-source-cache",
+  "negative-predecessor-inventory-lexical-classifier-defaults-delta",
+  "negative-static-fleet-provisioning",
+  "negative-epoch-parity-provisioning",
+  "negative-cached-first-epoch-provisioning"
+ ],
+ "public_contract": {
+  "calibration": "Channel self-check per endpoint per epoch: two identically signed pulses on the endpoint’s check register, then one unsigned settle line equal to the endpoint’s own resulting register. On a delta-capable relay the settle equals the accumulated pulses; on a snapshot publisher it equals the last pulse reading. The check always completes before the endpoint’s ordinary traffic in that epoch.",
+  "datagram_scope": "Every submitted UDP datagram contains complete ASCII metric lines; LF batching valid. No cross-datagram reconstruction requirement.",
+  "negative_absolute": "On a delta-capable relay: unsigned zero then negative delta in order; a negative token alone is relative there. On a snapshot publisher a signed token is the absolute reading itself.",
+  "numeric_range": "-1000000 through +1000000; finite decimals; abs tolerance 1e-9 or rel tolerance 1e-9",
+  "provisioning_visibility": "The active per-endpoint update mode for the current epoch is evaluator-owned runtime state. The four fleet inventory cards expose only label, UDP endpoint and a semantically neutral channel designation; no card wording implies delta versus absolute semantics and no public surface carries a machine-readable mode field. The decisive evidence is behavioral: every endpoint opens each epoch with the channel self-check described by the console provisioning bulletin, and the repeated signed pulses plus the unsigned register settle are visible in the datagram capture and the update history; the session epoch is shown in the console footer. Neither the mode mapping nor the rollout schedule appears in the agent-visible repository.",
+  "receipt_processing_bound_ms": 1000,
+  "scope": "Finite gauge values in native units. Update-mode is fleet provisioning per producer endpoint and per rollout epoch: on delta-capable relays a lexical leading sign means relative and an unsigned token replaces; on snapshot-style publishers every reading is absolute, signed or not. A stable endpoint identity may change its active channel at a deterministic rollout epoch, so the mode follows the convention the endpoint currently demonstrates rather than any static per-endpoint table, inventory keyword, first-seen cache, or per-sender special case. Absent relative starts from zero. All accepted receipt events preserve identity, producer attribution and multiplicity. No exact patch/config whitelist.",
+  "transport_reliability": "Controlled localhost fixture: one in-flight datagram, raw capture plus native receipt counter barrier, no application retries. UDP loss/reorder/duplication outside intended writer multiplicity makes fixture infrastructure-invalid; no exactly-once/order claim for UDP generally."
+ },
+ "repetitions": 2,
+ "rollout": {
+  "description": "Deterministic collector rollout schedule keyed to the runtime session epoch. Epoch increments on every session clear (seed, reset, replay). Wave 2 activates at epoch 3: gatehouse-counters moves from lane G2 to lane C4 and yard-station moves from lane S9 to lane G2. cabinet-agents and basin-level keep their wave 1 channels throughout (unaffected controls). Every epoch, including post-rollout epochs, opens with the four endpoints’ channel checks under the epoch-active provisioning, so the two reprovisioned endpoints visibly settle their unchanged pulses to different register values from epoch 3 onward.",
+  "waves": [
+   {
+    "from_epoch": 1,
+    "wave": 1
+   },
+   {
+    "from_epoch": 3,
+    "wave": 2
+   }
+  ]
+ },
+ "schema_version": 3,
+ "status": "fixed_before_successor_certification_and_any_model",
+ "transport_forms": [
+  "batched-valid-lines",
+  "split-whole-lines"
+ ]
+}

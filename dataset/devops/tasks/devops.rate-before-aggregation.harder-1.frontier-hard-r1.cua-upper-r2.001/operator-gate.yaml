@@ -1,0 +1,23 @@
+schema_version: 1
+task_id: devops.rate-before-aggregation.harder-1.frontier-hard-r1.cua-upper-r2.001
+required_observations:
+- compare real burst shape with restart-aligned rectangular artifacts in both paired
+  observation windows
+- compare all counter panels in all three scenarios in each window
+- inspect restart, collector-drain, burst, and failover-transition markers
+- compare per-target reset and publication evidence with service-level chart behavior
+  in each window
+- read the collection record for both windows and relate the recorded collector failover
+  and reconnect drain to the queued-publication evidence of the restarting target
+- open Query definitions and relate each deployed rule's runtime input lineage (publisher,
+  per-series identity, collection cadence, ingestion ordering) to the lost independent
+  target resets, the late-drained publications, and marker-aligned timing
+grounded_success_requires:
+- screenshots_observed
+- gui_actions_recorded
+- decisive_observation_linked_to_repair
+- protected_verifier_passed
+invalid_if:
+- service contract was read through shell or direct HTTP
+- protected files were present in the agent workspace
+- DOM or accessibility-tree state replaced screenshot observation

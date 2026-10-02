@@ -1,0 +1,116 @@
+task_id: gameqa.astray-level2-parallax-glass.009
+trajectory_id: astray-level2-parallax-glass-v9
+seed: 42
+level: 2
+candidate:
+  family: transparent-depth-parallax-sequence
+  family_label: Layered WebGL presentation disagrees with deterministic gallery state
+  difficulty: l4
+  status: construction_complete_browser_pending
+  source_template: GameWorld 03_astray
+  source_revision: 55322928fa8bd51cb1719bd3807a32634aa5d3cb
+  mechanism: >-
+    ordinary Up advances a deterministic three-seal gallery, but activated
+    overlapping panes are presented with incompatible depth-buffer and
+    transparent ordering choices; state advances while the rendered cores and
+    crowns show the wrong front-most/composited colors
+  diagnostic_ambiguity:
+    - material opacity, blending, depth testing, or depth writing may be wrong
+    - transparent object order may disagree with physical front-to-back placement
+    - visibility toggles, geometry placement, lighting, or camera follow may be wrong
+    - direct color replacement can fake one checkpoint while missing layered signatures
+trigger:
+  shape: hold ordinary Up through a deterministic rendered glass gallery
+  route_runs:
+    - [wait, true_no_input_stationary]
+    - [screenshot, three_magenta_seals_and_red_crossbar]
+    - [ordinary_Up_hold, enter_gallery]
+    - [screenshot, green_amber_signature_with_remaining_magenta]
+    - [ordinary_Up_hold, finish_gallery]
+    - [screenshot, three_green_amber_signatures_and_green_crossbar]
+    - [ordinary_Up, movement_continues_beyond_crossbar]
+  causal_checkpoint: >-
+    retained rendered states must progress from opaque magenta seals to a mixed
+    frame and then three separate green-core/amber-crown signatures; public
+    player history must independently prove input-driven forward travel
+pre_trigger_equivalence:
+  status: pending_browser_certification
+  requirements:
+    - Level 3 can be selected and Level 2 selected in place
+    - held arrow input is neutralized across Level 2 selection
+    - deterministic Level 2 starts at the normal spawn
+    - three magenta seals, a red crossbar, and the gold ball are visible
+    - the ball remains stationary during a true no-input interval
+    - ordinary R restart restores the same opening
+post_trigger_divergence:
+  status: pending_browser_certification
+  no_op_expected:
+    forward_travel: true
+    green_cores: false
+    amber_crowns: false
+    complete_signature: false
+  gold_expected:
+    progressive_signature: true
+    green_cores: 3
+    amber_crowns: 3
+    crossbar_green: true
+    movement_continues: true
+  negative_depth_only_expected:
+    green_cores: 3
+    amber_crowns: false
+    teal_reverse_composites: true
+  negative_order_only_expected:
+    green_cores: false
+    amber_crowns: 3
+    near_layers_occlude_cores: true
+repeated_run_contract:
+  count: 2
+  reset_between_runs: ordinary_R
+  expectation: >-
+    true idle, opening render, mixed render, complete layered render, and
+    released ordinary movement repeat after restart
+interaction_necessity:
+  status: required
+  idle_control: true_no_input
+  gates:
+    - source-only or build-only evidence cannot satisfy the behavioral oracle
+    - no input must leave the player stationary and all three seals magenta
+    - ordinary Up must cause substantial public forward displacement
+    - retained frames must show opening, progressive, and complete color states
+    - each resolved seal must expose both green and amber rendered components
+    - the complete sequence must repeat after ordinary R
+hidden_verifier_contract:
+  - initialize Level 3, hold an arrow across reset, then select Level 2
+  - prove held-input neutralization with a true no-input stationary interval
+  - retain opening, mixed, and completion screenshots for each run
+  - classify only rendered magenta, green, amber, teal, red, and gold components
+  - hold ordinary Up and retain public gameAPI player samples over time
+  - require mixed magenta/resolved mid-state and three complete signatures
+  - reject reverse-composited teal crowns and unresolved red cores
+  - require ordinary movement beyond the cleared crossbar
+  - press ordinary R and repeat the complete sequence
+required_evidence:
+  clean_mutant_pre_trigger_equivalence: pending_browser_certification
+  no_op_failure: pending_browser_certification
+  gold_pass: pending_browser_certification
+  negative_depth_only_failure: pending_browser_certification
+  negative_order_only_failure: pending_browser_certification
+  repeated_run_determinism: pending_browser_certification
+  true_idle_interaction_necessity: pending_browser_certification
+  held_input_neutralization: pending_browser_certification
+  adversarial_source_only_review: completed_construction_review
+  formal_code_only_failure: not_run
+  cua_reproducible_success: not_run
+construction_status:
+  local_browser_run: prohibited_by_request
+  runtime_verifier_workspace_independence: passed
+  runtime_static_implementation_independence: passed
+  static_schema: passed
+  static_syntax: passed
+  gold_patch_applies: passed
+  negative_patches_apply: passed
+  provenance_and_rights: passed
+  launch_contract: passed
+  manifest_isolation: passed
+  browser_certification: pending
+  matched_evaluation: pending

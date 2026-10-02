@@ -1,0 +1,10 @@
+diff --git a/src/controllers/scenarios.js b/src/controllers/scenarios.js
+--- a/src/controllers/scenarios.js
++++ b/src/controllers/scenarios.js
+@@ -20,5 +20,5 @@ export async function startScenarios() {
+ }
+ 
+ export async function nextScenario() {
+-  return advanceScenario();
++  return startScenarios().then((state) => state.snapshot);
+ }

@@ -1,0 +1,53 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..3d0a3391764868edaf789492dd0b533e71beecdf 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -253,7 +253,10 @@
+         };
+         this.retry = function(retry){
+             this.resumeGame(retry);
++            this.levelMap.restoreGuidePhase(this.player.spawnGuide);
+             this.player.respawn();
++            this.levelMap.cameraProgress = this.player.spawnX;
++            this.levelMap.x = -this.player.spawnX;
+             this.levelMap.showGuide(this.player.spawnGuide);
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+diff --git a/js/LevelMap.js b/js/LevelMap.js
+index b57a6f995f0d58427f8879bfa3fac061ede82026..123069939d1d5283db395250dd7b1d73260e59c0 100644
+--- a/js/LevelMap.js
++++ b/js/LevelMap.js
+@@ -203,6 +203,33 @@
+                 tiles: Math.max(1,Math.round((support.right-support.left)/this.box))
+             };
+         };
++        this.restoreGuidePhase = function(frame){
++            if (frame == null) return;
++            var support = this.getSupport(frame.id);
++            if (support == null) return;
++
++            var period = 2800;
++            var offsetY = Math.max(-60,Math.min(0,frame.y-support.baseY));
++            var cosine = Math.max(-1,Math.min(1,1+(offsetY/30)));
++            var phase = Math.acos(cosine)/(Math.PI*2)*period;
++            var mirroredPhase = phase == 0 ? 0 : period-phase;
++            var currentTime = this.motionTime;
++
++            function latestMatch(matchPhase){
++                return matchPhase + (Math.floor((currentTime-matchPhase)/period)*period);
++            }
++
++            // A height occurs once on each half of the lift cycle. Rewind to
++            // the closest occurrence at or before now, using the saved echo
++            // rather than the lift's live position.
++            this.motionTime = Math.max(0,Math.max(
++                latestMatch(phase),
++                latestMatch(mirroredPhase)
++            ));
++            for (var i=0; i<this.movingSupports.length; i++){
++                this.movingSupports[i].update(this.motionTime);
++            }
++        };
+         this.showGuide = function(frame){
+             if (this.guideView != null && this.guideView.parent != null){
+                 this.guideView.parent.removeChild(this.guideView);

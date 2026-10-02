@@ -1,0 +1,17 @@
+diff --git a/src/rover.js b/src/rover.js
+index 2cc4431..b1d90ad 100644
+--- a/src/rover.js
++++ b/src/rover.js
+@@ -47,8 +47,9 @@ export class Rover {
+     this.alertActive = false;
+     this.mode = globalMode;
+     this.hazard = true;
+-    this.pendingAppearance = globalMode;
+-    this.appearanceLag = 2;
++    this.appearance = globalMode;
++    this.pendingAppearance = null;
++    this.appearanceLag = 0;
+   }
+ 
+   step(globalMode, alertActive) {
+

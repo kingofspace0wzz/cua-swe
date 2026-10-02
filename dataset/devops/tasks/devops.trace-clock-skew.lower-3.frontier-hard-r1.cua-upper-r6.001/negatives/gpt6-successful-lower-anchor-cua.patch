@@ -1,0 +1,110 @@
+diff --git a/src/config/adjustmentPolicy.js b/src/config/adjustmentPolicy.js
+index 718fc1d376551f52cfafeb109f72aa4fbe78dbf5..3b9040d85987d7ca6dea4a48f0b7ceb06de6ed3c 100644
+--- a/src/config/adjustmentPolicy.js
++++ b/src/config/adjustmentPolicy.js
+@@ -1,6 +1,14 @@
+-export function adjustmentPolicy(catalog) {
++export function adjustmentPolicy(catalog, trace) {
++  // Operator host notes declare the time authority shared by reporting hosts.
++  // Hosts without a declaration retain their own independent clock.
++  const hostAuthorities = new Map();
++  for (const { host, note } of trace?.hostNotes || []) {
++    const match = /^time authority\s+(\S+)/i.exec(note || "");
++    if (match) hostAuthorities.set(host, match[1]);
++  }
+   return Object.freeze({
+-    crossHostMode: "observe",
++    crossHostMode: "adjust",
+     maxAdjustmentMs: catalog.maxAdjustmentMs,
++    hostAuthorities,
+   });
+ }
+diff --git a/src/controllers/query.js b/src/controllers/query.js
+index 67ee0b0ddc50b112bb9260ab8e1e691dc8aa0f6c..2f6ee2833364ebbe96c41232f5f255c0bc804f9c 100644
+--- a/src/controllers/query.js
++++ b/src/controllers/query.js
+@@ -11,7 +11,7 @@ export async function startQuery() {
+ 
+ export async function evaluateTrace(catalog, traceId) {
+   const trace = await loadTrace(traceId);
+-  const pipeline = runPipeline(trace.spans, compileAdjusters(adjustmentPolicy(catalog)));
++  const pipeline = runPipeline(trace.spans, compileAdjusters(adjustmentPolicy(catalog, trace)));
+   await submitAdjustment(trace.id, pipeline.spans, pipeline.annotations);
+   return {
+     trace,
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+index 437de453a1bd65e33ddd29d7e8c57ee7264c1050..b81b66d1f29e24cf3146026c088d1b74ced20fcd 100644
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,12 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
++import { adjustClockSkew } from "./clockSkew.js";
+ 
+ export function compileAdjusters(policy) {
+   return [
+     { name: "dedupe", apply: dedupeSpans },
++    ...(policy.crossHostMode === "adjust"
++      ? [{ name: "clock-skew", apply: (spans) => adjustClockSkew(spans, policy) }]
++      : []),
+     { name: "sort", apply: sortSpans },
+   ];
+ }
+
+diff --git a/src/trace/clockSkew.js b/src/trace/clockSkew.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..b76883cf64ca6ea83c50650fafdcbbc13640977b
+--- /dev/null
++++ b/src/trace/clockSkew.js
+@@ -0,0 +1,52 @@
++// A clock correction is a translation of an entire time authority, never a
++// change to a host-measured duration or a repair of same-clock instrumentation.
++export function adjustClockSkew(spans, policy) {
++  const authority = (span) => policy.hostAuthorities?.get(span.host) ?? span.host;
++  const byId = new Map(spans.map((span) => [span.id, span]));
++  const groups = new Map();
++  for (const span of spans) {
++    const key = authority(span);
++    if (!groups.has(key)) groups.set(key, { edges: [], fixed: false });
++    const group = groups.get(key);
++    const parent = byId.get(span.parentId);
++    if (!parent) group.fixed = true;
++    else if (authority(parent) !== key) group.edges.push({ span, parent });
++  }
++
++  const shifts = new Map();
++  const visiting = new Set();
++  const limit = Math.max(0, policy.maxAdjustmentMs ?? 0);
++  function resolve(key) {
++    if (shifts.has(key)) return shifts.get(key);
++    // Cyclic authority dependencies cannot establish a reliable reference.
++    if (visiting.has(key)) return null;
++    const group = groups.get(key);
++    if (group.fixed) {
++      shifts.set(key, 0);
++      return 0;
++    }
++    visiting.add(key);
++    let lower = -limit;
++    let upper = limit;
++    let reliable = true;
++    for (const { span, parent } of group.edges) {
++      const parentShift = resolve(authority(parent));
++      if (parentShift === null) reliable = false;
++      else {
++        lower = Math.max(lower, parent.startMs + parentShift - span.startMs);
++        upper = Math.min(upper, parent.endMs + parentShift - span.endMs);
++      }
++    }
++    // Use the smallest bounded correction satisfying all incoming boundaries.
++    // If no translation can fit, retain the reported instrumentation instead.
++    const shift = !reliable ? null : lower <= upper ? Math.max(lower, Math.min(0, upper)) : 0;
++    visiting.delete(key);
++    shifts.set(key, shift);
++    return shift;
++  }
++  for (const key of groups.keys()) resolve(key);
++  return spans.map((span) => {
++    const shift = shifts.get(authority(span));
++    return shift ? { ...span, startMs: span.startMs + shift, endMs: span.endMs + shift } : span;
++  });
++}

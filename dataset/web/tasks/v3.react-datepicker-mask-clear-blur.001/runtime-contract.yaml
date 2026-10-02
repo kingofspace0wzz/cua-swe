@@ -1,0 +1,29 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: >-
+    npm run build &&
+    CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+contract:
+  channel: runtime_owned_input_mask_service
+  summary: >-
+    The decisive contract is the cleared-mask placeholder produced at runtime
+    by the input-mask library. The concrete pattern varies per form instance
+    and is not enumerable from agent-visible source. A correct fix recognizes a
+    cleared mask generically rather than matching one hardcoded literal.
+  screenshot_discovery: >-
+    Select all and delete the date, observe the mask placeholder, click away,
+    and compare whether the field snaps back or remains cleared. A non-empty
+    invalid date must preserve the prior selection.
+  source_only_analogue_result: >-
+    Matching the visible "__/__/____" example fails protected payloads using
+    other runtime-served cleared patterns.

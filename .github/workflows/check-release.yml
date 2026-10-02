@@ -1,0 +1,26 @@
+name: Check benchmark release
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  offline-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -e '.[dev,evaluation]'
+      - name: Scan credentials
+        shell: bash
+        run: |
+          audit_tools=$(mktemp -d "${RUNNER_TEMP}/gitleaks.XXXXXX")
+          curl --fail --silent --show-error --location https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz -o "$audit_tools/gitleaks.tar.gz"
+          printf '%s  %s\n' '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb' "$audit_tools/gitleaks.tar.gz" | sha256sum --check
+          tar -xzf "$audit_tools/gitleaks.tar.gz" -C "$audit_tools" gitleaks
+          "$audit_tools/gitleaks" git . --redact --log-opts=--all
+      - run: python scripts/check_release.py
+      - run: python scripts/build_leaderboard.py --check
+      - run: python -m pytest -q tests/test_canonical_evaluation_pipeline.py tests/test_web_frozen_runner.py tests/test_mobile_release.py tests/test_public_providers.py

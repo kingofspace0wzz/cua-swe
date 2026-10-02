@@ -1,0 +1,122 @@
+diff --git a/src/config/adjustmentPolicy.js b/src/config/adjustmentPolicy.js
+index 718fc1d376551f52cfafeb109f72aa4fbe78dbf5..b036493a723e3ec4e58ac4de3f81a13bd29d409e 100644
+--- a/src/config/adjustmentPolicy.js
++++ b/src/config/adjustmentPolicy.js
+@@ -1,6 +1,6 @@
+ export function adjustmentPolicy(catalog) {
+   return Object.freeze({
+-    crossHostMode: "observe",
++    crossHostMode: "align",
+     maxAdjustmentMs: catalog.maxAdjustmentMs,
+   });
+ }
+diff --git a/src/controllers/query.js b/src/controllers/query.js
+index 67ee0b0ddc50b112bb9260ab8e1e691dc8aa0f6c..4dd17474d4ef6bf019d48ecfb0e95d1ce7131a6c 100644
+--- a/src/controllers/query.js
++++ b/src/controllers/query.js
+@@ -11,7 +11,7 @@ export async function startQuery() {
+ 
+ export async function evaluateTrace(catalog, traceId) {
+   const trace = await loadTrace(traceId);
+-  const pipeline = runPipeline(trace.spans, compileAdjusters(adjustmentPolicy(catalog)));
++  const pipeline = runPipeline(trace.spans, compileAdjusters(adjustmentPolicy(catalog), trace));
+   await submitAdjustment(trace.id, pipeline.spans, pipeline.annotations);
+   return {
+     trace,
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+index 437de453a1bd65e33ddd29d7e8c57ee7264c1050..52a1890186851fff382454e314e58a5199ccdfba 100644
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,11 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
++import { createClockAlignAdjuster } from "./skewAdjusters.js";
+ 
+-export function compileAdjusters(policy) {
+-  return [
+-    { name: "dedupe", apply: dedupeSpans },
+-    { name: "sort", apply: sortSpans },
+-  ];
++export function compileAdjusters(policy, trace) {
++  const adjusters = [{ name: "dedupe", apply: dedupeSpans }];
++  if (policy.crossHostMode === "align") {
++    adjusters.push(createClockAlignAdjuster(trace, policy));
++  }
++  adjusters.push({ name: "sort", apply: sortSpans });
++  return adjusters;
+ }
+
+diff --git a/src/trace/skewAdjusters.js b/src/trace/skewAdjusters.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..156acbc0900cd2dd94540d1a226d8e877b3a83f3
+--- /dev/null
++++ b/src/trace/skewAdjusters.js
+@@ -0,0 +1,69 @@
++const AUTHORITY_PATTERN = /time authority\s+([\w.-]+)/i;
++
++function authorityMap(trace) {
++  const authorities = new Map();
++  for (const entry of trace?.hostNotes || []) {
++    const declared = entry.authority || (AUTHORITY_PATTERN.exec(entry.note || "") || [])[1];
++    if (entry.host && declared) authorities.set(entry.host, declared);
++  }
++  return (host) => authorities.get(host) || host;
++}
++
++function depthOf(span, byId) {
++  let current = span;
++  let depth = 0;
++  const seen = new Set();
++  while (current && current.parentId !== null && !seen.has(current.id)) {
++    seen.add(current.id);
++    current = byId.get(current.parentId);
++    depth += 1;
++  }
++  return depth;
++}
++
++// Translate whole time-authority groups so remote spans fit inside the span
++// that caused them, without ever resizing a span:
++//  - boundaries are processed parent -> child, outer edge first, and nested
++//    edges compare against the parent's already displayed (shifted) range;
++//  - hosts under one time authority share one clock, so they share one offset;
++//  - the root's authority group and already-aligned groups stay fixed, which
++//    also leaves shared-authority instrumentation defects reported as-is.
++export function createClockAlignAdjuster(trace, policy) {
++  const maxAdjustmentMs = Number(policy?.maxAdjustmentMs);
++  return {
++    name: "align-clocks",
++    apply(spans) {
++      const authorityOf = authorityMap(trace);
++      const byId = new Map(spans.map((span) => [span.id, span]));
++      const offsets = new Map();
++      for (const span of spans) {
++        if (span.parentId === null) offsets.set(authorityOf(span.host), 0);
++      }
++      const boundaries = spans
++        .filter((span) => {
++          if (span.parentId === null) return false;
++          const parent = byId.get(span.parentId);
++          return Boolean(parent) && authorityOf(parent.host) !== authorityOf(span.host);
++        })
++        .map((span) => ({ span, parent: byId.get(span.parentId), depth: depthOf(span, byId) }))
++        .sort((left, right) => left.depth - right.depth);
++      for (const { span, parent } of boundaries) {
++        const group = authorityOf(span.host);
++        if (offsets.has(group)) continue;
++        const parentOffset = offsets.get(authorityOf(parent.host)) ?? 0;
++        const parentStart = parent.startMs + parentOffset;
++        const parentEnd = parent.endMs + parentOffset;
++        let shift = 0;
++        if (span.startMs < parentStart) shift = parentStart - span.startMs;
++        else if (span.endMs > parentEnd) shift = parentEnd - span.endMs;
++        if (Number.isFinite(maxAdjustmentMs) && Math.abs(shift) > maxAdjustmentMs) shift = 0;
++        offsets.set(group, shift);
++      }
++      return spans.map((span) => {
++        const shift = offsets.get(authorityOf(span.host)) || 0;
++        if (!shift) return span;
++        return { ...span, startMs: span.startMs + shift, endMs: span.endMs + shift };
++      });
++    },
++  };
++}

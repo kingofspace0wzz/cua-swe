@@ -1,0 +1,99 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: PORT={service_port} node env/service.mjs
+  implementation: repo/verifiers/slo_service.mjs
+  fixture: repo/verifiers/profiles.json
+  health_path: /v1/catalog
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1
+    --port {app_port}
+  start_url: http://127.0.0.1:4455
+ports:
+  declared_defaults:
+    service: 4955
+    application: 4455
+grading_runtime:
+  variants:
+  - visible
+  - hidden
+  oracle: independent-regional-availability-and-budget-plus-complete-event-behavior
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - alternates/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - Open Reporting agreement and compare regional reporting shares with operational event totals
+  - Inspect region breakdowns across opposite traffic shapes and both windows
+  - Open Rollup reference and correlate the agreement's equal, volume-independent regional shares
+    with the neutral parameter menu to separate the parity weighting from the volume-weighted
+    regional decoy, event pooling, slice-total, delivery, and equal-mean policies
+  - Inspect slices, detail, filters, probes and replay
+  decisive_paths:
+  - scenarioId
+  - windowId
+  - summary.availability
+  - summary.objective
+  - summary.verdict
+  - summary.budgetConsumed
+  - summary.budgetRemaining
+  - totals.good
+  - totals.bad
+  - totals.total
+  - totals.allowedFailures
+  - slice.availability
+  - slice.verdict
+  - breakdowns
+  - probeResult.verdict
+  - replayCount
+  - catalog.rollupReference (visible through expandable Rollup reference; neutral parameter menu
+    that never restates the agreement)
+  - snapshot.reportingAgreement (runtime-fed Reporting agreement; states the authoritative basis
+    without naming any engine mode or weight parameter)
+  correlation_requirement: >-
+    Neither runtime surface is complete alone. The Reporting agreement states the authoritative
+    regional-parity, volume-independent basis but exposes no engine parameter names; the Rollup
+    reference lists six supported parameter combinations, including two region-scoped weightings,
+    without marking any of them authoritative. Selecting the durable plan requires correlating the
+    agreement's equal allocations against unequal regional volumes in the breakdowns and mapping
+    that semantics onto the reference's parameter vocabulary.
+source_noninferability:
+  forbidden_agent_source_literals:
+  - OpenSLO/OpenSLO
+  - e1647318605fea0e5085436313fbaa6ec1f700ce
+  - slo_service.mjs
+  - profiles.json
+  - v-d30-checkout
+  - h-i30-reserve
+  - probe-dilution
+  - na-central
+  - ap-south
+  - pooled_events
+  - weighted_slices
+  - region_equal
+  - region_traffic
+  - Regional portfolio agreement
+  - One equal share per region
+  - Grouped parity
+  - Regional traffic weighting
+  - Event-pooled
+  - h-i30-reserve

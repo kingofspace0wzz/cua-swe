@@ -1,0 +1,14 @@
+diff --git a/src/scrape.mjs b/src/scrape.mjs
+index 7f496326c8842c7be5fd832d7ee604c9273aef9f..59f3605abd647b3a6472ec8072ee2c192b00ac3d 100644
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -29,6 +29,9 @@ export function fetchMetrics(url, limits=budgets, notify=()=>{}) {
+       socket.setTimeout(limits.connectTimeoutMs);
+       socket.on('timeout',()=>finish(new Error('socket_timeout')));
+       socket.once('connect',()=>{
++        // The connection budget must not become a response inactivity timeout.
++        // The absolute watchdog still bounds headers and the entire body, even trickles.
++        socket.setTimeout(0);
+         event('connected');
+       });
+     });

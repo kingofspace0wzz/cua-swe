@@ -1,0 +1,94 @@
+diff --git a/js/LevelMap.js b/js/LevelMap.js
+index b57a6f995f0d58427f8879bfa3fac061ede82026..94ff1aded506292705e072a1bdfd9a7010e32113 100644
+--- a/js/LevelMap.js
++++ b/js/LevelMap.js
+@@ -203,6 +203,15 @@
+                 tiles: Math.max(1,Math.round((support.right-support.left)/this.box))
+             };
+         };
++        this.restoreCheckpoint = function(frame, checkpointX){
++            if (frame == null) return null;
++            var support = this.getSupport(frame.id);
++            if (support == null) return null;
++            support.restoreFrame(frame.y,this.motionTime);
++            this.cameraProgress = checkpointX;
++            this.x = -this.cameraProgress;
++            return support;
++        };
+         this.showGuide = function(frame){
+             if (this.guideView != null && this.guideView.parent != null){
+                 this.guideView.parent.removeChild(this.guideView);
+@@ -308,11 +317,27 @@
+             this.view.x = this.left;
+             this.view.y = this.baseY;
+             this.update = function(time){
+-                var phase = (time%2800)/2800*Math.PI*2;
++                var phase = (((time+this.timeOffset)%2800)+2800)%2800/2800*Math.PI*2;
+                 this.offsetY = -30*(1-Math.cos(phase));
+                 this.top = map.y+this.baseY+this.offsetY;
+                 this.view.y = this.baseY+this.offsetY;
+             };
++            this.timeOffset = 0;
++            this.restoreFrame = function(frameY,time){
++                var offset = Math.max(-60,Math.min(0,frameY-this.baseY));
++                var phase = Math.acos(Math.max(-1,Math.min(1,1+(offset/30))));
++                var currentPhase = (((time+this.timeOffset)%2800)+2800)%2800/2800*Math.PI*2;
++                var alternate = (Math.PI*2)-phase;
++                var phaseDistance = function(a,b){
++                    var distance = Math.abs(a-b)%(Math.PI*2);
++                    return Math.min(distance,(Math.PI*2)-distance);
++                };
++                if (phaseDistance(alternate,currentPhase) < phaseDistance(phase,currentPhase)){
++                    phase = alternate;
++                }
++                this.timeOffset = (phase/(Math.PI*2)*2800)-(((time%2800)+2800)%2800);
++                this.update(time);
++            };
+         }
+ 	}
+ }(window));
+diff --git a/js/Player.js b/js/Player.js
+index 7a23504b6677e0d461c5ac4d8a04995efb2a0e5f..c8a9f6339e2fa5763648878dbe43f2c981448500 100644
+--- a/js/Player.js
++++ b/js/Player.js
+@@ -152,7 +152,6 @@
+                         this.supportOffset = y2-movingSupport.top;
+                         if (movingSupport.checkpointCol >= 0 && this.spawnSupportId != movingSupport.id){
+                             this.spawnX = this.xPos;
+-                            this.spawnY = y2;
+                             this.spawnSupportId = movingSupport.id;
+                             this.spawnSupportOffset = this.supportOffset;
+                             this.spawnGuide = map.captureGuide(movingSupport);
+@@ -236,8 +235,19 @@
+             }
+             if (this.newSpawn == true){
+                 this.xPos = this.spawnX;
+-                this.y = this.spawnY;
+                 this.supportOffset = this.spawnSupportOffset;
++                var spawnSupport = null;
++                if (this.spawnSupportId != null && window.Game.levelMap != null){
++                    spawnSupport = window.Game.levelMap.restoreCheckpoint(this.spawnGuide,this.spawnX);
++                }
++                if (spawnSupport != null){
++                    this.supportId = spawnSupport.id;
++                    this.y = spawnSupport.top+this.supportOffset;
++                }
++                else {
++                    this.supportId = null;
++                    this.y = this.spawnY;
++                }
+             }
+             else { //set to origin
+                 this.setSpeed(1); //reset player speed multiplier
+@@ -291,7 +301,10 @@
+                 if (this.hitBox[i].type == 2 && (i == 0 || i == 1) && Math.abs(this.hitBox[i].slope) > 1){ /* tip tile disabled */ }
+                 else if (this.hitBox[i].type == 3){ //set respawn points
+                     this.spawnX = this.hitBox[i].x - this.x; 
+-                    this.spawnY = this.hitBox[i].y; this.newSpawn = true; 
++                    this.spawnY = this.hitBox[i].y;
++                    this.spawnSupportId = null;
++                    this.spawnGuide = null;
++                    this.newSpawn = true;
+                     window.Game.particles.addParticles(this.x,this.y,this.scaleX/2,window.Game.theme.main_color4,1,25,true);
+                 }
+                 else if (this.hitBox[i].type == 4 && (i == 3 || i == 2) && this.gravity.isFalling()){ this.playerState = 1; createjs.Sound.play("impact"); }

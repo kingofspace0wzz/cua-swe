@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "source_harness_sha256": "485a445156896a4496c052cc1e7fc519db883d983b91fe03ee358d16cb0fe532",
+  "modules": {
+    "core.py": {
+      "evaluated_sha256": "94ce3187c23f6728ddc077589e23430cb21135439a1b9be3286cd311bd81ead7"
+    },
+    "sandbox.py": {
+      "evaluated_sha256": "c55739bf2b9ee5b362dcdc143212de43ea28b3b7fecba9f12dc083301da4f271"
+    },
+    "admission.py": {
+      "evaluated_sha256": "732c7a46c21d44026407386c64cc0481e398043f6b2ae01c2a09a2ca855eed80"
+    },
+    "browser.py": {
+      "evaluated_sha256": "b8574480a2a264c7ba277051c41f80d700b16b7ea697247fec0aa94b18319904"
+    },
+    "shell_worker.py": {
+      "evaluated_sha256": "ecc289e16a0d5af07ec3a0e7dd0cac1efdbdb0b81cf2de8d7cc5708a3c9619ef"
+    },
+    "grading.py": {
+      "evaluated_sha256": "c69a9cc0b1b0024dbbbda64434731e785074ab8564a148f3ddc80673999a8f36"
+    },
+    "final_api.py": {
+      "evaluated_sha256": "4a81d992e7a76774a02fdfea6c56b0479fef481d98e45c4a8cec2527ec0f67d1"
+    },
+    "native_backend.py": {
+      "evaluated_sha256": "ed5bb0dee84e6e469207ea50362b01cd11d5d5aa38a9d37674c79a7eeac85309"
+    },
+    "runner.py": {
+      "evaluated_sha256": "880ed588606fcd7cc94791f1664629364340e9afb8a8f96f9fe78c0611daf923"
+    },
+    "native_worker.py": {
+      "evaluated_sha256": "12a3852c18df76343ed0072b70fe5cd540c8d0fdf925d212a9b7116ae61bcfba"
+    },
+    "workspace.py": {
+      "evaluated_sha256": "27b4ef3b6469d09f8a2efcc50eeecfa35a965432318698bca2a27ba1fa6748b4"
+    },
+    "runtime_worker.py": {
+      "evaluated_sha256": "4222467dbce45db6578812ae87889d1e396a9e60126ed7ec1958ad84a2e10e76"
+    },
+    "__init__.py": {
+      "evaluated_sha256": "5e880ed9668e0d4b97d7ecf13d5d912affec404be91866ff145bc62f356009a1"
+    },
+    "dispatch.py": {
+      "evaluated_sha256": "5230ca78842319224621ab016fbf82a222cf7cc7056c9f3a1e5739c0586ef1d3"
+    },
+    "agent.py": {
+      "evaluated_sha256": "884ca1ee33ea70441d134d4e78f0d92a5c4d1f4119d96c8c29894f4259ff8108"
+    },
+    "cli_bridge_client.py": {
+      "evaluated_sha256": "953a30837ec010796452c3428d76cea4ef3aaeb574f54386dcace2349cd47a16"
+    },
+    "cli_evidence.py": {
+      "evaluated_sha256": "8c70381f55968f69b41914357eaa1ce1ce1130c662d5ac36da4d712f253d81de"
+    },
+    "cli_bridge_host.py": {
+      "evaluated_sha256": "5de7146ef0e3933e28a7212e9eacd8c220ed83d3dbfd46535c5e49901d623efb"
+    },
+    "cli_provider_worker.py": {
+      "evaluated_sha256": "181ee9ac728d50c63a2882ecfa602ac22e4fb8a6dd5b55bc040357f9ef4c568c"
+    },
+    "cli_commands.py": {
+      "evaluated_sha256": "807a315a8796438abb1963468d9b3085af6a537d84ca85d1d71dd2314de22450"
+    },
+    "final_cli.py": {
+      "evaluated_sha256": "a92b82a67858315e0a7f033a480c7061365689ccb69cdac6d31ae48647f45250"
+    },
+    "cli_transport.py": {
+      "evaluated_sha256": "7df06c691f6b990b693485cfaf6068f8f2c108169b4f01b7f0e56df774742146"
+    },
+    "cli_pixels.py": {
+      "evaluated_sha256": "c9640df96ade3f7eb282fad2be4ea50debe6ebed9f1c907072701d2b2bbdab2b"
+    },
+    "cli_session_worker.py": {
+      "evaluated_sha256": "cab5654eb91d3a0726c90723afe7d017ec271158bc2f9c7432ff61764df57349"
+    },
+    "final_attempt_audit.py": {
+      "evaluated_sha256": "3f892b2bece569512b04a66897d417d8be52c88a89fdfcadd59c2a1cd6ebbe9c"
+    },
+    "final_api_evidence.py": {
+      "evaluated_sha256": "84854e0ab6a085acbf474fe7da6e44e6943ea2a9364069b003f5c1383f7eccf4"
+    },
+    "responses_client.py": {
+      "evaluated_sha256": "06bf433252b335bfb4dd2d35217617823316e495fd0f539ef96ae5c013b0bb9c"
+    }
+  },
+  "porting_changes": [
+    "Package namespace and operator-configured paths replace deployment literals.",
+    "Frozen CLI file and model-catalog hashes replace private installation preparation metadata.",
+    "Canonical scheduler replaces campaign-specific queue and release wrappers; attempts and native custody audit retain the evaluated implementation.",
+    "Task paths are resolved and control task digests rebound; all patch changes and baseline digests remain frozen.",
+    "Model requests use the shared provider layer: per-route endpoints and host-side keys come from the operator's runtime configuration, and protocol names and model identifiers are provider-neutral."
+  ]
+}

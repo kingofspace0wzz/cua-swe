@@ -1,0 +1,24 @@
+--- a/src/update.mjs
++++ b/src/update.mjs
+@@ -1,6 +1,8 @@
++import {gaugeUpdateMode} from './fleet.mjs';
+ export function applyGauge(state, measurement) {
+   const before = state.get(measurement.identity) ?? 0;
+-  const value = measurement.value;
++  const relative = gaugeUpdateMode(measurement.source) === 'signed-delta' && /^[+-]/.test(measurement.token);
++  const value = relative ? before + measurement.value : measurement.value;
+   state.set(measurement.identity, value);
+   return {before, value};
+ }
+--- /dev/null
++++ b/src/fleet.mjs
+@@ -0,0 +1,9 @@
++export const fleetProvisioning = {
++  'cabinet-agents': {gauges: 'signed-delta'},
++  'gatehouse-counters': {gauges: 'signed-delta'},
++  'yard-station': {gauges: 'absolute-reading'},
++  'basin-level': {gauges: 'absolute-reading'},
++};
++export function gaugeUpdateMode(source) {
++  return fleetProvisioning[source]?.gauges ?? 'signed-delta';
++}

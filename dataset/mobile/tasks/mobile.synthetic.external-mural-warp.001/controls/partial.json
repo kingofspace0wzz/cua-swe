@@ -1,0 +1,19 @@
+{
+  "baseline_digest": "ce5fdba1b4c6f8da8b2ba380394017ae47e1e5087856126584fce8ad5540f1d5",
+  "changes": [
+    {
+      "after": {
+        "executable": false,
+        "sha256": "ccd9ad2d5fc229835d67b198c34c51212be4fd08d4e901b46abacf6eb043e9cb"
+      },
+      "before": {
+        "executable": false,
+        "sha256": "32148d8653d065a38ef332a3d66940211d79f13db49b20e335a4d053e0b088be"
+      },
+      "content_b64": "Ly8gSW1wb3J0ZWQgdjIgcmVnaXN0cmF0aW9uIGlzIGEgcmVjZWl2ZWQgcHJvZHVjdCBkb2N1bWVudCwgbm90IGNsaWVudCBjb25zdGFudHMuCmltcG9ydCB7aG9tb2dyYXBoeSxub3JtYWxpemVXaW5kb3csb3JpZW50YXRpb24sbXVsdGlwbHksaW52ZXJ0fSBmcm9tICcuL2dlb21ldHJ5LmpzJzsKZXhwb3J0IGZ1bmN0aW9uIGltcG9ydE1hcHBpbmcocGFja2V0KSB7CiAgY29uc3QgcmVwb3J0PXBhY2tldC5hdHRhY2htZW50cy5maW5kKGE9PmEua2luZD09PSdyZWdpc3RyYXRpb24tcmVwb3J0JykuZGF0YTsKICBjb25zdCBmPXJlcG9ydC5zdGF0aW9uRnJhbWUscz1mLnN0YXRpb25Vbml0c1BlcldhbGxVbml0OwogIGNvbnN0IHN0YXRpb25Ub1dhbGw9WzEvcywwLC1mLm9yaWdpbkVhc3QvcywwLC0xL3MsZi53YWxsSGVpZ2h0K2Yub3JpZ2luTm9ydGgvcywwLDAsMV07CiAgY29uc3QgcGFuZWxzPXBhY2tldC5wYW5lbHMubWFwKHBhbmVsPT57CiAgICBjb25zdCByPXJlcG9ydC5wYW5lbHMuZmluZChyPT5yLnBhbmVsSWQ9PT1wYW5lbC5pZCksc291cmNlV2luZG93PXIuc291cmNlV2luZG93OwogICAgY29uc3Qgc291cmNlVG9Mb2NhbD1tdWx0aXBseShvcmllbnRhdGlvbihyLm9yaWVudGF0aW9uLnF1YXJ0ZXJUdXJuc0Nsb2Nrd2lzZSxyLm9yaWVudGF0aW9uLnJlZmxlY3RVKSxub3JtYWxpemVXaW5kb3coc291cmNlV2luZG93KSk7CiAgICBjb25zdCBsb2NhbFRvU3RhdGlvbj1ob21vZ3JhcGh5KHIuY29udHJvbHMubWFwKGM9PmMubG9jYWwpLHIuY29udHJvbHMubWFwKGM9PmMuc3RhdGlvbikpOwogICAgY29uc3Qgc291cmNlVG9XYWxsPW11bHRpcGx5KHN0YXRpb25Ub1dhbGwsbXVsdGlwbHkobG9jYWxUb1N0YXRpb24sc291cmNlVG9Mb2NhbCkpOwogICAgcmV0dXJuIHtpZDpwYW5lbC5pZCxzb3VyY2VXaW5kb3csc291cmNlVG9Mb2NhbCxsb2NhbFRvU3RhdGlvbixzdGF0aW9uVG9XYWxsLHNvdXJjZVRvV2FsbCx3YWxsVG9Tb3VyY2U6aW52ZXJ0KG11bHRpcGx5KGhvbW9ncmFwaHkoW1swLDBdLFsxLDBdLFsxLDFdLFswLDFdXSxwYW5lbC5wbGFjZW1lbnQpLG5vcm1hbGl6ZVdpbmRvdyhwYW5lbC5jcm9wKSkpfTsKICB9KTsKICByZXR1cm4ge3BhbmVscyxwcmlvcml0eTpbLi4ucmVwb3J0LnNlYW1Qcmlvcml0eV19Owp9Cg==",
+      "path": "adapter.js"
+    }
+  ],
+  "schema": 1,
+  "task_digest": "f54ae785c5a69634dc5558615fba3717e08be6c028dc10a2e3fc2d76675fd3c6"
+}

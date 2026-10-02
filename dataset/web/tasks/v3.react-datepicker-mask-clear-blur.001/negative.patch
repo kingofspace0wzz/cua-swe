@@ -1,0 +1,18 @@
+--- a/src/DatePickerField.jsx
++++ b/src/DatePickerField.jsx
+@@ -59,8 +59,13 @@
+   }
+ 
+   function handleBlur() {
+-    // === BROKEN: unconditional reset drops a cleared-mask value, so the field
+-    // reverts to the old formatted `selected` date. ===
++    // Incomplete repair: clear the selection on blur whenever the current
++    // input text does not parse to a valid date. This fixes the cleared-mask
++    // case but WRONGLY also clears the selection for a merely-invalid date
++    // like "13/40/2024", losing the user's previous valid selection.
++    if (typeof inputValue === "string" && !safeParse(inputValue) && selected) {
++      onChange(null);
++    }
+     resetInputValue();
+   }
+ 

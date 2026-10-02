@@ -1,0 +1,54 @@
+schema_version: 1
+candidate_id: v3.jupyterlab-shiftclick-cellselect.001
+source_type: behavior_derived_clean_room
+provenance:
+  source_repo: jupyterlab/jupyterlab
+  source_issue: https://github.com/jupyterlab/jupyterlab/issues/19242
+  source_pull_request: https://github.com/jupyterlab/jupyterlab/pull/19243
+  related_issue: https://github.com/jupyterlab/jupyterlab/issues/4800
+  broken_revision: c92f5efa1285d4e091f8a73a6a661439ca347670
+  merge_commit: 1b9f5c301e9fa9f43d57a15f892ef2505087e3aa
+  license: BSD-3-Clause
+diversity:
+  product_domain: computational_notebook
+  framework: jupyterlab_notebook_behavior_derived_js
+  ui_surface: multi_cell_notebook_selection_surface
+  discovery_pattern: text-selection-then-shift-click-region-inspection
+  bug_mechanism: over-broad-selection-guard-blocks-cell-range-selection
+  contract_channel: runtime_notebook_document_and_text_region_taxonomy
+  patch_topology: region-aware-selection-guard-with-shadow-traversal
+  parent_template: none_notebook_surface
+  independence_group: jupyterlab-shiftclick-cellselect
+  controlled_variant: false
+capability_necessity_hypothesis: >-
+  After a text selection, a Shift-click on another cell must extend the cell
+  range selection in every situation except where the user is genuinely
+  extending a browser text selection. The broken build blocks the cell range
+  selection whenever ANY text is selected, so selecting code-editor text breaks
+  Shift-click cell selection. The decisive rule — that the browser owns the
+  gesture only when BOTH the selection anchor and the clicked region are in a
+  browser-owned text region (a code cell's output area or a rendered markdown
+  cell's rendered input, traversing open shadow roots), and that in every other
+  case (clicking a prompt or cell chrome, or having a selection anchored in a
+  code editor) the cell range selection must extend — is a runtime notebook
+  contract delivered only by the evaluator-owned scene feed. Source alone
+  supports several behaviorally distinct repairs, and the strongest source-only
+  generalization (anything outside a code editor is a browser text selection)
+  was implemented and fails the protected verifier. The symptom and the correct
+  region taxonomy are screenshot-observable by selecting text in each region and
+  Shift-clicking, then watching whether the cell range highlights.
+runtime_evidence: >-
+  Select text in a code editor and Shift-click a later cell's prompt: the broken
+  build highlights only the clicked cell while the correct build highlights the
+  whole range of cells between the active cell and the click. Select text in an
+  output and Shift-click within it: no cell range highlights (browser owns the
+  text). Select output text and Shift-click a DIFFERENT cell's prompt: the cell
+  range must highlight.
+independence_rationale: >-
+  jupyterlab/jupyterlab is a fresh source repository with zero retained roots.
+  The bug mechanism (an over-broad selection guard interacting with a
+  browser-owned text-region taxonomy in a notebook) and the contract channel
+  (a runtime notebook document plus region taxonomy) do not overlap any retained
+  independence group. The nearest editor-surface roots (Quill, Tiptap, Slate,
+  Monaco) concern caret/scroll/format lifecycle inside a single editor, not
+  multi-cell selection region taxonomy across a notebook document.

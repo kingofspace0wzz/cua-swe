@@ -1,0 +1,48 @@
+diff --git a/src/focusResume.js b/src/focusResume.js
+--- a/src/focusResume.js
++++ b/src/focusResume.js
+@@ -17,9 +17,41 @@ export function resolveResumePosition(root, doc) {
+   return resumeStrategy(root, doc, bookmark);
+ }
+ 
+-// Decide the resume position from the saved bookmark.
+-function resumeStrategy(root, doc, bm) {
+-  return 1;
++// Collect the saved anchors. Every saved anchor is the same pixel-point shape.
++function savedAnchors(bm) {
++  const list = [];
++  if (bm && Array.isArray(bm.anchors)) {
++    for (const a of bm.anchors) {
++      if (a && Number.isFinite(a.x) && Number.isFinite(a.y)) list.push(a);
++    }
++  }
++  if (bm && bm.anchor && Number.isFinite(bm.anchor.x) && Number.isFinite(bm.anchor.y)) {
++    list.push(bm.anchor);
++  }
++  return list;
++}
++
++// Decide the resume position from the saved bookmark.
++function resumeStrategy(root, doc, bm) {
++  const anchors = savedAnchors(bm);
++  if (anchors.length === 0) return 1;
++  const view = doc.editor && doc.editor.view;
++  if (!view) return posFromCoords(root, doc, anchors[0]);
++  const rootRect = view.dom.getBoundingClientRect();
++  // The saved anchors are indistinguishable by shape and carry no authoritative
++  // marker. Resolve each against the live layout and keep the one that still
++  // lands on a rendered glyph line: posAtCoords always snaps to a position, but
++  // only a point on real text has a resolved box that vertically contains it.
++  // An anchor recorded under an earlier layout snaps to an off-line paragraph
++  // boundary in the blank gap between wrapped paragraphs and fails this test.
++  for (const anchor of anchors) {
++    const targetTop = rootRect.top + anchor.y;
++    const hit = view.posAtCoords({ left: rootRect.left + anchor.x, top: targetTop });
++    if (!hit) continue;
++    const box = view.coordsAtPos(hit.pos);
++    if (targetTop >= box.top && targetTop <= box.bottom) return hit.pos;
++  }
++  return posFromCoords(root, doc, anchors[0]);
+ }
+ 
+ export function resumeFocus(root, doc) {

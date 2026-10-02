@@ -1,0 +1,39 @@
+diff --git a/src/pipeline/resolveSeverity.js b/src/pipeline/resolveSeverity.js
+index 98dd29b0a432ec92329f57a3e68f6e633552dbf7..ee72ee08b20cdba0270a2677220de286e85950d9 100644
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,16 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
++  // Severity is decoded from the record representation actually delivered to
++  // the workbench (receiver.output.format), not the upstream source format:
++  // collector pipelines re-emit application logs as OTel records whose
++  // severityNumber/severityText are authoritative, while any original
++  // body.level field may be a stale application detail.
++  //
++  // Syslog relays are the exception: they forward the raw PRI severity
++  // (0-7, lower is more severe) unchanged inside the delivered record, so
++  // records from a syslog source keep syslog semantics.
++  const format = receiver.source.format === 'syslog' ? 'syslog' : receiver.output.format;
+   const decode = severityAdapters[format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }
+diff --git a/src/pipeline/severityAdapters.js b/src/pipeline/severityAdapters.js
+index cea909e7f5a8b53020db5a1c2f1d2d675c7a54d6..c508007e85877b047ab960e1c1e4bd31b081510a 100644
+--- a/src/pipeline/severityAdapters.js
++++ b/src/pipeline/severityAdapters.js
+@@ -14,4 +14,11 @@ export function fromJson(record) {
+   if (typeof body === 'string') {try {body=JSON.parse(body);} catch {body={};}}
+   return fromText(body?.level);
+ }
+-export const severityAdapters = {otlp:fromOtel,json:fromJson};
++const syslogLevels = ['FATAL','FATAL','FATAL','ERROR','WARN','INFO','INFO','DEBUG'];
++export function fromSyslog(record) {
++  const priority = record.severityNumber;
++  const number = Number(priority);
++  if (priority !== null && priority !== undefined && Number.isInteger(number) && number >= 0 && number <= 7) return fromText(syslogLevels[number]);
++  return fromText(record.severityText);
++}
++export const severityAdapters = {otlp:fromOtel,json:fromJson,syslog:fromSyslog};

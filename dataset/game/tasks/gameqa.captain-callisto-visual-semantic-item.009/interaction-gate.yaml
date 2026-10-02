@@ -1,0 +1,50 @@
+schema_version: 1
+task_id: gameqa.captain-callisto-visual-semantic-item.009
+trajectory_id: captain-callisto-level3-live-cargo-descending-lift-v7
+seed: 45
+level: 3
+trigger:
+  actions:
+    - action: browser_observe
+      target: LIVE CARGO SCANNER
+    - action: key_hold
+      keys:
+        - D
+      duration_ms: 3500
+  stop_condition:
+    field: metrics.remaining_coins
+    operator: less_than
+    value: metrics.coins_total
+  causal_checkpoint: center cargo is collected while the carrier lift velocity is negative
+pre_trigger_equivalence:
+  fields:
+    - metrics.coins
+    - metrics.coins_total
+    - metrics.remaining_coins
+    - metrics.world_collected_coins
+    - metrics.semantic_mismatch
+    - metrics.cargo_contract_ready
+  expected:
+    metrics.coins: 0
+    metrics.coins_total: 2
+    metrics.remaining_coins: 2
+    metrics.world_collected_coins: 0
+    metrics.semantic_mismatch: false
+    metrics.cargo_contract_ready: true
+post_trigger_divergence:
+  clean:
+    metrics.coins: 1
+    metrics.remaining_coins: 1
+    metrics.world_collected_coins: 1
+    metrics.semantic_mismatch: false
+    metrics.last_inventory_receipt: glyph-zeta-315
+  mutant:
+    metrics.coins: 2
+    metrics.remaining_coins: 1
+    metrics.world_collected_coins: 1
+    metrics.semantic_mismatch: true
+    metrics.last_inventory_receipt: glyph-nu-773
+certification:
+  status: construction_certified
+  machine_specific_configuration_included: false
+status: confirmed_by_matched_evaluation

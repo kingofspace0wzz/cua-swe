@@ -1,0 +1,12 @@
+{
+  "name": "letter-arc-finish-replay-challenge",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "GPL-3.0-only",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node server.mjs",
+    "test:protected": "python3 verifiers/browser_check.py"
+  }
+}

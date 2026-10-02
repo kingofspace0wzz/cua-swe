@@ -1,0 +1,41 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..d550ddd64aed9722f92647ddfb2bf586a812e02b 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -254,7 +254,12 @@
+         this.retry = function(retry){
+             this.resumeGame(retry);
+             this.player.respawn();
+-            this.levelMap.showGuide(this.player.spawnGuide);
++            var spawnSupport = this.levelMap.getSupport(this.player.supportId);
++            var spawnGuide = spawnSupport != null ?
++                this.levelMap.captureGuide(spawnSupport) : this.player.spawnGuide;
++            this.levelMap.showGuide(spawnGuide);
++            this.levelMap.cameraProgress = this.player.xPos;
++            this.levelMap.x = -this.levelMap.cameraProgress;
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+                 detail: { level: this.home.selectedLevel, method: "keyboard" }
+diff --git a/js/Player.js b/js/Player.js
+index 7a23504b6677e0d461c5ac4d8a04995efb2a0e5f..cb343441cd1863253c71e69d61146613aebc0481 100644
+--- a/js/Player.js
++++ b/js/Player.js
+@@ -236,8 +236,17 @@
+             }
+             if (this.newSpawn == true){
+                 this.xPos = this.spawnX;
+-                this.y = this.spawnY;
+                 this.supportOffset = this.spawnSupportOffset;
++                var spawnSupport = this.spawnSupportId != null ?
++                    window.Game.levelMap.getSupport(this.spawnSupportId) : null;
++                if (spawnSupport != null){
++                    this.supportId = spawnSupport.id;
++                    this.y = spawnSupport.top+this.supportOffset;
++                }
++                else {
++                    this.supportId = null;
++                    this.y = this.spawnY;
++                }
+             }
+             else { //set to origin
+                 this.setSpeed(1); //reset player speed multiplier

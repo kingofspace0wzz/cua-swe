@@ -1,0 +1,66 @@
+id: gameqa.wordle-finish-replay-inspection.006
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.wordle-finish-replay-inspection.006/repo
+  ref: letter-arc-finish-replay-broken-v1
+  copy_mode: exact
+instruction: >-
+  The named deterministic daily puzzle has a player-visible finish
+  regression. The challenge bar supplies a practical clue, and the visible
+  Daily, Practice, restart, board, and keyboard controls provide the complete
+  route. Reach a successful daily round, then use Replay finish to inspect its
+  ordinary completion playback and Continue to let that playback finish.
+  Replay it again as needed. Repair the game so the completed row stays
+  visually intact throughout the first finish and every replay. Preserve the
+  native tile turn and result motion, the replay and continue behavior,
+  reduced-motion behavior, repeated-letter feedback, keyboard precedence,
+  hard guidance, rejected entries, restart, daily/practice behavior,
+  submission, and terminal completion.
+setup:
+  install:
+    - npm ci
+    - npm run build
+  reset: []
+  launch:
+    - npm run dev -- --host 127.0.0.1 --port 52000
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:52000/?mode=daily
+  viewport_or_device: desktop-1100x900
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 180
+  max_gui_actions: 160
+  max_test_runs: 20
+verifiers:
+  build:
+    - npm run build
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - '"${CUA_SWE_PYTHON:-python3}" verifiers/browser_check.py --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:52000/?mode=daily}"'
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: letter-arc
+  state_api: window.gameAPI
+  seed: 42
+  level: 1
+schema_version: 1

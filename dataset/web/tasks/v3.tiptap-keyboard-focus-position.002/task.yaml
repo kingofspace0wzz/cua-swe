@@ -1,0 +1,27 @@
+id: v3.tiptap-keyboard-focus-position.002
+track: web_frontend
+type: interaction_state
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: dataset/web/tasks/v3.tiptap-keyboard-focus-position.002/repo
+  ref: tiptap-2760-adapted-v2
+instruction: "In Draft Composer, returning to the editor with the keyboard puts the caret at the beginning instead of where the active workspace says the writer left off. Repair keyboard focus resume so the caret returns to the indicated place for the active draft. Preserve the workspace payload, document text, layout, and mouse behavior."
+setup:
+  install: [npm ci]
+  launch: [npm run build && node server.mjs --host 127.0.0.1 --port 4173]
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4173
+  viewport_or_device: desktop-1280x720
+allowed_tools: {code_edit: true, terminal: true, browser_gui: true, mobile_gui: false}
+budgets: {wall_time_sec: 1800, max_steps: 80, max_gui_actions: 120, max_test_runs: 20}
+verifiers:
+  build: [npm run build]
+  unit: []
+  ui: [python3 verifiers/browser_check.py]
+  visual: []
+  state: []
+  side_effects: []
+artifacts: {collect_patch: true, collect_logs: true, collect_screenshots: true, collect_trajectory: true, collect_state_diff: false}

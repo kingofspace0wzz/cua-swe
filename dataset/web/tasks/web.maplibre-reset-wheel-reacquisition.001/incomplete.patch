@@ -1,0 +1,92 @@
+diff --git a/src/ui/handler_manager.ts b/src/ui/handler_manager.ts
+index f123d595cf5431a5b892c2a6ec85d7aea7525257..02465f0d6d884d4318c56fbe20e724e937a003b7 100644
+--- a/src/ui/handler_manager.ts
++++ b/src/ui/handler_manager.ts
+@@ -163,6 +163,7 @@ export class HandlerManager {
+     _updatingCamera: boolean;
+     _changes: Array<[HandlerResult, EventsInProgress, {[handlerName: string]: Event}]>;
+     _terrainMovement: boolean;
++    _mouseGrab?: {grab: MercatorGrab | null};
+     _touchConfiguration?: {ids: string; point: Point; grab: MercatorGrab | null};
+     _cancelledTouchIds: Set<number> = new Set<number>();
+     _cancellingTouches = false;
+@@ -355,6 +356,7 @@ export class HandlerManager {
+         if (this._terrainMovement) this._settleTerrain();
+         this._changes = [];
+         this._touchConfiguration = undefined;
++        this._mouseGrab = undefined;
+     }
+ 
+     isActive(): boolean {
+@@ -407,6 +409,11 @@ export class HandlerManager {
+             return;
+         }
+ 
++        // Finish the previous input before acquiring a new mouse anchor or
++        // letting mouseup deactivate the handler (and end its movement).
++        const mouseEvent = isPointableEvent(e, eventName || e.type);
++        if (mouseEvent && (this._mouseGrab || e.type === 'mousedown')) this._applyChanges();
++
+         const touchEvent = isTouchableEvent(e, eventName || e.type);
+         let touchContactsRemaining = false;
+         if (touchEvent) {
+@@ -452,7 +459,7 @@ export class HandlerManager {
+ 
+         const mergedHandlerResult: HandlerResult = {needsRenderFrame: false};
+         const eventsInProgress: EventsInProgress = {};
+-        const activeHandlers = {};
++        const activeHandlers: {[handlerName: string]: Handler} = {};
+ 
+         for (const {handlerName, handler, allowed} of this._handlers) {
+             if (!handler.isEnabled()) continue;
+@@ -486,6 +493,14 @@ export class HandlerManager {
+             }
+         }
+ 
++        // Acquire only after the handlers have accepted this press. In particular,
++        // prevented events, box zoom and rotation must not create a pan anchor.
++        if (e.type === 'mousedown' && activeHandlers.mousePan && !this._mouseGrab &&
++            this._map.terrain && !this._camera.cameraHelper.useGlobeControls) {
++            this._mouseGrab = {grab: acquireMercatorGrab(this._camera.getTransformForUpdate(),
++                DOM.mousePos(this._map.getCanvas(), e as MouseEvent), this._map.getTerrainQueries())};
++        }
++
+         const deactivatedHandlers: {[handlerName: string]: Event} = {};
+         for (const name in this._previousActiveHandlers) {
+             if (!activeHandlers[name]) {
+@@ -505,6 +520,13 @@ export class HandlerManager {
+ 
+         this._updatingCamera = false;
+ 
++        if (this._mouseGrab && (mouseEvent || !activeHandlers.mousePan)) {
++            // Apply the last held endpoint before discarding ownership, including
++            // a lost button, disabled handler or normal release.
++            this._applyChanges();
++            if (!activeHandlers.mousePan) this._mouseGrab = undefined;
++        }
++
+         if (touchEvent) {
+             // Do not combine deltas from different contact configurations, and
+             // record inertia at input time rather than at a later render time.
+@@ -622,10 +644,20 @@ export class HandlerManager {
+             tr.center :
+             tr.screenPointToLocation(panDelta ? around.sub(panDelta) : around);
+ 
++        const mouseControl = combinedEventsInProgress.drag?.handlerName === 'mousePan';
+         const touchControl = Object.values(combinedEventsInProgress).some(event =>
+             ['touchPan', 'touchZoom', 'touchRotate'].includes(event.handlerName));
+         const contact = this._touchConfiguration;
+-        if (touchControl && contact && !this._camera.cameraHelper.useGlobeControls && pinchAround !== null) {
++        if (mouseControl && this._mouseGrab && terrain && !this._camera.cameraHelper.useGlobeControls) {
++            this._terrainMovement = true;
++            this._camera.elevationFreeze = true;
++            this._camera.cameraHelper.handleMapControlsRollPitchBearingZoom(deltasForHelper, tr);
++            // Use the actual pointer, not a ray through the camera-center plane.
++            // The grab's world location and altitude are fixed until release.
++            if (this._mouseGrab.grab && combinedResult.around) {
++                placeMercatorGrab(tr, this._mouseGrab.grab, combinedResult.around);
++            }
++        } else if (touchControl && contact && !this._camera.cameraHelper.useGlobeControls && pinchAround !== null) {
+             if (panDelta) contact.point = contact.point.add(panDelta);
+             this._camera.cameraHelper.handleMapControlsRollPitchBearingZoom(deltasForHelper, tr);
+             if (contact.grab) placeMercatorGrab(tr, contact.grab, contact.point);

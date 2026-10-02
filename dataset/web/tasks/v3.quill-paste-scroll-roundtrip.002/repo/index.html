@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Threadloop — Shared document</title>
+<link rel="stylesheet" href="/dist/quill.snow.css" />
+<link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+<header class="app-bar">
+  <div class="brand">Threadloop</div>
+  <nav><span class="active">Document</span><span>Threads</span><span>Activity</span></nav>
+  <div class="space">Space: <strong id="space-label">…</strong></div>
+</header>
+<section class="collab-bar">
+  <div class="presence" id="presence"></div>
+  <div class="sync">
+    <span id="sync-status" class="sync-status">…</span>
+    <button id="apply-btn" class="apply-btn">Apply update</button>
+  </div>
+</section>
+<main class="page">
+  <aside class="side">
+    <div class="side-item active">Shared document</div>
+    <div class="side-item">Comments</div>
+    <div class="side-item">Versions</div>
+    <details class="guide" open>
+      <summary>Reading session</summary>
+      <p id="guide-text">…</p>
+    </details>
+  </aside>
+  <section class="doc-shell">
+    <div id="reader" class="reader"></div>
+  </section>
+</main>
+<script type="module" src="/dist/app.bundle.js"></script>
+</body>
+</html>

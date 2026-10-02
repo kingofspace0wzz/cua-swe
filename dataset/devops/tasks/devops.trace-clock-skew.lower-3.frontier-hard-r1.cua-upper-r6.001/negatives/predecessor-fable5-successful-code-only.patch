@@ -1,0 +1,103 @@
+diff --git a/src/config/adjustmentPolicy.js b/src/config/adjustmentPolicy.js
+index 718fc1d376551f52cfafeb109f72aa4fbe78dbf5..b036493a723e3ec4e58ac4de3f81a13bd29d409e 100644
+--- a/src/config/adjustmentPolicy.js
++++ b/src/config/adjustmentPolicy.js
+@@ -1,6 +1,6 @@
+ export function adjustmentPolicy(catalog) {
+   return Object.freeze({
+-    crossHostMode: "observe",
++    crossHostMode: "align",
+     maxAdjustmentMs: catalog.maxAdjustmentMs,
+   });
+ }
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+index 437de453a1bd65e33ddd29d7e8c57ee7264c1050..d8ef6bb3127eb0812bcd1997cbcfe1e5a5623e1f 100644
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,14 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
++import { createClockSkewAdjuster } from "./clockSkew.js";
+ 
+ export function compileAdjusters(policy) {
+-  return [
+-    { name: "dedupe", apply: dedupeSpans },
+-    { name: "sort", apply: sortSpans },
+-  ];
++  const adjusters = [{ name: "dedupe", apply: dedupeSpans }];
++  if (policy.crossHostMode === "align") {
++    adjusters.push({
++      name: "cross-host-skew",
++      apply: createClockSkewAdjuster(policy.maxAdjustmentMs),
++    });
++  }
++  adjusters.push({ name: "sort", apply: sortSpans });
++  return adjusters;
+ }
+
+diff --git a/src/trace/clockSkew.js b/src/trace/clockSkew.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..207d54c8f750d45bb3573df35fa18c6263d52a77
+--- /dev/null
++++ b/src/trace/clockSkew.js
+@@ -0,0 +1,61 @@
++function determineSkew(parentStart, parentEnd, child) {
++  const childStart = child.startMs;
++  const childEnd = child.endMs;
++  if (childStart >= parentStart && childEnd <= parentEnd) return 0;
++  if (childEnd - childStart > parentEnd - parentStart) {
++    return Math.round((parentStart + parentEnd) / 2 - (childStart + childEnd) / 2);
++  }
++  if (childStart < parentStart) return parentStart - childStart;
++  return parentEnd - childEnd;
++}
++
++export function createClockSkewAdjuster(maxAdjustmentMs) {
++  return function alignCrossHostSpans(spans) {
++    const index = new Map(spans.map((span) => [span.id, span]));
++    const children = new Map();
++    const roots = [];
++    for (const span of spans) {
++      if (span.parentId === null || !index.has(span.parentId)) {
++        roots.push(span);
++        continue;
++      }
++      if (!children.has(span.parentId)) children.set(span.parentId, []);
++      children.get(span.parentId).push(span);
++    }
++    const hostShift = new Map();
++    const shiftById = new Map();
++    const queue = [];
++    for (const root of roots) {
++      shiftById.set(root.id, 0);
++      if (!hostShift.has(root.host)) hostShift.set(root.host, 0);
++      queue.push(root);
++    }
++    while (queue.length) {
++      const parent = queue.shift();
++      const parentShift = shiftById.get(parent.id) || 0;
++      for (const child of children.get(parent.id) || []) {
++        let shift;
++        if (child.host === parent.host) {
++          shift = parentShift;
++        } else if (hostShift.has(child.host)) {
++          shift = hostShift.get(child.host);
++        } else {
++          const skew = determineSkew(
++            parent.startMs + parentShift,
++            parent.endMs + parentShift,
++            child,
++          );
++          shift = Number.isFinite(maxAdjustmentMs) && Math.abs(skew) > maxAdjustmentMs ? 0 : skew;
++          hostShift.set(child.host, shift);
++        }
++        shiftById.set(child.id, shift);
++        queue.push(child);
++      }
++    }
++    return spans.map((span) => {
++      const shift = shiftById.get(span.id) || 0;
++      if (shift === 0) return span;
++      return { ...span, startMs: span.startMs + shift, endMs: span.endMs + shift };
++    });
++  };
++}

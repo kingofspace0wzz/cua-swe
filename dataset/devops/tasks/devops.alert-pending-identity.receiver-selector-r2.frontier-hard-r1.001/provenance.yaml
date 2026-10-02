@@ -1,0 +1,30 @@
+schema_version: 1
+task_id: devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r1.001
+source:
+  project: prometheus/prometheus
+  specification: Prometheus v3.5.0 alerting rules and Alertmanager receiver routing semantics
+  pinned_revision: 8be3a9560fbdd18a94dedec4b747c35178177202
+  official_sources:
+  - https://github.com/prometheus/prometheus/blob/8be3a9560fbdd18a94dedec4b747c35178177202/rules/alerting.go
+  - https://github.com/prometheus/prometheus/blob/8be3a9560fbdd18a94dedec4b747c35178177202/docs/configuration/alerting_rules.md
+  - https://github.com/prometheus/alertmanager/blob/main/docs/configuration.md
+  license: Apache-2.0
+  source_type: original_source_faithful_fixture
+  rights: source consulted for semantics; authored fixture may be redistributed with benchmark
+  runtime_scope: supports comparison, $value and $labels templates, per-labelset pending/firing/inactive,
+    receiver match routing and route-identity dedup keys; focused fixture, not full PromQL
+lineage:
+  parent_task_id: devops.alert-pending-identity.receiver-selector-r2.001
+  parent_candidate: artifacts/devops-adversarial-v1/owner-lanes/devops-owner-22-alert-pending-identity/round-2/candidate-root/devops-observability/devops.alert-pending-identity.receiver-selector-r2.001
+  parent_tree_sha256: 4f93d223b7373e7f97b24d52e10b8d74ff5f6df63256308dee27a00e8b6236d6
+  bounded_feedback: ../feedback/devops.alert-pending-identity.receiver-selector-r2.001/hardening-feedback.json
+  bounded_feedback_sha256: 2fada4af562a63a38ce78e8e06d66a3a2e86b80b2cf4c6738d8705a205c88b63
+  selected_axis: require_cross_surface_correlation
+notes:
+  - Prometheus alerting semantics establish that a changed labelset is a new alert identity,
+    so sample-dependent labels reset the pending clock every evaluation.
+  - Alertmanager routing and grouping establish that the receiver consumes a declared label
+    selector and dedups notifications by its own route identity.
+  - The delivery journal, rotated receiver routes, and protected profiles are original
+    adversarial extensions; the console, engine, profiles, and assets are original.
+  - No Prometheus or Alertmanager source, configuration, tests, or assets are copied.

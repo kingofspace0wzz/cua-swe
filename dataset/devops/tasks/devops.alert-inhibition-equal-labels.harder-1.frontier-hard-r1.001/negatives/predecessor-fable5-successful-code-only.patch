@@ -1,0 +1,14 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+index 2ca366ab15985349340044ba1cd10e5ffff22f8e..1cbeea4565a0ec62154bcea063400e6f817533d6 100644
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -15,7 +15,7 @@ export function compileInhibitionRule(catalog, policy) {
+       },
+     ],
+     equal: [...catalog.equalDimensions],
+-    required_source_labels: [],
+-    required_target_labels: [],
++    required_source_labels: [...policy.scopeDimensions],
++    required_target_labels: [...policy.scopeDimensions],
+   };
+ }

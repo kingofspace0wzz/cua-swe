@@ -1,0 +1,54 @@
+id: devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.001
+track: web_frontend
+benchmark_domain: devops-observability
+type: functional_ui
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/devops/tasks/devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.001/repo
+  ref: sentinel-protected-inhibition-frontier-hard-r1-v1
+instruction: >-
+  Sentinel shows active incidents where infrastructure alerts are suppressing
+  unrelated service alerts, while other suppressions in the same incident are
+  expected and must remain. Diagnose the boundary using the firing and
+  suppressed queues, inhibitor edges, label-comparison diagnostics, the
+  scope-dimension registry with its operator notes, the incident advisories,
+  and the deployed rule, then load the arriving-alert batch and confirm the
+  behavior generalizes. Repair the inhibition configuration so unrelated
+  alerts keep firing without disabling legitimate suppression. Preserve every
+  alert, incident, diagnostic surface, and rule workflow.
+setup:
+  install: []
+  launch:
+    - CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1 node server.mjs --host 127.0.0.1 --port 4371
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4371
+  viewport_or_device: desktop-1280x720
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 110
+  max_gui_actions: 180
+  max_test_runs: 24
+verifiers:
+  build:
+    - npm run build
+  unit: []
+  ui:
+    - ${CUA_SWE_PYTHON:-${CUA_SWE_MOBILEGYM_PYTHON:-python3}} verifiers/browser_check.py
+  visual: []
+  state: []
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: false
+schema_version: 2

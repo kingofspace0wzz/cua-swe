@@ -1,0 +1,20 @@
+diff --git a/src/styles.css b/src/styles.css
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -343,11 +343,11 @@ footer {
+ }
+ 
+ @keyframes result-hop {
+-  0%, 100% { transform: translateY(0) scale(1); }
+-  34% { transform: translateY(-30px) scale(1.04); }
+-  52% { transform: translateY(5px) scale(0.99); }
+-  70% { transform: translateY(-14px) scale(1.02); }
+-  86% { transform: translateY(2px) scale(1); }
++  0%, 100% { transform: translateY(0) scale(1) rotateX(180deg); }
++  34% { transform: translateY(-30px) scale(1.04) rotateX(180deg); }
++  52% { transform: translateY(5px) scale(0.99) rotateX(180deg); }
++  70% { transform: translateY(-14px) scale(1.02) rotateX(180deg); }
++  86% { transform: translateY(2px) scale(1) rotateX(180deg); }
+ }
+ 
+ @keyframes row-shake {

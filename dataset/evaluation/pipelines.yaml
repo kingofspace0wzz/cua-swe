@@ -1,0 +1,179 @@
+schema_version: 1
+status: canonical
+runner: scripts/run_canonical_evaluation.py
+protected_runner: scripts/run_clean_ablation.py
+gate_task_count: 10
+protocol:
+  task_selection: manifest_only
+  instruction_source: parsed_task_bundle
+  agent_workspace: source_only
+  protected_material:
+  - task.yaml
+  - verifiers/
+  - verifier-artifacts/
+  - gold.patch
+  - negative.patch
+  - replay.md
+  code_only:
+    browser_available: false
+    local_http_allowed: false
+  cua:
+    observation: screenshot_only
+    screenshot_evidence_required: true
+  scoring: deterministic_task_verifier
+  infrastructure_failures: exclude_and_rerun_same_cell
+domains:
+  web:
+    status: active
+    manifest: dataset/web/manifest.yaml
+    task_count: 36
+    bundle_format: task_yaml
+    protected_runner: scripts/run_web_clean_ablation.py
+    protected_runner_sha256: 81ac670a0958bc61c44d524a7bfba78e939c6b692b390f340cb7b3cd6ee38450
+    model_registry:
+      path: scripts/frozen_web/scripts/run_model_matrix.py
+      sha256: a62d68cf9a428c1ed92de77ef43d6ce8202f07d0f0498c96f9c2b9ef4ad29457
+    runner_args:
+    - --evaluation-matrix
+    model_overrides:
+      claude-code-opus5:
+        status: active
+        reason: null
+    prompt_revisions:
+      default: original-web-20260906
+      api-gpt6-astra: original-gpt6
+    scoring:
+      native: deterministic_task_verifier
+      reported: native_and_protocol_compliant_and_valid_cua_evidence_and_no_infrastructure_error
+      budget_attestation: diagnostic_only_except_hard_agent_wall_timeout
+    evaluation_summary:
+      path: dataset/web/releases/web36-20260921/evaluation-summary.json
+      sha256: 8c0230d7dc8f2c22a26115c97304b4f7142af70d9be8eb7b8a9ea6a9690a2d50
+    task_lineage:
+      path: dataset/web/evaluation/web36-task-lineage.json
+      sha256: 4d73765577a8c2439f0bc4185b74d216d4b17685f4c397f10c881b4430e430be
+  game:
+    status: active
+    manifest: dataset/game/manifest.yaml
+    task_count: 29
+    bundle_format: task_yaml
+    protected_runner: scripts/run_game_clean_ablation.py
+    protected_runner_sha256: 4de41de731558fcf6ae9b379233bd95a5deb2085c01738ad91528a73f46b88a4
+    environment:
+      task_node: '18'
+      task_java: '17'
+      agent_node: '22'
+      note: This preserves the September 6 Game evaluation contract. The task sandbox
+        resolves Node 18 and Java 17 from /usr/local/bin; model-agent wrappers execute
+        with the separately pinned Node 22 runtime.
+  mobile:
+    status: active
+    manifest: dataset/mobile/manifest.json
+    task_count: 20
+    bundle_format: mobile_native_json
+    protected_runner: scripts/run_mobile_evaluation.py
+    protocol:
+      attempts_per_cell: 1
+      responses: 60
+      active_seconds: 2700
+      max_output_tokens: 16384
+      transport_attempts: 1
+      request_timeout_seconds: 600
+      infrastructure_failures: exclude_and_hold_no_automatic_retry
+      audit: after_batch
+      source: dataset/mobile/evaluation/source-lineage.json
+    model_overrides:
+      api-opus5:
+        status: user_deferred
+        reason: Deferred from the reviewed Mobile evaluation.
+      claude-code-opus5:
+        status: user_deferred
+        reason: Deferred from the reviewed Mobile evaluation.
+    reviewed_results: dataset/mobile/releases/mobile20-20260922/evaluation-summary.json
+    task_lineage_file: dataset/mobile/releases/mobile20-20260922/task-lineage.json
+  devops:
+    status: active
+    manifest: dataset/devops/manifest.yaml
+    task_count: 20
+    bundle_format: task_yaml
+models:
+  api-gpt56-sol:
+    label: GPT 5.6 Sol (API)
+    model_id: gpt-5.6-sol
+    runtime: responses
+    conditions:
+    - code-only
+    - cua
+  api-gpt56-luna:
+    label: GPT 5.6 Luna (API)
+    model_id: gpt-5.6-luna
+    runtime: responses
+    conditions:
+    - code-only
+    - cua
+  api-gpt56-terra:
+    label: GPT 5.6 Terra (API)
+    model_id: gpt-5.6-terra
+    runtime: responses
+    conditions:
+    - code-only
+    - cua
+  api-gpt6-astra:
+    label: GPT-6 Astra (API)
+    model_id: gpt-6-astra
+    runtime: responses
+    conditions:
+    - code-only
+    - cua
+  api-opus5:
+    label: Claude Opus 5 (API)
+    model_id: claude-opus-5
+    runtime: anthropic
+    conditions:
+    - code-only
+    - cua
+  api-opus48:
+    label: Claude Opus 4.8 (API)
+    model_id: claude-opus-4-8
+    runtime: anthropic
+    conditions:
+    - code-only
+    - cua
+  api-sonnet5:
+    label: Claude Sonnet 5 (API)
+    model_id: claude-sonnet-5
+    runtime: anthropic
+    conditions:
+    - code-only
+    - cua
+    note: Retain failures as infrastructure when the provider route is unavailable.
+  api-fable5:
+    label: Claude Fable 5 (API)
+    model_id: claude-fable-5
+    runtime: anthropic
+    conditions:
+    - code-only
+    - cua
+  api-grok46:
+    label: Grok 4.6 (API)
+    model_id: grok-4.6
+    runtime: responses
+    conditions:
+    - code-only
+    - cua
+  codex-gpt56-sol:
+    label: GPT 5.6 Sol, Codex CUA harness
+    model_id: gpt-5.6-sol
+    runtime: codex
+    conditions:
+    - cua
+  claude-code-opus5:
+    label: Claude Opus 5, Claude Code CUA harness
+    model_id: claude-opus-5
+    runtime: claude
+    conditions:
+    - cua
+    status: blocked_main_integration
+    reason: The paper's runs used a Claude Code adapter that is not included in
+      this release. The route is not executable until its audit bootstrap is
+      portable and covered by repository tests.

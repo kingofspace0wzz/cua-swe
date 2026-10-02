@@ -1,0 +1,13 @@
+schema_version: 1
+task_id: devops.trace-clock-skew.lower-3.frontier-hard-r1.cua-upper-r6.001
+source:
+  project: jaegertracing/jaeger
+  implementation: https://github.com/jaegertracing/jaeger/blob/v1.67.0/model/adjuster/clockskew.go
+  pinned_revision: v1.67.0
+  license: Apache-2.0
+  source_type: adapted_real_repo
+notes:
+  - Jaeger's clock-skew adjuster moves spans that appear off relative to parents on different servers, with the documented caveat that correction is only meaningful across independent clock sources.
+  - The candidate preserves the shift-not-resize mechanism, the protected aligned and flagged controls, and the deterministic exact-geometry oracle.
+  - This upper-frontier successor changes one axis after strict confirmation found GPT-6 CUA 0/3 but a Fable 5 CUA pass at the parent that derived the reference pairing from machine-readable catalog metadata (resetEvent.owner and before-reset/after-reset capture fields). Every machine-readable channel now carries only opaque filing codes; the complete calibration-pair and reset-authority mapping is published exclusively on an evaluator-owned raster operator calibration board across three deterministic sheet states, corroborated by the raster decision guide.
+  - The Spanline console, trace protocol, profiles, transition capture pairing, opaque filing-code provenance, calibration-board raster sheets, reference-alignment implementation, and verifier are original; no upstream source or assets are copied.

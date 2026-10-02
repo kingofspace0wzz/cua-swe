@@ -1,0 +1,59 @@
+--- a/vendor/fabric.mjs
++++ b/vendor/fabric.mjs
+@@ -1390,6 +1390,8 @@
+ */
+ const multiplyTransformMatrixArray = (matrices, is2x2) => matrices.reduceRight((product, curr) => curr && product ? multiplyTransformMatrices(curr, product, is2x2) : curr || product, void 0) || iMatrix.concat();
+ const calcPlaneRotation = ([a, b]) => Math.atan2(b, a);
++const calcPlaneZoom = ([a, b]) => Math.sqrt(a * a + b * b);
++const calcPlaneScaleY = ([, , c, d]) => Math.sqrt(c * c + d * d);
+ /**
+ * Decomposes standard 2x3 matrix into transform components
+ * @param  {TMat2D} a transformMatrix
+@@ -2084,7 +2086,7 @@
+ 	* @return {Number}
+ 	*/
+ 	getZoom() {
+-		return this.viewportTransform[0];
++		return calcPlaneZoom(this.viewportTransform);
+ 	}
+ 	/**
+ 	* Sets viewport transformation of this canvas instance
+@@ -5429,7 +5431,12 @@
+ 	* @returns {Point} dimensions
+ 	*/
+ 	_calculateCurrentDimensions(options) {
+-		return this._getTransformedDimensions(options).transform(this.getViewportTransform(), true).scalarAdd(2 * this.padding);
++		const vpt = this.canvas?.viewportTransform;
++		const dim = this._getTransformedDimensions(options);
++		if (vpt) {
++			return dim.multiply(new Point(calcPlaneZoom(vpt), calcPlaneScaleY(vpt))).scalarAdd(2 * this.padding);
++		}
++		return dim.scalarAdd(2 * this.padding);
+ 	}
+ 	/**
+ 	* Calculate object bounding box dimensions from its properties scale, skew.
+@@ -7634,11 +7641,11 @@
+ 	* @return {Record<string, TOCoord>}
+ 	*/
+ 	calcOCoords() {
+-		const vpt = this.getViewportTransform(), center = this.getCenterPoint(), finalMatrix = multiplyTransformMatrices(multiplyTransformMatrices(vpt, multiplyTransformMatrices(createTranslateMatrix(center.x, center.y), createRotateMatrix({ angle: this.getTotalAngle() - (!!this.group && this.flipX ? 180 : 0) }))), [
+-			1 / vpt[0],
++		const vpt = this.getViewportTransform(), vptScaleX = calcPlaneZoom(vpt), vptScaleY = calcPlaneScaleY(vpt), center = this.getCenterPoint(), finalMatrix = multiplyTransformMatrices(multiplyTransformMatrices(vpt, multiplyTransformMatrices(createTranslateMatrix(center.x, center.y), createRotateMatrix({ angle: this.getTotalAngle() - (!!this.group && this.flipX ? 180 : 0) }))), [
++			1 / vptScaleX,
+ 			0,
+ 			0,
+-			1 / vpt[3],
++			1 / vptScaleY,
+ 			0,
+ 			0
+ 		]), transformOptions = this.group ? qrDecompose(this.calcTransformMatrix()) : void 0;
+@@ -7754,7 +7761,8 @@
+ 		ctx.lineWidth = this.borderScaleFactor;
+ 		if (this.group === this.parent) ctx.globalAlpha = this.isMoving ? this.borderOpacityWhenMoving : 1;
+ 		if (this.flipX) options.angle -= 180;
+-		ctx.rotate(degreesToRadians(this.group ? options.angle : this.angle));
++		const vptAngle = calcPlaneRotation(vpt);
++		ctx.rotate(this.group ? degreesToRadians(options.angle) : degreesToRadians(this.angle) + vptAngle);
+ 		shouldDrawBorders && this.drawBorders(ctx, options, styleOverride);
+ 		shouldDrawControls && this.drawControls(ctx, styleOverride);
+ 		ctx.restore();

@@ -1,0 +1,12 @@
+diff --git a/src/config/queryPolicy.js b/src/config/queryPolicy.js
+--- a/src/config/queryPolicy.js
++++ b/src/config/queryPolicy.js
+@@ -3,7 +3,7 @@
+  */
+ export function queryPolicy() {
+   return {
+-    pipeline: "traffic-window",
++    pipeline: "traffic-detail",
+     panelScope: "all",
+     sampleFilter: "none",
+   };

@@ -1,0 +1,93 @@
+--- a/src/app.mjs
++++ b/src/app.mjs
+@@ -132,6 +132,21 @@
+ // Pointer deltas are mapped into the immediate parent frame, then projected
+ // onto the current local edges. For Single, the parent frame is the scene.
+ function installHandleEdits(canvas, rect) {
++  // Fixed-layout group bounds do not clip the child's visible artwork.
++  // Let native selection and dragging reach that child beyond its frame.
++  const search = canvas.searchPossibleTargets.bind(canvas);
++  canvas.searchPossibleTargets = (objects, point) => {
++    const found = search(objects, point);
++    if (!rect.group || found.target === rect) return found;
++    let root = rect;
++    for (let node = rect; node; node = node.group) {
++      if (!node.visible || !node.evented) return found;
++      root = node;
++    }
++    if (!objects.includes(root)) return found;
++    const child = search([rect], point);
++    return child.target ? child : found;
++  };
+   const surface = canvas.upperCanvasEl;
+   const signs = {tl: [-1,-1], tr: [1,-1], br: [1,1], bl: [-1,1],
+     ml: [-1,0], mr: [1,0], mt: [0,-1], mb: [0,1]};
+@@ -167,35 +182,50 @@
+     const viewportToParent = fabric.util.invertTransform(parentToViewport);
+     const center = rect.getRelativeCenterPoint();
+     const start = viewport(e).transform(viewportToParent);
+-    const angle = rect.angle * Math.PI / 180;
+-    const u = new fabric.Point(Math.cos(angle), Math.sin(angle));
+-    const v = new fabric.Point(-Math.sin(angle), Math.cos(angle));
+-    const width = rect.getScaledWidth(), height = rect.getScaledHeight();
+-    edit = {id:e.pointerId, key:hit.key, sx, sy, start, center, u, v, width, height,
+-      viewportToParent,
+-      anchor: center.subtract(u.scalarMultiply(sx*width/2))
+-        .subtract(v.scalarMultiply(sy*height/2)),
+-      pointerAngle: Math.atan2(start.y-center.y, start.x-center.x),
+-      original: {left:rect.left, top:rect.top, width:rect.width, height:rect.height,
+-        scaleX:rect.scaleX, scaleY:rect.scaleY, angle:rect.angle}};
++    // Material edge vectors include whatever angle/flip normalization the
++    // preceding native affine commit chose. No control-key parity assumption.
++    const own = rect.calcOwnMatrix();
++    const ex = new fabric.Point(own[0]*rect.width, own[1]*rect.width);
++    const ey = new fabric.Point(own[2]*rect.height, own[3]*rect.height);
++    const fixed = center.subtract(ex.scalarMultiply(sx/2))
++      .subtract(ey.scalarMultiply(sy/2));
++    const moving = center.add(ex.scalarMultiply(sx/2))
++      .add(ey.scalarMultiply(sy/2));
++    edit = {id:e.pointerId, key:hit.key, sx, sy, center, ex, ey, fixed,
++      offset:start.subtract(moving), viewportToParent,
++      determinant:ex.x*ey.y-ex.y*ey.x,
++      pointerAngle:Math.atan2(start.y-center.y, start.x-center.x),
++      original:{left:rect.left, top:rect.top, width:rect.width, height:rect.height,
++        scaleX:rect.scaleX, scaleY:rect.scaleY, angle:rect.angle,
++        skewX:rect.skewX, skewY:rect.skewY, flipX:rect.flipX, flipY:rect.flipY}};
+     surface.setPointerCapture(e.pointerId);
+   }, true);
+   function update(e) {
+     if (!edit || edit.id !== e.pointerId) return;
+     e.preventDefault(); e.stopImmediatePropagation();
+     const p = viewport(e).transform(edit.viewportToParent);
+-    const {sx,sy,anchor,start,u,v,center} = edit;
++    const {sx,sy,center,ex,ey,fixed,offset,determinant} = edit;
+     if (edit.key === 'mtr') {
+       const delta = Math.atan2(p.y-center.y, p.x-center.x) - edit.pointerAngle;
+       rect.set('angle', edit.original.angle + delta * 180 / Math.PI);
+       rect.setPositionByOrigin(center, 'center', 'center');
+     } else {
+-      const delta = p.subtract(start);
+-      const width = sx ? Math.max(1, edit.width+sx*(delta.x*u.x+delta.y*u.y)) : edit.width;
+-      const height = sy ? Math.max(1, edit.height+sy*(delta.x*v.x+delta.y*v.y)) : edit.height;
+-      rect.set({scaleX:width/edit.original.width, scaleY:height/edit.original.height});
+-      rect.setPositionByOrigin(anchor.add(u.scalarMultiply(sx*width/2))
+-        .add(v.scalarMultiply(sy*height/2)), 'center', 'center');
++      // The pointer carries the original material point, not its grab offset.
++      // Resolve fixed-to-moving endpoints in the snapshot's dual edge basis.
++      const span = p.subtract(offset).subtract(fixed);
++      let fx = sx ? (span.x*ey.y-span.y*ey.x)/(determinant*sx) : 1;
++      let fy = sy ? (ex.x*span.y-ex.y*span.x)/(determinant*sy) : 1;
++      // QR requires a nonzero first column. At the isolated collapse instant
++      // use a subpixel limiting rectangle, not a positive-size gesture clamp.
++      if (fx === 0) fx = 1e-6;
++      if (fy === 0) fy = 1e-6;
++      const nextX = ex.scalarMultiply(fx), nextY = ey.scalarMultiply(fy);
++      const nextCenter = fixed.add(nextX.scalarMultiply(sx/2))
++        .add(nextY.scalarMultiply(sy/2));
++      fabric.util.applyTransformToObject(rect, [
++        nextX.x/edit.original.width, nextX.y/edit.original.width,
++        nextY.x/edit.original.height, nextY.y/edit.original.height,
++        nextCenter.x, nextCenter.y]);
+     }
+     paint();
+   }

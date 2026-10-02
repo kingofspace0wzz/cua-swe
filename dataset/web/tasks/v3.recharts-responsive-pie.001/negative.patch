@@ -1,0 +1,27 @@
+diff --git a/src/ringResolver.js b/src/ringResolver.js
+index a1db793..f0b8246 100644
+--- a/src/ringResolver.js
++++ b/src/ringResolver.js
+@@ -11,12 +11,19 @@ import { ringFromBox } from './ringGeometry.js';
+ // the measured box before the ring is sized.
+ const FRAME_GUTTER = 16;
+ 
++// The header strip height at the top of the card, trimmed so the ring is not
++// pushed under the title when the card box is measured.
++const CARD_HEADER = 30;
++
+ export function resolveRing(measuredBox, board) {
++  // Trim the fixed breathing gutter and the header strip, and pull in the
++  // legend's reserved extent so the ring does not run under the docked legend.
++  const reserve = board.legend && board.legend.dock !== 'none' ? board.legend.reserve : 0;
+   const frame = {
+     left: measuredBox.left + FRAME_GUTTER,
+-    top: measuredBox.top + FRAME_GUTTER,
+-    width: Math.max(0, measuredBox.width - FRAME_GUTTER * 2),
+-    height: Math.max(0, measuredBox.height - FRAME_GUTTER * 2),
++    top: measuredBox.top + FRAME_GUTTER + CARD_HEADER,
++    width: Math.max(0, measuredBox.width - FRAME_GUTTER * 2 - reserve),
++    height: Math.max(0, measuredBox.height - FRAME_GUTTER * 2 - CARD_HEADER - reserve),
+   };
+   return ringFromBox(frame, board.ringScale, board.holeRatio);
+ }

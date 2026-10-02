@@ -1,0 +1,658 @@
+{
+  "provenance": {
+    "construction_mode": "standalone_synthetic",
+    "failure_origin": "synthetic",
+    "source": "Original locally synthesized provider records and SVG illustrations; not real navigation data."
+  },
+  "inbox": {
+    "version": 1,
+    "campuses": [
+      {
+        "id": "juniper",
+        "title": "Juniper Annex",
+        "subtitle": "Original synthetic campus \u00b7 imported provider attachment",
+        "default_trip": {
+          "origin": "A",
+          "destination": "F",
+          "stepFree": false
+        },
+        "stops": [
+          {
+            "id": "A",
+            "label": "Entry",
+            "level": 0
+          },
+          {
+            "id": "B",
+            "label": "Court",
+            "level": 0
+          },
+          {
+            "id": "C",
+            "label": "Lift base",
+            "level": 0
+          },
+          {
+            "id": "D",
+            "label": "Landing",
+            "level": 1
+          },
+          {
+            "id": "E",
+            "label": "Archive",
+            "level": 1
+          },
+          {
+            "id": "F",
+            "label": "Studio",
+            "level": 1
+          },
+          {
+            "id": "G",
+            "label": "Terrace",
+            "level": 1
+          }
+        ],
+        "walk_links": [
+          {
+            "id": "J1",
+            "from_stop": "A",
+            "to_stop": "B",
+            "travel_m": 24,
+            "plan_m": 24,
+            "kind": "walk",
+            "flow": "both",
+            "access": "step-free",
+            "state": "open"
+          },
+          {
+            "id": "J2",
+            "from_stop": "B",
+            "to_stop": "E",
+            "travel_m": 12,
+            "plan_m": 8,
+            "kind": "stairs",
+            "flow": "forward",
+            "access": "steps",
+            "state": "open"
+          },
+          {
+            "id": "J3",
+            "from_stop": "B",
+            "to_stop": "C",
+            "travel_m": 30,
+            "plan_m": 30,
+            "kind": "walk",
+            "flow": "both",
+            "access": "step-free",
+            "state": "open"
+          },
+          {
+            "id": "J4",
+            "from_stop": "C",
+            "to_stop": "D",
+            "travel_m": 6,
+            "plan_m": 0,
+            "kind": "lift",
+            "flow": "both",
+            "access": "step-free",
+            "state": "open"
+          },
+          {
+            "id": "J5",
+            "from_stop": "D",
+            "to_stop": "E",
+            "travel_m": 20,
+            "plan_m": 20,
+            "kind": "walk",
+            "flow": "both",
+            "access": "step-free",
+            "state": "open"
+          },
+          {
+            "id": "J6",
+            "from_stop": "E",
+            "to_stop": "F",
+            "travel_m": 18,
+            "plan_m": 18,
+            "kind": "walk",
+            "flow": "both",
+            "access": "step-free",
+            "state": "open"
+          },
+          {
+            "id": "J7",
+            "from_stop": "A",
+            "to_stop": "F",
+            "travel_m": 15,
+            "plan_m": 10,
+            "kind": "ramp",
+            "flow": "both",
+            "access": "step-free",
+            "state": "closed"
+          },
+          {
+            "id": "J8",
+            "from_stop": "D",
+            "to_stop": "F",
+            "travel_m": 45,
+            "plan_m": 22,
+            "kind": "ramp",
+            "flow": "forward",
+            "access": "step-free",
+            "state": "open"
+          },
+          {
+            "id": "J9",
+            "from_stop": "F",
+            "to_stop": "G",
+            "travel_m": 9,
+            "plan_m": 6,
+            "kind": "stairs",
+            "flow": "both",
+            "access": "steps",
+            "state": "open"
+          }
+        ],
+        "diagram": {
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 360 450\" role=\"img\" aria-label=\"Juniper Annex campus diagram\"><defs><marker id=\"arrow\" markerWidth=\"7\" markerHeight=\"7\" refX=\"6\" refY=\"3.5\" orient=\"auto\"><path d=\"M0,0 L7,3.5 L0,7\" fill=\"#244c60\"/></marker></defs><rect width=\"360\" height=\"450\" fill=\"#fffdf8\"/><rect x=\"8\" y=\"22\" width=\"344\" height=\"122\" rx=\"12\" fill=\"#e9f2ec\"/><rect x=\"8\" y=\"220\" width=\"344\" height=\"215\" rx=\"12\" fill=\"#e9effa\"/><g font-family=\"sans-serif\" fill=\"#213d46\" font-size=\"13\"><text x=\"20\" y=\"42\">LEVEL 0</text><text x=\"20\" y=\"242\">LEVEL 1</text></g><path d=\"M48,78 L179,78\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\"/><rect x=\"89.5\" y=\"57.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"93.5\" y=\"71.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">J1 \u2194</text><path d=\"M179,78 L179,270\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\" stroke-dasharray=\"2 4\" marker-end=\"url(#arrow)\"/><rect x=\"155.0\" y=\"153.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"159.0\" y=\"167.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">J2 \u2192</text><path d=\"M179,78 L308,78\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\"/><rect x=\"219.5\" y=\"57.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"223.5\" y=\"71.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">J3 \u2194</text><path d=\"M308,78 L308,270\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\"/><rect x=\"284.0\" y=\"153.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"288.0\" y=\"167.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">J4 \u2194</text><path d=\"M308,270 L179,270\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\"/><rect x=\"219.5\" y=\"249.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"223.5\" y=\"263.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">J5 \u2194</text><path d=\"M179,270 L48,270\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\"/><rect x=\"89.5\" y=\"249.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"93.5\" y=\"263.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">J6 \u2194</text><path d=\"M48,78 L48,270\" fill=\"none\" stroke=\"#ac403c\" stroke-width=\"3\" stroke-dasharray=\"6 5\"/><rect x=\"24.0\" y=\"153.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"28.0\" y=\"167.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#ac403c\">J7 \u2194 \u00d7</text><path d=\"M308,270 C300,350 62,350 48,270\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><rect x=\"154\" y=\"323\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"158\" y=\"337\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">J8 \u2192</text><path d=\"M48,270 L48,383\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\" stroke-dasharray=\"2 4\"/><rect x=\"24.0\" y=\"305.5\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"28.0\" y=\"319.5\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">J9 \u2194</text><circle cx=\"48\" cy=\"78\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"48\" y=\"101\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">A Entry</text><circle cx=\"179\" cy=\"78\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"179\" y=\"101\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">B Court</text><circle cx=\"308\" cy=\"78\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"308\" y=\"101\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">C Lift base</text><circle cx=\"308\" cy=\"270\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"308\" y=\"293\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">D Landing</text><circle cx=\"179\" cy=\"270\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"179\" y=\"293\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">E Archive</text><circle cx=\"48\" cy=\"270\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"48\" y=\"293\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">F Studio</text><circle cx=\"48\" cy=\"383\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"48\" y=\"406\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">G Terrace</text></svg>",
+          "description": "Original two-floor schematic. Routing report gives the complete link rules and rows; the illustration is not to scale."
+        },
+        "report": {
+          "title": "Provider routing report",
+          "pages": [
+            {
+              "title": "Routing contract \u00b7 1 of 2",
+              "paragraphs": [
+                "This attachment is the routing authority for this import. It is a complete, small campus graph, not a travel advisory. Use only the listed stops and walk_links; crossing lines do not create junctions.",
+                "Each link joins from_stop to to_stop. flow=both allows travel in either direction; flow=forward allows only from_stop \u2192 to_stop. No reverse link is implied. state=closed excludes a link in every mode; state=open permits it subject to the other rules.",
+                "Step-free ON permits only access=step-free. Step-free OFF permits both step-free and steps. kind describes the connector (walk, stairs, ramp, lift); access is authoritative. These are the only values in this contract."
+              ],
+              "table": null
+            },
+            {
+              "title": "Routing contract \u00b7 2 of 2",
+              "paragraphs": [
+                "travel_m is the full traversal distance in metres, including floor transitions. plan_m is the flattened schematic span and is NOT a route cost. Minimize the sum of travel_m over permitted directed links. Tied shortest routes are equally valid.",
+                "level belongs to each stop. A link may change floors only between its listed endpoints. Use the same flow, state and access rules for ramps, lifts and stairs. There is no additional floor penalty or inferred connector.",
+                "A route must list its stops in order, identify each connector and floor change, and show total metres. If none is permitted, say No route available; never suggest a closed or inaccessible substitute. Same-stop travel is 0 m.",
+                "Save trip stores the selected campus, origin, destination and preference. These survive ordinary reload. The original attachment must remain unchanged. Rebuilding resets this simulated inbox and saved state."
+              ],
+              "table": null
+            },
+            {
+              "title": "Stops & floors",
+              "paragraphs": [
+                "Stop IDs label the original diagram. Lines are schematic, not to scale. Solid = step-free; dotted = steps; red dashed \u00d7 = closed. Link arrow text follows from_stop \u2192 to_stop; \u2194 means both ways. Consult link rows for distances."
+              ],
+              "table": {
+                "columns": [
+                  "Stop",
+                  "Name",
+                  "Level"
+                ],
+                "rows": [
+                  [
+                    "A",
+                    "Entry",
+                    "0"
+                  ],
+                  [
+                    "B",
+                    "Court",
+                    "0"
+                  ],
+                  [
+                    "C",
+                    "Lift base",
+                    "0"
+                  ],
+                  [
+                    "D",
+                    "Landing",
+                    "1"
+                  ],
+                  [
+                    "E",
+                    "Archive",
+                    "1"
+                  ],
+                  [
+                    "F",
+                    "Studio",
+                    "1"
+                  ],
+                  [
+                    "G",
+                    "Terrace",
+                    "1"
+                  ]
+                ]
+              }
+            },
+            {
+              "title": "Walk links \u00b7 1 of 3",
+              "paragraphs": [
+                "Exact provider rows. from_stop \u2192 to_stop is shown as From \u2192 To. Distance columns are travel_m / plan_m (metres)."
+              ],
+              "table": {
+                "columns": [
+                  "Link / kind",
+                  "From \u2192 To",
+                  "travel_m / plan_m",
+                  "flow / access / state"
+                ],
+                "rows": [
+                  [
+                    "J1 / walk",
+                    "A \u2192 B",
+                    "24 / 24",
+                    "both / step-free / open"
+                  ],
+                  [
+                    "J2 / stairs",
+                    "B \u2192 E",
+                    "12 / 8",
+                    "forward / steps / open"
+                  ],
+                  [
+                    "J3 / walk",
+                    "B \u2192 C",
+                    "30 / 30",
+                    "both / step-free / open"
+                  ]
+                ]
+              }
+            },
+            {
+              "title": "Walk links \u00b7 2 of 3",
+              "paragraphs": [
+                "Exact provider rows. from_stop \u2192 to_stop is shown as From \u2192 To. Distance columns are travel_m / plan_m (metres)."
+              ],
+              "table": {
+                "columns": [
+                  "Link / kind",
+                  "From \u2192 To",
+                  "travel_m / plan_m",
+                  "flow / access / state"
+                ],
+                "rows": [
+                  [
+                    "J4 / lift",
+                    "C \u2192 D",
+                    "6 / 0",
+                    "both / step-free / open"
+                  ],
+                  [
+                    "J5 / walk",
+                    "D \u2192 E",
+                    "20 / 20",
+                    "both / step-free / open"
+                  ],
+                  [
+                    "J6 / walk",
+                    "E \u2192 F",
+                    "18 / 18",
+                    "both / step-free / open"
+                  ]
+                ]
+              }
+            },
+            {
+              "title": "Walk links \u00b7 3 of 3",
+              "paragraphs": [
+                "Exact provider rows. from_stop \u2192 to_stop is shown as From \u2192 To. Distance columns are travel_m / plan_m (metres)."
+              ],
+              "table": {
+                "columns": [
+                  "Link / kind",
+                  "From \u2192 To",
+                  "travel_m / plan_m",
+                  "flow / access / state"
+                ],
+                "rows": [
+                  [
+                    "J7 / ramp",
+                    "A \u2192 F",
+                    "15 / 10",
+                    "both / step-free / closed"
+                  ],
+                  [
+                    "J8 / ramp",
+                    "D \u2192 F",
+                    "45 / 22",
+                    "forward / step-free / open"
+                  ],
+                  [
+                    "J9 / stairs",
+                    "F \u2192 G",
+                    "9 / 6",
+                    "both / steps / open"
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "harbor",
+        "title": "Harbor Court",
+        "subtitle": "Original synthetic campus \u00b7 imported provider attachment",
+        "default_trip": {
+          "origin": "P",
+          "destination": "T",
+          "stepFree": false
+        },
+        "stops": [
+          {
+            "id": "P",
+            "label": "Gate",
+            "level": 0
+          },
+          {
+            "id": "Q",
+            "label": "Hall",
+            "level": 0
+          },
+          {
+            "id": "R",
+            "label": "Ramp foot",
+            "level": 0
+          },
+          {
+            "id": "S",
+            "label": "Commons",
+            "level": 1
+          },
+          {
+            "id": "T",
+            "label": "Library",
+            "level": 1
+          },
+          {
+            "id": "U",
+            "label": "Balcony",
+            "level": 1
+          }
+        ],
+        "walk_links": [
+          {
+            "id": "H1",
+            "from_stop": "P",
+            "to_stop": "Q",
+            "travel_m": 16,
+            "plan_m": 16,
+            "kind": "walk",
+            "flow": "both",
+            "access": "step-free",
+            "state": "open"
+          },
+          {
+            "id": "H2",
+            "from_stop": "Q",
+            "to_stop": "S",
+            "travel_m": 11,
+            "plan_m": 8,
+            "kind": "stairs",
+            "flow": "both",
+            "access": "steps",
+            "state": "open"
+          },
+          {
+            "id": "H3",
+            "from_stop": "P",
+            "to_stop": "R",
+            "travel_m": 22,
+            "plan_m": 22,
+            "kind": "walk",
+            "flow": "both",
+            "access": "step-free",
+            "state": "open"
+          },
+          {
+            "id": "H4",
+            "from_stop": "R",
+            "to_stop": "S",
+            "travel_m": 38,
+            "plan_m": 14,
+            "kind": "ramp",
+            "flow": "forward",
+            "access": "step-free",
+            "state": "open"
+          },
+          {
+            "id": "H5",
+            "from_stop": "S",
+            "to_stop": "T",
+            "travel_m": 14,
+            "plan_m": 14,
+            "kind": "walk",
+            "flow": "both",
+            "access": "step-free",
+            "state": "open"
+          },
+          {
+            "id": "H6",
+            "from_stop": "Q",
+            "to_stop": "T",
+            "travel_m": 10,
+            "plan_m": 0,
+            "kind": "lift",
+            "flow": "both",
+            "access": "step-free",
+            "state": "closed"
+          },
+          {
+            "id": "H7",
+            "from_stop": "S",
+            "to_stop": "U",
+            "travel_m": 7,
+            "plan_m": 4,
+            "kind": "stairs",
+            "flow": "forward",
+            "access": "steps",
+            "state": "open"
+          },
+          {
+            "id": "H8",
+            "from_stop": "R",
+            "to_stop": "Q",
+            "travel_m": 9,
+            "plan_m": 9,
+            "kind": "walk",
+            "flow": "both",
+            "access": "step-free",
+            "state": "open"
+          },
+          {
+            "id": "H9",
+            "from_stop": "T",
+            "to_stop": "U",
+            "travel_m": 12,
+            "plan_m": 10,
+            "kind": "stairs",
+            "flow": "both",
+            "access": "steps",
+            "state": "open"
+          }
+        ],
+        "diagram": {
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 360 450\" role=\"img\" aria-label=\"Harbor Court campus diagram\"><defs><marker id=\"arrow\" markerWidth=\"7\" markerHeight=\"7\" refX=\"6\" refY=\"3.5\" orient=\"auto\"><path d=\"M0,0 L7,3.5 L0,7\" fill=\"#244c60\"/></marker></defs><rect width=\"360\" height=\"450\" fill=\"#fffdf8\"/><rect x=\"8\" y=\"22\" width=\"344\" height=\"122\" rx=\"12\" fill=\"#e9f2ec\"/><rect x=\"8\" y=\"220\" width=\"344\" height=\"215\" rx=\"12\" fill=\"#e9effa\"/><g font-family=\"sans-serif\" fill=\"#213d46\" font-size=\"13\"><text x=\"20\" y=\"42\">LEVEL 0</text><text x=\"20\" y=\"242\">LEVEL 1</text></g><path d=\"M48,78 L179,78\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\"/><rect x=\"89.5\" y=\"57.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"93.5\" y=\"71.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">H1 \u2194</text><path d=\"M179,78 Q247,151 308,270\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\" stroke-dasharray=\"2 4\"/><rect x=\"219\" y=\"165\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"223\" y=\"179\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">H2 \u2194</text><path d=\"M48,78 Q170,176 308,78\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\"/><rect x=\"148\" y=\"123\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"152\" y=\"137\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">H3 \u2194</text><path d=\"M308,78 L308,270\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><rect x=\"284.0\" y=\"153.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"288.0\" y=\"167.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">H4 \u2192</text><path d=\"M308,270 L179,270\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\"/><rect x=\"219.5\" y=\"249.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"223.5\" y=\"263.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">H5 \u2194</text><path d=\"M179,78 L179,270\" fill=\"none\" stroke=\"#ac403c\" stroke-width=\"3\" stroke-dasharray=\"6 5\"/><rect x=\"155.0\" y=\"153.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"159.0\" y=\"167.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#ac403c\">H6 \u2194 \u00d7</text><path d=\"M308,270 Q279,415 48,383\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\" stroke-dasharray=\"2 4\" marker-end=\"url(#arrow)\"/><rect x=\"194\" y=\"373\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"198\" y=\"387\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">H7 \u2192</text><path d=\"M308,78 L179,78\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\"/><rect x=\"219.5\" y=\"57.0\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"223.5\" y=\"71.0\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">H8 \u2194</text><path d=\"M179,270 L48,383\" fill=\"none\" stroke=\"#244c60\" stroke-width=\"3\" stroke-dasharray=\"2 4\"/><rect x=\"89.5\" y=\"305.5\" width=\"66\" height=\"19\" rx=\"4\" fill=\"#fffdf8\"/><text x=\"93.5\" y=\"319.5\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#244c60\">H9 \u2194</text><circle cx=\"48\" cy=\"78\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"48\" y=\"101\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">P Gate</text><circle cx=\"179\" cy=\"78\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"179\" y=\"101\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">Q Hall</text><circle cx=\"308\" cy=\"78\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"308\" y=\"101\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">R Ramp foot</text><circle cx=\"308\" cy=\"270\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"308\" y=\"293\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">S Commons</text><circle cx=\"179\" cy=\"270\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"179\" y=\"293\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">T Library</text><circle cx=\"48\" cy=\"383\" r=\"8\" fill=\"#244c60\" stroke=\"white\" stroke-width=\"2\"/><text x=\"48\" y=\"406\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#213d46\">U Balcony</text></svg>",
+          "description": "Original two-floor schematic. Routing report gives the complete link rules and rows; the illustration is not to scale."
+        },
+        "report": {
+          "title": "Provider routing report",
+          "pages": [
+            {
+              "title": "Routing contract \u00b7 1 of 2",
+              "paragraphs": [
+                "This attachment is the routing authority for this import. It is a complete, small campus graph, not a travel advisory. Use only the listed stops and walk_links; crossing lines do not create junctions.",
+                "Each link joins from_stop to to_stop. flow=both allows travel in either direction; flow=forward allows only from_stop \u2192 to_stop. No reverse link is implied. state=closed excludes a link in every mode; state=open permits it subject to the other rules.",
+                "Step-free ON permits only access=step-free. Step-free OFF permits both step-free and steps. kind describes the connector (walk, stairs, ramp, lift); access is authoritative. These are the only values in this contract."
+              ],
+              "table": null
+            },
+            {
+              "title": "Routing contract \u00b7 2 of 2",
+              "paragraphs": [
+                "travel_m is the full traversal distance in metres, including floor transitions. plan_m is the flattened schematic span and is NOT a route cost. Minimize the sum of travel_m over permitted directed links. Tied shortest routes are equally valid.",
+                "level belongs to each stop. A link may change floors only between its listed endpoints. Use the same flow, state and access rules for ramps, lifts and stairs. There is no additional floor penalty or inferred connector.",
+                "A route must list its stops in order, identify each connector and floor change, and show total metres. If none is permitted, say No route available; never suggest a closed or inaccessible substitute. Same-stop travel is 0 m.",
+                "Save trip stores the selected campus, origin, destination and preference. These survive ordinary reload. The original attachment must remain unchanged. Rebuilding resets this simulated inbox and saved state."
+              ],
+              "table": null
+            },
+            {
+              "title": "Stops & floors",
+              "paragraphs": [
+                "Stop IDs label the original diagram. Lines are schematic, not to scale. Solid = step-free; dotted = steps; red dashed \u00d7 = closed. Link arrow text follows from_stop \u2192 to_stop; \u2194 means both ways. Consult link rows for distances."
+              ],
+              "table": {
+                "columns": [
+                  "Stop",
+                  "Name",
+                  "Level"
+                ],
+                "rows": [
+                  [
+                    "P",
+                    "Gate",
+                    "0"
+                  ],
+                  [
+                    "Q",
+                    "Hall",
+                    "0"
+                  ],
+                  [
+                    "R",
+                    "Ramp foot",
+                    "0"
+                  ],
+                  [
+                    "S",
+                    "Commons",
+                    "1"
+                  ],
+                  [
+                    "T",
+                    "Library",
+                    "1"
+                  ],
+                  [
+                    "U",
+                    "Balcony",
+                    "1"
+                  ]
+                ]
+              }
+            },
+            {
+              "title": "Walk links \u00b7 1 of 3",
+              "paragraphs": [
+                "Exact provider rows. from_stop \u2192 to_stop is shown as From \u2192 To. Distance columns are travel_m / plan_m (metres)."
+              ],
+              "table": {
+                "columns": [
+                  "Link / kind",
+                  "From \u2192 To",
+                  "travel_m / plan_m",
+                  "flow / access / state"
+                ],
+                "rows": [
+                  [
+                    "H1 / walk",
+                    "P \u2192 Q",
+                    "16 / 16",
+                    "both / step-free / open"
+                  ],
+                  [
+                    "H2 / stairs",
+                    "Q \u2192 S",
+                    "11 / 8",
+                    "both / steps / open"
+                  ],
+                  [
+                    "H3 / walk",
+                    "P \u2192 R",
+                    "22 / 22",
+                    "both / step-free / open"
+                  ]
+                ]
+              }
+            },
+            {
+              "title": "Walk links \u00b7 2 of 3",
+              "paragraphs": [
+                "Exact provider rows. from_stop \u2192 to_stop is shown as From \u2192 To. Distance columns are travel_m / plan_m (metres)."
+              ],
+              "table": {
+                "columns": [
+                  "Link / kind",
+                  "From \u2192 To",
+                  "travel_m / plan_m",
+                  "flow / access / state"
+                ],
+                "rows": [
+                  [
+                    "H4 / ramp",
+                    "R \u2192 S",
+                    "38 / 14",
+                    "forward / step-free / open"
+                  ],
+                  [
+                    "H5 / walk",
+                    "S \u2192 T",
+                    "14 / 14",
+                    "both / step-free / open"
+                  ],
+                  [
+                    "H6 / lift",
+                    "Q \u2192 T",
+                    "10 / 0",
+                    "both / step-free / closed"
+                  ]
+                ]
+              }
+            },
+            {
+              "title": "Walk links \u00b7 3 of 3",
+              "paragraphs": [
+                "Exact provider rows. from_stop \u2192 to_stop is shown as From \u2192 To. Distance columns are travel_m / plan_m (metres)."
+              ],
+              "table": {
+                "columns": [
+                  "Link / kind",
+                  "From \u2192 To",
+                  "travel_m / plan_m",
+                  "flow / access / state"
+                ],
+                "rows": [
+                  [
+                    "H7 / stairs",
+                    "S \u2192 U",
+                    "7 / 4",
+                    "forward / steps / open"
+                  ],
+                  [
+                    "H8 / walk",
+                    "R \u2192 Q",
+                    "9 / 9",
+                    "both / step-free / open"
+                  ],
+                  [
+                    "H9 / stairs",
+                    "T \u2192 U",
+                    "12 / 10",
+                    "both / steps / open"
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

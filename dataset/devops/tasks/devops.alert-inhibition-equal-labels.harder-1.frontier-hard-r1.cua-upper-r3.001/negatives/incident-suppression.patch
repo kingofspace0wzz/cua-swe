@@ -1,0 +1,10 @@
+diff --git a/src/controllers/incidents.js b/src/controllers/incidents.js
+--- a/src/controllers/incidents.js
++++ b/src/controllers/incidents.js
+@@ -20,5 +20,5 @@ export async function startIncidents() {
+ }
+ 
+ export async function nextIncident() {
+-  return advanceIncident();
++  return startIncidents().then((state) => state.snapshot);
+ }

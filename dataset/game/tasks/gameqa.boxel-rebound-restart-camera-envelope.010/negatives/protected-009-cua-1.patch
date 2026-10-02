@@ -1,0 +1,73 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..410aebdd2d4ac7c31fd90149408f3db0cb6e293e 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -253,7 +253,10 @@
+         };
+         this.retry = function(retry){
+             this.resumeGame(retry);
++            this.levelMap.restoreGuideMotion(this.player.spawnGuide);
+             this.player.respawn();
++            this.levelMap.cameraProgress = this.player.spawnX;
++            this.levelMap.x = -this.levelMap.cameraProgress;
+             this.levelMap.showGuide(this.player.spawnGuide);
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+diff --git a/js/LevelMap.js b/js/LevelMap.js
+index b57a6f995f0d58427f8879bfa3fac061ede82026..715a558f17e650b7037cef09432bc67a95e4668b 100644
+--- a/js/LevelMap.js
++++ b/js/LevelMap.js
+@@ -203,6 +203,15 @@
+                 tiles: Math.max(1,Math.round((support.right-support.left)/this.box))
+             };
+         };
++        this.restoreGuideMotion = function(frame){
++            if (frame == null) return;
++            var support = this.getSupport(frame.id);
++            if (support == null) return;
++            this.motionTime = support.nearestEarlierTime(frame.y,this.motionTime);
++            for (var i=0; i<this.movingSupports.length; i++){
++                this.movingSupports[i].update(this.motionTime);
++            }
++        };
+         this.showGuide = function(frame){
+             if (this.guideView != null && this.guideView.parent != null){
+                 this.guideView.parent.removeChild(this.guideView);
+@@ -307,6 +316,25 @@
+             }
+             this.view.x = this.left;
+             this.view.y = this.baseY;
++            this.nearestEarlierTime = function(y,time){
++                var period = 2800;
++                var cosPhase = 1+((y-this.baseY)/30);
++                cosPhase = Math.max(-1,Math.min(1,cosPhase));
++                var phase = Math.acos(cosPhase);
++                var phaseTimes = [
++                    (phase/(Math.PI*2))*period,
++                    ((Math.PI*2-phase)/(Math.PI*2))*period
++                ];
++                var nearest = 0;
++                for (var i=0; i<phaseTimes.length; i++){
++                    var candidate = phaseTimes[i]+
++                        (Math.floor((time-phaseTimes[i])/period)*period);
++                    if (candidate >= 0 && candidate <= time && candidate > nearest){
++                        nearest = candidate;
++                    }
++                }
++                return nearest;
++            };
+             this.update = function(time){
+                 var phase = (time%2800)/2800*Math.PI*2;
+                 this.offsetY = -30*(1-Math.cos(phase));
+diff --git a/js/Player.js b/js/Player.js
+index 7a23504b6677e0d461c5ac4d8a04995efb2a0e5f..dc21699ed3949afcd44065f8f5ad9d4b961ef781 100644
+--- a/js/Player.js
++++ b/js/Player.js
+@@ -237,6 +237,7 @@
+             if (this.newSpawn == true){
+                 this.xPos = this.spawnX;
+                 this.y = this.spawnY;
++                this.supportId = this.spawnSupportId;
+                 this.supportOffset = this.spawnSupportOffset;
+             }
+             else { //set to origin

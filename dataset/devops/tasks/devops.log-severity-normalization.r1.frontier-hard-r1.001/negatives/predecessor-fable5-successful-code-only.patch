@@ -1,0 +1,13 @@
+diff --git a/src/pipeline/resolveSeverity.js b/src/pipeline/resolveSeverity.js
+index 98dd29b0a432ec92329f57a3e68f6e633552dbf7..d0bd140f6870bb6d584903125b47aee8e574dbd5 100644
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,7 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
++  const format = receiver.output.format;
+   const decode = severityAdapters[format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }

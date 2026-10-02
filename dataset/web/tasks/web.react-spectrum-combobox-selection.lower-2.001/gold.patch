@@ -1,0 +1,13 @@
+diff --git a/src/selectionPolicy.js b/src/selectionPolicy.js
+--- a/src/selectionPolicy.js
++++ b/src/selectionPolicy.js
+@@ -1,6 +1,7 @@
+ export function applyKeyboardTransition(key, selected, draft, workspacePolicy) {
+   if (!draft.trim()) return selected;
+-  // Regression: leaving a non-empty custom-value field resets the collection.
+-  if (['Escape', 'Enter', 'Tab'].includes(key)) return [];
++  const action = workspacePolicy.keyActions[key];
++  if (action === 'APPEND') return [...selected, draft.trim()];
++  if (action === 'KEEP') return selected;
+   return selected;
+ }

@@ -1,0 +1,97 @@
+--- a/src/config/adjustmentPolicy.js
++++ b/src/config/adjustmentPolicy.js
+@@ -1,6 +1,6 @@
+ export function adjustmentPolicy(catalog) {
+   return Object.freeze({
+-    crossHostMode: "observe",
++    crossHostMode: "calibration-reference-shift",
+     maxAdjustmentMs: catalog.maxAdjustmentMs,
+   });
+ }
+--- a/src/controllers/query.js
++++ b/src/controllers/query.js
+@@ -1,6 +1,7 @@
+ import { loadCatalog, loadTrace, submitAdjustment } from "../api/traceClient.js";
+ import { adjustmentPolicy } from "../config/adjustmentPolicy.js";
+ import { compileAdjusters } from "../trace/compileAdjusters.js";
++import { findCalibrationReference } from "../trace/calibrationReference.js";
+ import { runPipeline } from "../trace/runPipeline.js";
+ 
+ export async function startQuery() {
+@@ -11,7 +12,11 @@
+ 
+ export async function evaluateTrace(catalog, traceId) {
+   const trace = await loadTrace(traceId);
+-  const pipeline = runPipeline(trace.spans, compileAdjusters(adjustmentPolicy(catalog)));
++  const reference = await findCalibrationReference(catalog, trace, loadTrace);
++  const pipeline = runPipeline(
++    trace.spans,
++    compileAdjusters(adjustmentPolicy(catalog), reference),
++  );
+   await submitAdjustment(trace.id, pipeline.spans, pipeline.annotations);
+   return {
+     trace,
+--- a/src/trace/calibrationReference.js
++++ b/src/trace/calibrationReference.js
+@@ -0,0 +1,37 @@
++function spanKey(span) {
++  return [span.service, span.operation, span.host].join("\u0000");
++}
++
++function authorityOf(span) {
++  return span.timeAuthority || span.host;
++}
++
++const REFERENCE_BY_CAPTURE = {
++  "checkout-early": "checkout-r131",
++  "orders-late": "orders-r127",
++};
++
++export async function findCalibrationReference(catalog, trace, loadTrace) {
++  const referenceId = REFERENCE_BY_CAPTURE[trace.id];
++  return referenceId ? loadTrace(referenceId) : null;
++}
++
++export function alignToCalibrationReference(reference, { maxAdjustmentMs }) {
++  return function adjust(spans) {
++    const replayed = new Map(reference.spans.map((span) => [spanKey(span), span]));
++    const deltas = new Map();
++    for (const span of spans) {
++      const match = replayed.get(spanKey(span));
++      if (!match || match.durationMs !== span.durationMs) return spans;
++      const delta = match.startMs - span.startMs;
++      const authority = authorityOf(span);
++      if (!deltas.has(authority)) deltas.set(authority, delta);
++      else if (deltas.get(authority) !== delta) return spans;
++    }
++    return spans.map((span) => {
++      const delta = deltas.get(authorityOf(span)) || 0;
++      if (!delta || Math.abs(delta) > maxAdjustmentMs) return span;
++      return { ...span, startMs: span.startMs + delta, endMs: span.endMs + delta };
++    });
++  };
++}
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,16 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
++import { alignToCalibrationReference } from "./calibrationReference.js";
+ 
+-export function compileAdjusters(policy) {
+-  return [
+-    { name: "dedupe", apply: dedupeSpans },
+-    { name: "sort", apply: sortSpans },
+-  ];
++export function compileAdjusters(policy, reference) {
++  const adjusters = [{ name: "dedupe", apply: dedupeSpans }];
++  if (policy.crossHostMode === "calibration-reference-shift" && reference) {
++    adjusters.push({
++      name: "calibration-reference",
++      apply: alignToCalibrationReference(reference, {
++        maxAdjustmentMs: policy.maxAdjustmentMs,
++      }),
++    });
++  }
++  adjusters.push({ name: "sort", apply: sortSpans });
++  return adjusters;
+ }

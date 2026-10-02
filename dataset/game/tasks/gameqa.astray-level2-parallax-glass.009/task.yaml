@@ -1,0 +1,61 @@
+id: gameqa.astray-level2-parallax-glass.009
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.astray-level2-parallax-glass.009/repo
+  ref: gameworld-astray-5532292-level2-parallax-glass-mutant-v9
+instruction: >-
+  In deterministic Level 2, the opening view should show a stationary gold
+  ball below three opaque magenta glass seals and a red crossbar. With no input
+  the ball must remain at rest. Press and hold the ordinary Up arrow to travel
+  through the gallery. Each passed seal should visibly resolve into a green
+  glass core with a separate amber crown while the remaining seals stay
+  magenta. After all three transitions, the crossbar must be green, all three
+  green-and-amber signatures must remain visible, and ordinary movement must
+  continue beyond the bar. Fix the complete rendered sequence while preserving
+  smooth play, ordinary R restart, and in-place level selection.
+setup:
+  install: []
+  reset: []
+  launch:
+    - python3 serve.py --port 42833
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:42833/?level=2
+  viewport_or_device: desktop-1280x720
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 240
+  max_gui_actions: 180
+  max_test_runs: 20
+verifiers:
+  build:
+    - python3 verifiers/static_sanity.py
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - '"${CUA_SWE_PYTHON:-python3}" verifiers/replay_state.py --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:42833/?level=2}"'
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: 03_astray
+  state_api: window.gameAPI
+  seed: 42
+  level: 2
+schema_version: 1

@@ -1,0 +1,213 @@
+{
+  "provider": "Local imported packaging proof attachments",
+  "records": [
+    {
+      "id": "herbal-sleeve",
+      "title": "Meadow tea sleeve",
+      "sheet": {
+        "width": 440,
+        "height": 340,
+        "artwork": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 440 340\"><rect width=\"440\" height=\"340\" fill=\"#fbf7ef\"/><text x=\"12\" y=\"20\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#34495e\">Meadow tea sleeve \u00b7 flattened proof</text><g transform=\"translate(30 140) rotate(0) \"><rect width=\"120\" height=\"140\" fill=\"#f4ead8\" stroke=\"#9a7752\" stroke-dasharray=\"4 3\"/><g transform=\"translate(8 10)\"><rect width=\"106\" height=\"118\" fill=\"#dbebd8\"/><path d=\"M8 22H98M8 26H98\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Front</text><circle cx=\"40.28\" cy=\"68.44\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M33.28 71.44l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 108h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/><rect width=\"106\" height=\"118\" fill=\"none\" stroke=\"#34495e\" stroke-width=\"1.5\"/></g></g><g transform=\"translate(290 140) rotate(90) \"><rect width=\"80\" height=\"140\" fill=\"#f4ead8\" stroke=\"#9a7752\" stroke-dasharray=\"4 3\"/><g transform=\"translate(5 12)\"><rect width=\"68\" height=\"120\" fill=\"#e6def1\"/><path d=\"M8 22H60M8 26H60\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Side</text><circle cx=\"25.84\" cy=\"69.6\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M18.84 72.6l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 110h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/><rect width=\"68\" height=\"120\" fill=\"none\" stroke=\"#34495e\" stroke-width=\"1.5\"/></g></g><g transform=\"translate(150 140) rotate(180) translate(120 0) scale(-1 1)\"><rect width=\"120\" height=\"100\" fill=\"#f4ead8\" stroke=\"#9a7752\" stroke-dasharray=\"4 3\"/><g transform=\"translate(12 6)\"><rect width=\"100\" height=\"84\" fill=\"#f5dfb9\"/><path d=\"M8 22H92M8 26H92\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Closure</text><circle cx=\"38.0\" cy=\"48.72\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M31.0 51.72l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 74h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/><rect width=\"100\" height=\"84\" fill=\"none\" stroke=\"#34495e\" stroke-width=\"1.5\"/></g></g><text x=\"12\" y=\"330\" font-family=\"sans-serif\" font-size=\"10\" fill=\"#566570\">Original synthetic proof \u2022 dashed fold / solid trim</text></svg>"
+      },
+      "panels": [
+        {
+          "id": "front",
+          "title": "Front",
+          "width": 106,
+          "height": 118,
+          "placement": {
+            "rawSize": {
+              "width": 120,
+              "height": 140
+            },
+            "trim": {
+              "left": 8,
+              "top": 10,
+              "right": 6,
+              "bottom": 12
+            },
+            "sheetOrigin": {
+              "x": 30,
+              "y": 140
+            },
+            "rotationClockwise": 0,
+            "reflectedX": false
+          },
+          "artwork": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 106 118\"><rect width=\"106\" height=\"118\" fill=\"#dbebd8\"/><path d=\"M8 22H98M8 26H98\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Front</text><circle cx=\"40.28\" cy=\"68.44\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M33.28 71.44l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 108h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/></svg>"
+        },
+        {
+          "id": "side",
+          "title": "Side",
+          "width": 68,
+          "height": 120,
+          "placement": {
+            "rawSize": {
+              "width": 80,
+              "height": 140
+            },
+            "trim": {
+              "left": 5,
+              "top": 12,
+              "right": 7,
+              "bottom": 8
+            },
+            "sheetOrigin": {
+              "x": 290,
+              "y": 140
+            },
+            "rotationClockwise": 90,
+            "reflectedX": false
+          },
+          "artwork": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 68 120\"><rect width=\"68\" height=\"120\" fill=\"#e6def1\"/><path d=\"M8 22H60M8 26H60\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Side</text><circle cx=\"25.84\" cy=\"69.6\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M18.84 72.6l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 110h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/></svg>"
+        },
+        {
+          "id": "flap",
+          "title": "Closure",
+          "width": 100,
+          "height": 84,
+          "placement": {
+            "rawSize": {
+              "width": 120,
+              "height": 100
+            },
+            "trim": {
+              "left": 12,
+              "top": 6,
+              "right": 8,
+              "bottom": 10
+            },
+            "sheetOrigin": {
+              "x": 150,
+              "y": 140
+            },
+            "rotationClockwise": 180,
+            "reflectedX": true
+          },
+          "artwork": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 84\"><rect width=\"100\" height=\"84\" fill=\"#f5dfb9\"/><path d=\"M8 22H92M8 26H92\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Closure</text><circle cx=\"38.0\" cy=\"48.72\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M31.0 51.72l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 74h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/></svg>"
+        }
+      ],
+      "report": [
+        {
+          "title": "Review coordinates",
+          "text": "Original design mockup, not a manufacturing specification. Units are proof units, not physical millimetres. Sheet x increases right and y down. Panel u increases right and v down on the upright, outside-facing TRIMMED artwork. Review heading is clockwise from panel-right; 0\u00b0 points right, 90\u00b0 down. Each panel owns its own marker and note. Switching views changes presentation, not saved review coordinates."
+        },
+        {
+          "title": "Placement record \u2014 complete rule",
+          "text": "rawSize is the untrimmed artwork width and height. trim gives left, top, right and bottom in that raw frame. Panel width = rawSize.width \u2212 trim.left \u2212 trim.right; height similarly. First add left/top trim to (u,v). If reflectedX is true, replace raw x by rawSize.width \u2212 x (back-printed panel). Then rotate clockwise by rotationClockwise about raw (0,0). Finally add sheetOrigin. sheetOrigin is added after both operations; it is not necessarily the placed artwork\u2019s upper-left. Fold direction is already represented by the rotation; no extra fold transform applies."
+        },
+        {
+          "title": "Directions & editing",
+          "text": "For heading, use direction (cos \u03b8, sin \u03b8); negate its x component for reflectedX, then apply the same clockwise rotation. Trim and translation never change direction. In panel view, show the unchanged local heading. Coordinates and heading fields ALWAYS edit panel-local values, including in Flat sheet. Tapping the artwork moves the active marker: invert the placement in Flat sheet; in Individual panel use the trimmed frame directly. Clamp to the trimmed panel rectangle; typing Save review commits coordinates, heading and note together. Reload preserves each proof/panel review independently."
+        },
+        {
+          "title": "Geometry on screen",
+          "text": "The imported Source proof is the original flattened drawing. Individual-panel artwork is a separate upright trimmed rendition. Both are fitted without stretching; any letterbox margin is not artwork. Dashed lines are folds, solid outlines are trim edges. Arrow heading and anchor must refer to the same panel through both views. A saved note must not move a marker."
+        }
+      ]
+    },
+    {
+      "id": "cocoa-wrap",
+      "title": "Night cocoa wrap",
+      "sheet": {
+        "width": 460,
+        "height": 360,
+        "artwork": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 460 360\"><rect width=\"460\" height=\"360\" fill=\"#fbf7ef\"/><text x=\"12\" y=\"20\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#34495e\">Night cocoa wrap \u00b7 flattened proof</text><g transform=\"translate(180 234) rotate(0) translate(112 0) scale(-1 1)\"><rect width=\"112\" height=\"92\" fill=\"#f4ead8\" stroke=\"#9a7752\" stroke-dasharray=\"4 3\"/><g transform=\"translate(7 13)\"><rect width=\"94\" height=\"74\" fill=\"#f1d7bd\"/><path d=\"M8 22H86M8 26H86\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Closure</text><circle cx=\"35.72\" cy=\"42.919999999999995\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M28.72 45.919999999999995l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 64h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/><rect width=\"94\" height=\"74\" fill=\"none\" stroke=\"#34495e\" stroke-width=\"1.5\"/></g></g><g transform=\"translate(180 234) rotate(270) \"><rect width=\"144\" height=\"124\" fill=\"#f4ead8\" stroke=\"#9a7752\" stroke-dasharray=\"4 3\"/><g transform=\"translate(14 7)\"><rect width=\"124\" height=\"104\" fill=\"#d2e5f0\"/><path d=\"M8 22H116M8 26H116\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Front</text><circle cx=\"47.12\" cy=\"60.31999999999999\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M40.12 63.31999999999999l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 94h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/><rect width=\"124\" height=\"104\" fill=\"none\" stroke=\"#34495e\" stroke-width=\"1.5\"/></g></g><g transform=\"translate(180 90) rotate(90) translate(88 0) scale(-1 1)\"><rect width=\"88\" height=\"144\" fill=\"#f4ead8\" stroke=\"#9a7752\" stroke-dasharray=\"4 3\"/><g transform=\"translate(9 5)\"><rect width=\"76\" height=\"124\" fill=\"#ead6de\"/><path d=\"M8 22H68M8 26H68\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Side</text><circle cx=\"28.88\" cy=\"71.92\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M21.88 74.92l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 114h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/><rect width=\"76\" height=\"124\" fill=\"none\" stroke=\"#34495e\" stroke-width=\"1.5\"/></g></g><text x=\"12\" y=\"350\" font-family=\"sans-serif\" font-size=\"10\" fill=\"#566570\">Original synthetic proof \u2022 dashed fold / solid trim</text></svg>"
+      },
+      "panels": [
+        {
+          "id": "flap",
+          "title": "Closure",
+          "width": 94,
+          "height": 74,
+          "placement": {
+            "rawSize": {
+              "width": 112,
+              "height": 92
+            },
+            "trim": {
+              "left": 7,
+              "top": 13,
+              "right": 11,
+              "bottom": 5
+            },
+            "sheetOrigin": {
+              "x": 180,
+              "y": 234
+            },
+            "rotationClockwise": 0,
+            "reflectedX": true
+          },
+          "artwork": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 94 74\"><rect width=\"94\" height=\"74\" fill=\"#f1d7bd\"/><path d=\"M8 22H86M8 26H86\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Closure</text><circle cx=\"35.72\" cy=\"42.919999999999995\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M28.72 45.919999999999995l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 64h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/></svg>"
+        },
+        {
+          "id": "front",
+          "title": "Front",
+          "width": 124,
+          "height": 104,
+          "placement": {
+            "rawSize": {
+              "width": 144,
+              "height": 124
+            },
+            "trim": {
+              "left": 14,
+              "top": 7,
+              "right": 6,
+              "bottom": 13
+            },
+            "sheetOrigin": {
+              "x": 180,
+              "y": 234
+            },
+            "rotationClockwise": 270,
+            "reflectedX": false
+          },
+          "artwork": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 124 104\"><rect width=\"124\" height=\"104\" fill=\"#d2e5f0\"/><path d=\"M8 22H116M8 26H116\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Front</text><circle cx=\"47.12\" cy=\"60.31999999999999\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M40.12 63.31999999999999l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 94h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/></svg>"
+        },
+        {
+          "id": "side",
+          "title": "Side",
+          "width": 76,
+          "height": 124,
+          "placement": {
+            "rawSize": {
+              "width": 88,
+              "height": 144
+            },
+            "trim": {
+              "left": 9,
+              "top": 5,
+              "right": 3,
+              "bottom": 15
+            },
+            "sheetOrigin": {
+              "x": 180,
+              "y": 90
+            },
+            "rotationClockwise": 90,
+            "reflectedX": true
+          },
+          "artwork": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 76 124\"><rect width=\"76\" height=\"124\" fill=\"#ead6de\"/><path d=\"M8 22H68M8 26H68\" stroke=\"#445268\"/><text x=\"8\" y=\"17\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#172840\">Side</text><circle cx=\"28.88\" cy=\"71.92\" r=\"12\" fill=\"#fff7df\" stroke=\"#526476\"/><path d=\"M21.88 74.92l7 -12 7 12z\" fill=\"#476d60\"/><path d=\"M8 114h20l-5 -5m5 5l-5 5\" stroke=\"#273d53\" fill=\"none\"/></svg>"
+        }
+      ],
+      "report": [
+        {
+          "title": "Review coordinates",
+          "text": "Original design mockup, not a manufacturing specification. Units are proof units, not physical millimetres. Sheet x increases right and y down. Panel u increases right and v down on the upright, outside-facing TRIMMED artwork. Review heading is clockwise from panel-right; 0\u00b0 points right, 90\u00b0 down. Each panel owns its own marker and note. Switching views changes presentation, not saved review coordinates."
+        },
+        {
+          "title": "Placement record \u2014 complete rule",
+          "text": "rawSize is the untrimmed artwork width and height. trim gives left, top, right and bottom in that raw frame. Panel width = rawSize.width \u2212 trim.left \u2212 trim.right; height similarly. First add left/top trim to (u,v). If reflectedX is true, replace raw x by rawSize.width \u2212 x (back-printed panel). Then rotate clockwise by rotationClockwise about raw (0,0). Finally add sheetOrigin. sheetOrigin is added after both operations; it is not necessarily the placed artwork\u2019s upper-left. Fold direction is already represented by the rotation; no extra fold transform applies."
+        },
+        {
+          "title": "Directions & editing",
+          "text": "For heading, use direction (cos \u03b8, sin \u03b8); negate its x component for reflectedX, then apply the same clockwise rotation. Trim and translation never change direction. In panel view, show the unchanged local heading. Coordinates and heading fields ALWAYS edit panel-local values, including in Flat sheet. Tapping the artwork moves the active marker: invert the placement in Flat sheet; in Individual panel use the trimmed frame directly. Clamp to the trimmed panel rectangle; typing Save review commits coordinates, heading and note together. Reload preserves each proof/panel review independently."
+        },
+        {
+          "title": "Geometry on screen",
+          "text": "The imported Source proof is the original flattened drawing. Individual-panel artwork is a separate upright trimmed rendition. Both are fitted without stretching; any letterbox margin is not artwork. Dashed lines are folds, solid outlines are trim edges. Arrow heading and anchor must refer to the same panel through both views. A saved note must not move a marker."
+        }
+      ]
+    }
+  ]
+}

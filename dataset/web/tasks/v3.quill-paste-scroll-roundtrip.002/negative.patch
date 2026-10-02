@@ -1,0 +1,12 @@
+diff --git a/src/pasteFlow.js b/src/pasteFlow.js
+--- a/src/pasteFlow.js
++++ b/src/pasteFlow.js
+@@ -74,5 +74,7 @@ export function settleAfterPaste(quill, ctx) {
+ }
+ 
+ function selectSettleStrategy(ctx) {
+-  return 'raw';
++  // The reader's own paste surfaces; every collaborator paste holds the place.
++  if (ctx.actorKind === 'self') return 'reveal';
++  return 'reanchor';
+ }

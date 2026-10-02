@@ -1,0 +1,35 @@
+--- a/src/budgets.mjs
++++ b/src/budgets.mjs
+@@ -1,3 +1,9 @@
+ // Staging scrape service objectives. Units are milliseconds.
+ export const budgets = Object.freeze({connectTimeoutMs:250, requestTimeoutMs:2000});
++// Approved caps for the currently active policy revision of each rollout profile.
++export const revisionAgnosticCaps = Object.freeze({
++ 'RH-27':Object.freeze({standard:Object.freeze({interlock:1750,streamline:1300}),bulk:Object.freeze({interlock:3150,streamline:2420})}),
++ 'VT-58':Object.freeze({express:Object.freeze({relay:1200,trunk:1950}),freight:Object.freeze({relay:2900,trunk:2400})}),
++ 'JN-84':Object.freeze({rapid:Object.freeze({orbit:1300,depot:1800}),batch:Object.freeze({orbit:2600,depot:2200})}),
++});
+ export const serviceObjectives = Object.freeze({supportedResponseMs:1500, cancelByMs:2250, freshByMs:2500});
+--- a/src/collector.mjs
++++ b/src/collector.mjs
+@@ -1,7 +1,9 @@
+ import {fetchMetrics} from './scrape.mjs';
+ import {parseMetrics} from './metrics.mjs';
++import {budgets,revisionAgnosticCaps} from './budgets.mjs';
+ export async function collectTarget(origin,target){
+- const body=await fetchMetrics(new URL(target.path,origin));
++ const cap=revisionAgnosticCaps[target.profileCode]?.[target.tier]?.[target.receiverClass];
++ const body=await fetchMetrics(new URL(target.path,origin),{connectTimeoutMs:budgets.connectTimeoutMs,requestTimeoutMs:cap??budgets.requestTimeoutMs});
+  const samples=parseMetrics(body);
+  const response=await fetch(new URL('/ingest',origin),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:target.id,samples}),signal:AbortSignal.timeout(500)});
+  if(!response.ok)throw new Error('ingestion_rejected');
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -29,6 +29,7 @@
+       socket.setTimeout(limits.connectTimeoutMs);
+       socket.on('timeout',()=>finish(new Error('socket_timeout')));
+       socket.once('connect',()=>{
++        socket.setTimeout(0);
+         event('connected');
+       });
+     });

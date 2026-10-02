@@ -1,0 +1,83 @@
+diff --git a/src/layout/placement.js b/src/layout/placement.js
+--- a/src/layout/placement.js
++++ b/src/layout/placement.js
+@@ -1,17 +1,5 @@
+ import { DASHBOARD_GRID } from "./size-service.js";
+ 
+-function nextAvailableX(placedGroups, candidateY, gap) {
+-  let x = 0;
+-
+-  for (const group of placedGroups) {
+-    if (group.height + group.top > candidateY) {
+-      x += group.width + gap;
+-    }
+-  }
+-
+-  return x;
+-}
+-
+ function firstRowCount(groups, availableWidth, gap) {
+   let width = 0;
+   let count = 0;
+@@ -46,44 +34,36 @@ export function calculateGroupPlacement(
+     leftPadding = grid.groupPaddingX;
+   }
+ 
+-  const usableWidth = availableWidth - 2 * leftPadding;
++  const columnLefts = [];
++  let nextLeft = 0;
++  for (const group of groups.slice(0, firstRow)) {
++    columnLefts.push(nextLeft);
++    nextLeft += group.width + grid.groupGapX;
++  }
++
++  const columnBottoms = Array(firstRow).fill(grid.groupGapY);
+   const placedGroups = [];
+-  let maxY = 0;
+ 
+   for (const group of groups) {
+-    let x = 0;
+-    let y = grid.groupGapY;
+-
+-    for (let candidateY = 0; candidateY < maxY; candidateY += 1) {
+-      if (candidateY === maxY - 1) {
+-        x = 0;
+-        y = candidateY;
+-        break;
+-      }
+-
+-      const candidateX = nextAvailableX(
+-        placedGroups,
+-        candidateY,
+-        grid.groupGapX
+-      );
+-      if (candidateX + group.width <= usableWidth) {
+-        x = candidateX;
+-        y += candidateY;
+-        break;
++    let targetColumn = 0;
++    for (let column = 1; column < columnBottoms.length; column += 1) {
++      if (columnBottoms[column] < columnBottoms[targetColumn]) {
++        targetColumn = column;
+       }
+     }
+ 
+     const placed = {
+       ...group,
+-      left: leftPadding + x,
+-      top: y
++      left: leftPadding + columnLefts[targetColumn],
++      top: columnBottoms[targetColumn]
+     };
+     placedGroups.push(placed);
+-    maxY = Math.max(maxY, y + group.height + grid.groupGapY);
++    columnBottoms[targetColumn] =
++      placed.top + group.height + grid.groupGapY;
+   }
+ 
+   return {
+     groups: placedGroups,
+-    minHeight: maxY + grid.groupGapY
++    minHeight: Math.max(...columnBottoms) + grid.groupGapY
+   };
+ }

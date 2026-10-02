@@ -1,0 +1,35 @@
+{
+  "document_sha256": "3279ec1fb6ca00ab89b8e52ada06a09735fe0ecfbda2e06486d7995997a65cf0",
+  "figures": [
+    {
+      "image": "paper-figure-1.png",
+      "source_document": "preprint.pdf",
+      "page": 1,
+      "clip_points": [
+        64,
+        498,
+        549,
+        695
+      ],
+      "latex_assets": [
+        "figures/figure1.pdf",
+        "figures/coding-hybrid-success.pdf"
+      ]
+    },
+    {
+      "image": "paper-figure-2.png",
+      "source_document": "preprint.pdf",
+      "page": 3,
+      "clip_points": [
+        110,
+        59,
+        502,
+        332
+      ],
+      "latex_assets": [
+        "figures/figure2.pdf"
+      ]
+    }
+  ],
+  "method": "Cropped directly from the rendered current preprint, including its figure captions."
+}

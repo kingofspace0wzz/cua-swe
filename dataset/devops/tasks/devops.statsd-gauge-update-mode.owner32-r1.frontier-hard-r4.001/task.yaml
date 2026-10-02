@@ -1,0 +1,52 @@
+id: devops.statsd-gauge-update-mode.owner32-r1.frontier-hard-r4.001
+track: web_frontend
+benchmark_domain: devops-observability
+type: functional_ui
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: dataset/devops/tasks/devops.statsd-gauge-update-mode.owner32-r1.frontier-hard-r4.001/repo
+  ref: owner32-frontier-hard-r4
+instruction: After a collector rollout, some gauge readings jump to the size of a
+  change while other gauge streams remain stable. Investigate the live datagrams,
+  the fleet inventory and the update history, then repair ingestion. Preserve native
+  units, every received update, metric identity and producer attribution, healthy
+  traffic, idle state, reset, replay and page reload. Follow each fleet endpoint's
+  currently demonstrated conventions and the published processing bound; any general
+  correct repair is acceptable.
+setup:
+  install:
+  - npm run build
+  launch:
+  - node server.mjs --host 127.0.0.1 --port 57152
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:57152
+  viewport_or_device: desktop-1280x720
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 115
+  max_gui_actions: 210
+  max_test_runs: 26
+verifiers:
+  build:
+  - ${CUA_SWE_PYTHON:-python3} -B verifiers/build_check.py
+  unit: []
+  ui:
+  - ${CUA_SWE_PYTHON:-python3} -B verifiers/browser_check.py
+  visual: []
+  state: []
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: false
+schema_version: 2

@@ -1,0 +1,149 @@
+{
+  "task_id": "mobile.synthetic.external-panorama-hotspots.001",
+  "revision": "001",
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "03045fa9dc886877382363e00c20a1eb23d6d27de216a51813acb757ad7b38f6"
+  },
+  "public_files": {
+    "app.js": {
+      "path": "public/app.js",
+      "sha256": "d3167c42f24ba18a8b8b03f06b0d925340de6e0afae82ad0e8e52ab2d73a7a7e"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "c8857fee11833a4b4861d74bd75d98969d510a7d64f79d5cd3f9a2b4f7cda7ae"
+    },
+    "geometry.js": {
+      "path": "public/geometry.js",
+      "sha256": "d3399e428084a0036be8eb9ba6c82554ec870fd2e03aa2dfaae2ce6e028af839"
+    },
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "0db2de8dfd08da0815e51ae5ac282f33fe6b4a92000e392d3db05cbc0bfb2578"
+    },
+    "panorama.js": {
+      "path": "public/panorama.js",
+      "sha256": "b90f65224384373fc97a27ee189136b8b50d8946d61b1831c8eaf7c0896160f6"
+    },
+    "registration.js": {
+      "path": "public/registration.js",
+      "sha256": "419f4105c2ad6631d1ac0eedd4c7f7ed4f532d64892142e83e83844f6ab8768b"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "fa874329cabd523eb94e23df07c02660c2236918acb4903f45186a128f5b52e5"
+    }
+  },
+  "editable": [
+    "app.js",
+    "geometry.js",
+    "index.html",
+    "panorama.js",
+    "registration.js",
+    "style.css"
+  ],
+  "scratch": [
+    "dist/"
+  ],
+  "dependencies": [],
+  "expected_assertions": [
+    "registered_placement",
+    "spherical_view_and_seam",
+    "inverse_edit_and_saved_angles",
+    "label_save_preserves_anchor",
+    "independent_scene_reload",
+    "original_and_capture_preserved"
+  ],
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "native": {
+      "schema": 1,
+      "assets": [],
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "9822faca9ff160a662c994b96a6ec201fa8d1a565b9447575d26759b667c9c69"
+      },
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "bb01b7e8ae22966a5db0ad6cf9f9a88a23cc76eae6a81dbe2f17c4974d64c41f"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "7b4581ace71df93ea2a07562dc0d0c774c3381d1f54c3c0447144296d1f2130e"
+      },
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "app.js",
+          "geometry.js",
+          "index.html",
+          "panorama.js",
+          "registration.js",
+          "style.css"
+        ],
+        "timeout_seconds": 20
+      },
+      "scene": {
+        "path": "/",
+        "frame_paths": [],
+        "viewport": {
+          "width": 400,
+          "height": 800
+        },
+        "device_scale_factor": 1,
+        "timezone": "UTC",
+        "locale": "en-US",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 30000
+      }
+    }
+  },
+  "controls": {
+    "gold": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "d5f47856da461dae6ccdf5419b1e18a30ae0f99a6fb1b77ad361ba5e2c8737c0"
+      }
+    },
+    "alternative": {
+      "correct": true,
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "6bfdd82251b8601adfce827ff72cf2ecc70786fd9b804a1746fabd7752b77403"
+      }
+    },
+    "partial": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "01485b73c0854787d8bbfbae7064460037520383339d6b377474fd71f39517b7"
+      }
+    },
+    "artifact_guess": {
+      "correct": false,
+      "patch": {
+        "path": "controls/artifact_guess.json",
+        "sha256": "a68b242ce52366ac6bc52df6a4ada04d67949d3ba5dad6abf81394845fc0918f"
+      }
+    },
+    "frozen_hotspots": {
+      "correct": false,
+      "patch": {
+        "path": "controls/frozen_hotspots.json",
+        "sha256": "da8e40a87a6490224f3d5ddb4ce4302950e506a37926cb4c652a65aad784f607"
+      }
+    }
+  }
+}

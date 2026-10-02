@@ -1,0 +1,54 @@
+diff --git a/src/relay_contact.js b/src/relay_contact.js
+index 94abbac4f661eb3b169623d21ee3c2964ec6df7f..432afac99425feb3f137633cc4d22d27d1f613be 100644
+--- a/src/relay_contact.js
++++ b/src/relay_contact.js
+@@ -4,15 +4,18 @@
+   function ContactBook() {
+     this.active = Object.create(null);
+     this.accepted = Object.create(null);
++    this.epochs = Object.create(null);
+   }
+ 
+   ContactBook.prototype.open = function (slot) {
+-    return { slot: slot, series: 0 };
++    var epoch = this.epochs[slot] || 0;
++    this.epochs[slot] = epoch + 1;
++    return { slot: slot, epoch: epoch, series: 0 };
+   };
+ 
+   ContactBook.prototype.claim = function (body, target) {
+     var current = this.active[target.id];
+-    var ticket = body.slot + ":" + body.series;
++    var ticket = body.slot + ":" + body.epoch + ":" + body.series;
+     if (current === ticket) return { accepted: false, ticket: ticket };
+ 
+     this.active[target.id] = ticket;
+@@ -24,7 +27,7 @@
+   };
+ 
+   ContactBook.prototype.separate = function (body, target) {
+-    var ticket = body.slot + ":" + body.series;
++    var ticket = body.slot + ":" + body.epoch + ":" + body.series;
+     if (this.active[target.id] !== ticket) return;
+     delete this.active[target.id];
+     body.series += 1;
+@@ -33,6 +36,7 @@
+   ContactBook.prototype.clear = function () {
+     this.active = Object.create(null);
+     this.accepted = Object.create(null);
++    this.epochs = Object.create(null);
+   };
+ 
+   global.RelayContact = { ContactBook: ContactBook };
+diff --git a/src/vector_relay.js b/src/vector_relay.js
+index 22f340198d1d88595a1586bb076df7d5493fa699..aa751198046fe2a3696a42016d918ecb23b9b4d6 100644
+--- a/src/vector_relay.js
++++ b/src/vector_relay.js
+@@ -304,6 +304,7 @@
+         vy: this.ball.vy,
+         route: this.ball.route,
+         contactSlot: this.ball.body.slot,
++        contactEpoch: this.ball.body.epoch,
+         contactSeries: this.ball.body.series,
+         overlapSlices: this.ball.overlapSlices
+       },

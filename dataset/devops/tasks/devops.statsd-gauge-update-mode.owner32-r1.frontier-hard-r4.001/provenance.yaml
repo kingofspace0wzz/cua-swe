@@ -1,0 +1,49 @@
+kind: original-purpose-built-regression
+upstream_bug_claim: false
+reference_product: statsd/statsd v0.9.0
+reference_commit: 9cf77d87855bcb69a8663135f59aa23825db9797
+source_records: artifacts/devops-adversarial-v1/owner-lanes/devops-owner-32-statsd-gauge/round-1/primary-sources
+source_license: MIT retained with full archive; application code and styling originally
+  authored
+successor_of: devops.statsd-gauge-update-mode.owner32-r1.frontier-hard-r3.001
+successor_change: One axis, replace_descriptive_inventory_with_behavioral_calibration_evidence.
+  The parent's fleet inventory channel descriptions lexically implied each channel's
+  update semantics, and the successful R3 Fable code-only patch classified endpoint
+  modes from those words with an all-delta fallback. The successor keeps the same
+  stable four-endpoint fleet, payload plans, epoch-3 rollout, reset/replay controls
+  and deterministic behavioral oracle, but the inventory now carries only neutral
+  lane/firmware channel designations that never imply delta versus absolute
+  semantics. Instead, every provisioned endpoint opens every session epoch with a
+  deterministic startup channel self-check on its own check register - two
+  identically signed pulses followed by one unsigned settle line equal to the
+  endpoint's own resulting register - before any ordinary traffic, and a
+  reprovisioned endpoint re-runs the check under its new convention from the
+  rollout epoch onward. The check protocol is described by a provisioning bulletin
+  served only with the runtime session and rendered in the operator console; the
+  decisive endpoint-to-mode mapping and the rollout schedule appear nowhere in the
+  agent-visible repository and no public payload carries a machine-readable mode
+  field. A correct repair must bind each endpoint's active convention from its
+  calibration behavior before committing that endpoint's ordinary traffic and must
+  rebind on later reprovisioning, so lexical inventory classification (including
+  the exact successful R3 Fable patch), endpoint-name keywords, static tables,
+  epoch-parity guesses and first-seen caches all corrupt at least one
+  endpoint-epoch. StatsD gauge set-versus-delta semantics, source architecture,
+  symptom-only instruction and the protected verifier remain preserved; the only
+  agent-visible source changes are the README provisioning paragraph and the
+  console rendering of the runtime bulletin.
+single_fault: Gauge state update replaces each measurement despite an intact lexical
+  token; the same single update-application fault as the parent, now graded under
+  behaviorally calibrated epoch-scoped per-endpoint update-mode provisioning
+native_boundary: Protected producers send real UDP from one socket per provisioned
+  endpoint; a protected receiver witnesses bytes and attribution before candidate
+  decoding; the candidate receiver worker reads the durable attributed capture and
+  emits to a protected state/history sink
+dialect_limit: statsd v0.9.0 signed relative gauges on the currently delta-provisioned
+  channels, with zero-then-negative-delta for negative absolutes there; the other
+  channels report absolute readings that may carry an explicit leading sign; the
+  endpoint-to-channel assignment changes at a deterministic rollout epoch and two
+  endpoints swap conventions in opposite directions; every endpoint demonstrates its
+  currently active convention through a startup channel self-check whose unsigned
+  settle equals the endpoint's own resulting register; no tagged or sampled other
+  metric kinds; the epoch-scoped endpoint-to-mode mapping is evaluator-owned runtime
+  state

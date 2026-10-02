@@ -1,0 +1,10 @@
+--- a/src/api/samplerClient.js
++++ b/src/api/samplerClient.js
+@@ -1,6 +1,6 @@
+ async function parse(response) {
+   if (!response.ok) throw new Error(`sampler request failed: ${response.status}`);
+-  return response.json();
++  const x = await response.json(); if(x.metrics) x.metrics.sampled = x.metrics.tracesCompleted; return x;
+ }
+ 
+ const get = (path) => fetch(`/api${path}`).then(parse);

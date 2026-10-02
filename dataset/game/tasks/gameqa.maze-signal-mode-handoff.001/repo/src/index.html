@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signal Maze</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">ROUTE CONTROL / SECTOR 01</p>
+        <h1>Signal Maze</h1>
+      </div>
+      <div class="legend">
+        <span><i class="swatch warning"></i> warning: safe contact</span>
+        <span><i class="swatch active"></i> active: avoid contact</span>
+      </div>
+    </header>
+    <section class="panel">
+      <div class="readouts">
+        <div><span>ROUTE</span><strong id="route">—</strong></div>
+        <div><span>WARNING</span><strong id="warning">—</strong></div>
+        <div><span>LIVES</span><strong id="lives">—</strong></div>
+      </div>
+      <div id="maze" class="maze" aria-label="Signal Maze play field"></div>
+      <p id="message" class="message">Loading route…</p>
+      <p class="help">Arrow keys move. Reach the white exit marker.</p>
+    </section>
+  </main>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
+

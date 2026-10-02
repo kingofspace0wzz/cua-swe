@@ -1,0 +1,17 @@
+{
+  "name": "react-datepicker-mask-clear-blur",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "date-fns": "4.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.21.5"
+  }
+}

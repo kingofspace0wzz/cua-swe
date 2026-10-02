@@ -1,0 +1,124 @@
+{
+  "visible": {
+    "label": "Checkout ingress counters",
+    "targets": [
+      {"id": "checkout-a", "label": "checkout-a", "weight": 0.24},
+      {"id": "checkout-b", "label": "checkout-b", "weight": 0.26},
+      {"id": "checkout-c", "label": "checkout-c", "weight": 0.23},
+      {"id": "checkout-d", "label": "checkout-d", "weight": 0.27}
+    ],
+    "panels": [
+      {"id": "requests", "title": "Requests per second", "unit": "req/s", "factor": 1},
+      {"id": "errors", "title": "Errors per second", "unit": "err/s", "factor": 0.045},
+      {"id": "bytes", "title": "Response bytes per second", "unit": "B/s", "factor": 1380}
+    ],
+    "windows": [
+      {
+        "id": "window-a",
+        "label": "Window A \u00b7 steady collection",
+        "offset": 0,
+        "counterSeed": 90000,
+        "transition": null,
+        "note": "Steady retention window: every target's scrape publications were committed on schedule, and the live collector feed and the collection ledger recorded identical sample orderings."
+      },
+      {
+        "id": "window-b",
+        "label": "Window B \u00b7 post-failover",
+        "offset": 600,
+        "counterSeed": 126000,
+        "transition": {
+          "time": 480,
+          "label": "ingest collector failover \u00b7 queued scrape publications drain on reconnect"
+        },
+        "note": "Recorded after the 480s ingest collector failover: scrape publications from restarting targets were queued during reconnect and drained at the collector flush boundary; the live feed commits drained samples in the order they arrive, while the collection ledger re-orders them by original scrape timestamp before commit."
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "burst-control",
+        "label": "Burst control",
+        "windows": [
+          {"base": 210, "burstStart": 13, "burstPeak": 1120, "resets": [], "lateFlushes": []},
+          {"base": 232, "burstStart": 10, "burstPeak": 1064, "resets": [], "lateFlushes": []}
+        ]
+      },
+      {
+        "id": "rolling-restart",
+        "label": "Rolling restart",
+        "windows": [
+          {"base": 225, "burstStart": 15, "burstPeak": 1040, "resets": [{"target": 1, "sample": 8}], "lateFlushes": []},
+          {"base": 208, "burstStart": 14, "burstPeak": 986, "resets": [{"target": 2, "sample": 9}], "lateFlushes": [{"target": 2, "from": 9, "commit": 11}]}
+        ]
+      },
+      {
+        "id": "restart-in-burst",
+        "label": "Restart in burst",
+        "windows": [
+          {"base": 195, "burstStart": 11, "burstPeak": 980, "resets": [{"target": 3, "sample": 14}], "lateFlushes": []},
+          {"base": 216, "burstStart": 9, "burstPeak": 1030, "resets": [{"target": 0, "sample": 12}, {"target": 1, "sample": 19}], "lateFlushes": [{"target": 0, "from": 12, "commit": 14}]}
+        ]
+      }
+    ]
+  },
+  "hidden": {
+    "label": "Regional router counters",
+    "targets": [
+      {"id": "router-n7", "label": "router-n7", "weight": 0.19},
+      {"id": "router-p4", "label": "router-p4", "weight": 0.31},
+      {"id": "router-r2", "label": "router-r2", "weight": 0.28},
+      {"id": "router-v9", "label": "router-v9", "weight": 0.22}
+    ],
+    "panels": [
+      {"id": "accepted", "title": "Accepted operations", "unit": "ops/s", "factor": 1},
+      {"id": "rejected", "title": "Rejected operations", "unit": "reject/s", "factor": 0.032},
+      {"id": "payload", "title": "Payload throughput", "unit": "B/s", "factor": 920}
+    ],
+    "windows": [
+      {
+        "id": "epoch-1",
+        "label": "Epoch 1 \u00b7 scheduled publication",
+        "offset": 0,
+        "counterSeed": 76000,
+        "transition": null,
+        "note": "Scheduled retention epoch: router publications committed on schedule, and the live collector feed and the collection ledger recorded identical sample orderings."
+      },
+      {
+        "id": "epoch-2",
+        "label": "Epoch 2 \u00b7 reconnect drain",
+        "offset": 675,
+        "counterSeed": 47000,
+        "transition": {
+          "time": 540,
+          "label": "collector failover recovery \u00b7 replication queue for recycled routers drained on reconnect"
+        },
+        "note": "Recorded after the 540s collector failover recovery: publications from recycled routers were queued during reconnect and drained at the flush boundary; the live feed commits drained samples in arrival order, while the collection ledger re-orders them by original scrape timestamp before commit."
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "load-wave",
+        "label": "Load wave",
+        "windows": [
+          {"base": 170, "burstStart": 12, "burstPeak": 830, "resets": [], "lateFlushes": []},
+          {"base": 181, "burstStart": 14, "burstPeak": 876, "resets": [], "lateFlushes": []}
+        ]
+      },
+      {
+        "id": "target-recycle",
+        "label": "Target recycle",
+        "windows": [
+          {"base": 188, "burstStart": 16, "burstPeak": 910, "resets": [{"target": 2, "sample": 7}], "lateFlushes": []},
+          {"base": 174, "burstStart": 10, "burstPeak": 852, "resets": [{"target": 1, "sample": 15}], "lateFlushes": [{"target": 1, "from": 15, "commit": 17}]}
+        ]
+      },
+      {
+        "id": "recycle-at-crest",
+        "label": "Recycle at crest",
+        "windows": [
+          {"base": 162, "burstStart": 10, "burstPeak": 760, "resets": [{"target": 0, "sample": 13}, {"target": 3, "sample": 17}], "lateFlushes": []},
+          {"base": 179, "burstStart": 12, "burstPeak": 818, "resets": [{"target": 3, "sample": 13}, {"target": 0, "sample": 18}], "lateFlushes": [{"target": 3, "from": 13, "commit": 16}]}
+        ]
+      }
+    ]
+  }
+}

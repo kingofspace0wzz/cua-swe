@@ -1,0 +1,11 @@
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -26,7 +26,7 @@
+     // This absolute guard covers connect, first final response, and every body read.
+     const watchdog=setTimeout(()=>finish(new Error('request_deadline')),limits.requestTimeoutMs);
+     req.on('socket',socket=>{
+-      socket.setTimeout(limits.connectTimeoutMs);
++      socket.setTimeout(900);
+       socket.on('timeout',()=>finish(new Error('socket_timeout')));
+       socket.once('connect',()=>{
+         event('connected');

@@ -1,0 +1,77 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: python3 env/health_service.py --port "{service_port}"
+  health_path: /health
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} exec node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}/?challenge=relay-circuit
+task_id: gameqa.vector-relay-primed-pulse-balance-handoff.011
+runtime:
+  launch: exec node server.mjs --host 127.0.0.1 --port 53500
+  start_url: http://127.0.0.1:53500/?challenge=relay-circuit
+  viewport: 1280x720
+  state_bridge: window.gameAPI
+  deterministic_seed: 73
+  level: 3
+  challenge: Relay Circuit
+  reset_semantics: 'window.gameAPI.reset({seed: 73, level: 3})'
+browser_observation:
+  mode: screenshot_only_for_agent
+  protected_steps:
+    - reset and capture the already-yellow relay with the orb docked and RETURN READY
+    - launch the first return from the primed state
+    - when RETURN REACHED appears, press R once and wait for the relay to remain yellow
+    - launch the second return and let it fall out naturally
+    - wait for its replacement to dock with the reached return still pending
+    - tap ArrowLeft once and capture the docked orb moving left with the receiver
+    - wait for the kept return to settle
+  decisive_paths:
+    - relay.phase
+    - relay.contacts
+    - relay.commits
+    - relay.pending
+    - relay.dropped
+    - relay.withdrawn
+    - relay.nextDue
+    - orb.attached
+    - orb.attachReason
+    - ownership.port
+    - metrics.launches
+    - metrics.losses
+    - metrics.bounces
+    - metrics.elapsed
+    - score
+    - terminal.outcome
+  visible_decisive_evidence:
+    - the challenge opens with an attached orb, a yellow armed relay, and READY readout
+    - the Pulse Balance uses only live, quiet, sealed, and fractured symbol families
+    - RETURN REACHED visibly marks each returning contact
+    - R visibly produces PASS RECALLED without spending a life
+    - the relay remains yellow after the recalled pass and its settlement window
+    - the second return visibly rebounds and then loses one life naturally
+    - one Left tap visibly shifts the final docked orb and receiver together
+    - a correct clear removes the glow and shows CIRCUIT COMPLETE with +500
+    - the later live ring remains through natural replacement and one Left tap
+    - a receipted recall adds a quiet folded mark and completion adds a sealed diamond
+source_noninferability:
+  forbidden_agent_source_literals:
+    - expected-recall-causality-verdict
+    - expected-selective-successor-repair
+    - mandatory-unconditional-handoff-negative-verdict
+    - predecessor-same-port-negative-verdict
+  requirements:
+    - no source comment or identifier states the broken invariant
+    - no benchmark-only activation branch exists
+    - source presents priming, contact, delayed settlement, attachment, recall, movement, and reset repair sites
+    - the visible route distinguishes a recalled return from a naturally replaced return
+    - no hidden alternate replay or duration-sensitive input is required
+bridge_assumptions:
+  - gameAPI.getState is read-only and does not advance simulation
+  - gameAPI.reset uses the same normal challenge reset as the user-facing runtime
+  - two Space presses, one R press, and one ArrowLeft press use normal application input handlers
+  - verifier timing is state-bounded rather than frame-number-bounded
+custody:
+  protected_verifier: repo/verifiers/browser_check.py
+  evaluator_fixture: none
+  expected_patch_base: repo baseline in this bundle

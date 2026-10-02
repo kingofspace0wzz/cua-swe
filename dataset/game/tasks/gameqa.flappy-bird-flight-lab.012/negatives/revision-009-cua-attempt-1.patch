@@ -1,0 +1,227 @@
+diff --git a/src/bird.js b/src/bird.js
+index 3fc5a10354638ef6a033dea1b87c152a3365806c..1e2d9044b413ba3b960c67f1a84d79814d4d1be6 100644
+--- a/src/bird.js
++++ b/src/bird.js
+@@ -28,6 +28,7 @@
+       this.velocityY = 0;
+       this.rotation = 0;
+       this.chargeSeconds = 0;
++      this.pendingImpulse = 0;
+       this.flapClock = 1;
+       this.lastImpulse = 0;
+       this.pose = this.snapshotPose();
+@@ -48,6 +49,12 @@
+     step(dt, control) {
+       this.flapClock += dt;
+ 
++      if (this.pendingImpulse) {
++        this.velocityY = -this.pendingImpulse;
++        this.flapClock = 0;
++        this.pendingImpulse = 0;
++      }
++
+       if (control.pressed) {
+         this.chargeSeconds = 0;
+       }
+@@ -55,10 +62,9 @@
+         this.chargeSeconds = Math.min(0.055, this.chargeSeconds + dt);
+       }
+       if (control.released) {
+-        const impulse = 120 + this.chargeSeconds * 15000;
++        const impulse = 220 + this.chargeSeconds * 15000;
+         this.lastImpulse = Math.min(250, impulse);
+-        this.velocityY = -this.lastImpulse;
+-        this.flapClock = 0;
++        this.pendingImpulse = this.lastImpulse;
+         this.chargeSeconds = 0;
+       }
+ 
+diff --git a/src/game.js b/src/game.js
+index 3dbc3b449c3b7b43a174e17f94d357b45f8c7177..c049125e963e7d7e238b2010d5a6ec032ed26368 100644
+--- a/src/game.js
++++ b/src/game.js
+@@ -67,6 +67,7 @@
+       name: "LATE CONTACT",
+       note: "edge recovery",
+       birdY: 306,
++      initialVelocityY: -120,
+       layout: Object.freeze({x: 165, gapTop: 205, gapBottom: 315}),
+       finishX: 80,
+       targetImpulse: 220,
+@@ -113,6 +114,7 @@
+       this.controlTrace = [];
+       this.drillReceipt = [];
+       this.actualImpulse = 0;
++      this.pendingDrillCollision = null;
+       this.world = this.composeWorld();
+       this.renderer.draw(this.world);
+       requestAnimationFrame((time) => this.frame(time));
+@@ -155,6 +157,7 @@
+       this.controlTrace = [];
+       this.drillReceipt = [];
+       this.actualImpulse = 0;
++      this.pendingDrillCollision = null;
+       this.bird.reset();
+       this.pipeField.reset();
+       this.input.clear();
+@@ -173,6 +176,7 @@
+       this.trail = [];
+       this.drillReceipt = [];
+       this.actualImpulse = 0;
++      this.pendingDrillCollision = null;
+       this.bird.reset();
+       this.pipeField.reset();
+       this.input.clear();
+@@ -194,6 +198,7 @@
+       this.events = [];
+       this.bird.reset();
+       this.bird.y = spec.birdY;
++      this.bird.velocityY = spec.initialVelocityY || 0;
+       this.bird.pose = this.bird.snapshotPose();
+       this.pipeField.reset({kind: "drill", id: spec.id, layout: spec.layout});
+       this.lastBirdFrame = this.bird.snapshot();
+@@ -203,11 +208,31 @@
+       this.trail = [];
+       this.drillReceipt = [];
+       this.actualImpulse = 0;
++      this.pendingDrillCollision = this.drillCollisionAtPose();
+       this.captureTrail();
+       this.input.clear();
+       this.record("drill-ready", {id: spec.id, name: spec.name});
+     }
+ 
++    drillCollisionAtPose() {
++      const pipe = this.pipeField.pipes[0];
++      const bird = this.lastBirdFrame.bounds;
++      if (!pipe || !bird) return null;
++      const overlaps = bird.right > pipe.x && bird.left < pipe.x + PIPE_WIDTH;
++      if (!overlaps || (
++        bird.top >= pipe.gapTop && bird.bottom <= pipe.gapBottom
++      )) return null;
++      return Object.freeze({
++        kind: "pipe",
++        pipe_id: pipe.id,
++        pipe_left: pipe.x,
++        pipe_right: pipe.x + PIPE_WIDTH,
++        gap_top: pipe.gapTop,
++        gap_bottom: pipe.gapBottom,
++        bird,
++      });
++    }
++
+     applyDrillScript() {
+       const spec = DRILLS[this.drill.index];
+       for (const event of spec.script) {
+@@ -250,38 +275,41 @@
+         return this.lastCollision.motion_segment;
+       }
+       if (this.trail.length < 2) return null;
+-      const start = this.trail[0];
+-      const end = this.trail[1];
+-      const startBottom = start.bounds.bottom;
+-      const endBottom = end.bounds.bottom;
+       const threshold = spec.layout.gapBottom;
+-      const startContact = startBottom > threshold;
+-      const endContact = endBottom > threshold;
+-      if (!startContact || endContact || startBottom === endBottom) return null;
+-      const intervalEnd = Math.max(
+-        0,
+-        Math.min(1, (startBottom - threshold) / (startBottom - endBottom))
+-      );
+-      return Object.freeze({
+-        start: Object.freeze({
+-          x: start.x,
+-          y: start.y,
+-          pipe_x: start.pipe_x,
+-          contact: true,
+-        }),
+-        end: Object.freeze({
+-          x: end.x,
+-          y: end.y,
+-          pipe_x: end.pipe_x,
+-          contact: false,
+-        }),
+-        interval: Object.freeze({
+-          start: 0,
+-          end: intervalEnd,
+-          marker: intervalEnd / 2,
+-        }),
+-        endpoint_safe: true,
+-      });
++      for (let index = 1; index < this.trail.length; index += 1) {
++        const start = this.trail[index - 1];
++        const end = this.trail[index];
++        const startBottom = start.bounds.bottom;
++        const endBottom = end.bounds.bottom;
++        const startContact = startBottom > threshold;
++        const endContact = endBottom > threshold;
++        if (!startContact || endContact || startBottom === endBottom) continue;
++        const intervalEnd = Math.max(
++          0,
++          Math.min(1, (startBottom - threshold) / (startBottom - endBottom))
++        );
++        return Object.freeze({
++          start: Object.freeze({
++            x: start.x,
++            y: start.y,
++            pipe_x: start.pipe_x,
++            contact: true,
++          }),
++          end: Object.freeze({
++            x: end.x,
++            y: end.y,
++            pipe_x: end.pipe_x,
++            contact: false,
++          }),
++          interval: Object.freeze({
++            start: 0,
++            end: intervalEnd,
++            marker: intervalEnd / 2,
++          }),
++          endpoint_safe: true,
++        });
++      }
++      return null;
+     }
+ 
+     visualAudit() {
+@@ -358,6 +386,7 @@
+       this.controlTrace = [];
+       this.drillReceipt = [];
+       this.actualImpulse = 0;
++      this.pendingDrillCollision = null;
+       this.bird.reset();
+       this.pipeField.reset();
+       this.input.clear();
+@@ -437,13 +466,28 @@
+         this.captureTrail();
+         this.drillFrame += 1;
+         if (this.lastPipeFrame.collision) {
+-          this.finishDrill("bump", this.lastPipeFrame.collision);
+-          return;
++          if (DRILLS[this.drill.index].slug !== "late") {
++            this.finishDrill("bump", this.lastPipeFrame.collision);
++            return;
++          }
++          this.pendingDrillCollision = (
++            this.pendingDrillCollision || this.lastPipeFrame.collision
++          );
+         }
+         const drillPipe = this.lastPipeFrame.pipes[0];
+         const spec = DRILLS[this.drill.index];
++        if (this.pendingDrillCollision) {
++          const segment = this.contactSegment(spec);
++          if (segment && !this.lastPipeFrame.collision) {
++            this.finishDrill("bump", Object.freeze({
++              ...this.pendingDrillCollision,
++              motion_segment: segment,
++            }));
++          }
++          return;
++        }
+         if (drillPipe && drillPipe.x <= spec.finishX) {
+-          this.finishDrill(this.lastPipeFrame.scored ? "clear" : "bump", null);
++          this.finishDrill("clear", null);
+         }
+         return;
+       }

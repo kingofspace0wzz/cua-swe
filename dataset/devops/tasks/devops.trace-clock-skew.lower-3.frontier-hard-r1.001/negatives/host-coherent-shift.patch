@@ -1,0 +1,88 @@
+diff --git a/src/config/adjustmentPolicy.js b/src/config/adjustmentPolicy.js
+--- a/src/config/adjustmentPolicy.js
++++ b/src/config/adjustmentPolicy.js
+@@ -1,6 +1,6 @@
+ export function adjustmentPolicy(catalog) {
+   return Object.freeze({
+-    crossHostMode: "observe",
++    crossHostMode: "bounded-host-shift",
+     maxAdjustmentMs: catalog.maxAdjustmentMs,
+   });
+ }
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,14 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
++import { alignCrossHostClocks } from "./hostAlignment.js";
+ 
+ export function compileAdjusters(policy) {
+-  return [
+-    { name: "dedupe", apply: dedupeSpans },
+-    { name: "sort", apply: sortSpans },
+-  ];
++  const adjusters = [{ name: "dedupe", apply: dedupeSpans }];
++  if (policy.crossHostMode === "bounded-host-shift") {
++    adjusters.push({
++      name: "host-clock",
++      apply: alignCrossHostClocks({ maxAdjustmentMs: policy.maxAdjustmentMs }),
++    });
++  }
++  adjusters.push({ name: "sort", apply: sortSpans });
++  return adjusters;
+ }
+diff --git a/src/trace/hostAlignment.js b/src/trace/hostAlignment.js
+new file mode 100644
+--- /dev/null
++++ b/src/trace/hostAlignment.js
+@@ -0,0 +1,50 @@
++function depthOf(span, byId, memo) {
++  if (memo.has(span.id)) return memo.get(span.id);
++  if (span.parentId === null) {
++    memo.set(span.id, 0);
++    return 0;
++  }
++  const parent = byId.get(span.parentId);
++  const depth = parent ? depthOf(parent, byId, memo) + 1 : 0;
++  memo.set(span.id, depth);
++  return depth;
++}
++
++function moveHost(spans, host, delta) {
++  for (const span of spans) {
++    if (span.host !== host) continue;
++    span.startMs += delta;
++    span.endMs += delta;
++  }
++}
++
++export function alignCrossHostClocks({ maxAdjustmentMs }) {
++  return function adjust(spans) {
++    const output = spans.map((span) => ({ ...span }));
++    const byId = new Map(output.map((span) => [span.id, span]));
++    const memo = new Map();
++    const ordered = output.slice().sort((left, right) => {
++      const depth = depthOf(left, byId, memo) - depthOf(right, byId, memo);
++      return depth || left.id.localeCompare(right.id);
++    });
++    const hostShifts = new Map();
++
++    for (const span of ordered) {
++      if (span.parentId === null) continue;
++      const parent = byId.get(span.parentId);
++      if (!parent || parent.host === span.host) continue;
++      let delta = 0;
++      if (span.startMs < parent.startMs) {
++        delta = parent.startMs - span.startMs;
++      } else if (span.endMs > parent.endMs) {
++        delta = parent.endMs - span.endMs;
++      }
++      if (!delta) continue;
++      const nextShift = (hostShifts.get(span.host) || 0) + delta;
++      if (Math.abs(nextShift) > maxAdjustmentMs) continue;
++      moveHost(output, span.host, delta);
++      hostShifts.set(span.host, nextShift);
++    }
++    return output;
++  };
++}

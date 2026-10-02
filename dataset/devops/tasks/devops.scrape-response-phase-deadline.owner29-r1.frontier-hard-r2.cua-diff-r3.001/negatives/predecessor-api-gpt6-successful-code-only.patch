@@ -1,0 +1,123 @@
+diff --git a/src/budgets.mjs b/src/budgets.mjs
+index f94b8c1680230d1aabcf6c4186b71868c30bf237..a1c5e63f6ce92e39f43bc8537e21cdeffb90cf1d 100644
+--- a/src/budgets.mjs
++++ b/src/budgets.mjs
+@@ -1,3 +1,24 @@
+-// Staging scrape service objectives. Units are milliseconds.
++// Default transport inputs for callers without a staging collection tier.
++// Units are milliseconds; deployed staging objectives are supplied at runtime.
+ export const budgets = Object.freeze({connectTimeoutMs:250, requestTimeoutMs:2000});
+ export const serviceObjectives = Object.freeze({supportedResponseMs:1500, cancelByMs:2250, freshByMs:2500});
++
++const words=value=>String(value).replace(/([a-z])([A-Z])/g,'$1 $2')
++ .toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
++
++// Use the same public objective chips as the console, not a hard-coded mapping
++// from target names to tiers. Both cancellation and ingestion freshness bound
++// collection. Leave a small wire/ingestion margin inside the tighter objective.
++export function limitsForTier(tier, objectives){
++ if(tier==null)return budgets;
++ const token=` ${words(tier)} `;
++ const matching=(objectives||[]).filter(o=>
++  ` ${words(`${o.label} ${o.window}`)} `.includes(token));
++ const bounds=matching.flatMap(o=>Array.from(String(o.window).matchAll(
++  /(\d+(?:,\d{3})*(?:\.\d+)?)\s*(milliseconds?|ms|seconds?|s)\b/gi
++ ),m=>Number(m[1].replaceAll(',',''))*(/^s/i.test(m[2])?1000:1)));
++ if(!bounds.length||bounds.some(n=>!Number.isFinite(n)||n<=30)){
++  throw new Error(`missing_tier_objectives: ${tier}`);
++ }
++ return {...budgets,requestTimeoutMs:Math.min(...bounds)-30};
++}
+diff --git a/src/collector.mjs b/src/collector.mjs
+index ee5a2ed9aad22153874e2d2bae85e952f140d220..c09c3581cea59a80181b21d648b7b716494ae178 100644
+--- a/src/collector.mjs
++++ b/src/collector.mjs
+@@ -1,7 +1,26 @@
+ import {fetchMetrics} from './scrape.mjs';
+ import {parseMetrics} from './metrics.mjs';
++import {budgets,limitsForTier} from './budgets.mjs';
++
++// Share only in-flight objective reads. Reset/replay must see the current
++// published tier budgets, rather than a cached previous rollout's assignment.
++const objectiveReads=new Map();
++function readObjectives(origin){
++ const key=String(origin);
++ if(!objectiveReads.has(key)){
++  const pending=(async()=>{
++   const response=await fetch(new URL('/snapshot',origin),{signal:AbortSignal.timeout(500)});
++   if(!response.ok)throw new Error('objectives_unavailable');
++   return (await response.json()).objectives;
++  })().finally(()=>objectiveReads.delete(key));
++  objectiveReads.set(key,pending);
++ }
++ return objectiveReads.get(key);
++}
++
+ export async function collectTarget(origin,target){
+- const body=await fetchMetrics(new URL(target.path,origin));
++ const limits=target.tier==null?budgets:limitsForTier(target.tier,await readObjectives(origin));
++ const body=await fetchMetrics(new URL(target.path,origin),limits);
+  const samples=parseMetrics(body);
+  const response=await fetch(new URL('/ingest',origin),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:target.id,samples}),signal:AbortSignal.timeout(500)});
+  if(!response.ok)throw new Error('ingestion_rejected');
+diff --git a/src/scrape.mjs b/src/scrape.mjs
+index 7f496326c8842c7be5fd832d7ee604c9273aef9f..e9db4daada9c7f64e212835cc6ff24f26a962dba 100644
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -2,35 +2,43 @@ import {request} from 'node:http';
+ import {performance} from 'node:perf_hooks';
+ import {budgets} from './budgets.mjs';
+ 
+-// Fetch a complete metrics response. Both deadlines are configurable transport inputs.
++// The connection budget ends at connect. The request budget is absolute and
++// covers connection, final response headers and body EOF (not socket activity).
+ export function fetchMetrics(url, limits=budgets, notify=()=>{}) {
+   return new Promise((resolve,reject)=>{
+     const started=performance.now();let settled=false,response=null;
++    let connectTimer,watchdog;
+     const event=(phase,extra={})=>notify({phase,elapsedMs:performance.now()-started,...extra});
++    const finish=(error,body)=>{
++      if(settled)return;settled=true;
++      clearTimeout(connectTimer);clearTimeout(watchdog);
++      if(error){event('abort',{reason:error.message});response?.destroy();req.destroy();reject(error);}
++      else resolve(body);
++    };
+     const req=request(url,{method:'GET',agent:false},res=>{
++      if(settled){res.destroy();return;}
+       response=res;event('headers',{status:res.statusCode});const chunks=[];
+       res.on('data',chunk=>chunks.push(chunk));
+       res.on('aborted',()=>finish(new Error('incomplete_response')));
+       res.on('error',finish);
+       res.on('end',()=>{
++        if(settled)return;
+         if(res.statusCode!==200||!res.complete)return finish(new Error('incomplete_response'));
+         event('response_complete',{bytes:chunks.reduce((n,c)=>n+c.length,0)});
+         finish(null,Buffer.concat(chunks).toString('utf8'));
+       });
+     });
+-    const finish=(error,body)=>{
+-      if(settled)return;settled=true;clearTimeout(watchdog);
+-      if(error){event('abort',{reason:error.message});response?.destroy();req.destroy();reject(error);}
+-      else resolve(body);
+-    };
+-    // This absolute guard covers connect, first final response, and every body read.
+-    const watchdog=setTimeout(()=>finish(new Error('request_deadline')),limits.requestTimeoutMs);
++    watchdog=setTimeout(()=>finish(new Error('request_deadline')),
++      Math.max(0,limits.requestTimeoutMs-(performance.now()-started)));
++    connectTimer=setTimeout(()=>finish(new Error('socket_timeout')),
++      Math.max(0,limits.connectTimeoutMs-(performance.now()-started)));
+     req.on('socket',socket=>{
+-      socket.setTimeout(limits.connectTimeoutMs);
+-      socket.on('timeout',()=>finish(new Error('socket_timeout')));
+-      socket.once('connect',()=>{
+-        event('connected');
+-      });
++      const connected=()=>{
++        clearTimeout(connectTimer);
++        if(!settled)event('connected');
++      };
++      if(socket.connecting)socket.once('connect',connected);
++      else connected();
+     });
+     req.on('error',finish);event('dispatch');req.end();
+   });

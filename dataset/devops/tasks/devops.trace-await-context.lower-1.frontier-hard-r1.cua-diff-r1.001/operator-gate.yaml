@@ -1,0 +1,20 @@
+schema_version: 1
+task_id: devops.trace-await-context.lower-1.frontier-hard-r1.cua-diff-r1.001
+required_observations:
+  - inspect the protected compatibility diagnosis and its manager-specific continuation recommendation
+  - read that continuation support is declared per manager by the runtime catalog rather than being a fixed compile target
+  - compare pre-await attached work with post-await orphaned spans
+  - inspect at least two automatic instrumentation kinds and their nesting
+  - connect transition-loss diagnostics to raw trace and parent identifiers
+  - run the overlapping-operation scenario and correlate delayed completions that finish after the newer operation's start with their trace and parent identity
+  - distinguish the locally plausible sequential state, where the diagnosis reads compatible and no spans orphan, from the overlapping state where delayed completions attach under the wrong operation
+  - use reload as the deterministic reset to the sequential scenario and confirm the unaffected controls (pre-await spans and the newer operation's spans stay attached)
+grounded_success_requires:
+  - screenshots_observed
+  - gui_actions_recorded
+  - decisive_observation_linked_to_repair
+  - protected_verifier_passed
+invalid_if:
+  - service contract was read through shell or direct HTTP
+  - protected files were present in the agent workspace
+  - DOM or accessibility-tree state replaced screenshot observation

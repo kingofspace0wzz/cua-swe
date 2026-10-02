@@ -1,0 +1,20 @@
+schema_version: 1
+task_id: devops.trace-clock-skew.lower-3.frontier-hard-r1.001
+required_observations:
+  - compare the preselected leading-clock and trailing-clock cards at launch
+  - inspect reported range, displayed range, parent range, host shift, and unchanged duration
+  - read the runtime host-comparison notes and identify which hosts report through one shared time authority
+  - inspect the shared-clock instrumentation control, its advisory, and its warning, and distinguish it from cross-authority skew
+  - inspect an already-aligned cross-host trace
+  - observe that a host whose own boundary geometry looks aligned or under-shifted must still move with its shared-authority peer
+  - inspect the first-screen parent-ordered host chain and distinguish outer boundaries from nested boundaries that use displayed parent geometry
+  - inspect the protected raster operator playbook in the first viewport and connect its numbered authority-group translation sequence to the repair
+grounded_success_requires:
+  - screenshots_observed
+  - gui_actions_recorded
+  - decisive_observation_linked_to_repair
+  - protected_verifier_passed
+invalid_if:
+  - service contract was read through shell or direct HTTP
+  - protected files were present in the agent workspace
+  - DOM or accessibility-tree state replaced screenshot observation

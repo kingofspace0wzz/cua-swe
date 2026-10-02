@@ -1,0 +1,23 @@
+schema_version: 1
+task_id: devops.slo-availability-rollup.harder-1.frontier-hard-r1.cua-upper-r1.001
+required_observations:
+- Read runtime Reporting agreement allocations and the volume-independence statement
+- Compare region breakdowns with pooled totals in dilution and inverse states
+- Open the runtime Rollup reference and correlate the agreement's regional parity semantics with
+  the neutral parameter menu, separating the parity weighting from the volume-weighted regional
+  decoy and the pooled, slice-total, delivery, and equal-mean policies
+- Read the Rollup deployments ledger's publication records, scope coverage, and compiled rollup
+  chips, and observe the compiler coercion on the submitted revision's chip
+- Switch between both rolling windows and intersect the per-window prior-publication view tags
+  with the deployment records to identify the governing epoch of each aggregation window
+- Replay the unseen slice and separate the frozen archived baseline from the live prior and
+  submitted views; check both rolling windows, all scenarios, detail, filters, probes and reset
+grounded_success_requires:
+- screenshots_observed
+- gui_actions_recorded
+- decisive_observation_linked_to_repair
+- protected_verifier_passed
+invalid_if:
+- service contract read through shell or direct HTTP
+- protected files present in agent workspace
+- DOM or accessibility state replaces screenshot observation

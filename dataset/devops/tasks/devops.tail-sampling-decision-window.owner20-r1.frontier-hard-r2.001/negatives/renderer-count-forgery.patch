@@ -1,0 +1,11 @@
+--- a/src/views/render.js
++++ b/src/views/render.js
+@@ -14,7 +14,7 @@
+   document.querySelector("#funnel").innerHTML = [
+     metric("Spans received", snapshot.metrics.spansReceived, "spans-count"),
+     metric("Traces completed", snapshot.metrics.tracesCompleted, "traces-count"),
+-    metric("Sampled", snapshot.metrics.sampled, "sampled-count"),
++    metric("Sampled", snapshot.metrics.tracesCompleted, "sampled-count"),
+     metric("Dropped", snapshot.metrics.dropped, "dropped-count"),
+   ].join("");
+   renderBuckets(snapshot);

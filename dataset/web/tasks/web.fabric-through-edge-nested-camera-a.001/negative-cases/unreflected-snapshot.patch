@@ -1,0 +1,30 @@
+--- a/src/app.mjs
++++ b/src/app.mjs
+@@ -177,7 +177,8 @@
+         .subtract(v.scalarMultiply(sy*height/2)),
+       pointerAngle: Math.atan2(start.y-center.y, start.x-center.x),
+       original: {left:rect.left, top:rect.top, width:rect.width, height:rect.height,
+-        scaleX:rect.scaleX, scaleY:rect.scaleY, angle:rect.angle}};
++        scaleX:rect.scaleX, scaleY:rect.scaleY, angle:rect.angle,
++        flipX:rect.flipX, flipY:rect.flipY}};
+     surface.setPointerCapture(e.pointerId);
+   }, true);
+   function update(e) {
+@@ -191,9 +192,14 @@
+       rect.setPositionByOrigin(center, 'center', 'center');
+     } else {
+       const delta = p.subtract(start);
+-      const width = sx ? Math.max(1, edit.width+sx*(delta.x*u.x+delta.y*u.y)) : edit.width;
+-      const height = sy ? Math.max(1, edit.height+sy*(delta.x*v.x+delta.y*v.y)) : edit.height;
+-      rect.set({scaleX:width/edit.original.width, scaleY:height/edit.original.height});
++      const width = sx ? (edit.width+sx*(delta.x*u.x+delta.y*u.y)) : edit.width;
++      const height = sy ? (edit.height+sy*(delta.x*v.x+delta.y*v.y)) : edit.height;
++      // Native negative-scale assignment toggles parity. Write magnitudes and
++      // absolute flips so repeated moves and the release update are idempotent.
++      rect.set({scaleX:Math.abs(width)/edit.original.width,
++        scaleY:Math.abs(height)/edit.original.height,
++        flipX:edit.original.flipX !== (width < 0),
++        flipY:edit.original.flipY !== (height < 0)});
+       rect.setPositionByOrigin(anchor.add(u.scalarMultiply(sx*width/2))
+         .add(v.scalarMultiply(sy*height/2)), 'center', 'center');
+     }

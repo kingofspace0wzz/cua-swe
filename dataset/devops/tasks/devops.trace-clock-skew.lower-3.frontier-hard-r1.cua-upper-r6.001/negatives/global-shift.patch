@@ -1,0 +1,21 @@
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,17 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
+ 
++function shiftTrace(spans) {
++  return spans.map((span) => span.parentId === null ? span : {
++    ...span,
++    startMs: span.startMs + 600,
++    endMs: span.endMs + 600,
++  });
++}
++
+ export function compileAdjusters(policy) {
+   return [
+     { name: "dedupe", apply: dedupeSpans },
++    { name: "shift", apply: shiftTrace },
+     { name: "sort", apply: sortSpans },
+   ];
+ }

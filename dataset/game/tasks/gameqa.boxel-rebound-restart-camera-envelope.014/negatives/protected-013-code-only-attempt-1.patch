@@ -1,0 +1,50 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..5b26b324c61e5d60dda1a317d34c742ee4827394 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -253,7 +253,14 @@
+         };
+         this.retry = function(retry){
+             this.resumeGame(retry);
++            var spawnSupport = this.levelMap.restoreGuide(this.player.spawnGuide);
+             this.player.respawn();
++            if (spawnSupport != null && spawnSupport.id == this.player.spawnSupportId){
++                this.player.supportId = spawnSupport.id;
++                this.player.y = spawnSupport.top+this.player.spawnSupportOffset;
++                this.player.gravity.reset();
++                this.player.gravity.push(0.5,this.player.y);
++            }
+             this.levelMap.showGuide(this.player.spawnGuide);
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+diff --git a/js/LevelMap.js b/js/LevelMap.js
+index b57a6f995f0d58427f8879bfa3fac061ede82026..02f759222b895a8e798caf3ffa97c44e355d75f4 100644
+--- a/js/LevelMap.js
++++ b/js/LevelMap.js
+@@ -200,9 +200,25 @@
+                 id: support.id,
+                 x: support.left,
+                 y: support.view.y,
+-                tiles: Math.max(1,Math.round((support.right-support.left)/this.box))
++                tiles: Math.max(1,Math.round((support.right-support.left)/this.box)),
++                motionTime: this.motionTime,
++                cameraProgress: this.cameraProgress
+             };
+         };
++        this.restoreGuide = function(frame){
++            if (frame == null) return null;
++            if (typeof frame.motionTime == "number" && isFinite(frame.motionTime)){
++                this.motionTime = frame.motionTime;
++                for (var i=0; i<this.movingSupports.length; i++){
++                    this.movingSupports[i].update(this.motionTime);
++                }
++            }
++            if (typeof frame.cameraProgress == "number" && isFinite(frame.cameraProgress)){
++                this.cameraProgress = frame.cameraProgress;
++                this.x = -this.cameraProgress;
++            }
++            return frame.id != null ? this.getSupport(frame.id) : null;
++        };
+         this.showGuide = function(frame){
+             if (this.guideView != null && this.guideView.parent != null){
+                 this.guideView.parent.removeChild(this.guideView);

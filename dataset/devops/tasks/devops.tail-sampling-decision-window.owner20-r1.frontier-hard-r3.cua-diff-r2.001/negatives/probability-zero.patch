@@ -1,0 +1,19 @@
+--- a/src/config/collectorSettings.js
++++ b/src/config/collectorSettings.js
+@@ -1,6 +1,6 @@
+ import { SAMPLING_POLICIES } from "./samplingPolicies.js";
+ 
+ export const COLLECTOR_SETTINGS = Object.freeze({
+-  decisionWaitMs: 250,
++  decisionWaitMs: 2700,
+   policies: SAMPLING_POLICIES,
+ });
+--- a/src/config/samplingPolicies.js
++++ b/src/config/samplingPolicies.js
+@@ -1,5 +1,5 @@
+ export const SAMPLING_POLICIES = Object.freeze([
+   { name: "errors", type: "status_code", statusCodes: ["ERROR"], scope: "any" },
+   { name: "slow", type: "latency", thresholdMs: 1500 },
+-  { name: "baseline", type: "probabilistic", samplingPercentage: 5 },
++  { name: "baseline", type: "probabilistic", samplingPercentage: 0 },
+ ]);

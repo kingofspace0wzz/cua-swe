@@ -1,0 +1,24 @@
+schema_version: 1
+task_id: devops.slo-availability-rollup.harder-1.frontier-hard-r1.001
+source:
+  project: OpenSLO/OpenSLO and slok/sloth
+  primary_url: https://github.com/OpenSLO/OpenSLO/blob/e1647318605fea0e5085436313fbaa6ec1f700ce/README.md
+  corroborating_url: https://github.com/slok/sloth/blob/55ee7ca92c2f029bde2d2f3797ef3e54172c31b5/README.md
+  pinned_revision: e1647318605fea0e5085436313fbaa6ec1f700ce
+  license: Apache-2.0
+  notes: Original offline implementation; no upstream source, specification, configuration, fixtures,
+    screenshots, packages, or assets copied. The regional portfolio agreement is an original synthetic
+    organizational reporting policy; it is not claimed to be prescribed by OpenSLO or Sloth. The
+    runtime rollup reference is a neutral parameter menu for the policies the protected engine
+    actually implements.
+  source_type: specification_derived_clean_room
+  provenance_basis: Pinned specification and corroborating implementation; not a reproduced upstream
+    incident. Original offline fixture with no upstream code or assets copied.
+parent_task_id: devops.slo-availability-rollup.harder-1.001
+successor_basis: Frontier-hardening round on the immutable parent. The only changed difficulty axis is
+  require_cross_surface_correlation; the protected event fixtures, regional-parity oracle, rollup
+  repair topology, agent-visible source tree, instruction, budgets, and reset/unaffected controls are
+  preserved from the parent. The runtime rollup reference no longer restates the reporting agreement
+  and gains an honestly implemented volume-weighted regional decoy, so the authoritative availability
+  semantics are identifiable only by correlating the agreement surface with the reference surface and
+  the regional ledger evidence.

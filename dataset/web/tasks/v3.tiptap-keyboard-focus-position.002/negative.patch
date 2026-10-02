@@ -1,0 +1,34 @@
+diff --git a/src/focusResume.js b/src/focusResume.js
+--- a/src/focusResume.js
++++ b/src/focusResume.js
+@@ -17,9 +17,27 @@ export function resolveResumePosition(root, doc) {
+   return resumeStrategy(root, doc, bookmark);
+ }
+ 
+-// Decide the resume position from the saved bookmark.
+-function resumeStrategy(root, doc, bm) {
+-  return 1;
++// Collect the saved anchors. Every saved anchor is the same pixel-point shape.
++function savedAnchors(bm) {
++  const list = [];
++  if (bm && Array.isArray(bm.anchors)) {
++    for (const a of bm.anchors) {
++      if (a && Number.isFinite(a.x) && Number.isFinite(a.y)) list.push(a);
++    }
++  }
++  if (bm && bm.anchor && Number.isFinite(bm.anchor.x) && Number.isFinite(bm.anchor.y)) {
++    list.push(bm.anchor);
++  }
++  return list;
++}
++
++// Decide the resume position from the saved bookmark.
++function resumeStrategy(root, doc, bm) {
++  // Resume from the saved anchor, resolved against the live editor layout so
++  // wrapping and paragraph geometry are respected.
++  const anchors = savedAnchors(bm);
++  if (anchors.length === 0) return 1;
++  return posFromCoords(root, doc, anchors[0]);
+ }
+ 
+ export function resumeFocus(root, doc) {

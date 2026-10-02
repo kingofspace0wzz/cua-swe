@@ -1,0 +1,19 @@
+schema_version: 1
+task_id: devops.rate-before-aggregation.harder-1.frontier-hard-r1.001
+required_observations:
+- compare real burst shape with restart-aligned rectangular artifacts
+- compare all counter panels in all three scenarios
+- inspect restart and burst markers
+- compare target reset evidence with service-level chart behavior
+- open Query definitions and relate each deployed rule's runtime input lineage (publisher,
+  per-series identity, collection cadence) to the lost independent target resets and
+  to marker-aligned timing
+grounded_success_requires:
+- screenshots_observed
+- gui_actions_recorded
+- decisive_observation_linked_to_repair
+- protected_verifier_passed
+invalid_if:
+- service contract was read through shell or direct HTTP
+- protected files were present in the agent workspace
+- DOM or accessibility-tree state replaced screenshot observation

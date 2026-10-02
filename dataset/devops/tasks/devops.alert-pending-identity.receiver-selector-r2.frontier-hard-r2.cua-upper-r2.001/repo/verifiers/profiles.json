@@ -1,0 +1,1194 @@
+{
+ "hidden": {
+  "initialCursor": 6,
+  "interval": 15,
+  "receivers": [
+   {
+    "family": "vault",
+    "matchScope": "conduit",
+    "name": "relay-vault"
+   },
+   {
+    "family": "notify",
+    "match": {
+     "beeper": "duty-1"
+    },
+    "name": "duty-pager"
+   }
+  ],
+  "routing": {
+   "epoch": {
+    "berth": {
+     "mode": "generation",
+     "pairs": [
+      {
+       "dock": "dock-2"
+      },
+      {
+       "dock": "dock-6"
+      }
+     ],
+     "policy": "RC-5"
+    },
+    "conduit": {
+     "mode": "generation",
+     "pairs": [
+      {
+       "relay": "relay-4"
+      },
+      {
+       "relay": "relay-5"
+      }
+     ],
+     "policy": "RC-2"
+    },
+    "roster": {
+     "mode": "generation",
+     "pairs": [
+      {
+       "shift": "night"
+      },
+      {
+       "shift": "day"
+      }
+     ],
+     "policy": "RC-7"
+    },
+    "sweep": {
+     "mode": "evaluation",
+     "pairs": [
+      {
+       "lane": "lane-21"
+      },
+      {
+       "lane": "lane-22"
+      },
+      {
+       "lane": "lane-23"
+      },
+      {
+       "lane": "lane-24"
+      },
+      {
+       "lane": "lane-25"
+      },
+      {
+       "lane": "lane-26"
+      },
+      {
+       "lane": "lane-27"
+      },
+      {
+       "lane": "lane-28"
+      },
+      {
+       "lane": "lane-29"
+      },
+      {
+       "lane": "lane-30"
+      },
+      {
+       "lane": "lane-31"
+      },
+      {
+       "lane": "lane-32"
+      },
+      {
+       "lane": "lane-33"
+      },
+      {
+       "lane": "lane-34"
+      },
+      {
+       "lane": "lane-35"
+      }
+     ],
+     "policy": "RC-9"
+    }
+   },
+   "runbook": {
+    "RC-2": "identity",
+    "RC-5": "detail",
+    "RC-7": "identity",
+    "RC-9": "detail"
+   }
+  },
+  "rules": [
+   {
+    "annotations": {
+     "runbook": "ops/pressure",
+     "summary": "Pressure on {{ $labels.service }} / {{ $labels.instance }}"
+    },
+    "enrichments": [
+     {
+      "name": "observed_pressure",
+      "template": "current={{ $value }}"
+     },
+     {
+      "name": "transit_lane",
+      "template": "{{ $route.lane }}"
+     },
+     {
+      "name": "watch_shift",
+      "template": "{{ $route.shift }}"
+     },
+     {
+      "name": "relay_path",
+      "template": "{{ $route.relay }}"
+     },
+     {
+      "name": "dock_berth",
+      "template": "{{ $route.dock }}"
+     },
+     {
+      "name": "grid_zone",
+      "template": "{{ $labels.zone }}"
+     },
+     {
+      "name": "beeper",
+      "template": "duty-1"
+     }
+    ],
+    "family": "notify",
+    "forSeconds": 75,
+    "labels": {
+     "severity": "page",
+     "team": "platform"
+    },
+    "name": "SustainedPressure",
+    "query": {
+     "metric": "work_pressure",
+     "operator": ">",
+     "threshold": 0.7
+    },
+    "revision": "r17"
+   }
+  ],
+  "scenarios": [
+   {
+    "id": "sustained",
+    "label": "Sustained load",
+    "restartAt": null,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "node-b",
+       "service": "search",
+       "zone": "north"
+      },
+      "values": [
+       0.82,
+       0.87,
+       0.91,
+       0.84,
+       0.95,
+       0.89,
+       0.93,
+       0.4,
+       0.3,
+       0.81,
+       0.94,
+       0.89,
+       0.97,
+       0.91,
+       0.86
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "node-c",
+       "service": "search",
+       "zone": "north"
+      },
+      "values": [
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28
+      ]
+     }
+    ]
+   },
+   {
+    "id": "burst",
+    "label": "Short burst",
+    "restartAt": null,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "node-b",
+       "service": "search",
+       "zone": "north"
+      },
+      "values": [
+       0.28,
+       0.28,
+       0.82,
+       0.87,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.81,
+       0.94,
+       0.89,
+       0.97,
+       0.91,
+       0.86
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "node-c",
+       "service": "search",
+       "zone": "north"
+      },
+      "values": [
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28
+      ]
+     }
+    ]
+   },
+   {
+    "id": "fleet",
+    "label": "Independent targets",
+    "restartAt": null,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "node-b",
+       "service": "search",
+       "zone": "north"
+      },
+      "values": [
+       0.82,
+       0.87,
+       0.91,
+       0.84,
+       0.95,
+       0.89,
+       0.93,
+       0.4,
+       0.3,
+       0.81,
+       0.94,
+       0.89,
+       0.97,
+       0.91,
+       0.86
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "node-c",
+       "service": "search",
+       "zone": "north"
+      },
+      "values": [
+       0.28,
+       0.28,
+       0.28,
+       0.82,
+       0.87,
+       0.91,
+       0.84,
+       0.95,
+       0.89,
+       0.93,
+       0.4,
+       0.3,
+       0.81,
+       0.94,
+       0.89
+      ]
+     }
+    ]
+   },
+   {
+    "id": "handoff",
+    "label": "Relay handoff",
+    "restartAt": 9,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "node-b",
+       "service": "search",
+       "zone": "north"
+      },
+      "values": [
+       0.82,
+       0.87,
+       0.91,
+       0.84,
+       0.95,
+       0.89,
+       0.93,
+       0.85,
+       0.9,
+       0.81,
+       0.94,
+       0.89,
+       0.97,
+       0.91,
+       0.86
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "node-c",
+       "service": "search",
+       "zone": "north"
+      },
+      "values": [
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28,
+       0.28
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "hidden-order": {
+  "initialCursor": 6,
+  "interval": 45,
+  "receivers": [
+   {
+    "family": "siphon",
+    "matchScope": "channel",
+    "name": "stream-bin"
+   },
+   {
+    "family": "dispatch",
+    "match": {
+     "pageline": "ring-2"
+    },
+    "name": "night-pager"
+   }
+  ],
+  "routing": {
+   "epoch": {
+    "beat": {
+     "mode": "evaluation",
+     "pairs": [
+      {
+       "cycle": "c-03"
+      },
+      {
+       "cycle": "c-03"
+      },
+      {
+       "cycle": "c-04"
+      },
+      {
+       "cycle": "c-04"
+      },
+      {
+       "cycle": "c-05"
+      },
+      {
+       "cycle": "c-05"
+      },
+      {
+       "cycle": "c-06"
+      },
+      {
+       "cycle": "c-06"
+      },
+      {
+       "cycle": "c-07"
+      },
+      {
+       "cycle": "c-07"
+      },
+      {
+       "cycle": "c-08"
+      },
+      {
+       "cycle": "c-08"
+      },
+      {
+       "cycle": "c-09"
+      },
+      {
+       "cycle": "c-09"
+      },
+      {
+       "cycle": "c-10"
+      }
+     ],
+     "policy": "RC-9"
+    },
+    "bench": {
+     "mode": "generation",
+     "pairs": [
+      {
+       "bay": "bay-north"
+      },
+      {
+       "bay": "bay-south"
+      }
+     ],
+     "policy": "RC-5"
+    },
+    "channel": {
+     "mode": "generation",
+     "pairs": [
+      {
+       "stream": "st-02"
+      },
+      {
+       "stream": "st-03"
+      }
+     ],
+     "policy": "RC-2"
+    },
+    "relief": {
+     "mode": "generation",
+     "pairs": [
+      {
+       "crew": "crew-a"
+      },
+      {
+       "crew": "crew-d"
+      }
+     ],
+     "policy": "RC-7"
+    }
+   },
+   "runbook": {
+    "RC-2": "identity",
+    "RC-5": "detail",
+    "RC-7": "identity",
+    "RC-9": "detail"
+   }
+  },
+  "rules": [
+   {
+    "annotations": {
+     "runbook": "ops/pressure",
+     "summary": "Pressure on {{ $labels.service }} / {{ $labels.instance }}"
+    },
+    "enrichments": [
+     {
+      "name": "pageline",
+      "template": "ring-2"
+     },
+     {
+      "name": "dispatch_cycle",
+      "template": "{{ $route.cycle }}"
+     },
+     {
+      "name": "stream_tap",
+      "template": "{{ $route.stream }}"
+     },
+     {
+      "name": "relief_crew",
+      "template": "{{ $route.crew }}"
+     },
+     {
+      "name": "grid",
+      "template": "{{ $labels.zone }}"
+     },
+     {
+      "name": "pressure_now",
+      "template": "current={{ $value }}"
+     },
+     {
+      "name": "detail",
+      "template": "pressure {{ $value }} on {{ $labels.instance }}"
+     },
+     {
+      "name": "floor_bay",
+      "template": "{{ $route.bay }}"
+     }
+    ],
+    "family": "dispatch",
+    "forSeconds": 180,
+    "labels": {
+     "severity": "page",
+     "team": "platform"
+    },
+    "name": "SustainedPressure",
+    "query": {
+     "metric": "work_pressure",
+     "operator": ">",
+     "threshold": 200
+    },
+    "revision": "r17"
+   }
+  ],
+  "scenarios": [
+   {
+    "id": "sustained",
+    "label": "Sustained load",
+    "restartAt": null,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "worker-2",
+       "service": "ingest",
+       "zone": "east"
+      },
+      "values": [
+       235,
+       242,
+       225,
+       260,
+       281,
+       238,
+       267,
+       80,
+       110,
+       249,
+       233,
+       261,
+       254,
+       279,
+       291
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "worker-9",
+       "service": "ingest",
+       "zone": "east"
+      },
+      "values": [
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0
+      ]
+     }
+    ]
+   },
+   {
+    "id": "burst",
+    "label": "Short burst",
+    "restartAt": null,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "worker-2",
+       "service": "ingest",
+       "zone": "east"
+      },
+      "values": [
+       80.0,
+       80.0,
+       235,
+       242,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       249,
+       233,
+       261,
+       254,
+       279,
+       291
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "worker-9",
+       "service": "ingest",
+       "zone": "east"
+      },
+      "values": [
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0
+      ]
+     }
+    ]
+   },
+   {
+    "id": "fleet",
+    "label": "Independent targets",
+    "restartAt": null,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "worker-2",
+       "service": "ingest",
+       "zone": "east"
+      },
+      "values": [
+       235,
+       242,
+       225,
+       260,
+       281,
+       238,
+       267,
+       80,
+       110,
+       249,
+       233,
+       261,
+       254,
+       279,
+       291
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "worker-9",
+       "service": "ingest",
+       "zone": "east"
+      },
+      "values": [
+       80.0,
+       80.0,
+       80.0,
+       235,
+       242,
+       225,
+       260,
+       281,
+       238,
+       267,
+       80,
+       110,
+       249,
+       233,
+       261
+      ]
+     }
+    ]
+   },
+   {
+    "id": "handoff",
+    "label": "Stream handoff",
+    "restartAt": 9,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "worker-2",
+       "service": "ingest",
+       "zone": "east"
+      },
+      "values": [
+       235,
+       242,
+       225,
+       260,
+       281,
+       238,
+       267,
+       215,
+       230,
+       249,
+       233,
+       261,
+       254,
+       279,
+       291
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "worker-9",
+       "service": "ingest",
+       "zone": "east"
+      },
+      "values": [
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0,
+       80.0
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "visible": {
+  "initialCursor": 6,
+  "interval": 30,
+  "receivers": [
+   {
+    "family": "archive",
+    "matchScope": "reference",
+    "name": "feed-archive"
+   },
+   {
+    "family": "page",
+    "match": {
+     "pager": "primary"
+    },
+    "name": "oncall"
+   }
+  ],
+  "routing": {
+   "epoch": {
+    "capture": {
+     "mode": "generation",
+     "pairs": [
+      {
+       "desk": "triage"
+      },
+      {
+       "desk": "handover"
+      }
+     ],
+     "policy": "RC-7"
+    },
+    "evaluation": {
+     "mode": "evaluation",
+     "pairs": [
+      {
+       "window": "w01"
+      },
+      {
+       "window": "w02"
+      },
+      {
+       "window": "w03"
+      },
+      {
+       "window": "w04"
+      },
+      {
+       "window": "w05"
+      },
+      {
+       "window": "w06"
+      },
+      {
+       "window": "w07"
+      },
+      {
+       "window": "w08"
+      },
+      {
+       "window": "w09"
+      },
+      {
+       "window": "w10"
+      },
+      {
+       "window": "w11"
+      },
+      {
+       "window": "w12"
+      },
+      {
+       "window": "w13"
+      },
+      {
+       "window": "w14"
+      },
+      {
+       "window": "w15"
+      }
+     ],
+     "policy": "RC-9"
+    },
+    "ledger": {
+     "mode": "generation",
+     "pairs": [
+      {
+       "book": "ledger-3"
+      },
+      {
+       "book": "ledger-4"
+      }
+     ],
+     "policy": "RC-5"
+    },
+    "reference": {
+     "mode": "generation",
+     "pairs": [
+      {
+       "feed": "feed-7"
+      },
+      {
+       "feed": "feed-8"
+      }
+     ],
+     "policy": "RC-2"
+    }
+   },
+   "runbook": {
+    "RC-2": "identity",
+    "RC-5": "detail",
+    "RC-7": "identity",
+    "RC-9": "detail"
+   }
+  },
+  "rules": [
+   {
+    "annotations": {
+     "runbook": "ops/pressure",
+     "summary": "Pressure on {{ $labels.service }} / {{ $labels.instance }}"
+    },
+    "enrichments": [
+     {
+      "name": "reading",
+      "template": "current={{ $value }}"
+     },
+     {
+      "name": "capture_window",
+      "template": "{{ $route.window }}"
+     },
+     {
+      "name": "duty_desk",
+      "template": "{{ $route.desk }}"
+     },
+     {
+      "name": "feed_link",
+      "template": "{{ $route.feed }}"
+     },
+     {
+      "name": "ledger_book",
+      "template": "{{ $route.book }}"
+     },
+     {
+      "name": "zone",
+      "template": "{{ $labels.zone }}"
+     },
+     {
+      "name": "pager",
+      "template": "primary"
+     }
+    ],
+    "family": "page",
+    "forSeconds": 120,
+    "labels": {
+     "severity": "page",
+     "team": "platform"
+    },
+    "name": "SustainedPressure",
+    "query": {
+     "metric": "work_pressure",
+     "operator": ">",
+     "threshold": 70
+    },
+    "revision": "r17"
+   }
+  ],
+  "scenarios": [
+   {
+    "id": "sustained",
+    "label": "Sustained load",
+    "restartAt": null,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "api-7",
+       "service": "checkout",
+       "zone": "west"
+      },
+      "values": [
+       81,
+       84,
+       87,
+       85,
+       91,
+       93,
+       88,
+       45,
+       35,
+       82,
+       89,
+       95,
+       97,
+       99,
+       91
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "api-8",
+       "service": "checkout",
+       "zone": "west"
+      },
+      "values": [
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0
+      ]
+     }
+    ]
+   },
+   {
+    "id": "burst",
+    "label": "Short burst",
+    "restartAt": null,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "api-7",
+       "service": "checkout",
+       "zone": "west"
+      },
+      "values": [
+       28.0,
+       28.0,
+       81,
+       84,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       82,
+       89,
+       95,
+       97,
+       99,
+       91
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "api-8",
+       "service": "checkout",
+       "zone": "west"
+      },
+      "values": [
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0
+      ]
+     }
+    ]
+   },
+   {
+    "id": "fleet",
+    "label": "Independent targets",
+    "restartAt": null,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "api-7",
+       "service": "checkout",
+       "zone": "west"
+      },
+      "values": [
+       81,
+       84,
+       87,
+       85,
+       91,
+       93,
+       88,
+       45,
+       35,
+       82,
+       89,
+       95,
+       97,
+       99,
+       91
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "api-8",
+       "service": "checkout",
+       "zone": "west"
+      },
+      "values": [
+       28.0,
+       28.0,
+       28.0,
+       81,
+       84,
+       87,
+       85,
+       91,
+       93,
+       88,
+       45,
+       35,
+       82,
+       89,
+       95
+      ]
+     }
+    ]
+   },
+   {
+    "id": "handoff",
+    "label": "Feed handoff",
+    "restartAt": 9,
+    "targets": [
+     {
+      "id": "one",
+      "labels": {
+       "instance": "api-7",
+       "service": "checkout",
+       "zone": "west"
+      },
+      "values": [
+       81,
+       84,
+       87,
+       85,
+       91,
+       93,
+       88,
+       86,
+       90,
+       82,
+       89,
+       95,
+       97,
+       99,
+       91
+      ]
+     },
+     {
+      "id": "two",
+      "labels": {
+       "instance": "api-8",
+       "service": "checkout",
+       "zone": "west"
+      },
+      "values": [
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0,
+       28.0
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

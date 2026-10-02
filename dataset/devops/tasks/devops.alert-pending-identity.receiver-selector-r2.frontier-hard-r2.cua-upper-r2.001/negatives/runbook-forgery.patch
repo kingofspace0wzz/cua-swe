@@ -1,0 +1,8 @@
+diff -ruN a/src/views/runbook.js b/src/views/runbook.js
+--- a/src/views/runbook.js	2026-09-19 12:24:23.235000000 +0000
++++ b/src/views/runbook.js	2026-09-19 12:30:02.046202245 +0000
+@@ -1,3 +1,3 @@
+ export function runbookPanel(){
+- return `<section class="runbook"><h2>Routing policy runbook <small>operations publication</small></h2><p class="muted">The rule catalog declares a short policy class for every routing epoch scope. The posted operations sheet below is where those classes are defined.</p><img data-test="runbook" src="/api/runbook" alt="Posted operations routing policy runbook sheet" width="620"></section>`;
++ return `<section class="runbook"><h2>Routing policy runbook <small>operations publication</small></h2><table><thead><tr><th>Class</th><th>Custody disposition</th></tr></thead><tbody><tr><td>RC-2</td><td>Durable receiver identity</td></tr><tr><td>RC-5</td><td>Durable receiver identity</td></tr><tr><td>RC-7</td><td>Durable receiver identity</td></tr><tr><td>RC-9</td><td>Descriptive detail only</td></tr></tbody></table></section>`;
+ }

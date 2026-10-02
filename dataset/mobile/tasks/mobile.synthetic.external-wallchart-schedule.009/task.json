@@ -1,0 +1,302 @@
+{
+  "task_id": "mobile.synthetic.external-wallchart-schedule.009",
+  "revision": "001",
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "public_files": {
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "ed8b5d712e7122b801ecc03a38b360862d699af2c1be3e116cc52ed1519d122f"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "311fbdc2e88c285ac7c7ad5ff01f87f9502dd6672d42251f1dbdc359afb20db0"
+    },
+    "app.mjs": {
+      "path": "public/app.mjs",
+      "sha256": "596bf2544234a4b85ffcb200247dc457197f2ffbe1e826870b8f9bd2ef0e014b"
+    },
+    "schedule.mjs": {
+      "path": "public/schedule.mjs",
+      "sha256": "221d0a62456df26f1cdad6d8d8e8db5cda6fce9d17d5a1335a83362a88859966"
+    },
+    "render.mjs": {
+      "path": "public/render.mjs",
+      "sha256": "81ade2e07d4dc92d2471521acf85f0e199de781dded7348ccdfed98f9e7fd00e"
+    },
+    "integration.mjs": {
+      "path": "public/integration.mjs",
+      "sha256": "2818437123a05012e19769ee68f9614c0b838798732297f44ae1921399e2a6f2"
+    },
+    "guide.html": {
+      "path": "public/guide.html",
+      "sha256": "2a35ec3346ab5b5caa81997ee8e63edd6d5d7e12c1fde3b62f6b582f75db19d5"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "a89c500908f66144fe07d9a2ff2b0d8606200df199aa6375f1245f27487f816c"
+    }
+  },
+  "editable": [
+    "index.html",
+    "style.css",
+    "app.mjs",
+    "schedule.mjs",
+    "render.mjs",
+    "integration.mjs",
+    "guide.html"
+  ],
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "54011b25df233e54b5dd16db028db007a3dcfbdd842a80ca99d05d9080ea292d"
+  },
+  "scratch": [
+    "dist/",
+    "index.html.bak",
+    "style.css.bak",
+    "app.mjs.bak",
+    "schedule.mjs.bak",
+    "render.mjs.bak",
+    "integration.mjs.bak",
+    "guide.html.bak"
+  ],
+  "dependencies": [],
+  "expected_assertions": [
+    "received_preview",
+    "both_complete_integrations",
+    "live_jobs_and_links",
+    "cycle_undo_cancel",
+    "save_reload_independent_reset",
+    "slip_and_complete_export"
+  ],
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "native": {
+      "schema": 1,
+      "assets": [],
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "index.html",
+          "style.css",
+          "app.mjs",
+          "schedule.mjs",
+          "render.mjs",
+          "integration.mjs",
+          "guide.html"
+        ],
+        "timeout_seconds": 20
+      },
+      "scene": {
+        "path": "/",
+        "frame_paths": [],
+        "viewport": {
+          "width": 400,
+          "height": 800
+        },
+        "device_scale_factor": 1,
+        "locale": "en-US",
+        "timezone": "UTC",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 30000
+      },
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "391ddee1cbfe97878f40da2cf33f18813c98b071552cc0610773137d2947cc55"
+      },
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "8b32845eb4ee70b81270b1a4d128aa34fdad1c1aa9c17f35af85d1f0110e11d4"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "3e9b548811f85416fd84356a43c996119199b999c6c55974959ab19927036a2f"
+      }
+    }
+  },
+  "controls": {
+    "alternative": {
+      "correct": true,
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "121fc50b08d0738e471ef327a1145febb7aab3022f66b2d16c14718b68cc385d"
+      }
+    },
+    "arrow-crossing-read-as-join": {
+      "correct": false,
+      "patch": {
+        "path": "controls/arrow-crossing-read-as-join.json",
+        "sha256": "eb0b3bd3f24c589bd0aa3f5a804b6e75915da3881e9d3bb09549403572d3b6e8"
+      }
+    },
+    "artifact-guess": {
+      "correct": false,
+      "patch": {
+        "path": "controls/artifact-guess.json",
+        "sha256": "46999f9c274c154c88f009847615992474228462b01392e9cd7fb56e7fdc3b36"
+      }
+    },
+    "dropped-export": {
+      "correct": false,
+      "patch": {
+        "path": "controls/dropped-export.json",
+        "sha256": "ad8d8be7a0a99d2e9e52e04af542f73fee1d213bd0ab3cd151f03013445c8642"
+      }
+    },
+    "dropped-inline-export": {
+      "correct": false,
+      "patch": {
+        "path": "controls/dropped-inline-export.json",
+        "sha256": "f0134f1c59237cbc2d0cceca914cbe98bb05aed74506dbcd85f5bc9376f33761"
+      }
+    },
+    "duration-off-by-one": {
+      "correct": false,
+      "patch": {
+        "path": "controls/duration-off-by-one.json",
+        "sha256": "1f87c03cf68781f4b205713296ab42551ee193046279a219a729a299daaf64f2"
+      }
+    },
+    "finish-to-finish-read-as-finish-to-start": {
+      "correct": false,
+      "patch": {
+        "path": "controls/finish-to-finish-read-as-finish-to-start.json",
+        "sha256": "90110862e5507cc7cfaa88a4be49befff923a11e68e150f46b86a8816a98a028"
+      }
+    },
+    "first-edition-only": {
+      "correct": false,
+      "patch": {
+        "path": "controls/first-edition-only.json",
+        "sha256": "a7103e5d45f9aff397dca328b9c3bf3c94cfb4eba0dfe303e08368939582a5a9"
+      }
+    },
+    "gold": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "4608077a63486b7d85e41598ce8cf1e5bf04f52dc16f7f7491fc6d409e8fd53a"
+      }
+    },
+    "gold_with_cua_viewer": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_cua_viewer.json",
+        "sha256": "227b0fdb00801d8a0d721beb4bec5a75cca27b319a49b8809ddd648ad280a891"
+      }
+    },
+    "gold_with_fable_viewer": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_fable_viewer.json",
+        "sha256": "1e99307d6e5482854b50bbe0926ffd307304c38700786365a9f12773eef84cbe"
+      }
+    },
+    "gold_with_reordered_duplicate_navigation": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_reordered_duplicate_navigation.json",
+        "sha256": "cacd06109b719f82b5d04ddefc1f638c607d1f64655acd482e66b93068453a34"
+      }
+    },
+    "gold_with_submitted_viewer": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold_with_submitted_viewer.json",
+        "sha256": "10651ee743b823d31feac11694be1629ec488f7aa8575df324ca91e9fe0d52a4"
+      }
+    },
+    "incomplete-save": {
+      "correct": false,
+      "patch": {
+        "path": "controls/incomplete-save.json",
+        "sha256": "29ba3bb8181a6f12de4443b53e45867acba0eeaaba2e3f603cdb71b650ff0b40"
+      }
+    },
+    "lag-ignored": {
+      "correct": false,
+      "patch": {
+        "path": "controls/lag-ignored.json",
+        "sha256": "17fad01fd764e4d813b24b6a11c9079c65f9e466b0d5470cb0b88e4021e58da2"
+      }
+    },
+    "malformed-integration": {
+      "correct": false,
+      "patch": {
+        "path": "controls/malformed-integration.json",
+        "sha256": "a336e15f46261cebe50f7a0af0ad62db05e6835754fb8347165de22ae16fd6a8"
+      }
+    },
+    "missed-long-arrow": {
+      "correct": false,
+      "patch": {
+        "path": "controls/missed-long-arrow.json",
+        "sha256": "80072bf5e8e7130479f1da6c5de51a4d074e64a1ef3615a8916967f10579ee61"
+      }
+    },
+    "one-sheet-only": {
+      "correct": false,
+      "patch": {
+        "path": "controls/one-sheet-only.json",
+        "sha256": "b6deb89e6f74cd8dc114988734da5e1e155683894cf44d6f997d0eb6c4481f70"
+      }
+    },
+    "partial": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "80072bf5e8e7130479f1da6c5de51a4d074e64a1ef3615a8916967f10579ee61"
+      }
+    },
+    "partial-jobs": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial-jobs.json",
+        "sha256": "268403a413320e05aefe9f487800545e523167bb9a2865d0f08da1f530bd40da"
+      }
+    },
+    "pre-first-day-rejection": {
+      "correct": false,
+      "patch": {
+        "path": "controls/pre-first-day-rejection.json",
+        "sha256": "098f5fce91216181d9833d3d4abc3d1f342beb276357044526eb0b3c356c00d9"
+      }
+    },
+    "stale-parent-integration": {
+      "correct": false,
+      "patch": {
+        "path": "controls/stale-parent-integration.json",
+        "sha256": "670527e8a151e546a7cc7fb52cf80ff6108a2e67744096ca330112d7e9f4c8ca"
+      }
+    },
+    "static-report": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static-report.json",
+        "sha256": "da1fd041c5db13f71b445702438ca22849eea591374f2e7235a3a640fb91e1bf"
+      }
+    },
+    "static-schedule-view": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static-schedule-view.json",
+        "sha256": "dae45d59a262289f3a670aedc92d4cc2f0c045355b290973de4d40e4e6cc929d"
+      }
+    },
+    "top-level-throw": {
+      "correct": false,
+      "patch": {
+        "path": "controls/top-level-throw.json",
+        "sha256": "990bcc6b80b496d8cd851fd30d9221a7fe5f1bd40d495e66344d3dc59c45a4e8"
+      }
+    }
+  }
+}

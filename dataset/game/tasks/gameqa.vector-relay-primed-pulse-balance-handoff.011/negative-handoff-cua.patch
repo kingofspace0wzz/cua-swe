@@ -1,0 +1,57 @@
+diff --git a/src/relay_commit.js b/src/relay_commit.js
+index 3fe380e7d0b213abe9063844252b2ac018bfda50..01f2dbd150014ac882660bc77e107b293553a427 100644
+--- a/src/relay_commit.js
++++ b/src/relay_commit.js
+@@ -35,6 +35,15 @@
+     return entry.id;
+   };
+ 
++  RelayLane.prototype.handoff = function (previousOwner, nextOwner) {
++    if (!previousOwner || !nextOwner) return;
++    for (var i = 0; i < this.pending.length; i += 1) {
++      if (this.pending[i].owner !== previousOwner.key) continue;
++      this.pending[i].owner = nextOwner.key;
++      this.pending[i].port = nextOwner.port;
++    }
++  };
++
+   RelayLane.prototype.take = function (now, owner) {
+     while (this.pending.length && this.pending[0].due <= now) {
+       var entry = this.pending.shift();
+diff --git a/src/vector_relay.js b/src/vector_relay.js
+index a6d27c3efd792d620a1aa824d3a409b71f39a3b4..19b038c7568b5e3adba4c02aa2fe5397c23126d8 100644
+--- a/src/vector_relay.js
++++ b/src/vector_relay.js
+@@ -76,6 +76,10 @@
+   };
+ 
+   VectorRelay.prototype.attachBall = function (reason) {
++    var previousOwner = this.ball && this.ball.owner;
++    var keepsHandoff = reason === "life-replacement";
++    var owner = this.lane.open(this.dockPort());
++    if (keepsHandoff) this.lane.handoff(previousOwner, owner);
+     this.contacts.clear();
+     this.attachmentCount += 1;
+     this.ball = {
+@@ -86,7 +90,8 @@
+       vy: 0,
+       attached: true,
+       body: this.contacts.open("orb"),
+-      owner: this.lane.open(this.dockPort()),
++      owner: owner,
++      keepsHandoff: keepsHandoff,
+       attachReason: reason,
+       route: null,
+       routeTime: 0,
+@@ -119,7 +124,10 @@
+     if (!this.ball.attached) return;
+     var port = this.dockPort();
+     if (this.ball.owner.port === port) return;
+-    this.ball.owner = this.lane.open(port);
++    var previousOwner = this.ball.owner;
++    var nextOwner = this.lane.open(port);
++    if (this.ball.keepsHandoff) this.lane.handoff(previousOwner, nextOwner);
++    this.ball.owner = nextOwner;
+   };
+ 
+   VectorRelay.prototype.redock = function () {

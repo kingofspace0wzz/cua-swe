@@ -1,0 +1,64 @@
+id: gameqa.vector-relay-primed-pulse-balance-handoff.011
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.vector-relay-primed-pulse-balance-handoff.011/repo
+  ref: vector-relay-primed-pulse-balance-handoff-v11
+instruction: >-
+  Play the deterministic Relay Circuit challenge, which begins primed with the
+  orb docked and the north relay already yellow. The in-canvas PULSE BALANCE
+  distinguishes live, quiet, sealed, and fractured outcomes. Launch once. When
+  RETURN REACHED appears, press R once and wait through settlement time: the
+  recalled return should leave the relay yellow. Launch again, let that return
+  fall out and its replacement dock, tap Left once, and wait: this visibly
+  retained return remains yellow instead of settling. Fix the regression so
+  the recalled return stays ignored while the natural replacement clears and
+  scores exactly once. One sustained overlap still cannot count as two
+  contacts. Replay the challenge to verify it.
+setup:
+  install:
+    - npm ci
+    - npm run build
+  reset: []
+  launch:
+    - exec node server.mjs --host 127.0.0.1 --port 53500
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:53500/?challenge=relay-circuit
+  viewport_or_device: desktop-1280x720
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 240
+  max_gui_actions: 180
+  max_test_runs: 20
+verifiers:
+  build:
+    - npm run build
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - '"${CUA_SWE_PYTHON:-python3}" verifiers/browser_check.py --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:53500/?challenge=relay-circuit}"'
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: vector-relay
+  state_api: window.gameAPI
+  seed: 73
+  level: 3
+schema_version: 1

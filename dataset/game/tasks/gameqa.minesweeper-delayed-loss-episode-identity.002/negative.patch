@@ -1,0 +1,11 @@
+--- a/game.bundle.js
++++ b/game.bundle.js
+@@ -8272,7 +8272,7 @@
+             };
+         }(), i = n(152), a = r(i), u = n(154), s = r(u), l = n(75), c = r(l), f = n(157), A = r(f), p = n(2);
+         t["default"] = function(t) {
+-            var n = [], r = [], i = [], u = [], l = (0, a["default"])(t), f = (0, s["default"])(l.dimensions, l.mine_count), d = null, h = c["default"].NOT_STARTED, g = null, v = 0, pendingLossTimer = null, lossDelayMs = 3200, m = function() {
++            var n = [], r = [], i = [], u = [], l = (0, a["default"])(t), f = (0, s["default"])(l.dimensions, l.mine_count), d = null, h = c["default"].NOT_STARTED, g = null, v = 0, pendingLossTimer = null, lossDelayMs = 1600, m = function() {
+                 return h === c["default"].WON || h === c["default"].LOST;
+             }, y = function(e) {
+                 var t = o(e, 2), n = t[0], r = t[1];

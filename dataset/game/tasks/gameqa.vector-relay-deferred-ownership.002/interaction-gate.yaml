@@ -1,0 +1,99 @@
+schema_version: 1
+task_id: gameqa.vector-relay-deferred-ownership.002
+trajectory_id: vector-relay-delayed-owner-handoff-v2
+seed: 73
+level: 3
+challenge: Relay Circuit
+candidate:
+  family: deferred settlement across moving ownership
+  difficulty: l4
+  status: quarantined_construction
+  mechanism: >-
+    a reached relay transition settles after the returning orb has fallen out,
+    ownership has moved to a docked replacement, and the receiver may move the
+    attached replacement across an ordinary dock boundary
+trigger:
+  actions:
+    - action: key_press
+      key: Space
+      stop_condition: relay.phase == armed
+    - action: wait
+      stop_condition: metrics.losses == 1 and orb.attached
+    - action: key_press
+      key: Space
+      stop_condition: metrics.bounces >= 2
+    - action: wait
+      stop_condition: metrics.losses == 2 and orb.attached
+  causal_checkpoint: >-
+    the return contact has visibly bounced, its settlement remains pending,
+    and the final replacement is attached before that settlement becomes due
+pre_trigger_equivalence:
+  fields:
+    - relay.phase
+    - relay.contacts
+    - relay.commits
+    - relay.pending
+    - score
+    - lives
+    - metrics.losses
+    - ownership.port
+  expected:
+    relay.phase: armed
+    relay.contacts: 1
+    relay.commits: 1
+    relay.pending: 1
+    score: 0
+    lives: 1
+    metrics.losses: 2
+    ownership.port: receiver
+post_trigger_divergence:
+  baseline_expected:
+    visible_return_bounce: true
+    relay.phase: armed
+    relay.pending: 0
+    relay.dropped: 1
+    score: 0
+    terminal.isTerminal: false
+  gold_expected:
+    visible_return_bounce: true
+    relay.phase: cleared
+    relay.contacts: 2
+    relay.commits: 2
+    relay.pending: 0
+    relay.dropped: 0
+    score: 500
+    terminal.outcome: success
+  predecessor_epoch_negative:
+    patch: negative-contact-epoch.patch
+    applies_cleanly: true
+    expected_failure: >-
+      epoch-scoped contact tickets do not preserve a reached delayed settlement
+      after the active orb owner changes
+  strongest_successor_negative:
+    patch: negative.patch
+    obvious_route_expected: pass
+    protected_route: >-
+      after the final replacement docks with the return settlement pending,
+      hold Left until the attached orb moves to the west dock, then wait
+    expected_failure: >-
+      same-port acceptance handles the unsteered replacement but discards the
+      same reached settlement after ordinary dock movement changes the port
+exactly_once_probe:
+  assertions:
+    - the arming contact settles once before the first replacement
+    - the return contact is pending once when the final replacement docks
+    - relay.contacts and relay.commits finish at two
+    - relay.pending and relay.dropped finish at zero
+    - score equals 500 and never 1000
+required_evidence:
+  no_op_failure: outer_host_chromium_pass
+  gold_pass: outer_host_chromium_pass
+  negative_failure: outer_host_chromium_pass
+  predecessor_epoch_failure: outer_host_chromium_pass
+  code_only_result: not_run_protected
+  cua_result: not_run_protected
+construction_replay:
+  chromium_required: true
+  port: 51320
+  screenshot_only_agent_observation: true
+  protected_state_access: window.gameAPI.getState()

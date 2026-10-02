@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "ignoreDeprecations": "6.0",
+    "baseUrl": "./",
+    "paths": {
+      "handsontable": [ "../../tmp" ],
+      "handsontable/base": [ "../../tmp/base" ],
+      "handsontable/*": [ "../../tmp/*" ]
+    },
+    "typeRoots": [
+      "../../node_modules/@types",
+      "../../../node_modules/@types"
+    ],
+    "types": ["node"],
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "dom"],
+    "skipLibCheck": false
+  },
+  "include": [
+    "../../src/**/*.types.ts"
+  ]
+}

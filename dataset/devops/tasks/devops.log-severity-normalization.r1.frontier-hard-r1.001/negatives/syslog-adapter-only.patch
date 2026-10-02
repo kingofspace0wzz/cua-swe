@@ -1,0 +1,11 @@
+--- a/src/pipeline/severityAdapters.js
++++ b/src/pipeline/severityAdapters.js
+@@ -14,4 +14,7 @@
+   if (typeof body === 'string') {try {body=JSON.parse(body);} catch {body={};}}
+   return fromText(body?.level);
+ }
+-export const severityAdapters = {otlp:fromOtel,json:fromJson};
++export function fromSyslog(record) {
++  return fromText(record.severityText);
++}
++export const severityAdapters = {otlp:fromOtel,json:fromJson,syslog:fromSyslog};

@@ -1,0 +1,28 @@
+schema_version: 1
+task_id: devops.statsd-gauge-update-mode.owner32-r1.frontier-hard-r5.001
+operator_workflow:
+  entry: http://127.0.0.1:{app_port}
+  reproduce:
+  - Open the console; the seeded epoch has already captured the relay traffic once.
+  - Select the first affected gauge; read the opening announce batch, the signed
+    live datagrams and the mid-stream announce restatement in Received datagrams.
+  - Open Update history; compare parsed tokens and before/stored transitions with
+    the announce restatements.
+  - Reset the session, replay traffic, and confirm the same receipts and history
+    reappear in a fresh numbered epoch.
+  observations_required: 2
+  states_required: 3
+  reset_control: Reset session button clears the actual session; Replay traffic
+    starts a fresh deterministic epoch.
+  unaffected_controls:
+  - unsigned capacity/reference stream
+  - relay sync registers
+  - idle persistence, page reload, process restart hydration
+decision_rule: The repair must follow the deployment's active relay generation as
+  evidenced by announce reconciliation, not a lexical sign convention or a static
+  mode table; announce restatements are authoritative absolute readings.
+leak_policy:
+  agent_visible_source_may_state: the relay announce contract and that both relay
+    generations exist in the field
+  agent_visible_source_must_not_state: which generation this deployment runs, any
+    endpoint-to-mode table, or verifier payload plans

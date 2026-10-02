@@ -1,0 +1,145 @@
+{
+  "task_id": "mobile.synthetic.external-campus-wayfinding.001",
+  "revision": "001",
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "public_files": {
+    "LICENSE": {
+      "path": "public/LICENSE",
+      "sha256": "0d2389e269fa228459d27f7801cf55b4a1184a0f1e1560dbdbb0fb4d2d896067"
+    },
+    "README.md": {
+      "path": "public/README.md",
+      "sha256": "1b802cb2600e8833ca988db4f3fdd7dc5f6c3556b2ef73d36b826466f5f2762d"
+    },
+    "app.js": {
+      "path": "public/app.js",
+      "sha256": "67e9e15d4d4fe7b46c857eef07c3d50d5a4e18ccc47f8ed6f819fa18c805612c"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "ce30303298ffd865f3cdd2df6cdbe0b5b2c8846a72ce76bce76cde5306b952fb"
+    },
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "a4098706b06de0d5d5b6b535acc161135ee3081642dcc3d7e0fefce07165e3f1"
+    },
+    "package.json": {
+      "path": "public/package.json",
+      "sha256": "48cf97f868474994da01ed174a08faa0396cf59f0aad0831d0fcd66f202f4ae7"
+    },
+    "routing.js": {
+      "path": "public/routing.js",
+      "sha256": "e7d0e53a6906288f76061b529e7ca930ecde0f521177d07ca9920d31adc634b6"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "5d5c813c107293f712fd1de9cfa53823907dde9e2f19b2ce1dd7b911fc1ab757"
+    }
+  },
+  "editable": [
+    "LICENSE",
+    "README.md",
+    "app.js",
+    "index.html",
+    "package.json",
+    "routing.js",
+    "style.css"
+  ],
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "448b0035ffb45ccc9a7019b8bb42341233d1676975069de03758d6ad453a8529"
+  },
+  "scratch": [
+    "dist/"
+  ],
+  "dependencies": [],
+  "expected_assertions": [
+    "permitted_shortest_route",
+    "step_free_detour",
+    "direction_and_unavailable",
+    "saved_trip_and_reload",
+    "second_campus_generalization",
+    "original_artifacts_preserved"
+  ],
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "native": {
+      "schema": 1,
+      "assets": [],
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "index.html",
+          "app.js",
+          "routing.js",
+          "style.css"
+        ],
+        "timeout_seconds": 20
+      },
+      "scene": {
+        "path": "/",
+        "frame_paths": [],
+        "viewport": {
+          "width": 400,
+          "height": 800
+        },
+        "device_scale_factor": 1,
+        "locale": "en-US",
+        "timezone": "UTC",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 10000
+      },
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "258754c6b51f6ddc161ba25755839bf7fd1ea2b08587335b204f22a168e18c22"
+      },
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "190a96d97ef46960dc38003d683f01893b5e541f8ce84a753ec8ac9cf0894cbf"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "b8ac2951264adb48dc570a3a4735546c5b2bf1dacd7b9e6dd2251c61b0979d72"
+      }
+    }
+  },
+  "controls": {
+    "gold": {
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "15085e0ad3cf342d7c84af21aef8bc17107bc5e537a58c6b7d5a3fc7cc8dc756"
+      },
+      "correct": true
+    },
+    "alternative": {
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "63c48ac24dfc50adbe9c730c8354759cd220333e2ff6dde3ac7e99785231ebf2"
+      },
+      "correct": true
+    },
+    "partial": {
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "25ccd0f132a919461fe1a6c21af08c04775af7e9b13010761b14edcc47643d43"
+      },
+      "correct": false
+    },
+    "artifact_guess": {
+      "patch": {
+        "path": "controls/artifact_guess.json",
+        "sha256": "01eb295e50627f6070800fa447531aa4fd8a32f87dac6b2807b6c940acaa7816"
+      },
+      "correct": false
+    }
+  }
+}

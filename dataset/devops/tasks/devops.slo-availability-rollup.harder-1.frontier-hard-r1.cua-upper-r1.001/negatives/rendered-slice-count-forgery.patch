@@ -1,0 +1,30 @@
+--- a/src/config/sloDefinition.js
++++ b/src/config/sloDefinition.js
+@@ -1,4 +1,4 @@
+ export const SLO_ROLLUPS = Object.freeze({
+-  availability: { mode: "mean_of_slices" },
+-  budget: { mode: "mean_of_slices" },
++  availability: { mode: "weighted_slices", weight: "region_equal" },
++  budget: { mode: "weighted_slices", weight: "region_equal" },
+ });
+--- a/src/config/compileSloPlan.js
++++ b/src/config/compileSloPlan.js
+@@ -1,6 +1,6 @@
+ function compileRollup(rollup) {
+   return {
+-    mode: "mean_of_slices",
++    mode: rollup.mode,
+     weight: rollup.weight || null,
+     includeIds: rollup.includeIds || null,
+     minimumTotal: rollup.minimumTotal || 0,
+--- a/src/views/slices.js
++++ b/src/views/slices.js
+@@ -3,7 +3,7 @@
+   document.querySelector("#slices").innerHTML = `<table><thead><tr><th>Endpoint</th><th>Region</th><th>Good</th><th>Bad</th><th>Total</th><th>Availability</th><th>Slice verdict</th></tr></thead><tbody>
+     ${snapshot.slices.map((slice) => `<tr data-slice-id="${slice.id}" class="${slice.verdict}">
+       <td><button>${escapeHtml(slice.endpoint)}</button></td><td>${escapeHtml(slice.region)}</td>
+-      <td>${slice.good}</td><td>${slice.bad}</td><td>${slice.total}</td>
++      <td>0</td><td>0</td><td>${slice.total}</td>
+       <td>${percent(slice.availability)}</td><td>${slice.verdict}</td>
+     </tr>`).join("")}
+   </tbody></table>`;

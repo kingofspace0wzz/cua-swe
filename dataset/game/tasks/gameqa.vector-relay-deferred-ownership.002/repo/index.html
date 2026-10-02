@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vector Relay</title>
+    <link rel="stylesheet" href="src/style.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <div>
+          <p class="eyebrow">DETERMINISTIC CIRCUIT 03</p>
+          <h1>Vector Relay</h1>
+        </div>
+        <div class="readout" aria-live="polite">
+          <span>SCORE <b id="score">000000</b></span>
+          <span>LIVES <b id="lives">03</b></span>
+        </div>
+      </header>
+      <section class="stage" aria-label="Vector Relay game canvas">
+        <canvas id="game" width="960" height="600"></canvas>
+        <div id="panel" class="panel">
+          <p class="panel-kicker">RELAY CIRCUIT</p>
+          <h2 id="panel-title">READY</h2>
+          <p id="panel-copy">Press Space to launch the signal orb.</p>
+        </div>
+      </section>
+      <footer>
+        <span><kbd>←</kbd><kbd>→</kbd> steer receiver</span>
+        <span><kbd>Space</kbd> launch</span>
+        <span><kbd>R</kbd> re-dock orb</span>
+        <span class="legend"><i></i> relay status</span>
+      </footer>
+    </main>
+    <script src="src/relay_contact.js"></script>
+    <script src="src/relay_commit.js"></script>
+    <script src="src/vector_relay.js"></script>
+    <script src="src/game_api.js"></script>
+  </body>
+</html>

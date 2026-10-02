@@ -1,0 +1,47 @@
+--- a/src/app.mjs
++++ b/src/app.mjs
+@@ -168,8 +168,10 @@
+     const center = rect.getRelativeCenterPoint();
+     const start = viewport(e).transform(viewportToParent);
+     const angle = rect.angle * Math.PI / 180;
+-    const u = new fabric.Point(Math.cos(angle), Math.sin(angle));
+-    const v = new fabric.Point(-Math.sin(angle), Math.cos(angle));
++    const u = new fabric.Point(Math.cos(angle), Math.sin(angle))
++      .scalarMultiply(rect.flipX ? -1 : 1);
++    const v = new fabric.Point(-Math.sin(angle), Math.cos(angle))
++      .scalarMultiply(rect.flipY ? -1 : 1);
+     const width = rect.getScaledWidth(), height = rect.getScaledHeight();
+     edit = {id:e.pointerId, key:hit.key, sx, sy, start, center, u, v, width, height,
+       viewportToParent,
+@@ -177,7 +179,8 @@
+         .subtract(v.scalarMultiply(sy*height/2)),
+       pointerAngle: Math.atan2(start.y-center.y, start.x-center.x),
+       original: {left:rect.left, top:rect.top, width:rect.width, height:rect.height,
+-        scaleX:rect.scaleX, scaleY:rect.scaleY, angle:rect.angle}};
++        scaleX:rect.scaleX, scaleY:rect.scaleY, angle:rect.angle,
++        flipX:rect.flipX, flipY:rect.flipY}};
+     surface.setPointerCapture(e.pointerId);
+   }, true);
+   function update(e) {
+@@ -191,11 +194,16 @@
+       rect.setPositionByOrigin(center, 'center', 'center');
+     } else {
+       const delta = p.subtract(start);
+-      const width = sx ? Math.max(1, edit.width+sx*(delta.x*u.x+delta.y*u.y)) : edit.width;
+-      const height = sy ? Math.max(1, edit.height+sy*(delta.x*v.x+delta.y*v.y)) : edit.height;
+-      rect.set({scaleX:width/edit.original.width, scaleY:height/edit.original.height});
+-      rect.setPositionByOrigin(anchor.add(u.scalarMultiply(sx*width/2))
+-        .add(v.scalarMultiply(sy*height/2)), 'center', 'center');
++      const width = sx ? (edit.width+sx*(delta.x*u.x+delta.y*u.y)) : edit.width;
++      const height = sy ? (edit.height+sy*(delta.x*v.x+delta.y*v.y)) : edit.height;
++      // Native negative-scale assignment toggles parity. Write magnitudes and
++      // absolute flips so repeated moves and the release update are idempotent.
++      rect.set({scaleX:Math.abs(width)/edit.original.width,
++        scaleY:Math.abs(height)/edit.original.height,
++        flipX:edit.original.flipX !== (width < 0),
++        flipY:edit.original.flipY !== (height < 0)});
++      rect.setPositionByOrigin(anchor.add(u.scalarMultiply(sx*Math.abs(width)/2))
++        .add(v.scalarMultiply(sy*Math.abs(height)/2)), 'center', 'center');
+     }
+     paint();
+   }

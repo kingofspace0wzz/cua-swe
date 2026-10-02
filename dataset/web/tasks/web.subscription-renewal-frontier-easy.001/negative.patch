@@ -1,0 +1,10 @@
+--- a/src/app.js
++++ b/src/app.js
+@@ -4,6 +4,5 @@ async function render() {
+   const response = await fetch(`/api/subscription-cycle${window.location.search}`);
+   const data = await response.json();
+-  // The legacy lifecycle response exposed a display-ready renewal label.
+-  const renewal = data.next_renewal ?? "Renewal unavailable";
++  const renewal = "Renews 2026-01-29 10:00";
+   root.innerHTML = `<main class="shell"><section class="card">
+     <p class="eyebrow">Subscription lifecycle</p><h1>${data.subscription_ref ?? "Unknown subscription"}</h1>

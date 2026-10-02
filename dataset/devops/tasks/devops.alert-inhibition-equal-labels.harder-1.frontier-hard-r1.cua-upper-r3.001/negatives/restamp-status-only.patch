@@ -1,0 +1,34 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -15,7 +15,7 @@ export function compileInhibitionRule(catalog, policy) {
+       },
+     ],
+     equal: [...catalog.equalDimensions],
+-    required_source_labels: [],
+-    required_target_labels: [],
++    required_source_labels: [...policy.presenceDimensions],
++    required_target_labels: [...policy.presenceDimensions],
+   };
+ }
+diff --git a/src/config/inhibitionScopePolicy.js b/src/config/inhibitionScopePolicy.js
+--- a/src/config/inhibitionScopePolicy.js
++++ b/src/config/inhibitionScopePolicy.js
+@@ -1,10 +1,14 @@
+ export function inhibitionScopePolicy(catalog) {
++  const dimensionRegistry = catalog.dimensions.map((dimension) =>
++    Object.freeze({ ...dimension }),
++  );
+   return Object.freeze({
+     profileLabel: catalog.label,
+     scopeDimensions: catalog.equalDimensions,
+-    dimensionRegistry: catalog.dimensions.map((dimension) =>
+-      Object.freeze({ ...dimension }),
+-    ),
++    dimensionRegistry,
++    presenceDimensions: dimensionRegistry
++      .filter((dimension) => dimension.restamp !== "in-progress")
++      .map((dimension) => dimension.name),
+     sourceClass: catalog.sourceClass,
+     targetClass: catalog.targetClass,
+   });

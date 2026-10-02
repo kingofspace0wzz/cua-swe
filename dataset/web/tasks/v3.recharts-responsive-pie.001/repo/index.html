@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Allocation Ring Studio</title>
+<link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="mark">Allocation Ring Studio</div>
+  <div class="board-id">Board: <strong id="board-title">…</strong></div>
+</header>
+<div class="profile-bar" id="profile-bar"></div>
+<p class="board-note" id="board-note">…</p>
+<main class="stage">
+  <section class="pane">
+    <div class="pane-head">Live</div>
+    <div class="pane-body" id="live"></div>
+    <div class="statusbar"><span id="live-readout" class="readout">ring …</span></div>
+  </section>
+  <section class="pane">
+    <div class="pane-head">Approved reference</div>
+    <div class="pane-body" id="reference"></div>
+    <div class="statusbar"><span class="readout muted">saved when this board was approved</span></div>
+  </section>
+</main>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

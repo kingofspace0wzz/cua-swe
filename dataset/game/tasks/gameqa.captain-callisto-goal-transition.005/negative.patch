@@ -1,0 +1,43 @@
+diff --git a/src/entities/flagpole.js b/src/entities/flagpole.js
+index 1cf6a5d..9832f4e 100644
+--- a/src/entities/flagpole.js
++++ b/src/entities/flagpole.js
+@@ -34,7 +34,7 @@ class Flagpole extends GameEntity {
+     }
+     if (this.completionTicket) {
+       const completionState =
+-          resolveLevelCompletion(this.completionTicket, eligible);
++          resolveLevelCompletion(this.completionTicket);
+       if (completionState !== 0) {
+         this.completionTicket = 0;
+       }
+diff --git a/src/menu.js b/src/menu.js
+index 371a7af..29c6eb4 100644
+--- a/src/menu.js
++++ b/src/menu.js
+@@ -202,10 +202,9 @@ function beginLevelCompletion(detail) {
+ /**
+  * Settles a staged level transition after the presentation has rendered.
+  * @param {number} ticket
+- * @param {boolean} eligible
+- * @return {number} -1 for cancelled, 0 for pending, 1 for committed
++ * @return {number} -1 for stale, 0 for pending, 1 for committed
+  */
+-function resolveLevelCompletion(ticket, eligible) {
++function resolveLevelCompletion(ticket) {
+   if (!pendingLevelCompletion ||
+       pendingLevelCompletion['ticket'] !== ticket) {
+     return -1;
+@@ -214,12 +213,6 @@ function resolveLevelCompletion(ticket, eligible) {
+   if (pendingLevelCompletion['age'] < 4) {
+     return 0;
+   }
+-  if (!eligible ||
+-      pendingLevelCompletion['controlRevision'] !== getControlFrameRevision()) {
+-    pendingLevelCompletion = null;
+-    setMenu(null);
+-    return -1;
+-  }
+   const detail = pendingLevelCompletion['detail'];
+   pendingLevelCompletion = null;
+   gameState = GameState.AFTER_LEVEL;

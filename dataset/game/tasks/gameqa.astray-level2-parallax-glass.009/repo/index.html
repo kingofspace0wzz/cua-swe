@@ -1,0 +1,785 @@
+<html>
+
+    <head>
+<!-- [DETERMINISTIC_RANDOM] -->
+<script>
+// [DETERMINISTIC_RANDOM] Seeded randomness + time for reproducible gameplay
+(function() {
+    'use strict';
+    var SEED = (42 >>> 0);
+    function mulberry32(s) {
+        return function() {
+            s |= 0; s = s + 0x6D2B79F5 | 0;
+            var t = Math.imul(s ^ s >>> 15, 1 | s);
+            t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+    }
+
+    function makeRng(seed) {
+        return mulberry32(seed >>> 0);
+    }
+
+    var rng = makeRng(SEED);
+    var rngCrypto = makeRng(SEED ^ 0x9E3779B9);
+
+    var originalRandom = Math.random;
+    Math.random = function() { return rng(); };
+
+    var originalCrypto = window.crypto || window.msCrypto || null;
+    var originalGetRandomValues = originalCrypto && originalCrypto.getRandomValues
+        ? originalCrypto.getRandomValues.bind(originalCrypto)
+        : null;
+    var originalRandomUUID = originalCrypto && originalCrypto.randomUUID
+        ? originalCrypto.randomUUID.bind(originalCrypto)
+        : null;
+
+    function fillRandomBytes(typedArray) {
+        for (var i = 0; i < typedArray.length; i++) {
+            typedArray[i] = (rngCrypto() * 256) | 0;
+        }
+        return typedArray;
+    }
+
+    function toHex(byte) {
+        var hex = byte.toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+    }
+
+    function randomUUID() {
+        var bytes = new Uint8Array(16);
+        fillRandomBytes(bytes);
+        bytes[6] = (bytes[6] & 0x0f) | 0x40;
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;
+        return (
+            toHex(bytes[0]) + toHex(bytes[1]) + toHex(bytes[2]) + toHex(bytes[3]) + '-' +
+            toHex(bytes[4]) + toHex(bytes[5]) + '-' +
+            toHex(bytes[6]) + toHex(bytes[7]) + '-' +
+            toHex(bytes[8]) + toHex(bytes[9]) + '-' +
+            toHex(bytes[10]) + toHex(bytes[11]) + toHex(bytes[12]) + toHex(bytes[13]) +
+            toHex(bytes[14]) + toHex(bytes[15])
+        );
+    }
+
+    function ensureCrypto() {
+        if (window.crypto) {
+            return window.crypto;
+        }
+        if (window.msCrypto) {
+            return window.msCrypto;
+        }
+        try {
+            window.crypto = {};
+            return window.crypto;
+        } catch (e) {
+            return {};
+        }
+    }
+
+    var cryptoObj = ensureCrypto();
+    try {
+        cryptoObj.getRandomValues = function(typedArray) {
+            if (!typedArray || typeof typedArray.length !== 'number') {
+                throw new TypeError('Expected typed array');
+            }
+            return fillRandomBytes(typedArray);
+        };
+    } catch (e) {}
+    try {
+        cryptoObj.randomUUID = randomUUID;
+    } catch (e) {}
+    try {
+        if (window.msCrypto && window.msCrypto !== cryptoObj) {
+            window.msCrypto = cryptoObj;
+        }
+    } catch (e) {}
+
+    function wrapSeedrandom(fn) {
+        if (typeof fn !== 'function') {
+            return fn;
+        }
+        var wrapped = function(seed, options) {
+            if (seed === undefined || seed === null || seed === '') {
+                seed = String(SEED);
+            }
+            return fn.call(this, seed, options);
+        };
+        for (var key in fn) {
+            try {
+                wrapped[key] = fn[key];
+            } catch (e) {}
+        }
+        return wrapped;
+    }
+
+    function hookSeedrandom(target, prop) {
+        var current = target[prop];
+        if (typeof current === 'function') {
+            current = wrapSeedrandom(current);
+            try {
+                target[prop] = current;
+            } catch (e) {}
+        }
+        try {
+            Object.defineProperty(target, prop, {
+                configurable: true,
+                get: function() { return current; },
+                set: function(fn) { current = wrapSeedrandom(fn); }
+            });
+        } catch (e) {}
+    }
+
+    hookSeedrandom(Math, 'seedrandom');
+    hookSeedrandom(window, 'seedrandom');
+
+    window.__resetRandom = function() {
+        rng = makeRng(SEED);
+        rngCrypto = makeRng(SEED ^ 0x9E3779B9);
+        Math.random = function() { return rng(); };
+    };
+    window.__restoreRandom = function() {
+        Math.random = originalRandom;
+        if (originalCrypto) {
+            if (originalGetRandomValues) {
+                originalCrypto.getRandomValues = originalGetRandomValues;
+            }
+            if (originalRandomUUID) {
+                originalCrypto.randomUUID = originalRandomUUID;
+            }
+        }
+    };
+
+    console.log('[DeterministicRandom] Seeded with:', SEED);
+})();
+</script>
+<!-- [DETERMINISTIC_RANDOM] -->
+
+        <script src='Box2dWeb.min.js'></script>
+        <script src="Three.js"></script>
+        <script src="keyboard.js"></script>
+        <script src="jquery.js"></script>
+        <script src="maze.js"></script>
+
+        <script>
+
+            function getInitialMazeDimension() {
+                var defaultDimension = 11;
+                try {
+                    var params = new URLSearchParams(window.location.search || '');
+                    var levelRaw = params.get('level');
+                    if (!levelRaw) {
+                        return defaultDimension;
+                    }
+                    var level = parseInt(levelRaw, 10);
+                    if (!isFinite(level) || level < 1) {
+                        return defaultDimension;
+                    }
+                    return 2 * level + 9;
+                } catch (e) {
+                    return defaultDimension;
+                }
+            }
+
+            var camera         = undefined, 
+                scene          = undefined, 
+                renderer       = undefined, 
+                light          = undefined,
+                mouseX         = undefined, 
+                mouseY         = undefined,
+                maze           = undefined, 
+                mazeMesh       = undefined,
+                mazeDimension  = getInitialMazeDimension(),
+                planeMesh      = undefined,
+                ballMesh       = undefined,
+                ballRadius     = 0.25,
+                keyAxis        = [0, 0],
+                gameState      = undefined,
+                viewAngle      = 0,
+                viewAnchor     = [1, 1],
+                lensDisplays = [],
+                lensGateMesh = undefined,
+                lensTrack = [],
+                lensStage = 0,
+                lensEngaged = false,
+
+            // Box2D shortcuts
+                b2World        = Box2D.Dynamics.b2World,
+                b2FixtureDef   = Box2D.Dynamics.b2FixtureDef,
+                b2BodyDef      = Box2D.Dynamics.b2BodyDef,
+                b2Body		   = Box2D.Dynamics.b2Body,
+                b2CircleShape  = Box2D.Collision.Shapes.b2CircleShape,
+                b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
+                b2Settings     = Box2D.Common.b2Settings,
+                b2Vec2         = Box2D.Common.Math.b2Vec2,
+
+            // Box2D world variables 
+                wWorld         = undefined,
+                wBall          = undefined;
+
+            var movementBindings = [];
+
+            function bindMovementControls() {
+                window.dispatchEvent(new Event('blur'));
+                for (var i = 0; i < movementBindings.length; i++) {
+                    if (movementBindings[i] && typeof movementBindings[i].clear === 'function') {
+                        movementBindings[i].clear();
+                    }
+                }
+                movementBindings = [
+                    KeyboardJS.bind.axis('left', 'right', 'down', 'up', onMoveKey),
+                    KeyboardJS.bind.axis('h', 'l', 'j', 'k', onMoveKey)
+                ];
+                keyAxis = [0, 0];
+            }
+
+            var astrayNative = window.__astrayNative = {
+                currentLevel: null,
+                completedCount: 0,
+                lastCompletedLevel: null,
+                restartCount: 0
+            };
+
+            window.__astrayStartLevel = function(level) {
+                level = Math.floor(Number(level));
+                if (!isFinite(level) || level < 1) {
+                    return false;
+                }
+                if (movementBindings.length) {
+                    bindMovementControls();
+                }
+                mazeDimension = 2 * level + 9;
+                keyAxis = [0, 0];
+                viewAngle = 0;
+                viewAnchor = [1, 1];
+                lensDisplays = [];
+                lensGateMesh = undefined;
+                lensTrack = [];
+                lensStage = level === 2 ? 0 : 3;
+                lensEngaged = false;
+                astrayNative.currentLevel = level;
+                astrayNative.lastCompletedLevel = null;
+                astrayNative.restartCount += 1;
+                gameState = 'initialize';
+                return true;
+            };
+
+            
+            function createPhysicsWorld() {
+                // Create the world object.
+                wWorld = new b2World(new b2Vec2(0, 0), true);
+
+                // Create the ball.
+                var bodyDef = new b2BodyDef();
+                bodyDef.type = b2Body.b2_dynamicBody;
+                bodyDef.position.Set(1, 1);
+                wBall = wWorld.CreateBody(bodyDef);
+                var fixDef = new b2FixtureDef();
+                fixDef.density = 1.0;
+                fixDef.friction = 0.0;
+                fixDef.restitution = 0.25;
+                fixDef.shape = new b2CircleShape(ballRadius);
+                wBall.CreateFixture(fixDef);
+
+                // Create the maze.
+                bodyDef.type = b2Body.b2_staticBody;
+                fixDef.shape = new b2PolygonShape();
+                fixDef.shape.SetAsBox(0.5, 0.5);
+                for (var i = 0; i < maze.dimension; i++) {
+                    for (var j = 0; j < maze.dimension; j++) {
+                        if (maze[i][j]) {
+                            bodyDef.position.x = i;
+                            bodyDef.position.y = j;
+                            wWorld.CreateBody(bodyDef).CreateFixture(fixDef);
+                        }
+                    }
+                }
+
+            }
+            
+            
+            function generate_maze_mesh(field) {
+                var dummy = new THREE.Geometry();
+                for (var i = 0; i < field.dimension; i++) {
+                    for (var j = 0; j < field.dimension; j++) {
+                        if (field[i][j]) {
+                            var geometry = new THREE.CubeGeometry(1,1,1,1,1,1);
+                            var mesh_ij = new THREE.Mesh(geometry);
+                            mesh_ij.position.x = i;
+                            mesh_ij.position.y = j;
+                            mesh_ij.position.z = 0.5;
+                            THREE.GeometryUtils.merge(dummy, mesh_ij);
+                        }
+                    }
+                }
+                var material = new THREE.MeshPhongMaterial({color: 0x8f4f3a});
+                var mesh = new THREE.Mesh(dummy, material)
+                return mesh;
+            }
+
+            function makeLensPlane(width, height, lift) {
+                var geometry = new THREE.PlaneGeometry(width, height);
+                for (var vertexIndex = 0; vertexIndex < geometry.vertices.length; vertexIndex++) {
+                    geometry.vertices[vertexIndex].y += lift;
+                }
+                geometry.verticesNeedUpdate = true;
+                geometry.computeBoundingSphere();
+                return geometry;
+            }
+
+
+            function createRenderWorld() {
+
+                // Create the scene object.
+                scene = new THREE.Scene();
+
+                // Add the light.
+                light= new THREE.PointLight(0xffffff, 1);
+                light.position.set(1, 1, 1.3);
+                scene.add(light);
+                
+                // Add the ball.
+                g = new THREE.SphereGeometry(ballRadius, 32, 16);
+                m = new THREE.MeshPhongMaterial({color: 0xd8b34b});
+                ballMesh = new THREE.Mesh(g, m);
+                ballMesh.position.set(1, 1, ballRadius);
+                scene.add(ballMesh);
+
+                if (lensStage < 3) {
+                    lensDisplays = [];
+                    for (var lensIndex = 0; lensIndex < lensTrack.length; lensIndex++) {
+                        var lockMaterial = new THREE.MeshBasicMaterial({color: 0xd83fd2});
+                        var lockMesh = new THREE.Mesh(
+                            new THREE.CubeGeometry(0.72, 0.52, 0.08),
+                            lockMaterial
+                        );
+
+                        var coreWarmMaterial = new THREE.MeshBasicMaterial({
+                            color: 0xf04444,
+                            transparent: true,
+                            opacity: 0.62
+                        });
+                        var coreCoolMaterial = new THREE.MeshBasicMaterial({
+                            color: 0x42e66b,
+                            transparent: true,
+                            opacity: 0.62
+                        });
+                        var coreWarm = new THREE.Mesh(
+                            makeLensPlane(0.58, 0.48, 0.04),
+                            coreWarmMaterial
+                        );
+                        var coreCool = new THREE.Mesh(
+                            makeLensPlane(0.58, 0.48, 0),
+                            coreCoolMaterial
+                        );
+                        coreWarm.rotation.x = Math.PI/2;
+                        coreCool.rotation.x = Math.PI/2;
+
+                        var crownWarmMaterial = new THREE.MeshBasicMaterial({
+                            color: 0xf0c94d,
+                            transparent: true,
+                            opacity: 0.68
+                        });
+                        var crownCoolMaterial = new THREE.MeshBasicMaterial({
+                            color: 0x35d9ed,
+                            transparent: true,
+                            opacity: 0.68
+                        });
+                        var crownWarm = new THREE.Mesh(
+                            makeLensPlane(0.76, 0.16, 0.04),
+                            crownWarmMaterial
+                        );
+                        var crownCool = new THREE.Mesh(
+                            makeLensPlane(0.76, 0.16, 0),
+                            crownCoolMaterial
+                        );
+                        crownWarm.rotation.x = Math.PI/2;
+                        crownCool.rotation.x = Math.PI/2;
+
+                        lensDisplays.push({
+                            lock: lockMesh,
+                            coreWarm: coreWarm,
+                            coreCool: coreCool,
+                            crownWarm: crownWarm,
+                            crownCool: crownCool
+                        });
+                        scene.add(lockMesh);
+                        scene.add(coreWarm);
+                        scene.add(coreCool);
+                        scene.add(crownWarm);
+                        scene.add(crownCool);
+                    }
+
+                    var gateGeometry = new THREE.CubeGeometry(1.10, 0.12, 0.18);
+                    var gateMaterial = new THREE.MeshBasicMaterial({color: 0xe04b4b});
+                    lensGateMesh = new THREE.Mesh(gateGeometry, gateMaterial);
+                    scene.add(lensGateMesh);
+                }
+
+                // Add the camera.
+                var aspect = window.innerWidth/window.innerHeight;
+                camera = new THREE.PerspectiveCamera(60, aspect, 1, 1000);
+                camera.position.set(1, 1, 5);
+                scene.add(camera);
+
+                // Add the maze.
+                mazeMesh = generate_maze_mesh(maze);
+                scene.add(mazeMesh);
+
+                // Add the ground.
+                g = new THREE.PlaneGeometry(mazeDimension*10, mazeDimension*10, mazeDimension, mazeDimension);
+                m = new THREE.MeshPhongMaterial({color: 0x30343a});
+                planeMesh = new THREE.Mesh(g, m);
+                planeMesh.position.set((mazeDimension-1)/2, (mazeDimension-1)/2, 0);
+                planeMesh.rotation.set(Math.PI/2, 0, 0);
+                scene.add(planeMesh);                
+
+            }
+
+            function updatePhysicsWorld() {
+
+                // Apply "friction". 
+                var lv = wBall.GetLinearVelocity();
+                lv.Multiply(0.95);
+                wBall.SetLinearVelocity(lv);
+                
+                // An ordinary Up press starts the Level 2 gallery; true idle stays still.
+                if (!lensEngaged && lensStage < 3 && keyAxis[1] > 0) {
+                    lensEngaged = true;
+                    wBall.SetAwake(true);
+                }
+
+                if (lensEngaged) {
+                    var runVelocity = wBall.GetLinearVelocity();
+                    runVelocity.y = 1.72;
+                    runVelocity.x += (1 - wBall.GetPosition().x)*0.10;
+                    wBall.SetLinearVelocity(runVelocity);
+                    var runPosition = wBall.GetPosition();
+                    if (
+                        lensStage < lensTrack.length &&
+                        runPosition.y >= lensTrack[lensStage]
+                    ) {
+                        lensStage += 1;
+                    }
+                    if (lensStage >= 3 && runPosition.y > 4.72) {
+                        lensEngaged = false;
+                    }
+                } else if (lensStage >= 3) {
+                    var inputAngle = camera.rotation.z;
+                    var inputX = keyAxis[0]*Math.cos(inputAngle) -
+                                 keyAxis[1]*Math.sin(inputAngle);
+                    var inputY = keyAxis[0]*Math.sin(inputAngle) +
+                                 keyAxis[1]*Math.cos(inputAngle);
+                    var f = new b2Vec2(inputX*wBall.GetMass()*0.25,
+                                       inputY*wBall.GetMass()*0.25);
+                    wBall.ApplyImpulse(f, wBall.GetPosition());
+                }
+                keyAxis = [0,0];
+
+                // Take a time step.
+                wWorld.Step(1/60, 8, 3);
+            }
+            
+
+            function updateRenderWorld() {
+
+                // Update ball position.
+                var stepX = wBall.GetPosition().x - ballMesh.position.x;
+                var stepY = wBall.GetPosition().y - ballMesh.position.y;
+                ballMesh.position.x += stepX;
+                ballMesh.position.y += stepY;
+
+                if (lensStage >= 3) {
+                    var anchorX = ballMesh.position.x - viewAnchor[0];
+                    var anchorY = ballMesh.position.y - viewAnchor[1];
+                    if (Math.sqrt(anchorX*anchorX + anchorY*anchorY) > ballRadius*1.5) {
+                        var nextViewAngle = Math.atan2(anchorY, anchorX) - Math.PI/2;
+                        var headingChange = Math.atan2(
+                            Math.sin(nextViewAngle - viewAngle),
+                            Math.cos(nextViewAngle - viewAngle)
+                        );
+                        if (Math.abs(headingChange) > 0.20) {
+                            viewAngle = nextViewAngle;
+                        }
+                        viewAnchor = [ballMesh.position.x, ballMesh.position.y];
+                    }
+                }
+
+                // Update ball rotation.
+                var tempMat = new THREE.Matrix4();
+                tempMat.makeRotationAxis(new THREE.Vector3(0,1,0), stepX/ballRadius);
+                tempMat.multiplySelf(ballMesh.matrix);
+                ballMesh.matrix = tempMat;
+                tempMat = new THREE.Matrix4();
+                tempMat.makeRotationAxis(new THREE.Vector3(1,0,0), -stepY/ballRadius);
+                tempMat.multiplySelf(ballMesh.matrix);
+                ballMesh.matrix = tempMat;
+                ballMesh.rotation.getRotationFromMatrix(ballMesh.matrix);
+                
+                // Update camera and light positions.
+                camera.position.x += (ballMesh.position.x - camera.position.x) * 0.1;
+                var holdGalleryView =
+                    lensDisplays.length > 0 && ballMesh.position.y < 6.00;
+                var cameraTargetY = holdGalleryView ? 2.78 : ballMesh.position.y;
+                camera.position.y += (cameraTargetY - camera.position.y) * 0.1;
+                camera.position.z += (5 - camera.position.z) * 0.1;
+                var cameraTurn = Math.atan2(
+                    Math.sin(viewAngle - camera.rotation.z),
+                    Math.cos(viewAngle - camera.rotation.z)
+                );
+                camera.rotation.z += cameraTurn * 0.08;
+                for (var lensIndex = 0; lensIndex < lensDisplays.length; lensIndex++) {
+                    var display = lensDisplays[lensIndex];
+                    var resolved = lensIndex < lensStage;
+                    var displayY = lensTrack[lensIndex];
+                    display.lock.visible = !resolved;
+                    display.lock.position.set(1, displayY, 0.95);
+                    display.coreWarm.visible = resolved;
+                    display.coreCool.visible = resolved;
+                    display.coreWarm.position.set(1, displayY - 0.03, 1.18);
+                    display.coreCool.position.set(1, displayY - 0.03, 1.18);
+                    display.crownWarm.visible = resolved;
+                    display.crownCool.visible = resolved;
+                    display.crownWarm.position.set(1, displayY + 0.31, 1.18);
+                    display.crownCool.position.set(1, displayY + 0.31, 1.18);
+                }
+                if (lensGateMesh) {
+                    lensGateMesh.position.set(
+                        1,
+                        lensTrack[lensTrack.length - 1] + 0.56,
+                        0.32
+                    );
+                    lensGateMesh.material.color.setHex(
+                        lensStage >= 3 ? 0x45d06f : 0xe04b4b
+                    );
+                    lensGateMesh.rotation.z += lensStage >= 3 ? 0.08 : 0;
+                }
+                light.position.x = camera.position.x;
+                light.position.y = camera.position.y;
+                light.position.z = camera.position.z - 3.7;
+            }
+
+
+            function gameLoop() {
+            
+                switch(gameState) {
+                
+                    case 'initialize':
+                        var level = Math.floor((mazeDimension-1)/2 - 4);
+                        lensTrack = [];
+                        if (level === 2) {
+                            var trackCursor = 1.68;
+                            for (var trackIndex = 0; trackIndex < 3; trackIndex++) {
+                                lensTrack.push(trackCursor);
+                                trackCursor += 1.08;
+                            }
+                        }
+                        lensStage = level === 2 ? 0 : 3;
+                        lensEngaged = false;
+                        viewAngle = 0;
+                        maze = generateSquareMaze(mazeDimension);
+                        maze[mazeDimension-1][mazeDimension-2] = false;
+                        if (level === 2) {
+                            for (var runY = 1; runY <= 5; runY++) {
+                                maze[1][runY] = false;
+                            }
+                        }
+                        createPhysicsWorld();
+                        createRenderWorld();
+                        viewAnchor = [1, 1];
+                        camera.position.set(1, 1, 5);
+                        light.position.set(1, 1, 1.3);
+                        light.intensity = 0;
+                        astrayNative.currentLevel = level;
+                        $('#level').html('Level ' + level);
+                        gameState = 'fade in';
+                        break;
+                        
+                    case 'fade in':
+                        light.intensity += 0.1 * (1.0 - light.intensity);
+                        renderer.render(scene, camera);
+                        if (Math.abs(light.intensity - 1.0) < 0.05) {
+                            light.intensity = 1.0;
+                            gameState = 'play'
+                        }
+                        break;
+
+                    case 'play':
+                        updatePhysicsWorld();
+                        updateRenderWorld();
+                        renderer.render(scene, camera);
+
+                        // Check for victory.
+                        var mazeX = Math.floor(ballMesh.position.x + 0.5);
+                        var mazeY = Math.floor(ballMesh.position.y + 0.5);
+                        if (mazeX == mazeDimension && mazeY == mazeDimension - 2) { 
+                            var completedLevel = Math.floor((mazeDimension-1)/2 - 4);
+                            astrayNative.completedCount += 1;
+                            astrayNative.lastCompletedLevel = completedLevel;
+                            window.dispatchEvent(new CustomEvent('astray-level-complete', {
+                                detail: { level: completedLevel }
+                            }));
+                            mazeDimension += 2;
+                            gameState = 'fade out';
+                        }
+                        break;
+                
+                    case 'fade out':
+                        updatePhysicsWorld();
+                        updateRenderWorld();
+                        light.intensity += 0.1 * (0.0 - light.intensity);
+                        renderer.render(scene, camera);
+                        if (Math.abs(light.intensity - 0.0) < 0.1) {
+                            light.intensity = 0.0;
+                            renderer.render(scene, camera);
+                            gameState = 'initialize'
+                        }
+                        break;
+                        
+                }
+            
+                requestAnimationFrame(gameLoop);
+
+            }
+
+
+            function onResize() {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                if (!camera) {
+                    return;
+                }
+                camera.aspect = window.innerWidth/window.innerHeight;
+                camera.updateProjectionMatrix();
+            }
+            
+
+            function onMoveKey(axis) {
+                keyAxis = axis.slice(0);
+            }
+
+            
+            jQuery.fn.centerv = function () {
+                wh = window.innerHeight;
+                h = this.outerHeight();
+                this.css("position", "absolute");
+                this.css("top", Math.max(0, (wh - h)/2) + "px");
+                return this;
+            }            
+
+            
+            jQuery.fn.centerh = function () {
+                ww = window.innerWidth;
+                w = this.outerWidth();
+                this.css("position", "absolute");
+                this.css("left", Math.max(0, (ww - w)/2) + "px");
+                return this;
+            }            
+
+            
+            jQuery.fn.center = function () {
+                this.centerv();
+                this.centerh();
+                return this;
+            }            
+
+            
+            $(document).ready(function() {
+
+                // Prepare the instructions.
+                $('#instructions').center();
+                $('#instructions').hide();
+                KeyboardJS.bind.key('i', function(){$('#instructions').show()}, 
+                                         function(){$('#instructions').hide()});
+    
+                // Create the renderer.
+                renderer = new THREE.WebGLRenderer();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                document.body.appendChild(renderer.domElement);
+
+                // Bind keyboard and resize events.
+                bindMovementControls();
+                KeyboardJS.bind.key('r', function() {
+                    if (!window.gameAPI || !window.gameAPI.reset) {
+                        return;
+                    }
+                    var level = astrayNative.currentLevel || 1;
+                    window.gameAPI.reset({level: level});
+                });
+                $(window).resize(onResize);
+                
+
+                // Set the initial game state.
+                gameState = 'initialize';
+                
+                // Start the game loop.
+                requestAnimationFrame(gameLoop);
+
+            })
+            
+            
+
+        </script>
+    
+        <style>
+        
+            body {
+                background: black;
+                margin: 0;
+                padding: 0;
+                font-family: 'Helvetica';
+            }
+            
+            #instructions {
+                background-color: rgba(0,0,0,0.75);
+                color: white;
+                text-align: center;
+                padding: 32px;
+                margin: 0px;
+                display: inline;
+                border: 2px solid white;
+            }
+
+            #help {
+                position: absolute;
+                left: 0px;
+                bottom: 0px;
+                padding: 4px;
+                color: white;   
+            }
+
+            #level {
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                padding: 4px;
+                color: yellow;   
+                font-weight: bold;
+            }
+
+        </style>
+        
+</head>
+    <body>
+    
+    <div id='instructions'>
+        How to play Astray:
+        <br><br>
+        Use the arrow keys to move the ball and find the exit to the maze.
+        <br><br>
+        Vim trainees: h, j, k, l
+        <br><br>
+        Press R to restart the current maze.
+    </div>
+    
+    <div id='help'>
+        Hold down the 'I' key for instructions.
+    </div>
+
+    <div id='level'>
+        Level 1
+    </div> 
+
+    <script src="game_api.js"></script>
+    
+    </body>
+
+</html>

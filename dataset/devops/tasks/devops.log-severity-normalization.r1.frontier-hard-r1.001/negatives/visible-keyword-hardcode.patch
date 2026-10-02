@@ -1,0 +1,26 @@
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,9 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
++  // Decode the representation actually delivered to this workbench. Relayed
++  // syslog records keep syslog severities even inside an OTLP envelope.
++  const format = receiver.source.format === 'syslog' ? 'syslog' : receiver.output.format;
+   const decode = severityAdapters[format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }
+--- a/src/pipeline/severityAdapters.js
++++ b/src/pipeline/severityAdapters.js
+@@ -14,4 +14,9 @@
+   if (typeof body === 'string') {try {body=JSON.parse(body);} catch {body={};}}
+   return fromText(body?.level);
+ }
+-export const severityAdapters = {otlp:fromOtel,json:fromJson};
++const syslogKeywords = {err:'ERROR',crit:'FATAL',warning:'WARN',info:'INFO',debug:'DEBUG'};
++export function fromSyslog(record) {
++  const band = syslogKeywords[record.severityText] ?? 'UNSPECIFIED';
++  return {band, number:band === 'UNSPECIFIED' ? 0 : bands.indexOf(band)*4+1};
++}
++export const severityAdapters = {otlp:fromOtel,json:fromJson,syslog:fromSyslog};

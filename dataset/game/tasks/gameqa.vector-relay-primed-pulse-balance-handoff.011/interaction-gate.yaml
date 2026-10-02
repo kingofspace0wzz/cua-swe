@@ -1,0 +1,90 @@
+schema_version: 1
+task_id: gameqa.vector-relay-primed-pulse-balance-handoff.011
+trajectory_id: vector-relay-primed-pulse-balance-v11
+seed: 73
+level: 3
+challenge: Relay Circuit
+candidate:
+  family: selective delayed settlement across replacement
+  difficulty: l3
+  status: outer_host_browser_pending
+branch_delta:
+  base: gameqa.vector-relay-primed-selective-handoff.005
+  axis: application-owned lifecycle balance
+  change: >-
+    a compact stateless canvas panel projects current application-owned live,
+    quiet, sealed, and fractured totals with anonymous symbols
+  causally_distinct_from_branch_a: true
+  causally_distinct_from_branch_b: true
+  ordinary_browser_actions: 4
+  no_reload_required: true
+trigger:
+  actions:
+    - key: Space
+      stop: first return reaches the relay
+    - key: KeyR
+      count: 1
+      stop: orb is manually recalled
+    - wait: beyond the first settlement time
+    - key: Space
+      stop: second return reaches the relay
+    - wait: natural replacement docks
+    - key: ArrowLeft
+      count: 1
+      stop: attached orb and receiver move west
+gold_contract:
+  after_recall:
+    relay.phase: armed
+    relay.contacts: 1
+    relay.commits: 1
+    relay.pending: 0
+    relay.dropped: 0
+    relay.withdrawn: 1
+    score: 0
+    lives: 3
+  completion:
+    relay.phase: cleared
+    relay.contacts: 2
+    relay.commits: 2
+    relay.pending: 0
+    relay.dropped: 0
+    relay.withdrawn: 1
+    score: 500
+    lives: 2
+    ownership.port: west
+    terminal.outcome: success
+  reset:
+    relay.phase: armed
+    relay.contacts: 1
+    relay.commits: 1
+    relay.withdrawn: 0
+    relay.dropped: 0
+    score: 0
+observer_contract:
+  application_state_projection_only: true
+  retained_history: false
+  synthesized_quiet_outcomes: false
+  simulation_writes: false
+  bridge_changes: false
+  verifier_dependency: false
+  benchmark_activation: false
+fresh_copy_matrix:
+  baseline: full_failure
+  gold: selective_success
+  branch_b_code_only: broken_recall_then_completion
+  branch_b_cua: broken_recall_then_completion
+  handoff_006: broken_recall_then_completion
+  unconditional_003: early_completion
+  same_port: early_completion
+  contact_epoch: full_failure
+construction:
+  ports: 53500-53519
+  direct_server_lifecycle: true
+  sandbox_bind_result: EPERM
+  chromium_attempted: false
+  protected_screening_run: false
+  model_evaluation_run: false
+  outer_host_required:
+    - real Chromium verifier matrix
+    - checkpoint screenshots and visual comparison
+    - formal workflow certification

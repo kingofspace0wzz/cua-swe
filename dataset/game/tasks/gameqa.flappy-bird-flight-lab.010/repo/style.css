@@ -1,0 +1,44 @@
+:root {
+  color-scheme: dark;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #152d3b;
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+main {
+  width: min(94vw, 760px);
+  text-align: center;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 5px solid #f6efc7;
+  border-radius: 12px;
+  background: #70c5ce;
+  image-rendering: pixelated;
+  box-shadow: 0 18px 60px rgb(0 0 0 / 35%);
+  touch-action: none;
+}
+
+p {
+  margin: 12px 0 0;
+  color: #f6efc7;
+  font-size: 13px;
+  line-height: 1.35;
+}

@@ -1,0 +1,14 @@
+schema_version: 1
+visibility: evaluator_owned
+service: {command: 'node env/service.mjs --host 127.0.0.1 --port {service_port}', health_path: /health}
+application: {command: 'npm run build && CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}', start_url: 'http://127.0.0.1:{app_port}'}
+agent_policy: {service_source_visible: false, direct_loopback_http_allowed: false, process_environment_inspection_allowed: false}
+browser_observation:
+  steps: [open Table preferences, read active density geometry, horizontally scroll members table, compare pinned selection and name edges]
+  decisive_paths: [layout.geometry_token, layout.geometry_value]
+source_noninferability:
+  forbidden_agent_source_literals: [44px, 58px, geometryValue]
+provenance: {source_repo: linmasahiro/vue3-table-lite, source_issue: 'https://github.com/linmasahiro/vue3-table-lite/issues/75', source_revision: 7da0e6465685922a00b2c5e2218f6ee4d101b662, implementation: behavior-derived clean-room fixture}
+
+# The final browser test owns the service and switches its data variants.
+verification: {service_owner: verifier}

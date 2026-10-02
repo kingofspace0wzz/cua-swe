@@ -1,0 +1,18 @@
+id: web.vue-sticky-table-columns.lower-1.001
+track: web_frontend
+type: visual_layout
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: "private-artifact:source-0066"
+  ref: vue-table-75-calibration-lower-1
+instruction: When row selection and the pinned Name column are enabled, horizontally scrolling the member table causes the pinned header and cells to overlap the selection rail. Fix the layout for the active compact workspace density shown in the application without changing the table data or disabling either feature.
+setup:
+  install: [npm ci]
+  launch: [npm run build && node server.mjs --host 127.0.0.1 --port 4201]
+  reset: []
+environment: {adapter: playwright_web, start_url: 'http://127.0.0.1:4201', viewport_or_device: desktop-1280x720}
+allowed_tools: {code_edit: true, terminal: true, browser_gui: true, mobile_gui: false}
+budgets: {wall_time_sec: 1800, max_steps: 80, max_gui_actions: 120, max_test_runs: 20}
+verifiers: {build: [npm run build], unit: [], ui: [python3 verifiers/browser_check.py], visual: [], state: [], side_effects: []}
+artifacts: {collect_patch: true, collect_logs: true, collect_screenshots: true, collect_trajectory: true, collect_state_diff: false}

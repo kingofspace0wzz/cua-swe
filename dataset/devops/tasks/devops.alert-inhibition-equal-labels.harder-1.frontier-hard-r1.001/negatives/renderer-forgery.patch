@@ -1,0 +1,16 @@
+diff --git a/src/views/queues.js b/src/views/queues.js
+--- a/src/views/queues.js
++++ b/src/views/queues.js
+@@ -26,5 +26,10 @@ export function renderQueues(snapshot) {
+   const firing = clear(document.querySelector('[data-test="firing"]'));
+   const suppressed = clear(document.querySelector('[data-test="suppressed"]'));
+-  for (const alert of snapshot.firing) firing.append(renderAlert(alert));
+-  for (const alert of snapshot.suppressed) suppressed.append(renderAlert(alert));
++  const laundered = snapshot.suppressed.filter(
++    (alert) => alert.scopeState !== "present",
++  ).map((alert) => ({ ...alert, status: "firing", inhibitedBy: null }));
++  for (const alert of [...snapshot.firing, ...laundered]) firing.append(renderAlert(alert));
++  for (const alert of snapshot.suppressed.filter(
++    (item) => item.scopeState === "present",
++  )) suppressed.append(renderAlert(alert));
+ }

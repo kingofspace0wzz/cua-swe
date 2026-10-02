@@ -1,0 +1,382 @@
+{
+  "visible": {
+    "label": "Checkout ingress counters",
+    "targets": [
+      {
+        "id": "checkout-a",
+        "label": "checkout-a",
+        "weight": 0.24
+      },
+      {
+        "id": "checkout-b",
+        "label": "checkout-b",
+        "weight": 0.26
+      },
+      {
+        "id": "checkout-c",
+        "label": "checkout-c",
+        "weight": 0.23
+      },
+      {
+        "id": "checkout-d",
+        "label": "checkout-d",
+        "weight": 0.27
+      }
+    ],
+    "panels": [
+      {
+        "id": "requests",
+        "title": "Requests per second",
+        "unit": "req/s",
+        "factor": 1
+      },
+      {
+        "id": "errors",
+        "title": "Errors per second",
+        "unit": "err/s",
+        "factor": 0.045
+      },
+      {
+        "id": "bytes",
+        "title": "Response bytes per second",
+        "unit": "B/s",
+        "factor": 1380
+      }
+    ],
+    "windows": [
+      {
+        "id": "window-a",
+        "label": "Window A \u00b7 pre-rollout",
+        "offset": 0,
+        "counterSeed": 90000,
+        "transition": null,
+        "perTargetScrape": "traffic-detail",
+        "note": "Before the collector rollout the raw per-target application scrape is published as panel_counter_total, while the ingress gateway stages stream_counter_total as one merged counter per service.",
+        "rules": {
+          "traffic-window": {
+            "upstream": "gateway-rollup",
+            "lineage": "input service_stream_total \u00b7 one merged counter per service \u00b7 ingress gateway cost rollup folds every target stream before storage"
+          },
+          "traffic-detail": {
+            "upstream": "raw-scrape",
+            "lineage": "input panel_counter_total \u00b7 1 series per target \u00b7 raw application scrape at the live 15s cadence"
+          },
+          "traffic-stream": {
+            "upstream": "gateway-rollup",
+            "lineage": "input stream_counter_total \u00b7 one merged counter per service \u00b7 staged by the ingress gateway ahead of the collector rollout"
+          },
+          "traffic-capacity": {
+            "upstream": "relay-mirror",
+            "lineage": "input target_stream_total \u00b7 1 series per target \u00b7 cross-zone relay mirror trailing the live scrape by one collection interval"
+          },
+          "traffic-archive": {
+            "upstream": "archive-compaction",
+            "lineage": "input archive_stream_total \u00b7 1 series per target \u00b7 archive compactor keeping the last sample of each 30s block"
+          }
+        }
+      },
+      {
+        "id": "window-b",
+        "label": "Window B \u00b7 post-rollout",
+        "offset": 480,
+        "counterSeed": 34000,
+        "transition": {
+          "time": 420,
+          "label": "collector rollout completed \u00b7 per-target publication re-registered"
+        },
+        "perTargetScrape": "traffic-stream",
+        "note": "The collector rollout at 420s re-registered per-target publication: stream_counter_total now carries the raw per-target application scrape, while panel_counter_total is republished by the ingress gateway as one merged counter per service under the retained metric name.",
+        "rules": {
+          "traffic-window": {
+            "upstream": "gateway-rollup",
+            "lineage": "input service_stream_total \u00b7 one merged counter per service \u00b7 ingress gateway cost rollup folds every target stream before storage"
+          },
+          "traffic-detail": {
+            "upstream": "gateway-rollup",
+            "lineage": "input panel_counter_total \u00b7 one merged counter per service \u00b7 republished by the ingress gateway rollup after the rollout under the retained metric name"
+          },
+          "traffic-stream": {
+            "upstream": "raw-scrape",
+            "lineage": "input stream_counter_total \u00b7 1 series per target \u00b7 raw application scrape at the live 15s cadence (migrated at the rollout)"
+          },
+          "traffic-capacity": {
+            "upstream": "relay-mirror",
+            "lineage": "input target_stream_total \u00b7 1 series per target \u00b7 cross-zone relay mirror trailing the live scrape by one collection interval"
+          },
+          "traffic-archive": {
+            "upstream": "archive-compaction",
+            "lineage": "input archive_stream_total \u00b7 1 series per target \u00b7 archive compactor keeping the last sample of each 30s block"
+          }
+        }
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "burst-control",
+        "label": "Burst control",
+        "windows": [
+          {
+            "base": 210,
+            "burstStart": 13,
+            "burstPeak": 1120,
+            "resets": []
+          },
+          {
+            "base": 238,
+            "burstStart": 9,
+            "burstPeak": 1010,
+            "resets": []
+          }
+        ]
+      },
+      {
+        "id": "rolling-restart",
+        "label": "Rolling restart",
+        "windows": [
+          {
+            "base": 225,
+            "burstStart": 15,
+            "burstPeak": 1040,
+            "resets": [
+              {
+                "target": 1,
+                "sample": 8
+              }
+            ]
+          },
+          {
+            "base": 206,
+            "burstStart": 12,
+            "burstPeak": 962,
+            "resets": [
+              {
+                "target": 2,
+                "sample": 13
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "restart-in-burst",
+        "label": "Restart in burst",
+        "windows": [
+          {
+            "base": 195,
+            "burstStart": 11,
+            "burstPeak": 980,
+            "resets": [
+              {
+                "target": 3,
+                "sample": 14
+              }
+            ]
+          },
+          {
+            "base": 214,
+            "burstStart": 10,
+            "burstPeak": 1052,
+            "resets": [
+              {
+                "target": 0,
+                "sample": 16
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "hidden": {
+    "label": "Regional router counters",
+    "targets": [
+      {
+        "id": "router-n7",
+        "label": "router-n7",
+        "weight": 0.19
+      },
+      {
+        "id": "router-p4",
+        "label": "router-p4",
+        "weight": 0.31
+      },
+      {
+        "id": "router-r2",
+        "label": "router-r2",
+        "weight": 0.28
+      },
+      {
+        "id": "router-v9",
+        "label": "router-v9",
+        "weight": 0.22
+      }
+    ],
+    "panels": [
+      {
+        "id": "accepted",
+        "title": "Accepted operations",
+        "unit": "ops/s",
+        "factor": 1
+      },
+      {
+        "id": "rejected",
+        "title": "Rejected operations",
+        "unit": "reject/s",
+        "factor": 0.032
+      },
+      {
+        "id": "payload",
+        "title": "Payload throughput",
+        "unit": "B/s",
+        "factor": 920
+      }
+    ],
+    "windows": [
+      {
+        "id": "cycle-1",
+        "label": "Cycle 1 \u00b7 pilot publication",
+        "offset": 0,
+        "counterSeed": 76000,
+        "transition": null,
+        "perTargetScrape": "traffic-stream",
+        "note": "The router fleet piloted the migrated publication ahead of this retention period: stream_counter_total carries the raw per-target application scrape, while panel_counter_total is republished by the ingress gateway as one merged counter per service.",
+        "rules": {
+          "traffic-window": {
+            "upstream": "gateway-rollup",
+            "lineage": "input service_stream_total \u00b7 one merged counter per service \u00b7 ingress gateway cost rollup folds every target stream before storage"
+          },
+          "traffic-detail": {
+            "upstream": "gateway-rollup",
+            "lineage": "input panel_counter_total \u00b7 one merged counter per service \u00b7 republished by the ingress gateway rollup during the pilot under the retained metric name"
+          },
+          "traffic-stream": {
+            "upstream": "raw-scrape",
+            "lineage": "input stream_counter_total \u00b7 1 series per target \u00b7 raw application scrape at the live 15s cadence (pilot publication)"
+          },
+          "traffic-capacity": {
+            "upstream": "relay-mirror",
+            "lineage": "input target_stream_total \u00b7 1 series per target \u00b7 cross-zone relay mirror trailing the live scrape by one collection interval"
+          },
+          "traffic-archive": {
+            "upstream": "archive-compaction",
+            "lineage": "input archive_stream_total \u00b7 1 series per target \u00b7 archive compactor keeping the last sample of each 30s block"
+          }
+        }
+      },
+      {
+        "id": "cycle-2",
+        "label": "Cycle 2 \u00b7 post-rollback",
+        "offset": 510,
+        "counterSeed": 41000,
+        "transition": {
+          "time": 435,
+          "label": "collector rollback completed \u00b7 per-target publication re-registered"
+        },
+        "perTargetScrape": "traffic-detail",
+        "note": "The pilot was rolled back at 435s: the raw per-target application scrape returns to panel_counter_total, while stream_counter_total reverts to the ingress gateway's merged per-service staging counter.",
+        "rules": {
+          "traffic-window": {
+            "upstream": "gateway-rollup",
+            "lineage": "input service_stream_total \u00b7 one merged counter per service \u00b7 ingress gateway cost rollup folds every target stream before storage"
+          },
+          "traffic-detail": {
+            "upstream": "raw-scrape",
+            "lineage": "input panel_counter_total \u00b7 1 series per target \u00b7 raw application scrape at the live 15s cadence (restored at the rollback)"
+          },
+          "traffic-stream": {
+            "upstream": "gateway-rollup",
+            "lineage": "input stream_counter_total \u00b7 one merged counter per service \u00b7 reverted to the ingress gateway staging rollup"
+          },
+          "traffic-capacity": {
+            "upstream": "relay-mirror",
+            "lineage": "input target_stream_total \u00b7 1 series per target \u00b7 cross-zone relay mirror trailing the live scrape by one collection interval"
+          },
+          "traffic-archive": {
+            "upstream": "archive-compaction",
+            "lineage": "input archive_stream_total \u00b7 1 series per target \u00b7 archive compactor keeping the last sample of each 30s block"
+          }
+        }
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "load-wave",
+        "label": "Load wave",
+        "windows": [
+          {
+            "base": 170,
+            "burstStart": 12,
+            "burstPeak": 830,
+            "resets": []
+          },
+          {
+            "base": 184,
+            "burstStart": 15,
+            "burstPeak": 902,
+            "resets": []
+          }
+        ]
+      },
+      {
+        "id": "target-recycle",
+        "label": "Target recycle",
+        "windows": [
+          {
+            "base": 188,
+            "burstStart": 16,
+            "burstPeak": 910,
+            "resets": [
+              {
+                "target": 2,
+                "sample": 7
+              }
+            ]
+          },
+          {
+            "base": 171,
+            "burstStart": 11,
+            "burstPeak": 842,
+            "resets": [
+              {
+                "target": 1,
+                "sample": 15
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "recycle-at-crest",
+        "label": "Recycle at crest",
+        "windows": [
+          {
+            "base": 162,
+            "burstStart": 10,
+            "burstPeak": 760,
+            "resets": [
+              {
+                "target": 0,
+                "sample": 13
+              },
+              {
+                "target": 3,
+                "sample": 17
+              }
+            ]
+          },
+          {
+            "base": 176,
+            "burstStart": 13,
+            "burstPeak": 806,
+            "resets": [
+              {
+                "target": 2,
+                "sample": 16
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

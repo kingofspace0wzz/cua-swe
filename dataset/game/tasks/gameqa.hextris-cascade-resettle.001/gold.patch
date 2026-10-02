@@ -1,0 +1,115 @@
+diff --git a/js/Hex.js b/js/Hex.js
+index 7d245d5..1b70459 100644
+--- a/js/Hex.js
++++ b/js/Hex.js
+@@ -11,6 +11,40 @@ function Hex(sideLength) {
+ 	this.angle = 180 / this.sides;
+ 	this.targetAngle = this.angle;
+ 	this.shakes = [];
++	this.pendingConsolidation = [];
++	this.queueConsolidation = function(block) {
++		if (this.pendingConsolidation.indexOf(block) === -1) {
++			this.pendingConsolidation.push(block);
++		}
++	};
++	this.hasMovingColor = function(color) {
++		for (var lane = 0; lane < this.blocks.length; lane++) {
++			for (var index = 0; index < this.blocks[lane].length; index++) {
++				var candidate = this.blocks[lane][index];
++				if (candidate.color === color &&
++					candidate.deleted === 0 &&
++					candidate.settled !== 1
++				) {
++					return true;
++				}
++			}
++		}
++		return false;
++	};
++	this.takePendingConsolidation = function() {
++		var ready = [];
++		var waiting = [];
++		for (var index = 0; index < this.pendingConsolidation.length; index++) {
++			var block = this.pendingConsolidation[index];
++			if (this.hasMovingColor(block.color)) {
++				waiting.push(block);
++			} else {
++				ready.push(block);
++			}
++		}
++		this.pendingConsolidation = waiting;
++		return ready;
++	};
+ 	this.sideLength = sideLength;
+ 	this.strokeColor = 'blue';
+ 	this.x = trueCanvas.width / 2;
+@@ -68,6 +102,7 @@ function Hex(sideLength) {
+ 				if (block.distFromHex - block.iter * this.dt * settings.scale * fallSpeed - (this.sideLength / 2) * Math.sqrt(3) <= 0) {
+ 					block.distFromHex = (this.sideLength / 2) * Math.sqrt(3);
+ 					block.settled = 1;
++					this.queueConsolidation(block);
+ 				} else {
+ 					block.settled = 0;
+ 					block.iter = 1.5 + (waveone.difficulty/15) * 3;
+@@ -76,6 +111,7 @@ function Hex(sideLength) {
+ 				if (arr[position - 1].settled && block.distFromHex - block.iter * this.dt * settings.scale * fallSpeed - arr[position - 1].distFromHex - arr[position - 1].height <= 0) {
+ 					block.distFromHex = arr[position - 1].distFromHex + arr[position - 1].height;
+ 					block.settled = 1;
++					this.queueConsolidation(block);
+ 				}
+ 				else {
+ 					block.settled = 0;
+diff --git a/js/checking.js b/js/checking.js
+index 8000137..700832e 100644
+--- a/js/checking.js
++++ b/js/checking.js
+@@ -26,7 +26,11 @@ function floodFill(hex, side, index, deleting) {
+ 			if(hex.blocks[curSide] === undefined){continue;}
+ 			if(hex.blocks[curSide][curIndex] !== undefined){
+ 				// checking equivalency of color, if its already been explored, and if it isn't already deleted
+-				if(hex.blocks[curSide][curIndex].color == color && search(deleting,[curSide,curIndex]) === false && hex.blocks[curSide][curIndex].deleted === 0 ) {
++				if(hex.blocks[curSide][curIndex].color == color &&
++					hex.blocks[curSide][curIndex].settled === 1 &&
++					search(deleting,[curSide,curIndex]) === false &&
++					hex.blocks[curSide][curIndex].deleted === 0
++				) {
+ 					//add this to the array of already explored
+ 					deleting.push([curSide,curIndex]);
+ 					//recall with next block explored
+@@ -38,6 +42,13 @@ function floodFill(hex, side, index, deleting) {
+ }
+ 
+ function consolidateBlocks(hex,side,index){
++	if (hex.blocks[side] === undefined ||
++		hex.blocks[side][index] === undefined ||
++		hex.blocks[side][index].settled !== 1 ||
++		hex.blocks[side][index].deleted !== 0
++	) {
++		return;
++	}
+ 	//record which sides have been changed
+ 	var sidesChanged =[];
+ 	var deleting=[];
+diff --git a/js/update.js b/js/update.js
+index 4a5d0d6..cbfcbba 100644
+--- a/js/update.js
++++ b/js/update.js
+@@ -63,6 +63,18 @@ function update(dt) {
+ 		}
+ 	}
+ 
++	var pendingConsolidation = MainHex.takePendingConsolidation();
++	for (i = 0; i < pendingConsolidation.length; i++) {
++		block = pendingConsolidation[i];
++		var pendingIndex = block.getIndex();
++		if (block.settled === 1 &&
++			block.deleted === 0 &&
++			pendingIndex !== undefined
++		) {
++			consolidateBlocks(MainHex, block.attachedLane, pendingIndex);
++		}
++	}
++
+ 	for(i = 0; i < blocks.length;i++){
+ 		if (blocks[i].removed == 1) {
+ 			blocks.splice(i,1);

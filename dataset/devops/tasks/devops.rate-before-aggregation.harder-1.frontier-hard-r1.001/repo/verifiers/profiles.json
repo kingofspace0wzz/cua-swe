@@ -1,0 +1,40 @@
+{
+  "visible": {
+    "label": "Checkout ingress counters",
+    "targets": [
+      {"id": "checkout-a", "label": "checkout-a", "weight": 0.24},
+      {"id": "checkout-b", "label": "checkout-b", "weight": 0.26},
+      {"id": "checkout-c", "label": "checkout-c", "weight": 0.23},
+      {"id": "checkout-d", "label": "checkout-d", "weight": 0.27}
+    ],
+    "panels": [
+      {"id": "requests", "title": "Requests per second", "unit": "req/s", "factor": 1},
+      {"id": "errors", "title": "Errors per second", "unit": "err/s", "factor": 0.045},
+      {"id": "bytes", "title": "Response bytes per second", "unit": "B/s", "factor": 1380}
+    ],
+    "scenarios": [
+      {"id": "burst-control", "label": "Burst control", "base": 210, "burstStart": 13, "burstPeak": 1120, "resets": []},
+      {"id": "rolling-restart", "label": "Rolling restart", "base": 225, "burstStart": 15, "burstPeak": 1040, "resets": [{"target": 1, "sample": 8}]},
+      {"id": "restart-in-burst", "label": "Restart in burst", "base": 195, "burstStart": 11, "burstPeak": 980, "resets": [{"target": 3, "sample": 14}]}
+    ]
+  },
+  "hidden": {
+    "label": "Regional router counters",
+    "targets": [
+      {"id": "router-n7", "label": "router-n7", "weight": 0.19},
+      {"id": "router-p4", "label": "router-p4", "weight": 0.31},
+      {"id": "router-r2", "label": "router-r2", "weight": 0.28},
+      {"id": "router-v9", "label": "router-v9", "weight": 0.22}
+    ],
+    "panels": [
+      {"id": "accepted", "title": "Accepted operations", "unit": "ops/s", "factor": 1},
+      {"id": "rejected", "title": "Rejected operations", "unit": "reject/s", "factor": 0.032},
+      {"id": "payload", "title": "Payload throughput", "unit": "B/s", "factor": 920}
+    ],
+    "scenarios": [
+      {"id": "load-wave", "label": "Load wave", "base": 170, "burstStart": 12, "burstPeak": 830, "resets": []},
+      {"id": "target-recycle", "label": "Target recycle", "base": 188, "burstStart": 16, "burstPeak": 910, "resets": [{"target": 2, "sample": 7}]},
+      {"id": "recycle-at-crest", "label": "Recycle at crest", "base": 162, "burstStart": 10, "burstPeak": 760, "resets": [{"target": 0, "sample": 13}, {"target": 3, "sample": 17}]}
+    ]
+  }
+}

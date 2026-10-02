@@ -1,0 +1,122 @@
+diff --git a/src/ingest.mjs b/src/ingest.mjs
+index d1efb83c863f5fc9530f51faafd78651817a5e87..40b3bfc37151b44c310907607ef4165e46ca870b 100644
+--- a/src/ingest.mjs
++++ b/src/ingest.mjs
+@@ -1,11 +1,12 @@
+ import {decodeDatagram} from './protocol.mjs';
+ import {applyGauge} from './update.mjs';
+-export function ingestCapture(receipt, state) {
++export function ingestCapture(receipt, state, modeForSource = () => 'delta') {
++  const mode = modeForSource(receipt.source);
+   return decodeDatagram(Buffer.from(receipt.base64, 'base64')).map(measurement => {
+-    const result = applyGauge(state, {...measurement, source: receipt.source});
++    const result = applyGauge(state, {...measurement, source: receipt.source}, mode);
+     return {receipt: receipt.sequence, lineIndex: measurement.lineIndex,
+       identity: measurement.identity, source: receipt.source, token: measurement.token,
+       metricType: measurement.metricType, parsedValue: measurement.value,
+-      value: result.value};
++      before: result.before, value: result.value};
+   });
+ }
+diff --git a/src/receiver.mjs b/src/receiver.mjs
+index 60bb2a225fa06f8ceb2ad869d27845e690350263..0eb10d9bebe44cabd46a30e0c6013986acf917fd 100644
+--- a/src/receiver.mjs
++++ b/src/receiver.mjs
+@@ -1,6 +1,18 @@
+ import {ingestCapture} from './ingest.mjs';
++// Fleet provisioning: an inventory entry describing a delta-capable relay
++// publishes signed tokens as relative updates; snapshot-style publishers
++// report absolute readings. Unknown sources follow canonical statsd deltas.
++function classifyProducer(producer) {
++  const text = [producer?.channel, producer?.label, producer?.mode, producer?.convention]
++    .filter(part => typeof part === 'string').join(' ').toLowerCase();
++  if (/delta|relative|increment|adjust/.test(text)) return 'delta';
++  if (/snapshot|absolute|direct|reading|report|level/.test(text)) return 'absolute';
++  if (/relay/.test(text)) return 'delta';
++  return 'delta';
++}
+ export function createReceiver(origin) {
+   let state = new Map(), cursor = 0, epoch = 0, error = null, timer = null, pending = Promise.resolve();
++  let producerModes = null;
+   async function request(path, body) {
+     const response = await fetch(origin + path, body === undefined ? {} : {
+       method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify(body)
+@@ -8,11 +20,40 @@ export function createReceiver(origin) {
+     if (!response.ok) throw new Error('Receiver request failed: ' + response.status);
+     return response.json();
+   }
++  function indexProducers(producers) {
++    if (!Array.isArray(producers)) return producerModes;
++    const modes = new Map();
++    for (const producer of producers) {
++      const mode = classifyProducer(producer);
++      for (const key of [producer?.endpoint, producer?.label, producer?.id, producer?.source]) {
++        if (typeof key === 'string' && key) modes.set(key, mode);
++      }
++    }
++    producerModes = modes;
++    return modes;
++  }
++  async function fleetModes() {
++    if (producerModes) return producerModes;
++    const snapshot = await request('/snapshot');
++    return indexProducers(snapshot.producers);
++  }
++  function modeForSource(source) {
++    if (!producerModes || typeof source !== 'string' || !source) return 'delta';
++    const direct = producerModes.get(source);
++    if (direct) return direct;
++    const fuzzy = new Set();
++    for (const [key, mode] of producerModes) {
++      if (key === source || (key.length > 2 && source.includes(key)) ||
++          (source.length > 2 && key.includes(source))) fuzzy.add(mode);
++    }
++    return fuzzy.size === 1 ? fuzzy.values().next().value : 'delta';
++  }
+   async function drain() {
+     const capture = await request('/capture?after=' + cursor);
+     if (capture.epoch !== epoch) return;
++    if (capture.receipts.length) await fleetModes();
+     for (const receipt of capture.receipts) {
+-      const updates = ingestCapture(receipt, state);
++      const updates = ingestCapture(receipt, state, modeForSource);
+       await request('/ingest', {epoch, receipt: receipt.sequence, updates});
+       cursor = receipt.sequence;
+     }
+@@ -25,6 +66,7 @@ export function createReceiver(origin) {
+     if (seed) {
+       const current = await request('/snapshot');
+       if (current.seeded) {
++        indexProducers(current.producers);
+         if (epoch !== current.epoch) {
+           state = new Map(Object.entries(current.state)); cursor = current.committedReceipt;
+           epoch = current.epoch; error = null;
+@@ -36,6 +78,7 @@ export function createReceiver(origin) {
+     stop(); await pending;
+     const snapshot = await request('/begin', {seed});
+     if (snapshot.alreadySeeded) return snapshot;
++    if (snapshot.producers) indexProducers(snapshot.producers);
+     state = new Map(); cursor = 0; epoch = snapshot.epoch; error = null;
+     timer = setInterval(pump, 25); pump(); return snapshot;
+   }
+diff --git a/src/update.mjs b/src/update.mjs
+index a736259119a72077cfd17fbee96fccc26aaaf85d..bd832dde4e854e03086d654ed356cd07418f261b 100644
+--- a/src/update.mjs
++++ b/src/update.mjs
+@@ -1,6 +1,14 @@
+-export function applyGauge(state, measurement) {
++// statsd v0.9.0 gauge update semantics.
++// A lexical leading sign on the wire token marks a relative update, but only
++// endpoints provisioned as delta-capable relays publish that way; snapshot
++// style publishers report absolute readings and may sign them explicitly.
++export function isSignedToken(token) {
++  return typeof token === 'string' && (token[0] === '+' || token[0] === '-');
++}
++export function applyGauge(state, measurement, mode = 'delta') {
+   const before = state.get(measurement.identity) ?? 0;
+-  const value = measurement.value;
++  const relative = mode === 'delta' && isSignedToken(measurement.token);
++  const value = relative ? before + measurement.value : measurement.value;
+   state.set(measurement.identity, value);
+   return {before, value};
+ }

@@ -1,0 +1,57 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - open the subscription page
+  - expand Renewal calculation
+  - read the live lifecycle clock
+  - operation
+  - and presentation contract
+  decisive_paths:
+  - cycle.anchor_epoch_ms
+  - cycle.anchor_application
+  - cycle.interval_quanta
+  - cycle.quantum_days
+  - cycle.grace_quanta
+  - cycle.grace_application
+  - cycle.display_zone
+  - cycle.value_format
+  - cycle.display_pattern
+source_noninferability:
+  forbidden_agent_source_literals:
+  - anchor_epoch_ms
+  - anchor_application
+  - single_interval
+  - interval_quanta
+  - quantum_days
+  - grace_quanta
+  - grace_application
+  - add_to_cycle
+  - omit
+  - display_zone
+  - value_format
+  - display_pattern
+  - YYYY-MM-DD
+  - DD/MM/YYYY
+  - America/New_York
+  - Asia/Tokyo
+  - 2026-03-12 11:00
+  - 21/06/2026 09:00
+calibration:
+  seed_task: web.subscription-renewal-contract.002
+  family: subscription-renewal
+  level: easy
+  controlled_difficulty_knob: one interval, no grace application, and one shared value
+    format
+  human_replay_required: false

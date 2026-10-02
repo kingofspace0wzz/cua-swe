@@ -1,0 +1,37 @@
+--- a/src/budgets.mjs
++++ b/src/budgets.mjs
+@@ -1,3 +1,11 @@
+ // Staging scrape service objectives. Units are milliseconds.
+ export const budgets = Object.freeze({connectTimeoutMs:250, requestTimeoutMs:2000});
++// Approved whole-response caps transcribed from the receiver operations runbook.
++// One cap per rollout profile, collection tier and receiver class; a tier alone
++// never selects a cap.
++export const runbookCaps = Object.freeze({
++ 'RH-27':Object.freeze({standard:Object.freeze({interlock:1850,streamline:1350}),bulk:Object.freeze({interlock:2850,streamline:2150})}),
++ 'VT-58':Object.freeze({express:Object.freeze({relay:950,trunk:1650}),freight:Object.freeze({relay:2550,trunk:2150})}),
++ 'JN-84':Object.freeze({rapid:Object.freeze({orbit:1550,depot:1050}),batch:Object.freeze({orbit:2050,depot:2700})}),
++});
+ export const serviceObjectives = Object.freeze({supportedResponseMs:1500, cancelByMs:2250, freshByMs:2500});
+--- a/src/collector.mjs
++++ b/src/collector.mjs
+@@ -1,7 +1,9 @@
+ import {fetchMetrics} from './scrape.mjs';
+ import {parseMetrics} from './metrics.mjs';
++import {budgets,runbookCaps} from './budgets.mjs';
+ export async function collectTarget(origin,target){
+- const body=await fetchMetrics(new URL(target.path,origin));
++ const cap=runbookCaps[target.profileCode]?.[target.tier]?.[target.receiverClass];
++ const body=await fetchMetrics(new URL(target.path,origin),{connectTimeoutMs:budgets.connectTimeoutMs,requestTimeoutMs:cap??budgets.requestTimeoutMs});
+  const samples=parseMetrics(body);
+  const response=await fetch(new URL('/ingest',origin),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:target.id,samples}),signal:AbortSignal.timeout(500)});
+  if(!response.ok)throw new Error('ingestion_rejected');
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -29,6 +29,7 @@
+       socket.setTimeout(limits.connectTimeoutMs);
+       socket.on('timeout',()=>finish(new Error('socket_timeout')));
+       socket.once('connect',()=>{
++        socket.setTimeout(0);
+         event('connected');
+       });
+     });

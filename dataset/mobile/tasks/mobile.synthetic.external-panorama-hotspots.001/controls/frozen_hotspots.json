@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "task_digest": "d2d8d7a50c1a8b9a91006ba82d64a3d028cb4653f51084b1b16d970f45dffaed",
+  "baseline_digest": "561b387da592fbe0e30a9c7f9ebe3b117b342ce3407d2377aa59497c2d3e38a0",
+  "changes": [
+    {
+      "path": "registration.js",
+      "before": {
+        "sha256": "419f4105c2ad6631d1ac0eedd4c7f7ed4f532d64892142e83e83844f6ab8768b",
+        "executable": false
+      },
+      "after": {
+        "sha256": "c1640c9f1f7d3059352d39f8118d58289b0d47b155daf99d0c40370971beb425",
+        "executable": false
+      },
+      "content_b64": "aW1wb3J0IHt3cmFwfSBmcm9tICcuL2dlb21ldHJ5LmpzJzsKLy8gQW5vdGhlciBuZWdhdGl2ZTogcGFpbnRzIHRoZSB0d28gaW5pdGlhbCBhcnRpZmFjdCBjb29yZGluYXRlcyBmb3JldmVyLgovLyBBbiBpbml0aWFsIHNjcmVlbnNob3QgY2FuIHBhc3M7IG1vdmluZyB0aGUgaG90c3BvdCBjYW5ub3QuCmV4cG9ydCBmdW5jdGlvbiByZXZpZXdUb1Bhbm9yYW1hKHJldmlldyxjYXB0dXJlKSB7CiAgcmV0dXJuIGNhcHR1cmUubm9ydGhBdFBhbm9yYW1hWWF3PT09MjIzID8ge3lhdzozNTQscGl0Y2g6MTJ9IDoge3lhdzoxMzIscGl0Y2g6LTl9Owp9CmV4cG9ydCBmdW5jdGlvbiBwYW5vcmFtYVRvUmV2aWV3KHBvaW50LGNhcHR1cmUpIHsKICByZXR1cm4ge2F6aW11dGg6d3JhcChwb2ludC55YXcpLGVsZXZhdGlvbjpwb2ludC5waXRjaH07Cn0K"
+    }
+  ]
+}

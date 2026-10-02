@@ -1,0 +1,142 @@
+{
+  "task_id": "mobile.synthetic.external-wallet-entitlement.001",
+  "revision": "002",
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "public_files": {
+    "app.js": {
+      "path": "public/app.js",
+      "sha256": "be04c417995be11a13bac87537e6d3056a90d7c84da7e77f9a09bec583de3ab3"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "21bf5d3bd1320de8c182e0b38ae0025f00e2eb282983d974ec9f25db374c93a6"
+    },
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "a3e63c819d026b79e51bed12802f58c70752e8df3545a4c1e494383e5223cca1"
+    },
+    "provider.js": {
+      "path": "public/provider.js",
+      "sha256": "710f557e9b1444b0d9636cdf81b01c2f55c6c363a2ac7c89ed5a6ab62d36c183"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "1da85e97aaed632b4ffe073e8aa0bc9fe6769d474cdea3a9b0d7379b24fbdb1f"
+    },
+    "viewer.js": {
+      "path": "public/viewer.js",
+      "sha256": "f7ad0c3281c4594b13e1f4471525c42c59bf0872d05c4449500d9fbf9096e7a5"
+    },
+    "wallet.js": {
+      "path": "public/wallet.js",
+      "sha256": "dd74ee6ed2e5c7502628f4f2024cb9d5e1acc06aa09e88770c468c1b0de22a03"
+    }
+  },
+  "editable": [
+    "app.js",
+    "index.html",
+    "provider.js",
+    "style.css",
+    "viewer.js",
+    "wallet.js"
+  ],
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "f151e48108b49647f2b2e4f77d6b7648fc5bfa20c24b9452417096c7624ef1ba"
+  },
+  "scratch": [
+    "dist/"
+  ],
+  "dependencies": [],
+  "expected_assertions": [
+    "primary_availability",
+    "other_passes_and_evidence",
+    "validated_debit_and_balance",
+    "cancel_no_change",
+    "notes_selection_reload",
+    "same_contract_other_import"
+  ],
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "native": {
+      "schema": 1,
+      "assets": [],
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "app.js",
+          "index.html",
+          "provider.js",
+          "style.css",
+          "viewer.js",
+          "wallet.js"
+        ],
+        "timeout_seconds": 20
+      },
+      "scene": {
+        "path": "/",
+        "frame_paths": [],
+        "viewport": {
+          "width": 400,
+          "height": 800
+        },
+        "device_scale_factor": 1,
+        "locale": "en-US",
+        "timezone": "UTC",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 30000
+      },
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "a9b1bdea8572d852ad554c80f04a9116c114ab77742c14d17ab5576b91dafcc2"
+      },
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "57a8ba56c708cee30959da52b3c07e7ea58e1943a08788547c045c95ddebdc82"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "d7064a606efb5a1551190842ae69e40690658dc57254daf1a6b3817a02b4b72e"
+      }
+    }
+  },
+  "controls": {
+    "gold": {
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "9ff1ef967cb240ce4070c8e064d00f42de5a928a0389ef79f5a62261f81119f3"
+      },
+      "correct": true
+    },
+    "alternative": {
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "b93f92a5a692fbabd44a19529281ed1b198a6c95acfdfd1688471ae404928983"
+      },
+      "correct": true
+    },
+    "partial": {
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "84af7ef461001a1b48d2b353a21c21642de86f2f4530ef17e06147bc59e4a895"
+      },
+      "correct": false
+    },
+    "artifact_guess": {
+      "patch": {
+        "path": "controls/artifact_guess.json",
+        "sha256": "c54df6fa6275e5829543c2a259a9c9c209a7c831e78ae422abf2b6ff5298e765"
+      },
+      "correct": false
+    }
+  }
+}

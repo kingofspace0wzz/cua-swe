@@ -1,0 +1,67 @@
+diff --git a/src/entities/platform.js b/src/entities/platform.js
+--- a/src/entities/platform.js
++++ b/src/entities/platform.js
+@@ -39,7 +39,7 @@ class Platform extends GameEntity {
+    */
+   getRiderVelocity(out) {
+     vec3.copy(out, this.velocity);
+-    return this.velocity;
++    return out;
+   }
+ 
+   /**
+diff --git a/src/entities/hero.js b/src/entities/hero.js
+--- a/src/entities/hero.js
++++ b/src/entities/hero.js
+@@ -22,7 +22,7 @@ class Hero extends GameEntity {
+     this.jetpackThrusting = false;
+ 
+-    /** @type {!vec3} */
++    /** @const {!vec3} */
+     this.motionReference = vec3.create();
+ 
+     /** @const {!vec3} */
+     this.motionLocal = vec3.create();
+@@ -45,17 +45,17 @@ class Hero extends GameEntity {
+     if (!active) {
+       this.jetpackThrusting = false;
+       if (wasActive) {
+-        vec3.subtract(this.motionLocal, this.motionReference, this.velocity);
++        vec3.subtract(this.motionLocal, this.velocity, this.motionReference);
++        vec3.copy(this.velocity, this.motionLocal);
+         this.motionPhase = 2;
+         this.motionSupport = null;
+       }
+     } else if (cycle !== this.jetpackCycle) {
+       this.jetpackCycle = cycle;
+       this.jetpackThrusting = true;
+       this.motionPhase = 1;
+       if (this.groundedPlatform) {
+-        this.motionReference =
+-            this.groundedPlatform.getRiderVelocity(this.motionReference);
++        this.groundedPlatform.getRiderVelocity(this.motionReference);
+       } else {
+         vec3.set(this.motionReference, 0, 0, 0);
+       }
+diff --git a/src/index.js b/src/index.js
+--- a/src/index.js
++++ b/src/index.js
+@@ -475,12 +475,14 @@ function updateEntity(entity) {
+   }
+ 
+   if (entity === player && player.motionPhase === 2) {
+-    if (!player.isGrounded()) {
+-      vec3.copy(player.velocity, player.motionLocal);
+-    } else if (player.motionSupport !== player.groundedPlatform) {
++    if (player.isGrounded() &&
++        player.motionSupport !== player.groundedPlatform) {
+       player.groundedPlatform.getRiderVelocity(tempVec);
+-      vec3.add(player.velocity, player.motionLocal, tempVec);
++      vec3.subtract(tempVec, tempVec, player.motionReference);
++      vec3.add(player.velocity, player.velocity, tempVec);
++      vec3.copy(player.motionReference, player.groundedPlatform.velocity);
+       player.motionSupport = player.groundedPlatform;
++      player.motionPhase = 0;
+     }
+   }
+ 

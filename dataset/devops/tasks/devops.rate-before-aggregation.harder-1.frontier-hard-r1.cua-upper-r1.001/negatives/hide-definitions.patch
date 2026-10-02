@@ -1,0 +1,9 @@
+diff --git a/src/styles.css b/src/styles.css
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -210,3 +210,5 @@
+ .definition-id { color: #54d4bc; font: 12px monospace; margin-bottom: 7px; }
+ .definition-labels { color: #abc2ce; font-size: 11px; margin-bottom: 8px; }
+ .definition-step { display: block; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; line-height: 1.6; color: #e1eff5; }
++
++.definitions-panel {display:none}

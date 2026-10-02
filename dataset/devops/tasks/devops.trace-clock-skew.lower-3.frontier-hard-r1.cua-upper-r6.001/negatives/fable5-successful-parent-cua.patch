@@ -1,0 +1,93 @@
+diff --git a/src/controllers/query.js b/src/controllers/query.js
+index 67ee0b0ddc50b112bb9260ab8e1e691dc8aa0f6c..33cf02cd4da09b3c0d365ecdce4feac45c8257a9 100644
+--- a/src/controllers/query.js
++++ b/src/controllers/query.js
+@@ -1,6 +1,7 @@
+ import { loadCatalog, loadTrace, submitAdjustment } from "../api/traceClient.js";
+ import { adjustmentPolicy } from "../config/adjustmentPolicy.js";
+ import { compileAdjusters } from "../trace/compileAdjusters.js";
++import { createSkewAdjuster, selectTimingReference } from "../trace/skewAdjuster.js";
+ import { runPipeline } from "../trace/runPipeline.js";
+ 
+ export async function startQuery() {
+@@ -11,7 +12,14 @@ export async function startQuery() {
+ 
+ export async function evaluateTrace(catalog, traceId) {
+   const trace = await loadTrace(traceId);
+-  const pipeline = runPipeline(trace.spans, compileAdjusters(adjustmentPolicy(catalog)));
++  const policy = adjustmentPolicy(catalog);
++  const referenceMeta = selectTimingReference(catalog, trace.capture);
++  let skewAdjuster = null;
++  if (referenceMeta && referenceMeta.id !== trace.id) {
++    const reference = await loadTrace(referenceMeta.id);
++    skewAdjuster = createSkewAdjuster(reference.spans, policy);
++  }
++  const pipeline = runPipeline(trace.spans, compileAdjusters(policy, skewAdjuster));
+   await submitAdjustment(trace.id, pipeline.spans, pipeline.annotations);
+   return {
+     trace,
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+index 437de453a1bd65e33ddd29d7e8c57ee7264c1050..4dfd841141ec5f991aa1cd72c79a012eb0721415 100644
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,8 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
+ 
+-export function compileAdjusters(policy) {
+-  return [
+-    { name: "dedupe", apply: dedupeSpans },
+-    { name: "sort", apply: sortSpans },
+-  ];
++export function compileAdjusters(policy, skewAdjuster = null) {
++  const adjusters = [{ name: "dedupe", apply: dedupeSpans }];
++  if (skewAdjuster) adjusters.push(skewAdjuster);
++  adjusters.push({ name: "sort", apply: sortSpans });
++  return adjusters;
+ }
+
+diff --git a/src/trace/skewAdjuster.js b/src/trace/skewAdjuster.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..0a49d7fc1229581e047cd7df92e4af872abdc46c
+--- /dev/null
++++ b/src/trace/skewAdjuster.js
+@@ -0,0 +1,40 @@
++function matchKey(span) {
++  return `${span.service}|${span.operation}|${span.host}`;
++}
++
++export function selectTimingReference(catalog, capture) {
++  if (!capture || capture.window !== "before-reset") return null;
++  const owner = catalog.resetEvent?.owner;
++  return (
++    catalog.traces.find((entry) =>
++      entry.capture &&
++      entry.capture.workload === capture.workload &&
++      entry.capture.window === "after-reset" &&
++      entry.capture.status === "current" &&
++      entry.capture.recordedBy === owner,
++    ) || null
++  );
++}
++
++export function createSkewAdjuster(referenceSpans, policy) {
++  const reference = new Map(referenceSpans.map((span) => [matchKey(span), span]));
++  return {
++    name: "clock-skew",
++    apply(spans) {
++      const shifts = new Map();
++      for (const span of spans) {
++        const match = reference.get(matchKey(span));
++        if (!match) continue;
++        const difference = match.startMs - span.startMs;
++        if (!shifts.has(span.timeAuthority)) shifts.set(span.timeAuthority, difference);
++        else if (shifts.get(span.timeAuthority) !== difference) shifts.set(span.timeAuthority, null);
++      }
++      return spans.map((span) => {
++        if (span.parentId === null) return span;
++        const shift = shifts.get(span.timeAuthority);
++        if (!shift || Math.abs(shift) > policy.maxAdjustmentMs) return span;
++        return { ...span, startMs: span.startMs + shift, endMs: span.endMs + shift };
++      });
++    },
++  };
++}

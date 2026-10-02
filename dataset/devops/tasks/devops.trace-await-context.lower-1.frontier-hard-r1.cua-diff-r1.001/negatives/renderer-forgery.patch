@@ -1,0 +1,52 @@
+diff --git a/src/views/waterfall.js b/src/views/waterfall.js
+--- a/src/views/waterfall.js
++++ b/src/views/waterfall.js
+@@ -4,32 +4,21 @@ export function renderWaterfall(snapshot) {
+   const host = clear(
+     document.querySelector('[data-test="waterfall"]'),
+   );
+-  for (const trace of snapshot.traces) {
+-    const group = element("section", "trace-group");
+-    group.dataset.test = `trace-${trace.traceId}`;
+-    group.append(
+-      element(
+-        "strong",
+-        "",
+-        `${trace.traceId} · ${trace.spans.length} spans`,
+-      ),
+-    );
+-    for (const span of trace.spans) {
+-      const row = element("div", "span-row");
+-      row.dataset.test = `waterfall-${span.id}`;
+-      row.dataset.root = String(!span.parentId);
+-      row.style.marginLeft = `${span.depth * 22}px`;
+-      row.append(
+-        element("strong", "", span.name),
+-        element("span", "", span.kind),
+-        element(
+-          "span",
+-          "",
+-          span.parentId ? `parent ${span.parentId}` : "no parent",
+-        ),
+-      );
+-      group.append(row);
+-    }
+-    host.append(group);
++  const group = element("section", "trace-group");
++  group.append(
++    element("strong", "", `restored trace · ${snapshot.spans.length} spans`),
++  );
++  for (const span of snapshot.spans) {
++    const row = element("div", "span-row");
++    row.dataset.test = `waterfall-${span.id}`;
++    row.dataset.root = String(span.kind === "operation");
++    row.style.marginLeft = span.kind === "operation" ? "0" : "22px";
++    row.append(
++      element("strong", "", span.name),
++      element("span", "", span.kind),
++      element("span", "", "parent restored"),
++    );
++    group.append(row);
+   }
++  host.append(group);
+ }

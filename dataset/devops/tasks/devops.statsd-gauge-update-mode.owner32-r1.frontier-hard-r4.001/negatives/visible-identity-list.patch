@@ -1,0 +1,12 @@
+--- a/src/update.mjs
++++ b/src/update.mjs
+@@ -1,6 +1,8 @@
++const deltaCapable = new Set(['workers.north.headroom', 'workers.south.headroom', 'pool.capacity', 'workers.north.headroom.new', 'gate.north.occupancy', 'gate.south.occupancy', 'gate.ramp.occupancy']);
+ export function applyGauge(state, measurement) {
+   const before = state.get(measurement.identity) ?? 0;
+-  const value = measurement.value;
++  const relative = deltaCapable.has(measurement.identity) && /^[+-]/.test(measurement.token);
++  const value = relative ? before + measurement.value : measurement.value;
+   state.set(measurement.identity, value);
+   return {before, value};
+ }

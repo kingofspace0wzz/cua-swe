@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sentinel inhibition diagnostics</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Alerting / inhibition</p>
+        <h1>Sentinel</h1>
+      </div>
+      <div class="incident-control">
+        <div>
+          <small data-test="profile">Loading profile</small>
+          <strong data-test="incident">—</strong>
+        </div>
+        <button type="button" data-test="advance">Advance timeline</button>
+      </div>
+    </header>
+    <main id="app" aria-busy="true">
+      <section class="metrics">
+        <div><span>Active alerts</span><strong data-test="alert-count">0</strong></div>
+        <div><span>Firing</span><strong data-test="firing-count">0</strong></div>
+        <div><span>Suppressed</span><strong data-test="suppressed-count">0</strong></div>
+        <div><span>Unscoped held</span><strong data-test="unscoped-count">0</strong></div>
+      </section>
+      <section class="advisories" data-test="advisories"></section>
+      <p class="error" data-test="error"></p>
+      <section class="layout">
+        <div class="column">
+          <section class="panel">
+            <div class="heading">
+              <div><p class="eyebrow">Notification state</p><h2>Alert queues</h2></div>
+              <span data-test="scope-summary">—</span>
+            </div>
+            <div class="queue-layout">
+              <div><h3>Firing</h3><div class="queue" data-test="firing"></div></div>
+              <div><h3>Suppressed</h3><div class="queue" data-test="suppressed"></div></div>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="heading">
+              <div><p class="eyebrow">Causal path</p><h2>Suppression graph</h2></div>
+              <span data-test="edge-count">0 edges</span>
+            </div>
+            <div class="graph" data-test="graph"></div>
+          </section>
+          <section class="panel">
+            <div class="heading">
+              <div><p class="eyebrow">Scope governance</p><h2>Stamping runbook</h2></div>
+              <span>ops-docs render</span>
+            </div>
+            <div class="runbook" data-test="runbook"></div>
+          </section>
+        </div>
+        <aside class="column">
+          <section class="panel">
+            <p class="eyebrow">Scope governance</p>
+            <h2>Scope dimensions</h2>
+            <div class="dimensions" data-test="dimensions"></div>
+          </section>
+          <section class="panel">
+            <p class="eyebrow">Delivery</p>
+            <h2>Notification routes</h2>
+            <div class="routes" data-test="routes"></div>
+          </section>
+          <section class="panel">
+            <p class="eyebrow">Rule deployment</p>
+            <h2>Inhibition rule</h2>
+            <div class="rule" data-test="rule"></div>
+          </section>
+          <section class="panel">
+            <p class="eyebrow">Equal-label evidence</p>
+            <h2>Label comparisons</h2>
+            <div class="comparisons" data-test="comparisons"></div>
+          </section>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

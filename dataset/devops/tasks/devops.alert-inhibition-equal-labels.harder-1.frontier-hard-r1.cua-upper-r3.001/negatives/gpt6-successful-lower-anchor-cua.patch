@@ -1,0 +1,25 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+index 2ca366ab15985349340044ba1cd10e5ffff22f8e..ad7825f1b059cf952a617acb715f251fdde02788 100644
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -1,4 +1,10 @@
+ export function compileInhibitionRule(catalog, policy) {
++  // Placement must be concrete on both alerts; partition labels may
++  // legitimately compare equal by absence (for example, pre-rollout alerts).
++  const placementLabels = policy.dimensionRegistry
++    .filter((dimension) => dimension.role === "placement")
++    .map((dimension) => dimension.name);
++
+   return {
+     source_matchers: [
+       {
+@@ -15,7 +21,7 @@ export function compileInhibitionRule(catalog, policy) {
+       },
+     ],
+     equal: [...catalog.equalDimensions],
+-    required_source_labels: [],
+-    required_target_labels: [],
++    required_source_labels: [...placementLabels],
++    required_target_labels: [...placementLabels],
+   };
+ }

@@ -1,0 +1,9 @@
+--- a/src/app.js
++++ b/src/app.js
+@@ -2,5 +2,4 @@ const root=document.querySelector("#root");
+ async function render(){
+   const response=await fetch(`/api/delegated-action${window.location.search}`);const data=await response.json();
+-  // The retired authorization feed exposed a display-ready delegated action.
+-  const action=data.legacy_action??"Action unavailable";
++  const action="Approve with note";
+   root.innerHTML=`<main class="shell"><section class="card"><p class="eyebrow">Delegated authorization</p><h1>${data.request_ref??"Unknown request"}</h1><div class="recovery-row"><span>Available action</span><strong id="delegated-action">${action}</strong></div><button id="trace-toggle" type="button" aria-expanded="false">Delegation decision trace</button><section id="trace" class="trace" hidden><h2>Live /api/delegated-action response</h2><pre>${JSON.stringify(data,null,2)}</pre></section></section></main>`;

@@ -1,0 +1,12 @@
+--- a/src/app.js
++++ b/src/app.js
+@@ -2,5 +2,7 @@ const root=document.querySelector("#root");
+ async function render(){
+   const response=await fetch(`/api/recovery-risk${window.location.search}`);const data=await response.json();
+-  // The legacy risk response exposed a display-ready recovery channel.
+-  const recovery=data.recovery_channel??"Recovery unavailable";
++  const band=data.risk.bands.find(x=>x.band_ref===data.risk.selected_band_ref);
++  const channelRef=data.risk.channel_precedence.find(ref=>band?.channel_refs.includes(ref)&&data.risk.allowed_modes.includes(data.risk.channels.find(x=>x.channel_ref===ref)?.ui_mode));
++  const channel=data.risk.channels.find(x=>x.channel_ref===channelRef);
++  const recovery=channel?data.risk.display_pattern.replace("{channel}",channel.display_label):"Recovery unavailable";
+   root.innerHTML=`<main class="shell"><section class="card"><p class="eyebrow">Account recovery</p><h1>${data.account_ref??"Unknown account"}</h1><div class="recovery-row"><span>Recommended channel</span><strong id="recovery-channel">${recovery}</strong></div><button id="trace-toggle" type="button" aria-expanded="false">Recovery decision trace</button><section id="trace" class="trace" hidden><h2>Live /api/recovery-risk response</h2><pre>${JSON.stringify(data,null,2)}</pre></section></section></main>`;

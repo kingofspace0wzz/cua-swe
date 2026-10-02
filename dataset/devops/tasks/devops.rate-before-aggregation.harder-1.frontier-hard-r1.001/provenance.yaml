@@ -1,0 +1,16 @@
+schema_version: 1
+task_id: devops.rate-before-aggregation.harder-1.frontier-hard-r1.001
+source:
+  project: prometheus/prometheus
+  documentation: https://github.com/prometheus/prometheus/blob/4c352ffb82a082310978147b14070d7969e9d5d4/docs/querying/functions.md
+  discussion: https://github.com/prometheus/prometheus/issues/3746
+  pinned_revision: 4c352ffb82a082310978147b14070d7969e9d5d4
+  license: Apache-2.0
+adaptation:
+  mode: source_faithful_original_implementation
+  retained_contract: apply reset-aware rate before aggregation across reset identities,
+    including when the aggregation is performed by an upstream recording pipeline
+  copied_material: none
+  runtime_dependencies: none
+  parent_task_id: devops.rate-before-aggregation.harder-1.001
+  independence_group: rate-before-aggregation

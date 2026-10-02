@@ -1,0 +1,57 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/service.mjs
+  fixture: repo/verifiers/profiles.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults:
+    application: 55100
+    service: OS-assigned
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants:
+  - visible
+  - hidden
+  - hidden-order
+  oracle: Independent Python state machine from protected telemetry, original rule intent,
+    and the receiver route identity contract; no submitted plan or page text
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - alternates/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - compare persistent query series and pending timeline with churning fingerprints
+  - open Labels & detail and compare consecutive evaluated identities
+  - correlate the delivery journal alert key, route key, and receiver match selector
+  - check recovery and independent targets
+  maximum_primary_actions: 2

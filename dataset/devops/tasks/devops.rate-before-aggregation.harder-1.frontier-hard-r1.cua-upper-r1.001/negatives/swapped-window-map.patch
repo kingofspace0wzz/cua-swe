@@ -1,0 +1,30 @@
+diff --git a/src/config/queryPolicy.js b/src/config/queryPolicy.js
+--- a/src/config/queryPolicy.js
++++ b/src/config/queryPolicy.js
+@@ -3,7 +3,10 @@
+  */
+ export function queryPolicy() {
+   return {
+-    pipeline: "traffic-window",
++    pipeline: {
++      "window-a": "traffic-stream",
++      "window-b": "traffic-detail",
++    },
+     panelScope: "all",
+     sampleFilter: "none",
+   };
+diff --git a/src/config/compilePanelPlan.js b/src/config/compilePanelPlan.js
+--- a/src/config/compilePanelPlan.js
++++ b/src/config/compilePanelPlan.js
+@@ -1,9 +1,9 @@
+ export function compilePanelPlan(policy) {
+-  if (typeof policy.pipeline !== "string" || !policy.pipeline.trim()) {
++  if (!policy.pipeline) {
+     throw new Error("a deployed recording-rule binding is required");
+   }
+   return {
+-    pipeline: "traffic-window",
++    pipeline: policy.pipeline,
+     panel_scope: policy.panelScope || "all",
+     sample_filter: policy.sampleFilter || "none",
+   };

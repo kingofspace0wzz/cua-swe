@@ -1,0 +1,38 @@
+--- a/src/config/compilePolicyPlan.js
++++ b/src/config/compilePolicyPlan.js
+@@ -11,9 +11,22 @@
+   }
+ }
+ 
+-export function compilePolicyPlan(collector) {
++// The receiver's published tail-decision service level: hold each tail
++// decision open for the slowest span delivery the receiver has recorded,
++// and close it within the published 180 ms decision margin.
++function decisionWaitMs(collector, receiver) {
++  const deliveries = receiver && Array.isArray(receiver.deliveries) ? receiver.deliveries : [];
++  if (!deliveries.length) return Number(collector.decisionWaitMs);
++  const slowestDeliveryMs = deliveries.reduce(
++    (slowest, delivery) => Math.max(slowest, delivery.lastSpanAtMs - delivery.firstSpanAtMs),
++    0,
++  );
++  return slowestDeliveryMs;
++}
++
++export function compilePolicyPlan(collector, receiver) {
+   return {
+-    decisionWaitMs: Number(collector.decisionWaitMs),
++    decisionWaitMs: decisionWaitMs(collector, receiver),
+     policies: collector.policies.map(compilePolicy),
+   };
+ }
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -8,7 +8,7 @@
+ export async function initialize() {
+   const catalog = await samplerClient.catalog();
+   await samplerClient.configure(
+-    compilePolicyPlan(COLLECTOR_SETTINGS),
++    compilePolicyPlan(COLLECTOR_SETTINGS, catalog.receiver),
+   );
+   store.set({ catalog });
+   await samplerClient.scenario(catalog.scenarios[0].id);

@@ -1,0 +1,9 @@
+{
+  "name": "boxel-rebound-quarantined-calibration",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build": "python3 -m py_compile server.py",
+    "dev": "python3 server.py --host 127.0.0.1 --port 51700"
+  }
+}

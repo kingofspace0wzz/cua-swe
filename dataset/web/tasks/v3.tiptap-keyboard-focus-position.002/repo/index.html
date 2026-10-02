@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Composer — Draft</title>
+<link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+<header class="app-bar">
+  <div class="brand">Composer</div>
+  <nav><span class="active">Draft</span><span>Outline</span><span>History</span></nav>
+  <div class="workspace">Workspace: <strong id="workspace-label">…</strong></div>
+</header>
+<main class="page">
+  <aside class="side">
+    <button class="side-item" id="btn-outline">Outline</button>
+    <button class="side-item" id="btn-comments">Comments</button>
+  </aside>
+  <section class="doc-shell">
+    <h1 id="draft-title" class="draft-title">…</h1>
+    <details class="resume-hint" open>
+      <summary>Where you left off</summary>
+      <p id="resume-note">…</p>
+    </details>
+    <div class="surface-host">
+      <div id="surface" class="surface"></div>
+    </div>
+  </section>
+</main>
+<script type="module" src="/dist/app.bundle.js"></script>
+</body>
+</html>

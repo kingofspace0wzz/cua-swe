@@ -1,0 +1,80 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/log_service.mjs
+  fixture: repo/verifiers/profiles.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults:
+    application: 55300
+    service: OS-assigned
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants:
+  - visible
+  - hidden
+  - hidden-range
+  oracle: independent-operation-event-semantics-and-protected-accepted-log-store
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - alternates/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - compare stored severity and raw selected event
+  - inspect receiver inventory including the syslog relay's source, delivered format, and two-producer pipeline
+  - select the relay receiver and correlate raw severityNumber, severityText, and body host/agent lines across records
+  - contrast the two forwarder agent versions' numeric levels against their shared keyword vocabulary, and the gateway's PRI lines against its keywords, across scenario epochs
+  - check severe view and healthy controls across scenarios
+  decisive_paths:
+  - raw severityNumber/severityText/body per receiver and per relay producer
+  - receiver source format, delivered record format, and relay pipeline description naming both producer fleets
+  - identical forwarder keywords carrying different agent-version numbers on same-band records
+  - severe membership across incident, healthy, and recovery
+hidden_runtime_variants:
+  description: >-
+    Evaluator-owned provenance-and-vocabulary variants. Each profile's relay
+    aggregates the same two producer provenances across the deterministic
+    scenario epochs: a syslog gateway daemon whose delivered OTLP records keep
+    raw RFC 5424 priorities and syslog keywords (err/ERR/error, alert/Alert/
+    ALERT, warning/Warn/warn, info/Informational/informational,
+    debug/Debug/DEBUG), and a mid-upgrade application forwarder fleet whose
+    two agent versions keep their own internal numeric level scales while
+    sharing one keyword vocabulary (error/Error/ERROR, warn/Warning/WARN,
+    info/Info/INFO, verbose/Verbose/VERBOSE). Profiles vary keyword spelling
+    and case within those demonstrated stems, the unmapped site-specific
+    tokens (audit/AUDIT/auth.audit and metric/Metric/app.metric), the syslog
+    facility, the gateway and forwarder host identities, and the forwarder
+    agent versions and their internal number scales, alongside the parent's
+    ID, spelling, identity, timestamp, ordering, and in-range numeric
+    variation. The accepted vocabulary is the union of what both provenances
+    demonstrate on screen; delivered relay numbers are producer-internal and
+    never OTel ranks.

@@ -1,0 +1,49 @@
+--- a/src/budgets.mjs
++++ b/src/budgets.mjs
+@@ -1,3 +1,22 @@
+ // Staging scrape service objectives. Units are milliseconds.
+ export const budgets = Object.freeze({connectTimeoutMs:250, requestTimeoutMs:2000});
++// Active policy revisions transcribed from the receiver policy activation board.
++// The same rollout profile activates a different revision in a different
++// activation epoch, so a profile alone never selects a deadline.
++export const activeRevisions = Object.freeze({
++ 'RH-27':Object.freeze({'E-104':'PRV-4410','E-117':'PRV-4496'}),
++ 'VT-58':Object.freeze({'E-233':'PRV-5327','E-241':'PRV-5203'}),
++ 'JN-84':Object.freeze({'E-368':'PRV-6118','E-379':'PRV-6242'}),
++});
++// Approved whole-response caps transcribed from the deadline authority matrix.
++// One cap per policy revision, collection tier and receiver class; a tier
++// alone never selects a cap.
++export const revisionCaps = Object.freeze({
++ 'PRV-4410':Object.freeze({standard:Object.freeze({interlock:1750,streamline:1300}),bulk:Object.freeze({interlock:3150,streamline:2420})}),
++ 'PRV-4496':Object.freeze({standard:Object.freeze({interlock:2100,streamline:1570}),bulk:Object.freeze({interlock:2510,streamline:2950})}),
++ 'PRV-5327':Object.freeze({express:Object.freeze({relay:1200,trunk:1950}),freight:Object.freeze({relay:2900,trunk:2400})}),
++ 'PRV-5203':Object.freeze({express:Object.freeze({relay:850,trunk:1480}),freight:Object.freeze({relay:2350,trunk:2800})}),
++ 'PRV-6118':Object.freeze({rapid:Object.freeze({orbit:1300,depot:1800}),batch:Object.freeze({orbit:2600,depot:2200})}),
++ 'PRV-6242':Object.freeze({rapid:Object.freeze({orbit:1900,depot:1400}),batch:Object.freeze({orbit:2150,depot:3000})}),
++});
+ export const serviceObjectives = Object.freeze({supportedResponseMs:1500, cancelByMs:2250, freshByMs:2500});
+--- a/src/collector.mjs
++++ b/src/collector.mjs
+@@ -1,7 +1,10 @@
+ import {fetchMetrics} from './scrape.mjs';
+ import {parseMetrics} from './metrics.mjs';
++import {budgets,activeRevisions,revisionCaps} from './budgets.mjs';
+ export async function collectTarget(origin,target){
+- const body=await fetchMetrics(new URL(target.path,origin));
++ const revision=activeRevisions[target.profileCode]?.[target.policyEpoch];
++ const cap=revisionCaps[revision]?.[target.tier]?.[target.receiverClass];
++ const body=await fetchMetrics(new URL(target.path,origin),{connectTimeoutMs:budgets.connectTimeoutMs,requestTimeoutMs:cap??budgets.requestTimeoutMs});
+  const samples=parseMetrics(body);
+  const response=await fetch(new URL('/ingest',origin),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:target.id,samples}),signal:AbortSignal.timeout(500)});
+  if(!response.ok)throw new Error('ingestion_rejected');
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -29,6 +29,7 @@
+       socket.setTimeout(limits.connectTimeoutMs);
+       socket.on('timeout',()=>finish(new Error('socket_timeout')));
+       socket.once('connect',()=>{
++        socket.setTimeout(0);
+         event('connected');
+       });
+     });

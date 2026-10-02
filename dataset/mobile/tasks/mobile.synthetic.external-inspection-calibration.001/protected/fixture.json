@@ -1,0 +1,256 @@
+{
+  "providerInbox": [
+    {
+      "id": "west-joint",
+      "title": "West pier joint",
+      "subtitle": "Imported survey \u2022 17 Sep 2026",
+      "attachment": {
+        "width": 320,
+        "height": 320,
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 320 320\"><rect width=\"320\" height=\"320\" fill=\"#e5e3dc\"/><path d=\"M0 60H320M0 260H320M45 0V320M280 0V320\" stroke=\"#c5c4bd\"/><path d=\"M200,90 L182.6,125.6 L170.6,163.60000000000002 L140,230\" fill=\"none\" stroke=\"#303d40\" stroke-width=\"4\"/><path d=\"M244,50h12 M250,44v12\" stroke=\"#21867a\" stroke-width=\"2\"/><text x=\"258\" y=\"54\" font-size=\"12\" fill=\"#126158\">A</text><path d=\"M244,270h12 M250,264v12\" stroke=\"#21867a\" stroke-width=\"2\"/><text x=\"258\" y=\"274\" font-size=\"12\" fill=\"#126158\">B</text><path d=\"M44,50h12 M50,44v12\" stroke=\"#21867a\" stroke-width=\"2\"/><text x=\"58\" y=\"54\" font-size=\"12\" fill=\"#126158\">C</text><circle cx=\"200\" cy=\"90\" r=\"4\" fill=\"#303d40\"/><circle cx=\"140\" cy=\"230\" r=\"4\" fill=\"#303d40\"/><text x=\"12\" y=\"307\" font-size=\"12\" fill=\"#4c585c\">West pier joint \u2022 rectified attachment</text></svg>"
+      },
+      "report": {
+        "title": "Provider calibration sheet",
+        "sections": [
+          {
+            "heading": "Coordinate contract",
+            "text": "Trace points are sample-frame coordinates, NOT attachment pixels. Each control point gives the same station in three frames. Use the three non-collinear stations to interpolate an affine map from sample to image for the overlay, and a separate affine map from sample to surface for measurement. Row order and station letters have no computational meaning."
+          },
+          {
+            "heading": "Measurement & editing",
+            "text": "Image coordinates use attachment pixels: x right, y down. Surface coordinates are millimetres on the inspected plane. Length is Euclidean endpoint distance in the surface frame, shown to 0.1 mm. Drawing scale is not a physical scale. New endpoint taps must be converted from attachment image to sample coordinates; do not change the imported original or the provider report."
+          },
+          {
+            "heading": "Station register",
+            "columns": [
+              "Mark",
+              "Sample u,v",
+              "Image x,y (px)",
+              "Surface X,Y (mm)"
+            ],
+            "rows": [
+              [
+                "B",
+                "250, 30",
+                "250, 270",
+                "100.0, 24.0"
+              ],
+              [
+                "C",
+                "30, 230",
+                "50, 50",
+                "12.0, 184.0"
+              ],
+              [
+                "A",
+                "30, 30",
+                "250, 50",
+                "12.0, 24.0"
+              ]
+            ]
+          },
+          {
+            "heading": "Integration payload",
+            "text": "The payload below is the machine-readable companion to this sheet. calibration.controlPoints defines both maps; traces[].points uses the sample frame. Annotations retain that frame when edited."
+          }
+        ],
+        "data": {
+          "calibration": {
+            "model": "affine-3-point",
+            "imageUnits": "px",
+            "surfaceUnits": "mm",
+            "controlPoints": [
+              {
+                "mark": "B",
+                "sample": [
+                  250,
+                  30
+                ],
+                "image": [
+                  250,
+                  270
+                ],
+                "surface": [
+                  100.0,
+                  24.0
+                ]
+              },
+              {
+                "mark": "C",
+                "sample": [
+                  30,
+                  230
+                ],
+                "image": [
+                  50,
+                  50
+                ],
+                "surface": [
+                  12.0,
+                  184.0
+                ]
+              },
+              {
+                "mark": "A",
+                "sample": [
+                  30,
+                  30
+                ],
+                "image": [
+                  250,
+                  50
+                ],
+                "surface": [
+                  12.0,
+                  24.0
+                ]
+              }
+            ]
+          },
+          "traces": [
+            {
+              "id": "joint",
+              "label": "Joint opening",
+              "points": [
+                [
+                  70,
+                  80
+                ],
+                [
+                  210,
+                  140
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "soffit-seam",
+      "title": "Soffit seam",
+      "subtitle": "Imported survey \u2022 17 Sep 2026",
+      "attachment": {
+        "width": 320,
+        "height": 320,
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 320 320\"><rect width=\"320\" height=\"320\" fill=\"#e5e3dc\"/><path d=\"M0 60H320M0 260H320M45 0V320M280 0V320\" stroke=\"#c5c4bd\"/><path d=\"M132.0,224.0 L153.72,194.8 L190.62,151.8 L235.0,94.0\" fill=\"none\" stroke=\"#303d40\" stroke-width=\"4\"/><path d=\"M46.0,276.0h12 M52.0,270.0v12\" stroke=\"#21867a\" stroke-width=\"2\"/><text x=\"60.0\" y=\"280.0\" font-size=\"12\" fill=\"#126158\">A</text><path d=\"M262.0,252.0h12 M268.0,246.0v12\" stroke=\"#21867a\" stroke-width=\"2\"/><text x=\"276.0\" y=\"256.0\" font-size=\"12\" fill=\"#126158\">B</text><path d=\"M88.0,45.0h12 M94.0,39.0v12\" stroke=\"#21867a\" stroke-width=\"2\"/><text x=\"102.0\" y=\"49.0\" font-size=\"12\" fill=\"#126158\">C</text><circle cx=\"132.0\" cy=\"224.0\" r=\"4\" fill=\"#303d40\"/><circle cx=\"235.0\" cy=\"94.0\" r=\"4\" fill=\"#303d40\"/><text x=\"12\" y=\"307\" font-size=\"12\" fill=\"#4c585c\">Soffit seam \u2022 rectified attachment</text></svg>"
+      },
+      "report": {
+        "title": "Provider calibration sheet",
+        "sections": [
+          {
+            "heading": "Coordinate contract",
+            "text": "Trace points are sample-frame coordinates, NOT attachment pixels. Each control point gives the same station in three frames. Use the three non-collinear stations to interpolate an affine map from sample to image for the overlay, and a separate affine map from sample to surface for measurement. Row order and station letters have no computational meaning."
+          },
+          {
+            "heading": "Measurement & editing",
+            "text": "Image coordinates use attachment pixels: x right, y down. Surface coordinates are millimetres on the inspected plane. Length is Euclidean endpoint distance in the surface frame, shown to 0.1 mm. Drawing scale is not a physical scale. New endpoint taps must be converted from attachment image to sample coordinates; do not change the imported original or the provider report."
+          },
+          {
+            "heading": "Station register",
+            "columns": [
+              "Mark",
+              "Sample u,v",
+              "Image x,y (px)",
+              "Surface X,Y (mm)"
+            ],
+            "rows": [
+              [
+                "C",
+                "20, 230",
+                "94.0, 45.0",
+                "37.0, 83.5"
+              ],
+              [
+                "B",
+                "260, 20",
+                "268.0, 252.0",
+                "184.0, 46.0"
+              ],
+              [
+                "A",
+                "20, 20",
+                "52.0, 276.0",
+                "16.0, 10.0"
+              ]
+            ]
+          },
+          {
+            "heading": "Integration payload",
+            "text": "The payload below is the machine-readable companion to this sheet. calibration.controlPoints defines both maps; traces[].points uses the sample frame. Annotations retain that frame when edited."
+          }
+        ],
+        "data": {
+          "calibration": {
+            "model": "affine-3-point",
+            "imageUnits": "px",
+            "surfaceUnits": "mm",
+            "controlPoints": [
+              {
+                "mark": "C",
+                "sample": [
+                  20,
+                  230
+                ],
+                "image": [
+                  94.0,
+                  45.0
+                ],
+                "surface": [
+                  37.0,
+                  83.5
+                ]
+              },
+              {
+                "mark": "B",
+                "sample": [
+                  260,
+                  20
+                ],
+                "image": [
+                  268.0,
+                  252.0
+                ],
+                "surface": [
+                  184.0,
+                  46.0
+                ]
+              },
+              {
+                "mark": "A",
+                "sample": [
+                  20,
+                  20
+                ],
+                "image": [
+                  52.0,
+                  276.0
+                ],
+                "surface": [
+                  16.0,
+                  10.0
+                ]
+              }
+            ]
+          },
+          "traces": [
+            {
+              "id": "joint",
+              "label": "Joint opening",
+              "points": [
+                [
+                  100,
+                  60
+                ],
+                [
+                  190,
+                  170
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

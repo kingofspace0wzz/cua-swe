@@ -1,0 +1,120 @@
+diff --git a/src/entities/hero.js b/src/entities/hero.js
+index f02505843c249547c1ecf0abf3d6d44d375c5e75..1e54dbd2a8c4fdbda0d05f78709a860116835d05 100644
+--- a/src/entities/hero.js
++++ b/src/entities/hero.js
+@@ -15,27 +15,42 @@ class Hero extends GameEntity {
+     this.fuel = 100;
+     this.jetpack = false;
+     this.collisionContactMask = 0;
+-    this.cornerLockTime = -1;
+     this.cornerDescentArmed = false;
++    this.cornerDescentLanded = false;
+   }
+ 
+   /**
+-   * Arms the reduced landing envelope after a jetpack release.
++   * Arms the corner landing after a jetpack release.
+    */
+   armCornerDescent() {
+     this.cornerDescentArmed = true;
+-    this.collisionContactMask =
+-        Math.abs(this.velocity[0]) >= Math.abs(this.velocity[2]) ? 1 : 2;
++    this.cornerDescentLanded = false;
++    this.collisionContactMask = 0;
++  }
++
++  /**
++   * Enables the compact envelope after the deck has caught the player.
++   */
++  finishCornerDescent() {
++    if (this.cornerDescentArmed) {
++      this.cornerDescentLanded = true;
++    }
++  }
++
++  /**
++   * Clears corner landing state when starting a level.
++   */
++  resetCornerDescent() {
++    this.cornerDescentArmed = false;
++    this.cornerDescentLanded = false;
++    this.collisionContactMask = 0;
+   }
+ 
+   /**
+    * Starts a fresh collision manifold for the frame.
+    */
+   beginCollisionFrame() {
+-    if (!this.cornerDescentArmed) {
+-      this.collisionContactMask = 0;
+-      this.cornerLockTime = -1;
+-    }
++    this.collisionContactMask = 0;
+   }
+ 
+   /**
+@@ -43,7 +58,7 @@ class Hero extends GameEntity {
+    * @return {number}
+    */
+   collisionRadius() {
+-    return this.cornerDescentArmed && this.velocity[1] < 0 ? 0.28 : 0.7;
++    return this.cornerDescentLanded ? 0.28 : 0.7;
+   }
+ 
+   /**
+@@ -52,9 +67,6 @@ class Hero extends GameEntity {
+    */
+   recordCollisionAxis(axis) {
+     this.collisionContactMask |= axis;
+-    if (this.collisionContactMask === 3 && this.cornerDescentArmed) {
+-      this.cornerLockTime = gameTime;
+-    }
+   }
+ 
+   /**
+@@ -62,7 +74,7 @@ class Hero extends GameEntity {
+    * @return {boolean}
+    */
+   isCornerLocked() {
+-    return this.cornerLockTime >= 0 && this.cornerDescentArmed;
++    return false;
+   }
+ 
+   /**
+diff --git a/src/index.js b/src/index.js
+index 337155a3a11e4e01ec084bff14758940046998f1..e5a417d07f21210033849a2b3c644d87e8fdacd3 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -395,7 +395,7 @@ function updateWorld() {
+               actor.groundedTime = gameTime;
+               actor.groundedPlatform = platform;
+               if (actor instanceof Hero) {
+-                actor.recordCollisionAxis(2);
++                actor.finishCornerDescent();
+               }
+             }
+           } else if (actorY < platformMaxY && actorY + actorHeight > platformMinY) {
+@@ -490,11 +490,6 @@ function updateEntity(entity) {
+ 
+   entity.velocity[0] *= (1.0 - dt * FRICTION);
+   entity.velocity[2] *= (1.0 - dt * FRICTION);
+-  if (entity instanceof Hero && entity.isCornerLocked()) {
+-    entity.velocity[0] = 0;
+-    entity.velocity[2] = 0;
+-  }
+-
+   entity.pos[0] += dt * entity.velocity[0];
+   entity.pos[2] += dt * entity.velocity[2];
+ 
+diff --git a/src/mapgen.js b/src/mapgen.js
+index 83ccb14c8c88b49c6421031a81249b2c7363c13f..59b0fb3bfa4f570546d38abcc98caf1073877d1f 100644
+--- a/src/mapgen.js
++++ b/src/mapgen.js
+@@ -501,6 +501,7 @@ function initGame() {
+   player.yaw = 3.0;
+   player.groundedTime = 0;
+   player.shootTime = 0;
++  player.resetCornerDescent();
+   coins = 0;
+   lastCoinTime = 0;
+   coinSequence = 0;

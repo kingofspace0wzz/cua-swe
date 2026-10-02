@@ -1,0 +1,25 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: npm run build && CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps: [inspect active product filters, open Export, select Current search, read Workspace export guide, preview export]
+  decisive_paths: [export.request_field, export.combiner, export.filter_encoding]
+source_noninferability:
+  forbidden_agent_source_literals: [where, query, ALL, ANY, request_field, combiner, filter_encoding]
+provenance:
+  source_repo: saleor/saleor-dashboard
+  source_issue: https://github.com/saleor/saleor-dashboard/issues/5985
+  source_revision: 4f81c86b5e244fedb3908bbce538cefbe454b498
+  implementation: behavior-derived clean-room fixture
+
+# The final browser test owns the service and switches its data variants.
+verification: {service_owner: verifier}

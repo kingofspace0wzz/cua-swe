@@ -1,0 +1,33 @@
+--- a/src/ingest.mjs
++++ b/src/ingest.mjs
+@@ -2,7 +2,7 @@
+ import {applyGauge} from './update.mjs';
+ export function ingestCapture(receipt, state) {
+   return decodeDatagram(Buffer.from(receipt.base64, 'base64')).map(measurement => {
+-    const result = applyGauge(state, {...measurement, source: receipt.source});
++    const result = applyGauge(state, {...measurement, source: receipt.source, epoch: receipt.epoch});
+     return {receipt: receipt.sequence, lineIndex: measurement.lineIndex,
+       identity: measurement.identity, source: receipt.source, token: measurement.token,
+       metricType: measurement.metricType, parsedValue: measurement.value,
+--- a/src/update.mjs
++++ b/src/update.mjs
+@@ -1,6 +1,8 @@
++import {gaugeUpdateMode} from './fleet.mjs';
+ export function applyGauge(state, measurement) {
+   const before = state.get(measurement.identity) ?? 0;
+-  const value = measurement.value;
++  const relative = gaugeUpdateMode(measurement.source, measurement.epoch) === 'signed-delta' && /^[+-]/.test(measurement.token);
++  const value = relative ? before + measurement.value : measurement.value;
+   state.set(measurement.identity, value);
+   return {before, value};
+ }
+--- /dev/null
++++ b/src/fleet.mjs
+@@ -0,0 +1,7 @@
++export const rolloutWaves = [
++  {'cabinet-agents': 'signed-delta', 'gatehouse-counters': 'signed-delta', 'yard-station': 'absolute-reading', 'basin-level': 'absolute-reading'},
++  {'cabinet-agents': 'signed-delta', 'gatehouse-counters': 'absolute-reading', 'yard-station': 'signed-delta', 'basin-level': 'absolute-reading'},
++];
++export function gaugeUpdateMode(source, epoch) {
++  return rolloutWaves[(Number(epoch) + 1) % 2][source] ?? 'signed-delta';
++}

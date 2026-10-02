@@ -1,0 +1,12 @@
+schema_version: 1
+visibility: evaluator_owned
+service: {command: 'node env/service.mjs --host 127.0.0.1 --port "{service_port}"', health_path: /health}
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy: {service_source_visible: false, direct_loopback_http_allowed: false, process_environment_inspection_allowed: false}
+browser_observation:
+  steps: [open the cart, expand Tax calculation details, read line bases and the complete rounding and display contract]
+  decisive_paths: ['tax.lines[*].taxable_minor', 'tax.lines[*].rate_basis_points', tax.rounding_scope_ref, 'tax.scope_operations[*].scope_ref', 'tax.scope_operations[*].operation', tax.rounding_increment_minor, tax.rounding_mode_ref, 'tax.rounding_operations[*].mode_ref', 'tax.rounding_operations[*].operation', tax.currency_scale, tax.display_precision, tax.display_pattern]
+source_noninferability:
+  forbidden_agent_source_literals: [taxable_minor, rate_basis_points, rounding_scope_ref, scope_operations, scope_ref, rounding_increment_minor, rounding_mode_ref, rounding_operations, mode_ref, operation, currency_scale, display_precision, display_pattern, SC4, SC9, RM7, RM2, round_each_then_sum, sum_then_round, nearest_increment_ties_up, toward_lower_increment, 'Estimated tax: 0.30 USD', 'Tax due 0.450 credits']

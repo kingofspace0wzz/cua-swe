@@ -1,0 +1,12 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -11,7 +11,7 @@ export function compileInhibitionRule(catalog, policy) {
+       {
+         label: "alertname",
+         operator: "=~",
+-        value: ".*",
++        value: "(?!(PaymentsFailures|CheckoutLatency|SearchErrors)$).*",
+       },
+     ],
+     equal: [...catalog.equalDimensions],

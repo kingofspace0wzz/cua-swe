@@ -1,0 +1,78 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  implementation: repo/verifiers/service.mjs
+  fixture: repo/verifiers/profiles.json
+  pixel_surfaces:
+  - repo/verifiers/policy-activation-board.png
+  - repo/verifiers/deadline-authority-matrix.png
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1
+    --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants:
+  - visible
+  - hidden-epoch-rotation
+  - hidden-cadence-mix
+  profile_codes:
+  - RH-27
+  - VT-58
+  - JN-84
+  activation_epochs_per_profile: 2
+  epoch_advance: every explicit reset advances the rollout to its next scheduled activation epoch,
+    changing which policy revision governs the same profile
+  oracle: native exporter records, exact receiver sample tuples, epoch-scoped policy-revision freshness
+    and abort envelopes per collection tier and receiver class, and truthful UI state
+source_noninferability:
+  decisive_values_absent_from_agent_workspace:
+  - the profile-and-epoch to active-policy-revision activation schedule, including superseded revisions
+  - every policy revision's tier/receiver-class freshness, abort and approved-cap grid
+  - hidden profile codes, epoch codes, revision tokens, tier tokens, receiver-class tokens, pacing,
+    stalls, seeds and assignments
+  - compliant receipt examples and operator rules rendered into the two runbook surfaces' pixels
+  structured_public_state_excludes:
+  - activation board and revision mappings
+  - deadline authority matrix values
+  - reference ledger oracle
+  - surface text or accessibility metadata containing values or revision tokens
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - read the policy activation board for the displayed rollout profile and activation epoch
+  - read the deadline authority matrix rows for the active policy revision
+  - run scrape checks
+  - open target detail
+  - reset, observe the activation epoch advance, and replay
+  decisive_paths:
+  - pixel-only profile/epoch to active-policy-revision schedule
+  - pixel-only revision/tier/receiver-class cap mapping
+  - live rollout profile code and activation epoch code
+  - target tier and receiver-class assignments and native request timeline
+  - receiver receipts and retained completed-attempt history with epoch provenance

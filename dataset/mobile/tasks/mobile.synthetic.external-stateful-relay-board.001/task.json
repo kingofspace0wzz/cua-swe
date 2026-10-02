@@ -1,0 +1,223 @@
+{
+  "task_id": "mobile.synthetic.external-stateful-relay-board.001",
+  "revision": "002",
+  "release": "mobile-standalone-synthetic-v1-external-development",
+  "public_files": {
+    "LICENSE": {
+      "path": "public/LICENSE",
+      "sha256": "7af867aa19685f3ad10d69145443181de914461d0f1ea92e40cef3156c40d1cd"
+    },
+    "README.md": {
+      "path": "public/README.md",
+      "sha256": "21a9ce2bb733075aad23ebdaeab307ee96b6346bd72f5566e8bcd8bc046c3b33"
+    },
+    "app.js": {
+      "path": "public/app.js",
+      "sha256": "61df71abe0e8d8d056d597f3e137bc979fdc5a1c710243016be685f715e5bbe5"
+    },
+    "board.js": {
+      "path": "public/board.js",
+      "sha256": "f77e163a8ebd6e01fc81a284bfee5a1447227e64bc78984b15dbe8a1823499e3"
+    },
+    "build.sh": {
+      "path": "public/build.sh",
+      "sha256": "6b5a93e0db154ab7464c2fab3989883309f809b483639e9a93cb15ade7cd70cd"
+    },
+    "engine.js": {
+      "path": "public/engine.js",
+      "sha256": "fea772295ca10b81592ff84197298f197be3f18a94e3910239918f75e05bee6b"
+    },
+    "index.html": {
+      "path": "public/index.html",
+      "sha256": "4c4aa45472c706c4cf96c7c1c71c95335c819cfa52375def5d979b74145275d8"
+    },
+    "report.js": {
+      "path": "public/report.js",
+      "sha256": "926d3b9fb7ba19de1bf18c7f053b9cfab00b48470e1904ede1bd4b9a2b8edcf6"
+    },
+    "style.css": {
+      "path": "public/style.css",
+      "sha256": "d0ff64f736daff801a2e58e4c40b4d8e64abef4fc6ff0ce2f85e9cd0d20fe52f"
+    }
+  },
+  "editable": [
+    "LICENSE",
+    "README.md",
+    "app.js",
+    "board.js",
+    "engine.js",
+    "index.html",
+    "report.js",
+    "style.css"
+  ],
+  "instruction": {
+    "path": "INSTRUCTION.md",
+    "sha256": "bec0f4085ddb3f3e9d515fd119936de161e166dbceecda33002ad0c175389680"
+  },
+  "scratch": [
+    "dist/"
+  ],
+  "dependencies": [],
+  "expected_assertions": [
+    "delivered_traces",
+    "edited_traces",
+    "draft_transactions",
+    "replay_and_lamps",
+    "saved_editions",
+    "edition_reset"
+  ],
+  "backend": {
+    "browser_runtime": true,
+    "browser_sha256": "ec17f61c3b931ddc35e301aec871ebd99f6fd8b6df115eb0331d97d233906695",
+    "capture": "native",
+    "grade": "native",
+    "timeout_seconds": 170,
+    "native": {
+      "schema": 1,
+      "assets": [],
+      "build": {
+        "argv": [
+          "/bin/sh",
+          "build.sh"
+        ],
+        "env": {},
+        "out_dir": "dist",
+        "required_files": [
+          "index.html",
+          "style.css",
+          "app.js",
+          "engine.js",
+          "board.js",
+          "report.js"
+        ],
+        "timeout_seconds": 20
+      },
+      "scene": {
+        "path": "/",
+        "frame_paths": [],
+        "viewport": {
+          "width": 400,
+          "height": 800
+        },
+        "device_scale_factor": 1,
+        "timezone": "UTC",
+        "locale": "en-US",
+        "state_mode": "reset_to_scene",
+        "timeout_ms": 30000
+      },
+      "capture_required": true,
+      "fixture": {
+        "path": "protected/fixture.json",
+        "sha256": "2bfaa4fe6942840dc0fc4da54455d6eee11d3380396363946ad27b77e44f3e57"
+      },
+      "setup": {
+        "path": "protected/setup.py",
+        "sha256": "43fa1559d0801011bcc8389eca31fc9caee580f17577a771555adcd8db4f58c4"
+      },
+      "verifier": {
+        "path": "protected/verifier.py",
+        "sha256": "51761407e384580dd303ad8d6a21a90286c794de454beb1facd07eab2bf98a5c"
+      }
+    }
+  },
+  "controls": {
+    "alternative": {
+      "correct": true,
+      "patch": {
+        "path": "controls/alternative.json",
+        "sha256": "7f43cd8d96bbeb94865597e1ce78b43bfdf28e55bef544e2925d88a0dc4fa239"
+      }
+    },
+    "artifact_guess": {
+      "correct": false,
+      "patch": {
+        "path": "controls/artifact_guess.json",
+        "sha256": "e84db7d4532ea2aa1b2d6823f89703743a4dfe4dedb8ba232ac0d869f66b87b8"
+      }
+    },
+    "first_edition_only": {
+      "correct": false,
+      "patch": {
+        "path": "controls/first_edition_only.json",
+        "sha256": "b94d202ff64a3dac2b6ddeb0cd5eb38c83832efe4d51fb1a849283774911ab4d"
+      }
+    },
+    "gold": {
+      "correct": true,
+      "patch": {
+        "path": "controls/gold.json",
+        "sha256": "51e082ffc6e8441581a4c8eb606db4d183a8be575c0e4f48b65f4db8ff8b4372"
+      }
+    },
+    "incomplete_save": {
+      "correct": false,
+      "patch": {
+        "path": "controls/incomplete_save.json",
+        "sha256": "bcd557000ec80cea224c080de7d71f257e745d403957b0122597b0ded2ebe6c1"
+      }
+    },
+    "partial": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial.json",
+        "sha256": "b2a937c7218b4118a764a5e7312b2f1bb906d17a9f96ccea9e1806eff80abcd9"
+      }
+    },
+    "partial_panel": {
+      "correct": false,
+      "patch": {
+        "path": "controls/partial_panel.json",
+        "sha256": "b2a937c7218b4118a764a5e7312b2f1bb906d17a9f96ccea9e1806eff80abcd9"
+      }
+    },
+    "reversed_pin": {
+      "correct": false,
+      "patch": {
+        "path": "controls/reversed_pin.json",
+        "sha256": "13c8be2f28d62b28a6811492e7779ba3572ff52857f29acabc837d4804fac628"
+      }
+    },
+    "same_tick": {
+      "correct": false,
+      "patch": {
+        "path": "controls/same_tick.json",
+        "sha256": "b07a90a5e3833c7d6c96095613930283253bd3fe12afea51997acce56bf11139"
+      }
+    },
+    "sequential": {
+      "correct": false,
+      "patch": {
+        "path": "controls/sequential.json",
+        "sha256": "6b39a46e49a07401e8004bff5912f9f57525a70437ed508a5de4437f91b397d3"
+      }
+    },
+    "static_preview": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static_preview.json",
+        "sha256": "41387adf99c3cf13213258934a1e0e60a6428af13f6239ac573231850f3ac6cf"
+      }
+    },
+    "static_report": {
+      "correct": false,
+      "patch": {
+        "path": "controls/static_report.json",
+        "sha256": "5a880ecb27bbbe9c0858d644a7b704944a02aceb717df6f35a6b03484fe0a39d"
+      }
+    },
+    "swapped_connector": {
+      "correct": false,
+      "patch": {
+        "path": "controls/swapped_connector.json",
+        "sha256": "02647892b702995fad36359f875505369815ac3625673a34e69b6d156f42ca0f"
+      }
+    },
+    "wrong_crossing": {
+      "correct": false,
+      "patch": {
+        "path": "controls/wrong_crossing.json",
+        "sha256": "0be9eee58e2433704636b16443cd5a90b95aaa7e57548f85a3872151236e3bf2"
+      }
+    }
+  }
+}

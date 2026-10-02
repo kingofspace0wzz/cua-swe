@@ -1,0 +1,17 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+index 2ca366ab15985349340044ba1cd10e5ffff22f8e..989b6085f7ee20f6ea2a171b972b616f0c8d3be1 100644
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -15,7 +15,10 @@ export function compileInhibitionRule(catalog, policy) {
+       },
+     ],
+     equal: [...catalog.equalDimensions],
+-    required_source_labels: [],
+-    required_target_labels: [],
++    // Environment is fully rolled out and has never been re-stamped: an
++    // absent/empty value cannot establish a shared delivery ring. Cluster is
++    // still being re-stamped, so keep missing-cluster equality for older alerts.
++    required_source_labels: ["environment"],
++    required_target_labels: ["environment"],
+   };
+ }

@@ -1,0 +1,60 @@
+id: gameqa.maze-signal-mode-handoff.001
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.maze-signal-mode-handoff.001/repo
+  ref: maze-signal-mode-handoff-broken-baseline
+  link_node_modules: false
+  copy_mode: filtered
+instruction: >-
+  Signal Maze contains a deterministic gameplay regression. A rover that leaves
+  the lower dock can keep the teal warning look as the warning clears, make
+  contact behave differently from that look, and then take a route that does
+  not match the resumed route indicator. Restore a consistent visible and
+  physical handoff, then reach the exit.
+setup:
+  install:
+    - npm ci
+    - npm run build
+  reset: []
+  launch:
+    - CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:51001 npm run dev -- --host 127.0.0.1 --port 51000
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:51000/
+  viewport_or_device: desktop-1280x720
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 600
+  max_steps: 120
+  max_gui_actions: 90
+  max_test_runs: 16
+verifiers:
+  build:
+    - npm run build
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - '"${CUA_SWE_PYTHON:-python3}" verifiers/browser_check.py --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:51000/}" --service-port 51001'
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: 23_pacman
+  state_api: window.gameAPI
+  seed: 23001
+  level: 1

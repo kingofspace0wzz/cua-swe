@@ -1,0 +1,65 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: >-
+    CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}/?benchmark=1&level=3
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - open the deterministic Level 3 benchmark
+    - read the live cargo scanner
+    - collect the center cargo while the lift descends
+    - compare the rendered cargo, HUD inventory, and live scanner trace
+  decisive_paths:
+    - activeCargoRouteV13
+    - standbyCargoRouteV13
+    - activeCargoMapV13
+    - standbyCargoMapV13
+    - cargoShadowRouteMapV13[*].routeGlyphV13
+    - cargoShadowRouteMapV13[*].aliasGlyphV13
+    - cargoRouteMapV13[*].routeGlyphV13
+    - cargoRouteMapV13[*].mapGlyphV13
+    - cargoRouteMapV13[*].aliasGlyphV13
+    - cargoAliasMapV13[*].aliasGlyphV13
+    - cargoAliasMapV13[*].relayGlyphV13
+    - cargoRelayMapV13[*].relayGlyphV13
+    - cargoRelayMapV13[*].receiptGlyphV13
+    - cargoReceiptMatrixV13[*].receiptGlyphV13
+    - cargoReceiptMatrixV13[*].creditUnitsV13
+    - render.count
+source_noninferability:
+  forbidden_agent_source_literals:
+    - activeCargoRouteV13
+    - standbyCargoRouteV13
+    - activeCargoMapV13
+    - standbyCargoMapV13
+    - cargoShadowRouteMapV13
+    - cargoRouteMapV13
+    - routeGlyphV13
+    - mapGlyphV13
+    - aliasGlyphV13
+    - cargoAliasMapV13
+    - relayGlyphV13
+    - cargoRelayMapV13
+    - cargoReceiptMatrixV13
+    - receiptGlyphV13
+    - creditUnitsV13
+    - route-amber-219
+    - route-cobalt-864
+    - map-lyra-418
+    - map-orion-705
+    - alias-saffron-481
+    - alias-indigo-926
+    - relay-silver-357
+    - relay-onyx-804
+    - glyph-nu-773
+    - glyph-lambda-642
+    - glyph-zeta-315

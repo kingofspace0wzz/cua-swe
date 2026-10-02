@@ -1,0 +1,27 @@
+diff --git a/js/game_manager.js b/js/game_manager.js
+--- a/js/game_manager.js
++++ b/js/game_manager.js
+@@ -8,6 +8,9 @@ function GameManager(size, InputManager, Actuator) {
+ }
+ 
+ GameManager.prototype.restart = function () {
++  if (typeof this.inputManager.cancelPendingMove === "function") {
++    this.inputManager.cancelPendingMove();
++  }
+   this.actuator.restart();
+   this.setup();
+ };
+diff --git a/js/keyboard_input_manager.js b/js/keyboard_input_manager.js
+--- a/js/keyboard_input_manager.js
++++ b/js/keyboard_input_manager.js
+@@ -76,2 +76,10 @@ KeyboardInputManager.prototype.restart = function (event) {
+   this.emit("restart");
+ };
++
++KeyboardInputManager.prototype.cancelPendingMove = function () {
++  this.serial += 1;
++  if (this.pending !== null) {
++    window.clearTimeout(this.pending);
++    this.pending = null;
++  }
++};

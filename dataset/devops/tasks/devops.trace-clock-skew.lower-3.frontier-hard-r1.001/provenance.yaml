@@ -1,0 +1,13 @@
+schema_version: 1
+task_id: devops.trace-clock-skew.lower-3.frontier-hard-r1.001
+source:
+  project: jaegertracing/jaeger
+  implementation: https://github.com/jaegertracing/jaeger/blob/v1.67.0/model/adjuster/clockskew.go
+  pinned_revision: v1.67.0
+  license: Apache-2.0
+  source_type: adapted_real_repo
+notes:
+  - Jaeger's clock-skew adjuster moves spans that appear off relative to parents on different servers, with the documented caveat that correction is only meaningful across independent clock sources.
+  - The candidate preserves the shift-not-resize mechanism, the protected aligned and instrumentation controls, and the deterministic exact-geometry oracle.
+  - This frontier-hard successor changes one axis after two frontier code-only passes on the parent, moving the authoritative clock-domain and correction truth into evaluator-owned runtime state (a per-host time-authority registry) that is observable only through normal operator surfaces.
+  - The Spanline console, trace protocol, profiles, authority-alignment implementation, and verifier are original; no upstream source or assets are copied.

@@ -1,0 +1,26 @@
+diff --git a/src/config/compileRuntimeProfile.js b/src/config/compileRuntimeProfile.js
+index f7ec99a28b4ae99d147e9c6e20ef038e7a7bfd0a..c199ce3e1b54f4fc1e2a228bc49cde01e513bc8a 100644
+--- a/src/config/compileRuntimeProfile.js
++++ b/src/config/compileRuntimeProfile.js
+@@ -1,7 +1,7 @@
+ export function compileRuntimeProfile(policy) {
+   return {
+     context_manager: policy.contextManager,
+-    async_semantics: "native",
++    async_semantics: policy.asyncSemantics,
+     propagation_strategy: policy.propagationStrategy,
+   };
+ }
+diff --git a/src/config/contextCompatibilityPolicy.js b/src/config/contextCompatibilityPolicy.js
+index e382c33f397e69c097cc2b12d96bb3f45e2e8305..e68f93e26403477dfbbdc0f3b75f437c41a0ec82 100644
+--- a/src/config/contextCompatibilityPolicy.js
++++ b/src/config/contextCompatibilityPolicy.js
+@@ -2,7 +2,7 @@ export function contextCompatibilityPolicy(catalog) {
+   return Object.freeze({
+     profileLabel: catalog.label,
+     contextManager: catalog.contextManager,
+-    asyncSemantics: "native",
++    asyncSemantics: catalog.awaitContinuations,
+     propagationStrategy: "manager",
+   });
+ }

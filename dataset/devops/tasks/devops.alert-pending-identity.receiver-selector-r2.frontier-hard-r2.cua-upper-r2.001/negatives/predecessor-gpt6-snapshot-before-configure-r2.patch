@@ -1,0 +1,64 @@
+diff --git a/src/controllers/console.js b/src/controllers/console.js
+index 11efc765915b5581858373eb68047e3227a5e804..3e263c74a3c46b7e24fe83f4d999eb213b6bf267 100644
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -4,7 +4,10 @@ import {store} from '../state/store.js';
+ import {render} from '../views/render.js';
+ export async function initialize(){
+  store.catalog=await request('catalog');
+- await request('configure',{rules:store.catalog.rules.map(compileRule)});
++ // Route selectors and epoch key ownership are supplied by the live evaluator.
++ const initialSnapshot=await request('snapshot');
++ const routing={...store.catalog.routing,routes:initialSnapshot.routes,epoch:initialSnapshot.delivery.epoch};
++ await request('configure',{rules:store.catalog.rules.map(rule=>compileRule(rule,routing))});
+  store.snapshot=await request('snapshot');render(store);
+  document.querySelector('#app').addEventListener('click',async event=>{
+   const button=event.target.closest('button[data-action]');if(!button||store.busy)return;
+diff --git a/src/rules/compileRule.js b/src/rules/compileRule.js
+index 2fe93e45b7623f4a4bbfacf9bdbacea0c99802a0..946cb9c45902c34a2de2095a3a86fe014dd42789 100644
+--- a/src/rules/compileRule.js
++++ b/src/rules/compileRule.js
+@@ -1,10 +1,40 @@
+ import {compileQuery} from './query.js';
+ 
+-export function compileRule(rule) {
+-  const labels = {...rule.labels};
++export function compileRule(rule, routing = {}) {
++  const fields = {...rule.labels};
+   const annotations = {...rule.annotations};
+   for (const field of rule.enrichments || []) {
+-    labels[field.name] = field.template;
++    fields[field.name] = field.template;
++  }
++
++  // Routing is first-match, based on the imported selector labels, not the
++  // rule's descriptive family or the union of every route's context.
++  const route = (routing.routes || []).find(route =>
++    Object.entries(route.match || {}).every(([key, value]) => fields[key] === value)
++  );
++  const ownedScopes = new Set((routing.ownership || {})[route?.family] || []);
++
++  const ownedKeys = new Set([...ownedScopes].flatMap(scope =>
++    Object.keys((routing.epoch || {})[scope] || {})
++  ));
++
++  function isIdentity(template) {
++    const references = String(template).matchAll(/\$([a-zA-Z_]\w*)(?:\.([a-zA-Z_]\w*))?/g);
++    for (const [, scope, key] of references) {
++      // $labels refers to the source series, not other imported enrichments.
++      if (scope === 'labels' && key) continue;
++      if (scope === 'route' && ownedKeys.has(key)) continue;
++      return false;
++    }
++    return true;
++  }
++
++  const labels = {};
++  for (const [name, template] of Object.entries(fields)) {
++    // Keep detail live without making each reading or evaluation a new alert.
++    // Owned routing context remains identity so a handoff starts a new hold.
++    if (isIdentity(template)) labels[name] = template;
++    else annotations[name] = template;
+   }
+   return {
+     name: rule.name,

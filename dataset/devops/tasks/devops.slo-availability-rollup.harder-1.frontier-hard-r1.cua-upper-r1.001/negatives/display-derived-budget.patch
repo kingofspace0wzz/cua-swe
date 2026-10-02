@@ -1,0 +1,36 @@
+--- a/src/config/sloDefinition.js
++++ b/src/config/sloDefinition.js
+@@ -1,4 +1,4 @@
+ export const SLO_ROLLUPS = Object.freeze({
+-  availability: { mode: "mean_of_slices" },
+-  budget: { mode: "mean_of_slices" },
++  availability: { mode: "weighted_slices", weight: "region_equal" },
++  budget: { mode: "weighted_slices", weight: "region_equal" },
+ });
+--- a/src/config/compileSloPlan.js
++++ b/src/config/compileSloPlan.js
+@@ -1,6 +1,6 @@
+ function compileRollup(rollup) {
+   return {
+-    mode: "mean_of_slices",
++    mode: rollup.mode,
+     weight: rollup.weight || null,
+     includeIds: rollup.includeIds || null,
+     minimumTotal: rollup.minimumTotal || 0,
+--- a/src/views/summary.js
++++ b/src/views/summary.js
+@@ -1,11 +1,12 @@
+ import { metric, percent } from "./components.js";
+ export function renderSummary(snapshot) {
+   const summary = snapshot.summary;
++  const displayedBudget = (1 - Number(summary.availability.toFixed(3))) / (1 - summary.objective) * 100;
+   document.querySelector("#summary").innerHTML = [
+     metric("Availability", percent(summary.availability), "availability", summary.verdict),
+     metric("Objective", percent(summary.objective), "objective"),
+     metric("Verdict", summary.verdict, "verdict", summary.verdict),
+-    metric("Budget consumed", `${summary.budgetConsumed.toFixed(1)}%`, "budget-consumed"),
+-    metric("Budget remaining", `${summary.budgetRemaining.toFixed(1)}%`, "budget-remaining"),
++    metric("Budget consumed", `${displayedBudget.toFixed(1)}%`, "budget-consumed"),
++    metric("Budget remaining", `${(100 - displayedBudget).toFixed(1)}%`, "budget-remaining"),
+   ].join("");
+ }

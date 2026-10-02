@@ -1,0 +1,11 @@
+{
+  "name": "sentinel-inhibition-console",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Alert inhibition scope and incident diagnostics.",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node server.mjs"
+  }
+}

@@ -1,0 +1,22 @@
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,19 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
+ 
++function normalizeOrigin(spans) {
++  const earliest = Math.min(...spans.map((span) => span.startMs));
++  if (earliest >= 0) return spans;
++  return spans.map((span) => ({
++    ...span,
++    startMs: span.startMs - earliest,
++    endMs: span.endMs - earliest,
++  }));
++}
++
+ export function compileAdjusters(policy) {
+   return [
+     { name: "dedupe", apply: dedupeSpans },
++    { name: "normalize-origin", apply: normalizeOrigin },
+     { name: "sort", apply: sortSpans },
+   ];
+ }

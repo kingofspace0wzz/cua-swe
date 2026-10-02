@@ -1,0 +1,9 @@
+const root=document.querySelector("#root");
+async function render(){
+  const response=await fetch(`/api/warehouse-dispatch${window.location.search}`);const data=await response.json();
+  // The legacy dispatch response exposed a display-ready day.
+  const dispatchDay=data.dispatch_day??"Dispatch unavailable";
+  root.innerHTML=`<main class="shell"><section class="card"><p class="eyebrow">Warehouse dispatch</p><h1>Order ${data.order_ref??"unknown"}</h1><div class="dispatch-row"><span>Dispatch day</span><strong id="dispatch-day">${dispatchDay}</strong></div><button id="timeline-toggle" type="button" aria-expanded="false">Dispatch timeline</button><section id="timeline" class="timeline" hidden><h2>Live /api/warehouse-dispatch response</h2><pre>${JSON.stringify(data,null,2)}</pre></section></section></main>`;
+  const toggle=document.querySelector("#timeline-toggle"),details=document.querySelector("#timeline");toggle.addEventListener("click",()=>{const opening=details.hidden;details.hidden=!opening;toggle.setAttribute("aria-expanded",String(opening));});
+}
+render().catch((error)=>{root.textContent=`Unable to load dispatch: ${error.message}`;});

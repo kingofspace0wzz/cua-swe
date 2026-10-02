@@ -1,0 +1,58 @@
+autoInstallPeers: true
+linkWorkspacePackages: true
+preferWorkspacePackages: true
+preferFrozenLockfile: true
+
+packages:
+  - handsontable
+  - wrappers/*
+  - visual-tests
+  - examples
+  - docs
+  - docs/angular-type-check
+  - tests
+
+# One Playwright version across the monorepo — the catalog version and the CI
+# container tag (mcr.microsoft.com/playwright:vX.Y.Z-noble) bump together, never
+# apart. visual-tests migrates onto the catalog in a separate reviewed change.
+catalog:
+  '@playwright/test': 1.61.1
+
+ignoredBuiltDependencies:
+  - lefthook # its postinstall is redundant — scripts/prepare-dev-env.mjs wires the hooks
+  - nice-napi
+  - sharp
+
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - core-js
+  - esbuild
+  - puppeteer
+  - nx
+
+# TODO: Replace with newer version of the Vue wrapper dependencies.
+packageExtensions:
+  '@vue/test-utils@2.0.0-rc.16': # Force compatible Vue3 sub-dependencies for rc and alpha versions of the wrapper dependencies.
+    dependencies:
+      'vue': '3.5.16'
+      '@vue/compiler-dom': '3.5.16'
+      '@vue/compiler-sfc': '3.5.16'
+  'vue-jest@5.0.0-alpha.10': # Force compatible Vue3 sub-dependencies for rc and alpha versions of the wrapper dependencies.
+    dependencies:
+      '@vue/compiler-dom': '3.5.16'
+      '@vue/compiler-sfc': '3.5.16'
+  '@nx/devkit': # Add a missing peer dependency of rxjs used by the Nx devkit.
+    peerDependencies:
+      'rxjs': '*'
+  'jest-preset-angular@14.6.0': # Add a missing peer dependency of zone.js used by the jest preset.
+    peerDependencies:
+      'zone.js': '*'
+  'jsdom@16':
+    peerDependencies:
+      'form-data': '3.0.4'
+  'jsdom@24':
+    peerDependencies:
+      'form-data': '4.0.4'
+  'jsdom@20':
+    peerDependencies:
+      'form-data': '4.0.4'

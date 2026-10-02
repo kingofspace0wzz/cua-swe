@@ -1,0 +1,11 @@
+diff --git a/src/views/markers.js b/src/views/markers.js
+--- a/src/views/markers.js
++++ b/src/views/markers.js
+@@ -4,6 +4,6 @@ export function renderMarkers(snapshot) {
+   const root = document.querySelector('[data-test="markers"]');
+   clear(root);
+-  for (const marker of snapshot.markers) {
++  for (const marker of snapshot.markers.filter((item) => item.kind !== "reset")) {
+     const item = element("li", `marker marker-${marker.kind}`);
+     item.dataset.markerId = marker.id;
+     item.dataset.markerTime = String(marker.time);

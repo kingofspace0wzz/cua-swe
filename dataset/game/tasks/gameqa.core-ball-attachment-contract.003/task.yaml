@@ -1,0 +1,59 @@
+id: gameqa.core-ball-attachment-contract.003
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.core-ball-attachment-contract.003/repo
+  ref: core-ball-clean-room-attachment-contract-v3
+instruction: >-
+  The deterministic Attachment Run contains a gameplay regression. During
+  ordinary play, a quick second tap can make a pin that visibly reaches an open
+  gap jump onto an occupied spoke and end the round. The same nearby placements
+  work when taps are spaced out. Restore agreement between the visible approach
+  and the attachment result, preserve restart behavior, and complete the round.
+setup:
+  install:
+    - npm run build
+  reset: []
+  launch:
+    - npm run dev -- --host 127.0.0.1 --port 51200
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:51200/?scenario=contract
+  viewport_or_device: desktop-1280x720
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 180
+  max_gui_actions: 140
+  max_test_runs: 20
+verifiers:
+  build:
+    - npm run build
+  unit:
+    - node verifiers/module_check.mjs
+  ui: []
+  visual: []
+  state:
+    - '"${CUA_SWE_PYTHON:-python3}" verifiers/browser_check.py'
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: 08_core-ball
+  state_api: window.gameAPI
+  seed: 808
+  level: 1
+schema_version: 1

@@ -1,0 +1,30 @@
+diff --git a/src/entities/hero.js b/src/entities/hero.js
+--- a/src/entities/hero.js
++++ b/src/entities/hero.js
+@@ -45,7 +45,7 @@ class Hero extends GameEntity {
+     if (!active) {
+       this.jetpackThrusting = false;
+       if (wasActive) {
+-        vec3.subtract(this.motionLocal, this.motionReference, this.velocity);
++        vec3.subtract(this.motionLocal, this.velocity, this.motionReference);
+         this.motionPhase = 2;
+         this.motionSupport = null;
+       }
+diff --git a/src/index.js b/src/index.js
+--- a/src/index.js
++++ b/src/index.js
+@@ -474,10 +474,12 @@ function updateEntity(entity) {
+ 
+   if (entity === player && player.motionPhase === 2) {
+     if (!player.isGrounded()) {
+-      vec3.copy(player.velocity, player.motionLocal);
++      player.velocity[0] = player.motionLocal[0];
++      player.velocity[2] = player.motionLocal[2];
+     } else if (player.motionSupport !== player.groundedPlatform) {
+       player.groundedPlatform.getRiderVelocity(tempVec);
+-      vec3.add(player.velocity, player.motionLocal, tempVec);
++      player.velocity[0] = player.motionLocal[0] + tempVec[0];
++      player.velocity[2] = player.motionLocal[2] + tempVec[2];
+       player.motionSupport = player.groundedPlatform;
+     }
+   }

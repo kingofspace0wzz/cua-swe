@@ -1,0 +1,69 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..e911ac85b44411590d6dedf1c14c120591c951d0 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -253,7 +253,8 @@
+         };
+         this.retry = function(retry){
+             this.resumeGame(retry);
+-            this.player.respawn();
++            this.levelMap.restoreGuide(this.player.spawnGuide);
++            this.player.respawn(null, this.player.spawnGuide != null);
+             this.levelMap.showGuide(this.player.spawnGuide);
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+diff --git a/js/LevelMap.js b/js/LevelMap.js
+index b57a6f995f0d58427f8879bfa3fac061ede82026..666499454b814ed0f968be2a3ed22908693e2ad4 100644
+--- a/js/LevelMap.js
++++ b/js/LevelMap.js
+@@ -200,9 +200,22 @@
+                 id: support.id,
+                 x: support.left,
+                 y: support.view.y,
+-                tiles: Math.max(1,Math.round((support.right-support.left)/this.box))
++                tiles: Math.max(1,Math.round((support.right-support.left)/this.box)),
++                motionTime: this.motionTime,
++                cameraProgress: this.cameraProgress
+             };
+         };
++        this.restoreGuide = function(frame){
++            if (frame == null) return;
++            if (Number.isFinite(frame.motionTime)) this.motionTime = frame.motionTime;
++            if (Number.isFinite(frame.cameraProgress)){
++                this.cameraProgress = frame.cameraProgress;
++                this.x = -this.cameraProgress;
++            }
++            for (var i=0; i<this.movingSupports.length; i++){
++                this.movingSupports[i].update(this.motionTime);
++            }
++        };
+         this.showGuide = function(frame){
+             if (this.guideView != null && this.guideView.parent != null){
+                 this.guideView.parent.removeChild(this.guideView);
+diff --git a/js/Player.js b/js/Player.js
+index 7a23504b6677e0d461c5ac4d8a04995efb2a0e5f..df0aedfab35233d16e4dcc659982f2ffabea4301 100644
+--- a/js/Player.js
++++ b/js/Player.js
+@@ -228,7 +228,7 @@
+             }
+         };
+         this.stop = function() { this.gravity.stop(this.y); };
+-        this.respawn = function(resetNewSpawn) {
++        this.respawn = function(resetNewSpawn, resumeSupport) {
+             if (resetNewSpawn == true){
+                 this.newSpawn = false;
+                 this.spawnSupportId = null;
+@@ -238,6 +238,13 @@
+                 this.xPos = this.spawnX;
+                 this.y = this.spawnY;
+                 this.supportOffset = this.spawnSupportOffset;
++                if (resumeSupport == true){
++                    var spawnSupport = window.Game.levelMap.getSupport(this.spawnSupportId);
++                    if (spawnSupport != null){
++                        this.supportId = this.spawnSupportId;
++                        this.y = spawnSupport.top+this.supportOffset;
++                    }
++                }
+             }
+             else { //set to origin
+                 this.setSpeed(1); //reset player speed multiplier

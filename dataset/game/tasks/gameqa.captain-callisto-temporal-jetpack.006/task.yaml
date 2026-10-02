@@ -1,0 +1,57 @@
+id: gameqa.captain-callisto-temporal-jetpack.006
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.captain-callisto-temporal-jetpack.006/repo
+  ref: captain-callisto-pulse-envelope-contract-v2
+instruction: The deterministic Level 3 benchmark build contains a gameplay regression.
+  Play the pulse lane and compare the start, release, and restart of several short
+  jetpack bursts. Restore consistent visible and physical timing, then complete
+  the level.
+setup:
+  install:
+  - npm ci
+  - npm run build
+  reset: []
+  launch:
+  - npm run dev -- --host 127.0.0.1 --port 4392
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4392/?benchmark=1&level=3
+  viewport_or_device: desktop-1280x720
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 180
+  max_gui_actions: 160
+  max_test_runs: 20
+verifiers:
+  build:
+  - npm run build
+  unit: []
+  ui: []
+  visual: []
+  state:
+  - '"${CUA_SWE_PYTHON:-python3}" verifiers/replay_state.py --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:4392/?benchmark=1&level=3}"'
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: 06_captaincallisto
+  state_api: window.gameAPI
+  seed: 44
+  level: 3
+schema_version: 1

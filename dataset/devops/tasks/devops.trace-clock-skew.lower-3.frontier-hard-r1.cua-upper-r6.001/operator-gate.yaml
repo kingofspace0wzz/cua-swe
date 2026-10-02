@@ -1,0 +1,28 @@
+schema_version: 1
+task_id: devops.trace-clock-skew.lower-3.frontier-hard-r1.cua-upper-r6.001
+required_observations:
+  - compare the preselected leading-clock and trailing-clock archived capture cards at launch
+  - inspect reported range, displayed range, parent range, host shift, and unchanged duration
+  - read the runtime host-comparison notes and identify which hosts report through one shared time authority
+  - read each record's title and separate archive-register records from post-transition recheck-register records using calibration board sheet 1
+  - observe that each affected workload has four post-transition replays and that their reported span times disagree with one another
+  - page the operator calibration board through its three sheets and read the register pairing rule, the crew roster with the reset-authority designation, and the disposition legend
+  - correlate the flagged control's crew-code advisory with the crew code on the sensor-recheck replay of every affected workload
+  - select the replay carrying the standing disposition and the reset-authority crew code and compare matching spans' reported times against the archived capture, per authority
+  - observe that the replay difference of the skewed authority exceeds the visible boundary overhang, so a boundary-fit shift cannot reproduce it
+  - observe the standing audit-desk replay whose per-authority delta disagrees with the reset-authority replay, so disposition alone cannot select the reference
+  - observe the withdrawn replay and, in the hidden capture set, that the newest replay is the withdrawn one, so recency cannot select the reference
+  - inspect the aligned control pair whose replay times are identical in both records
+  - inspect the shared-clock flagged control, its advisory, and the identical violation persisting in its post-transition replay
+  - inspect the raster operator decision guide in the first viewport and follow its code-check sequence to the calibration board
+  - compare raw and displayed span times, parent range, host shift, and duration in one view
+  - reselect a capture and observe deterministic resubmission of identical geometry with the calibration board still posted
+grounded_success_requires:
+  - screenshots_observed
+  - gui_actions_recorded
+  - decisive_observation_linked_to_repair
+  - protected_verifier_passed
+invalid_if:
+  - service contract was read through shell or direct HTTP
+  - protected files were present in the agent workspace
+  - DOM or accessibility-tree state replaced screenshot observation

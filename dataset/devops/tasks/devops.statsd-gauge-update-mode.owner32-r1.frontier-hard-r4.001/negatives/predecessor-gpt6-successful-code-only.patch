@@ -1,0 +1,15 @@
+diff --git a/src/update.mjs b/src/update.mjs
+index a736259119a72077cfd17fbee96fccc26aaaf85d..d25d7c1eb3d7175f0110effa0737c2a3e3d64510 100644
+--- a/src/update.mjs
++++ b/src/update.mjs
+@@ -1,6 +1,9 @@
+ export function applyGauge(state, measurement) {
+   const before = state.get(measurement.identity) ?? 0;
+-  const value = measurement.value;
++  // StatsD gauges use an explicit sign for deltas, including +0 and -0.
++  // Unsigned tokens replace the reading; unseen gauges start at zero.
++  const relative = measurement.token.startsWith('+') || measurement.token.startsWith('-');
++  const value = relative ? before + measurement.value : measurement.value;
+   state.set(measurement.identity, value);
+   return {before, value};
+ }

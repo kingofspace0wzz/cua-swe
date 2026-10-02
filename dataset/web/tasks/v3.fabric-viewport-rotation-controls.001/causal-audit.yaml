@@ -1,0 +1,41 @@
+schema_version: 1
+task_id: v3.fabric-viewport-rotation-controls.001
+model: gpt-5.6-luna
+task_digest: ba11854235fee922d90286de901fa25162a153f7b4b739f94633113953af0103
+code_only:
+  shard_id: v3-b41-fabric001-codeonly-gpt56-machine-01
+  valid: true
+  verifier_pass: false
+  duration_sec: 225.338
+  failure_mechanism: >-
+    The model repaired zoom, dimensions, and frame rotation in the product shell
+    but did not repair Fabric's inverse scale used by calcOCoords. Rotated
+    profiles retained incorrect or non-finite corner coordinates.
+screenshot_only_cua:
+  shard_id: v3-b41-fabric001-cua-gpt56-machine-01
+  valid: true
+  verifier_pass: false
+  duration_sec: 348.699
+  matched_screenshots: 5
+  host_audited_actions: 4
+  observations:
+    - profile A visibly reported zoom 1.414 for the named zoom-2 camera
+    - the red selection frame was upright and grossly displaced
+    - four corner handles were detached from the displayed shape
+    - two reload observations after editing were pixel-identical to the broken view
+  final_patch_failure: >-
+    The model fixed getZoom but left _calculateCurrentDimensions unchanged,
+    removed the inverse scale from calcOCoords, and changed control/border
+    rotation paths in a way that broke even the flat compatibility profile.
+causal_checks:
+  infrastructure_or_adapter_failure: false
+  task_contract_contradictory: false
+  screenshot_evidence_insufficient: false
+  hidden_material_required: false
+  unauthorized_access_or_network: false
+  visually_grounded_attempt: true
+  observed_profile_directly_falsifies_final_patch: true
+classification: genuine_model_capability_boundary
+canonical_role: upper_anchor
+canonical_admission: true
+next_action: construct_minimally_easier_neighbor

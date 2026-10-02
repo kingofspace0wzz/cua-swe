@@ -1,0 +1,255 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+<!-- [DETERMINISTIC_RANDOM] -->
+<script>
+// [DETERMINISTIC_RANDOM] Seeded randomness + time for reproducible gameplay
+(function() {
+    'use strict';
+    var DEFAULT_SEED = (42 >>> 0);
+    var PENDING_SEED_KEY = 'gameworld:19_minesweeper:pending-seed';
+    var currentSeed = DEFAULT_SEED;
+    try {
+        var pendingSeed = window.sessionStorage.getItem(PENDING_SEED_KEY);
+        if (pendingSeed !== null && String(pendingSeed).trim() !== '') {
+            var pendingNumeric = Number(pendingSeed);
+            if (isFinite(pendingNumeric)) currentSeed = (pendingNumeric >>> 0);
+            window.sessionStorage.removeItem(PENDING_SEED_KEY);
+        }
+    } catch (e) {}
+    var GOLDEN_GAMMA = 0x9E3779B9;
+    function mulberry32(s) {
+        var next = function() {
+            s |= 0; s = s + 0x6D2B79F5 | 0;
+            var t = Math.imul(s ^ s >>> 15, 1 | s);
+            t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+        next.getState = function() { return s >>> 0; };
+        return next;
+    }
+
+    function makeRng(seed) {
+        return mulberry32(seed >>> 0);
+    }
+
+    var rng = makeRng(currentSeed);
+    var rngCrypto = makeRng(currentSeed ^ GOLDEN_GAMMA);
+
+    var originalRandom = Math.random;
+    Math.random = function() { return rng(); };
+
+    var originalCrypto = window.crypto || window.msCrypto || null;
+    var originalGetRandomValues = originalCrypto && originalCrypto.getRandomValues
+        ? originalCrypto.getRandomValues.bind(originalCrypto)
+        : null;
+    var originalRandomUUID = originalCrypto && originalCrypto.randomUUID
+        ? originalCrypto.randomUUID.bind(originalCrypto)
+        : null;
+
+    function fillRandomBytes(typedArray) {
+        for (var i = 0; i < typedArray.length; i++) {
+            typedArray[i] = (rngCrypto() * 256) | 0;
+        }
+        return typedArray;
+    }
+
+    function toHex(byte) {
+        var hex = byte.toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+    }
+
+    function normalizeSeed(seed) {
+        var numeric = Number(seed);
+        if (!isFinite(numeric)) {
+            return DEFAULT_SEED;
+        }
+        return (numeric >>> 0);
+    }
+
+    function applySeed(seed) {
+        currentSeed = normalizeSeed(seed);
+        rng = makeRng(currentSeed);
+        rngCrypto = makeRng(currentSeed ^ GOLDEN_GAMMA);
+        Math.random = function() { return rng(); };
+        return currentSeed;
+    }
+
+    function randomUUID() {
+        var bytes = new Uint8Array(16);
+        fillRandomBytes(bytes);
+        bytes[6] = (bytes[6] & 0x0f) | 0x40;
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;
+        return (
+            toHex(bytes[0]) + toHex(bytes[1]) + toHex(bytes[2]) + toHex(bytes[3]) + '-' +
+            toHex(bytes[4]) + toHex(bytes[5]) + '-' +
+            toHex(bytes[6]) + toHex(bytes[7]) + '-' +
+            toHex(bytes[8]) + toHex(bytes[9]) + '-' +
+            toHex(bytes[10]) + toHex(bytes[11]) + toHex(bytes[12]) + toHex(bytes[13]) +
+            toHex(bytes[14]) + toHex(bytes[15])
+        );
+    }
+
+    function ensureCrypto() {
+        if (window.crypto) {
+            return window.crypto;
+        }
+        if (window.msCrypto) {
+            return window.msCrypto;
+        }
+        try {
+            window.crypto = {};
+            return window.crypto;
+        } catch (e) {
+            return {};
+        }
+    }
+
+    var cryptoObj = ensureCrypto();
+    try {
+        cryptoObj.getRandomValues = function(typedArray) {
+            if (!typedArray || typeof typedArray.length !== 'number') {
+                throw new TypeError('Expected typed array');
+            }
+            return fillRandomBytes(typedArray);
+        };
+    } catch (e) {}
+    try {
+        cryptoObj.randomUUID = randomUUID;
+    } catch (e) {}
+    try {
+        if (window.msCrypto && window.msCrypto !== cryptoObj) {
+            window.msCrypto = cryptoObj;
+        }
+    } catch (e) {}
+
+    function wrapSeedrandom(fn) {
+        if (typeof fn !== 'function') {
+            return fn;
+        }
+        var wrapped = function(seed, options) {
+            if (seed === undefined || seed === null || seed === '') {
+                seed = String(currentSeed);
+            }
+            return fn.call(this, seed, options);
+        };
+        for (var key in fn) {
+            try {
+                wrapped[key] = fn[key];
+            } catch (e) {}
+        }
+        return wrapped;
+    }
+
+    function hookSeedrandom(target, prop) {
+        var current = target[prop];
+        if (typeof current === 'function') {
+            current = wrapSeedrandom(current);
+            try {
+                target[prop] = current;
+            } catch (e) {}
+        }
+        try {
+            Object.defineProperty(target, prop, {
+                configurable: true,
+                get: function() { return current; },
+                set: function(fn) { current = wrapSeedrandom(fn); }
+            });
+        } catch (e) {}
+    }
+
+    hookSeedrandom(Math, 'seedrandom');
+    hookSeedrandom(window, 'seedrandom');
+
+    window.__resetRandom = function(seed) {
+        return applySeed(seed === undefined ? currentSeed : seed);
+    };
+    window.__setDeterministicSeed = function(seed) {
+        return applySeed(seed);
+    };
+    window.__getDeterministicSeed = function() {
+        return currentSeed;
+    };
+    window.__getDeterministicRandomState = function() {
+        return {
+            seed: currentSeed,
+            random: typeof rng.getState === 'function' ? rng.getState() : null,
+            crypto: typeof rngCrypto.getState === 'function' ? rngCrypto.getState() : null
+        };
+    };
+    window.__restoreDeterministicRandomState = function(snapshot) {
+        if (!snapshot || !isFinite(Number(snapshot.seed)) ||
+                !isFinite(Number(snapshot.random)) || !isFinite(Number(snapshot.crypto))) {
+            return false;
+        }
+        currentSeed = (Number(snapshot.seed) >>> 0);
+        rng = mulberry32(Number(snapshot.random) >>> 0);
+        rngCrypto = mulberry32(Number(snapshot.crypto) >>> 0);
+        Math.random = function() { return rng(); };
+        return true;
+    };
+    window.__restoreRandom = function() {
+        Math.random = originalRandom;
+        if (originalCrypto) {
+            if (originalGetRandomValues) {
+                originalCrypto.getRandomValues = originalGetRandomValues;
+            }
+            if (originalRandomUUID) {
+                originalCrypto.randomUUID = originalRandomUUID;
+            }
+        }
+    };
+
+    console.log('[DeterministicRandom] Seeded with:', currentSeed);
+})();
+</script>
+<!-- [DETERMINISTIC_RANDOM] -->
+
+<title>Minesweeper</title>
+      <meta charset="utf-8">
+      <style>
+        :root {
+          --minesweeper-scale: 1.6;
+        }
+        html,
+        body {
+          height: 100%;
+        }
+        body {
+          margin: 0;
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+          padding-top: 24px;
+          background-color: #f5f5f5;
+        }
+        .benchmark-stack { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .episode-panel { width: 430px; box-sizing: border-box; padding: 10px 14px; border: 2px solid #555; background: #fff; font: 15px/1.35 system-ui, sans-serif; box-shadow: 0 2px 10px #0002; }
+        .episode-row { display: flex; align-items: center; gap: 10px; }
+        .episode-label { font-weight: 700; }
+        .episode-status { padding: 3px 8px; border-radius: 999px; background: #777; color: white; font-weight: 800; }
+        .episode-status.fresh, .episode-status.committed { background: #218838; }
+        .episode-status.pending { background: #b26a00; }
+        .episode-status.stale { background: #b00020; }
+        .episode-detail { display: block; margin-top: 5px; color: #333; }
+        .minesweeper-shell {
+          transform: scale(var(--minesweeper-scale));
+          transform-origin: top center;
+        }
+      </style>
+  </head>
+  <body>
+<main class="benchmark-stack">
+<section class="episode-panel" aria-live="polite">
+  <div class="episode-row"><span class="episode-label">Episode integrity</span><strong id="episode-status" class="episode-status checking">CHECKING</strong></div>
+  <span id="episode-detail" class="episode-detail">Interact with the board to sample the transition contract.</span>
+</section>
+<div class="minesweeper-shell">
+  <div class="minesweeper-game" data-preset="beginner" data-name="game1"></div>
+</div>
+</main>
+<script src="game.bundle.js"></script>
+<script src="game_api.js"></script>
+<script src="quality_monitor.js"></script>
+</body>
+</html>

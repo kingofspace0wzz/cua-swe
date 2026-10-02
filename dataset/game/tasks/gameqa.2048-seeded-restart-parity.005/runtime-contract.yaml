@@ -1,0 +1,27 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: python3 env/service.py --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: >-
+    CUA_SWE_PARITY_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    python3 serve.py --port {app_port}
+  start_url: http://127.0.0.1:{app_port}/
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - observe the live Opening parity lamp
+    - reproduce the native restart after a deterministic opening
+    - use MATCH or MISMATCH as feedback while validating the repair
+  decisive_paths:
+    - available
+    - match
+source_noninferability:
+  forbidden_agent_source_literals:
+    - '"OPENINGS = {"'
+    - '"[0, 0, 0, 4]"'
+    - '"[4, 0, 2, 0]"'

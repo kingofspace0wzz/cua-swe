@@ -1,0 +1,27 @@
+id: v3.recharts-responsive-pie.001
+track: web_frontend
+type: interaction_state
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: "private-artifact:source-0041"
+  ref: recharts-1136-adapted-v1
+instruction: "In the Allocation Ring Studio, each board shows a live allocation ring next to the approved reference of how that same board is meant to look. As you step the board through its layout profiles across the top, the live ring does not settle the way the approved reference does: on the profiles where the card gives its ring less room, the live ring comes out the wrong size for the space it sits in and spills past the room it has, instead of filling that room the way the reference shows. Make the live ring settle to match its approved reference on every profile of every board. Do not change the boards, the profiles, the reference, the legend, or the slice values."
+setup:
+  install: [npm ci]
+  launch: [npm run build && node server.mjs --host 127.0.0.1 --port 4200]
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4200
+  viewport_or_device: desktop-1360x900
+allowed_tools: {code_edit: true, terminal: true, browser_gui: true, mobile_gui: false}
+budgets: {wall_time_sec: 1800, max_steps: 80, max_gui_actions: 120, max_test_runs: 20}
+verifiers:
+  build: [npm run build]
+  unit: []
+  ui: [python3 verifiers/browser_check.py]
+  visual: []
+  state: []
+  side_effects: []
+artifacts: {collect_patch: true, collect_logs: true, collect_screenshots: true, collect_trajectory: true, collect_state_diff: false}

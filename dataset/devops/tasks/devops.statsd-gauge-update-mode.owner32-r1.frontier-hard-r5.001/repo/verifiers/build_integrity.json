@@ -1,0 +1,13 @@
+{
+  "source": {
+    "build.mjs": "6ec469840bf2311cd25d54a0a5ce9309b8daad8321c4def795ff03b9827a3bb6",
+    "package.json": "25e8a87d998d21475a9e208113202445e01e1f277e4fee781a7fc9e19ee494c9",
+    "server.mjs": "f668f2a1df9c18406b52180dbda5e8bdb281dbc470186667e1e01056d2711bf0"
+  },
+  "verifiers": {
+    "browser_check.py": "2c0a7f111e8a2f8e4a9bf9acfa917cfd31c1c3248f336541f3d06c2ed6cf6998",
+    "build_check.py": "c207d6d3110f0cf39f11c0b03389d94a01b5d0fa9733df5393c27a2e75f64a0f",
+    "profiles.json": "fa7d911cc98d3cd29e36243028eccba84d39524eb5db8f7a45df6ab372d8b347",
+    "service.mjs": "4734554d0828626dcf3c1f61cadfbe7ff271e85ea7fc8dcabf22c7c0983f4f15"
+  }
+}

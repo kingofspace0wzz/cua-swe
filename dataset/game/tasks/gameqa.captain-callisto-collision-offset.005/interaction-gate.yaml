@@ -1,0 +1,108 @@
+schema_version: 1
+task_id: gameqa.captain-callisto-collision-offset.005
+candidate_specification:
+  family: collision-offset
+  family_label: Trajectory-specific collision
+  variant: 5
+  priority: 10
+  difficulty: l4
+  game_id: 06_captaincallisto
+  seed: 45
+  level: 4
+  original_target: src/index.js:updateWorld
+  original_mechanism: classify a descending jetpack player as a projectile-sized actor
+  redesigned_mechanism: >-
+    sequence one compact descent envelope through an overhead slot, expand it
+    for the corner contact, and compact it again after landing
+  trigger_shape: release jetpack while descending onto the northeast corner edge
+  expected_divergence: the avatar visibly clips into the corner and becomes trapped
+trajectory_id: captain-callisto-level4-released-jetpack-corner-v3
+seed: 45
+level: 4
+trigger:
+  actions:
+    - action: key_hold
+      keys: [D, W, Shift]
+      stop_condition:
+        field: game_state.player.x
+        operator: greater_than_or_equal
+        value: 8.0
+    - action: key_release
+      keys: [Shift]
+    - action: key_hold
+      keys: [D, W]
+      stop_condition:
+        field: game_state.player.x
+        operator: greater_than_or_equal
+        value: 12.0
+    - action: key_hold
+      keys: [D]
+      stop_condition:
+        field: game_state.player.x
+        operator: greater_than_or_equal
+        value: 16.0
+    - action: key_hold
+      keys: [W]
+      stop_condition:
+        field: game_state.player.z
+        operator: greater_than_or_equal
+        value: 16.6
+    - action: key_hold
+      keys: [D, W]
+      duration_ms: 7000
+  causal_checkpoint: >-
+    the first descending two-axis contact after Shift is released while diagonal
+    movement remains held
+pre_trigger_equivalence:
+  fields:
+    - metrics.coins
+    - metrics.remaining_coins
+    - game_state.player.x
+    - game_state.player.y
+    - game_state.player.z
+    - game_state.player.velocity_y
+  expected:
+    metrics.coins: 0
+    metrics.remaining_coins: 3
+    game_state.player.velocity_y: greater_than_0
+  replay_result:
+    status: pending_remote_chromium
+post_trigger_divergence:
+  clean:
+    debug.corner_locked: false
+    debug.descending_slot_collision_radius: 0.28
+    debug.corner_approach_collision_radius: 0.7
+    metrics.coins: 3
+    terminal.outcome: success
+  mutant:
+    debug.collision_contact_mask: 3
+    debug.corner_locked: true
+    movement_while_D_and_W_held: trapped_at_corner
+    terminal.isTerminal: false
+  source_only_negative:
+    debug.corner_locked: false
+    descending_slot_crossed: false
+    terminal.isTerminal: false
+  replay_result:
+    status: pending_remote_chromium
+construction_checks:
+  static_build:
+    status: pass
+    command: npm run build
+    package_bytes: 21997
+  no_op_failure:
+    status: pending_remote_certification
+  gold_pass:
+    status: pending_remote_certification
+  negative_failure:
+    status: pending_remote_certification
+admission_evidence:
+  code_only_failure: not_run_protected
+  cua_reproducible_success: not_run_protected
+required_evidence:
+  - clean_mutant_pre_trigger_equivalence
+  - post_trigger_observable_divergence
+  - no_op_failure
+  - gold_pass
+  - negative_failure
+status: pending_remote_chromium

@@ -1,0 +1,14 @@
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -12,6 +12,12 @@
+   );
+   store.set({ catalog });
+   await samplerClient.scenario(catalog.scenarios[0].id);
++  const observed = await samplerClient.snapshot();
++  const lags = observed.decisions.map((row) => row.completedAtMs - row.firstArrivalMs);
++  await samplerClient.configure({
++    ...compilePolicyPlan(COLLECTOR_SETTINGS),
++    decisionWaitMs: Math.max(...lags, 0) + 180,
++  });
+   await refresh();
+ }

@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "release_id": "cua-swe.canonical-105",
+  "status": "canonical",
+  "task_count": 105,
+  "domains": [
+    {
+      "domain": "web",
+      "manifest": "dataset/web/manifest.yaml",
+      "task_count": 36,
+      "task_ids": [
+        "web.maplibre-reset-touch-reacquisition.001",
+        "web.fabric-through-edge-opposite-resize.001",
+        "v3.echarts-linked-datazoom-toolbar.001",
+        "v3.fabric-viewport-rotation-controls.001",
+        "v3.jupyterlab-shiftclick-cellselect.001",
+        "web.fabric-through-edge-nested-camera-c.001",
+        "v3.quill-paste-scroll-roundtrip.002",
+        "v3.react-datepicker-mask-clear-blur.001",
+        "web.fabric-through-edge-nested-camera-a.001",
+        "v3.recharts-responsive-pie.001",
+        "v3.slate-softbreak-scroll.002",
+        "web.maplibre-mouse-ridge-attachment.001",
+        "v3.tiptap-keyboard-focus-position.002",
+        "web.maplibre-reset-terrain-reacquisition.001",
+        "web.fabric-through-edge-single-nested-return.001",
+        "web.account-recovery-frontier-easy.001",
+        "web.maplibre-reset-integration-handoff.001",
+        "web.delegated-action-contract.001",
+        "web.handsontable-menu-scroll-anchor.001",
+        "web.maplibre-terrain-pinch-anchor.001",
+        "web.react-spectrum-combobox-selection.lower-1.001",
+        "web.react-spectrum-combobox-selection.lower-2.001",
+        "web.responsive-masonry-overlap.001",
+        "web.saleor-export-current-search.lower-1.001",
+        "web.maplibre-post-wheel-reacquisition.001",
+        "web.maplibre-reset-wheel-reacquisition.001",
+        "web.subscription-renewal-frontier-easy.001",
+        "web.support-window-contract.001",
+        "web.tax-rounding-contract.002",
+        "web.fabric-through-edge-resize.001",
+        "web.vue-sticky-table-columns.lower-1.001",
+        "web.warehouse-cutoff-frontier-anchor.001",
+        "web.warehouse-cutoff-frontier-easy.001",
+        "web.fabric-nested-selection-05.001",
+        "web.fabric-nested-selection-06.001",
+        "web.fabric-nested-selection-44.001"
+      ]
+    },
+    {
+      "domain": "game",
+      "manifest": "dataset/game/manifest.yaml",
+      "task_count": 29,
+      "task_ids": [
+        "gameqa.captain-callisto-temporal-jetpack.006",
+        "gameqa.captain-callisto-temporal-jetpack.007",
+        "gameqa.captain-callisto-goal-transition.005",
+        "gameqa.captain-callisto-visual-semantic-item.009",
+        "gameqa.captain-callisto-collision-offset.005",
+        "gameqa.captain-callisto-conditional-physics.002",
+        "gameqa.captain-callisto-goal-transition.006",
+        "gameqa.2048-seeded-restart-parity.002",
+        "gameqa.2048-seeded-restart-parity.005",
+        "gameqa.astray-level2-parallax-glass.009",
+        "gameqa.core-ball-attachment-contract.003",
+        "gameqa.hextris-cascade-resettle-stable.001",
+        "gameqa.hextris-cascade-resettle.001",
+        "gameqa.maze-signal-mode-handoff.001",
+        "gameqa.minesweeper-delayed-loss-episode-identity.002",
+        "gameqa.phase-relay-checkpoint-hazard-sync.003",
+        "gameqa.vector-relay-deferred-ownership.002",
+        "gameqa.vector-relay-primed-pulse-balance-handoff.011",
+        "gameqa.wordle-finish-replay-inspection.006",
+        "gameqa.boxel-rebound-restart-camera-envelope.010",
+        "gameqa.boxel-rebound-restart-camera-envelope.011",
+        "gameqa.boxel-rebound-restart-camera-envelope.012",
+        "gameqa.boxel-rebound-restart-camera-envelope.013",
+        "gameqa.boxel-rebound-restart-camera-envelope.014",
+        "gameqa.flappy-bird-flight-lab.008",
+        "gameqa.flappy-bird-flight-lab.010",
+        "gameqa.flappy-bird-flight-lab.011",
+        "gameqa.flappy-bird-flight-lab.012",
+        "gameqa.minesweeper-delayed-loss-episode-identity.003"
+      ]
+    },
+    {
+      "domain": "mobile",
+      "manifest": "dataset/mobile/manifest.json",
+      "task_count": 20,
+      "task_ids": [
+        "mobile.synthetic.external-wallchart-schedule.005",
+        "mobile.synthetic.external-wallchart-schedule.013",
+        "mobile.synthetic.external-wallchart-schedule.008",
+        "mobile.synthetic.external-wallchart-schedule.004",
+        "mobile.synthetic.external-wallchart-schedule.009",
+        "mobile.synthetic.external-wallchart-schedule.010",
+        "mobile.synthetic.external-wallchart-schedule.016",
+        "mobile.synthetic.external-wallchart-schedule.001",
+        "mobile.synthetic.external-wallchart-schedule.015",
+        "mobile.synthetic.external-inspection-calibration.001",
+        "mobile.synthetic.external-marble-run.001",
+        "mobile.synthetic.external-kinetic-gear-plan.001",
+        "mobile.synthetic.external-mural-warp.001",
+        "mobile.synthetic.external-panorama-hotspots.001",
+        "mobile.synthetic.external-star-plate-registration.001",
+        "mobile.synthetic.external-packaging-proof.001",
+        "mobile.synthetic.external-stateful-relay-board.001",
+        "mobile.synthetic.external-sprite-exposure-board.001",
+        "mobile.synthetic.external-wallet-entitlement.001",
+        "mobile.synthetic.external-campus-wayfinding.001"
+      ]
+    },
+    {
+      "domain": "devops",
+      "manifest": "dataset/devops/manifest.yaml",
+      "task_count": 20,
+      "task_ids": [
+        "devops.trace-await-context.lower-1.frontier-hard-r1.001",
+        "devops.trace-clock-skew.lower-3.frontier-hard-r1.001",
+        "devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.001",
+        "devops.rate-before-aggregation.harder-1.frontier-hard-r1.001",
+        "devops.slo-availability-rollup.harder-1.frontier-hard-r1.001",
+        "devops.log-severity-normalization.r1.frontier-hard-r1.001",
+        "devops.tail-sampling-decision-window.owner20-r1.frontier-hard-r2.001",
+        "devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r1.001",
+        "devops.statsd-gauge-update-mode.owner32-r1.frontier-hard-r4.001",
+        "devops.rate-before-aggregation.harder-1.frontier-hard-r1.cua-upper-r1.001",
+        "devops.tail-sampling-decision-window.owner20-r1.frontier-hard-r3.cua-diff-r2.001",
+        "devops.statsd-gauge-update-mode.owner32-r1.frontier-hard-r5.001",
+        "devops.rate-before-aggregation.harder-1.frontier-hard-r1.cua-upper-r2.001",
+        "devops.trace-await-context.lower-1.frontier-hard-r1.cua-diff-r1.001",
+        "devops.slo-availability-rollup.harder-1.frontier-hard-r1.cua-upper-r1.001",
+        "devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.cua-upper-r3.001",
+        "devops.log-severity-normalization.r1.frontier-hard-r1.cua-upper-r2.001",
+        "devops.trace-clock-skew.lower-3.frontier-hard-r1.cua-upper-r6.001",
+        "devops.alert-pending-identity.receiver-selector-r2.frontier-hard-r2.cua-upper-r2.001",
+        "devops.scrape-response-phase-deadline.owner29-r1.frontier-hard-r2.cua-diff-r3.001"
+      ]
+    }
+  ],
+  "reporting_policy": "Inventory only; preserve separate domain and within-domain evaluation denominators.",
+  "noncanonical": [
+    {
+      "location": "dataset/archive/web-collection-index.yaml",
+      "status": "historical_web_index",
+      "note": "Web-only 33-of-67 index; not the global registry."
+    },
+    {
+      "location": "dataset/archive/experiments/",
+      "status": "legacy_experimental",
+      "note": "Historical proposals/checkpoints, not additional canonical tasks."
+    },
+    {
+      "location": "dataset/archive/imports/",
+      "status": "historical_import",
+      "note": "Retained audit imports; never discover canonical membership here."
+    },
+    {
+      "reference": "https://github.com/kingofspace0wzz/cua-swe/pull/7",
+      "status": "deprecated_author2_not_admitted",
+      "task_count": 20,
+      "note": "Older author-2 bundles are outside this release; no restoration, deletion, or re-admission is authorized by the layout cleanup."
+    },
+    {
+      "location": "dataset/archive/mobilegym-cua-20-retired-20260922/",
+      "status": "retired_mobilegym_overlays",
+      "task_count": 20,
+      "note": "Replaced by evaluated Mobile-20 mobile-web tasks; historical evidence is not current membership."
+    }
+  ]
+}

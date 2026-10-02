@@ -1,0 +1,32 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+index 2ca366ab15985349340044ba1cd10e5ffff22f8e..5a1f873ab6101d91ebbbc296e3929c50a468b826 100644
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -1,4 +1,17 @@
++function labelStillRollingOut(dimension) {
++  return (
++    dimension.rollout === "in-progress" || dimension.restamp === "in-progress"
++  );
++}
++
+ export function compileInhibitionRule(catalog, policy) {
++  const requiredLabels = catalog.dimensions
++    .filter(
++      (dimension) =>
++        catalog.equalDimensions.includes(dimension.name)
++        && !labelStillRollingOut(dimension),
++    )
++    .map((dimension) => dimension.name);
+   return {
+     source_matchers: [
+       {
+@@ -15,7 +28,7 @@ export function compileInhibitionRule(catalog, policy) {
+       },
+     ],
+     equal: [...catalog.equalDimensions],
+-    required_source_labels: [],
+-    required_target_labels: [],
++    required_source_labels: [...requiredLabels],
++    required_target_labels: [...requiredLabels],
+   };
+ }

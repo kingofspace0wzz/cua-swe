@@ -1,0 +1,309 @@
+schema_version: 1
+collection_id: cua-swe.web.curated-36
+release_id: web36-evaluation-20260921
+status: canonical
+publication_date: '2026-09-22'
+track: web_frontend
+task_count: 36
+release_manifest: dataset/web/releases/web36-20260921/manifest.yaml
+admission: dataset/audits/web36-20260921-admission.json
+previous_release: dataset/archive/web-curated-33-20260903/manifest.yaml
+input_lineage: dataset/web/evaluation/web36-task-lineage.json
+evaluation_pipeline: dataset/evaluation/pipelines.yaml
+reporting_policy:
+- Report all 36 tasks separately for each model and condition; do not pool domains.
+- Code-only and CUA are separate conditions. The two CLI agents have CUA evaluations
+  only.
+- Keep native verifier success and the evaluated reporting rule separate; preserve
+  the recorded outcome of each selected attempt.
+- Historical Web-33 and construction results refer to their frozen task revisions
+  and do not transfer by task ID alone.
+tasks:
+- task_id: web.maplibre-reset-touch-reacquisition.001
+  task_file: dataset/web/tasks/web.maplibre-reset-touch-reacquisition.001/task.yaml
+  evaluated_task_input_sha256: 260456ab079fb17c9d18d77dffd9df222576a24758e09a766f3809c05739ba3b
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 1
+    original_slot_task_id: v3.ag-grid-master-detail-sticky.003
+  task_digest: 6c51acec5236ee5f3a58245b06238e5bd3371e6a8d4d82b76fa0870faec135e1
+- task_id: web.fabric-through-edge-opposite-resize.001
+  task_file: dataset/web/tasks/web.fabric-through-edge-opposite-resize.001/task.yaml
+  evaluated_task_input_sha256: e4a2448615792e7eaee6c137cff73049d626721fb7a29efede93a7192313b84d
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 2
+    original_slot_task_id: v3.echarts-asymmetric-zoom-lock.001
+  task_digest: e9a1dda43be7f14524147f425cc750e9d94242e6793ae44abdbdd79b1dd75a33
+- task_id: v3.echarts-linked-datazoom-toolbar.001
+  task_file: dataset/web/tasks/v3.echarts-linked-datazoom-toolbar.001/task.yaml
+  evaluated_task_input_sha256: c56c3b422ae9546a519dab4b23be05ba520bb903b679260fdb9f551ca7f97939
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 3
+    original_slot_task_id: v3.echarts-linked-datazoom-toolbar.001
+  task_digest: 7ffcc2502411682f4674a234228a44db9eaa10be1621856169f8e6a93e2dce7e
+- task_id: v3.fabric-viewport-rotation-controls.001
+  task_file: dataset/web/tasks/v3.fabric-viewport-rotation-controls.001/task.yaml
+  evaluated_task_input_sha256: 55ad39abf741a86b71911b64f5545db2e0f9dd9496c2e9965c106dafeff72907
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 4
+    original_slot_task_id: v3.fabric-viewport-rotation-controls.001
+  task_digest: 13dfdd6d2923a287ca1553ffd7945d9ac6675fddb19c1f0727f17f39671af1df
+- task_id: v3.jupyterlab-shiftclick-cellselect.001
+  task_file: dataset/web/tasks/v3.jupyterlab-shiftclick-cellselect.001/task.yaml
+  evaluated_task_input_sha256: b435497b49d4a6a8f84a8484570cff36cb0b9c8913c16c7da23db4e8dcf3e272
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 5
+    original_slot_task_id: v3.jupyterlab-shiftclick-cellselect.001
+  task_digest: abfc00a992832357c3a0d10af255939608ce508b78117cfc8828e03006dda15c
+- task_id: web.fabric-through-edge-nested-camera-c.001
+  task_file: dataset/web/tasks/web.fabric-through-edge-nested-camera-c.001/task.yaml
+  evaluated_task_input_sha256: 9df876e3dda9fc3fb021926182ff4b26cde8df950a0f4eca3ecc085ae33a8dc4
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 6
+    original_slot_task_id: v3.moveable-svg-fillbox-origin.001
+  task_digest: 831bc1907c328d7cbfd6aa6ad2df9bfc483da5567aedd7a3bb5c142b37760af6
+- task_id: v3.quill-paste-scroll-roundtrip.002
+  task_file: dataset/web/tasks/v3.quill-paste-scroll-roundtrip.002/task.yaml
+  evaluated_task_input_sha256: 749297d00b0fdfc6df7e7f57ca7812f42b8e0eef442f79c04b2409af5f4f8f8e
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 7
+    original_slot_task_id: v3.quill-paste-scroll-roundtrip.002
+  task_digest: 9fa277df2e20cc540990062b50e6c6399b55d68b50af705d5358038565fd1c34
+- task_id: v3.react-datepicker-mask-clear-blur.001
+  task_file: dataset/web/tasks/v3.react-datepicker-mask-clear-blur.001/task.yaml
+  evaluated_task_input_sha256: 8164f7f079651da41fce44537a8818219a6947b93a2f765374a09dca68bc2817
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 8
+    original_slot_task_id: v3.react-datepicker-mask-clear-blur.001
+  task_digest: c337c6fdae70bf3673ec6feef3066fc57485a335b8d96f86180d4e56370a8496
+- task_id: web.fabric-through-edge-nested-camera-a.001
+  task_file: dataset/web/tasks/web.fabric-through-edge-nested-camera-a.001/task.yaml
+  evaluated_task_input_sha256: 18e022098e12c060ed034cae21453f11f2576b58a8b98db2657e4ae0488268c2
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 9
+    original_slot_task_id: v3.react-spectrum-grid-tab-jump.003
+  task_digest: 5123ae1b35d27c47cfd082c218af93e7ff18296fc73cfcc547bd563aa26633f6
+- task_id: v3.recharts-responsive-pie.001
+  task_file: dataset/web/tasks/v3.recharts-responsive-pie.001/task.yaml
+  evaluated_task_input_sha256: fd3c5758d073f4d3456f1a9ecf59731630542d714c8bb925272af7994bb87c4e
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 10
+    original_slot_task_id: v3.recharts-responsive-pie.001
+  task_digest: ce94a8eb973c87075d8daf501bf04aa5cc911ba7cf3ff8b01c3c500073e51374
+- task_id: v3.slate-softbreak-scroll.002
+  task_file: dataset/web/tasks/v3.slate-softbreak-scroll.002/task.yaml
+  evaluated_task_input_sha256: ea2a7957be979ebcbfa81ea0e1aa34ca4321b6012eceb6ffbd147df7c8a53f4e
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 11
+    original_slot_task_id: v3.slate-softbreak-scroll.002
+  task_digest: 6789a940c179efb23d9083ac7c24a6a395ba1711fe070c53bf32a598b858d4ef
+- task_id: web.maplibre-mouse-ridge-attachment.001
+  task_file: dataset/web/tasks/web.maplibre-mouse-ridge-attachment.001/task.yaml
+  evaluated_task_input_sha256: 1ba45c9658209054d6c10c7d28150ba49e34c7cbbcf72f5f4ad52319fd0af3b6
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 12
+    original_slot_task_id: v3.tanstack-window-scroll-end.002
+  task_digest: f439382c9be8aa5d9743384a5c07062240719f43c58a0a657655f3e7a64c4012
+- task_id: v3.tiptap-keyboard-focus-position.002
+  task_file: dataset/web/tasks/v3.tiptap-keyboard-focus-position.002/task.yaml
+  evaluated_task_input_sha256: f5aa3261cbab9eb6d40c65d9c1003b5433207d75c7e8bbcfdc50d13642d3e2d1
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 13
+    original_slot_task_id: v3.tiptap-keyboard-focus-position.002
+  task_digest: 9517008401eaf2c7164b76485d16be8a92b123f6d4715ef1a2a5995244901fe9
+- task_id: web.maplibre-reset-terrain-reacquisition.001
+  task_file: dataset/web/tasks/web.maplibre-reset-terrain-reacquisition.001/task.yaml
+  evaluated_task_input_sha256: 12658969a49d318c627bf42a8424c693556e72540a1ae7e8df8def6e4556cab3
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 14
+    original_slot_task_id: v3.visx-parentsize-flex-growth.001
+  task_digest: 2c6a91772e3f83ce90ab8b7af7cd7745d3dc449c7ef602f194a778d9b0005ff2
+- task_id: web.fabric-through-edge-single-nested-return.001
+  task_file: dataset/web/tasks/web.fabric-through-edge-single-nested-return.001/task.yaml
+  evaluated_task_input_sha256: 30740a84d91f32ac6ccb353c59ca9fb77234b9e5b50e1acc9295322846c8c5df
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 15
+    original_slot_task_id: web.account-recovery-frontier-anchor.001
+  task_digest: 4b3580e2ff2b9dee703975a643bb0fadad072342fbaa3ae320b96e7ce58a9d9a
+- task_id: web.account-recovery-frontier-easy.001
+  task_file: dataset/web/tasks/web.account-recovery-frontier-easy.001/task.yaml
+  evaluated_task_input_sha256: c8c494c093f145c74d3b2654dd915b3ab2ac3ddfb672fe51741f03455ab4e4d0
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 16
+    original_slot_task_id: web.account-recovery-frontier-easy.001
+  task_digest: dac63f0f2f724ed9e38a07e729a73c4724fc90d3c2cefb88d11526365d331fa4
+- task_id: web.maplibre-reset-integration-handoff.001
+  task_file: dataset/web/tasks/web.maplibre-reset-integration-handoff.001/task.yaml
+  evaluated_task_input_sha256: ecd13d3b0f33ab0b169938595715f243a7dd127cbd1ef37bb17a0f9de03addba
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 17
+    original_slot_task_id: web.configuration-inheritance-contract.001
+  task_digest: 50c5c9b1ca782eda05ca3f885c07f15d7a42dd6370eac3a460d1d1aeda6b25a7
+- task_id: web.delegated-action-contract.001
+  task_file: dataset/web/tasks/web.delegated-action-contract.001/task.yaml
+  evaluated_task_input_sha256: a6e1572f0be02ac8ec51848e4b70ae938ad38fdf63110b10189fecd100543083
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 18
+    original_slot_task_id: web.delegated-action-contract.001
+  task_digest: 1a125ef7efa61cba92986111202185b4d9e98c7fc4b175b57b5a1858e2aa9c9f
+- task_id: web.handsontable-menu-scroll-anchor.001
+  task_file: dataset/web/tasks/web.handsontable-menu-scroll-anchor.001/task.yaml
+  evaluated_task_input_sha256: 16ce2dee9b6cdd60c5e706cf0b56f15ce5d6e138240b453974886f79fc886981
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 19
+    original_slot_task_id: web.handsontable-menu-scroll-anchor.001
+  task_digest: 88f1dfcd8babb9826d002a42864e311a32b1a637d24e4796f72c1a27f336ab63
+- task_id: web.maplibre-terrain-pinch-anchor.001
+  task_file: dataset/web/tasks/web.maplibre-terrain-pinch-anchor.001/task.yaml
+  evaluated_task_input_sha256: 0ac64526893bc5813ab2956118c83dd41a795e856cf746e37900776a77884257
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 20
+    original_slot_task_id: web.maplibre-terrain-pinch-anchor.001
+  task_digest: 0ab69a3db1a03c0dccd438e7e13bd8661d4c3bf5ad6890213d3941c266b07441
+- task_id: web.react-spectrum-combobox-selection.lower-1.001
+  task_file: dataset/web/tasks/web.react-spectrum-combobox-selection.lower-1.001/task.yaml
+  evaluated_task_input_sha256: b58e44189a37d4cabfae36f4de9d2e77080fc0af1bc6707917ce1b4be37161b2
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 21
+    original_slot_task_id: web.react-spectrum-combobox-selection.lower-1.001
+  task_digest: 4bcf0594e68bfa5150e47908d5e707d828c475c46e51e6191ffcbdf33ac5d4f4
+- task_id: web.react-spectrum-combobox-selection.lower-2.001
+  task_file: dataset/web/tasks/web.react-spectrum-combobox-selection.lower-2.001/task.yaml
+  evaluated_task_input_sha256: f64c3d81c837cf72e703105a8d8b06bdf106a1d976ce8069e416f500669a20fa
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 22
+    original_slot_task_id: web.react-spectrum-combobox-selection.lower-2.001
+  task_digest: 03248c495e507f405c411b730c4c2ee40a2871888a13a5b688363ba183ebc873
+- task_id: web.responsive-masonry-overlap.001
+  task_file: dataset/web/tasks/web.responsive-masonry-overlap.001/task.yaml
+  evaluated_task_input_sha256: 9c68459e1e7cf7a738f865d826d73bd15ed6c870ee1c35e2d40259521fc54823
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 23
+    original_slot_task_id: web.responsive-masonry-overlap.001
+  task_digest: 365a208a94f27238a8f7aea0e6541642eb7d057481396fdf10a1f76d8a827c7f
+- task_id: web.saleor-export-current-search.lower-1.001
+  task_file: dataset/web/tasks/web.saleor-export-current-search.lower-1.001/task.yaml
+  evaluated_task_input_sha256: eef4e455800513860d712bbc11f4a8f8645d0fb2f25a3682b29f51f6646e19f7
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 24
+    original_slot_task_id: web.saleor-export-current-search.lower-1.001
+  task_digest: 739dd22f8608a28b5389d56dfc67c8590a0f422235b281b6f33237bd5b765703
+- task_id: web.maplibre-post-wheel-reacquisition.001
+  task_file: dataset/web/tasks/web.maplibre-post-wheel-reacquisition.001/task.yaml
+  evaluated_task_input_sha256: 81166b9d8256c32bdaa86d98236f012094e98dff981c3edafd5c474fb68164b7
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 25
+    original_slot_task_id: web.saleor-export-current-search.lower-2.001
+  task_digest: df2e3cb7f07405b90eed74f763ca7bffde991bdb1deeec3eebf9db15d897eb5b
+- task_id: web.maplibre-reset-wheel-reacquisition.001
+  task_file: dataset/web/tasks/web.maplibre-reset-wheel-reacquisition.001/task.yaml
+  evaluated_task_input_sha256: 739647bf33825594b25122a2f31e170cedeb1eaa3b28b6747db5793a47535347
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 26
+    original_slot_task_id: web.subscription-renewal-frontier-anchor.001
+  task_digest: 855ce5d4774b0ca65079ee50d629b42a549c25f3370b7e66787401f5207bf7eb
+- task_id: web.subscription-renewal-frontier-easy.001
+  task_file: dataset/web/tasks/web.subscription-renewal-frontier-easy.001/task.yaml
+  evaluated_task_input_sha256: dad6fc4cd23ed4bb1f59701c8f404670b2d4a4fd532bf6bfc6f416aaf1bb44ce
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 27
+    original_slot_task_id: web.subscription-renewal-frontier-easy.001
+  task_digest: ae63af37e57d91e7bf59d4957686243eb57475dc0d9e72790016d4f88b34eddc
+- task_id: web.support-window-contract.001
+  task_file: dataset/web/tasks/web.support-window-contract.001/task.yaml
+  evaluated_task_input_sha256: 08dc6ee9adb39c2ac04a705fcc98daf11491db7e7a7e1af56c0411ba322fb736
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 28
+    original_slot_task_id: web.support-window-contract.001
+  task_digest: 9c56f5d75e63d5db5e21b6ebfdcee523b112bf843d2f70af68ea2bae35dfd7c1
+- task_id: web.tax-rounding-contract.002
+  task_file: dataset/web/tasks/web.tax-rounding-contract.002/task.yaml
+  evaluated_task_input_sha256: d1377bc7cb23d16aa8a6cbdbf049b0838f711404943336bf9984cba273aeec10
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 29
+    original_slot_task_id: web.tax-rounding-contract.002
+  task_digest: 818cce62060c1f158c735bdd6df09764042d763957f7234b81a793d1c72baaf5
+- task_id: web.fabric-through-edge-resize.001
+  task_file: dataset/web/tasks/web.fabric-through-edge-resize.001/task.yaml
+  evaluated_task_input_sha256: 8266724222e3fe44ee610a8aed82fe0025c30ee11fad2f238fea0e5666af4772
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 30
+    original_slot_task_id: web.vue-sticky-table-columns.001
+  task_digest: 6cd2def5a3781505a4ef41a5ba7a673fedc3c2da322ece86dc9d2396c5c1824d
+- task_id: web.vue-sticky-table-columns.lower-1.001
+  task_file: dataset/web/tasks/web.vue-sticky-table-columns.lower-1.001/task.yaml
+  evaluated_task_input_sha256: 754babce18b28fbe2c4fb7155c7d17541ad7af91ecb44d2a89e3de9bd3ea5ab2
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 31
+    original_slot_task_id: web.vue-sticky-table-columns.lower-1.001
+  task_digest: 3cb5458778fd4092b2ba7410a59db9a6d72ab8aa93d667c699c327374344b0bc
+- task_id: web.warehouse-cutoff-frontier-anchor.001
+  task_file: dataset/web/tasks/web.warehouse-cutoff-frontier-anchor.001/task.yaml
+  evaluated_task_input_sha256: a8ef2dfe0e30bb8332756deef4b9239e27e315e41a9e04cc2d922f39d515e7ad
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 32
+    original_slot_task_id: web.warehouse-cutoff-frontier-anchor.001
+  task_digest: 6a91a0b8d791a55559ad0191eeb989fcff058975850c76908e0409284f1fed26
+- task_id: web.warehouse-cutoff-frontier-easy.001
+  task_file: dataset/web/tasks/web.warehouse-cutoff-frontier-easy.001/task.yaml
+  evaluated_task_input_sha256: 5bfb68efa039db969d9e0bfc2f7e6ac9a681ba10288933151196aced2bc97c9a
+  release_subset: revised33
+  lineage:
+    parent_release_slot: 33
+    original_slot_task_id: web.warehouse-cutoff-frontier-easy.001
+  task_digest: 122caaa24a8a33643b7e3b7807107c834cd7ac821a2ccd702b3deb9df8d9afb6
+- task_id: web.fabric-nested-selection-05.001
+  task_file: dataset/web/tasks/web.fabric-nested-selection-05.001/task.yaml
+  evaluated_task_input_sha256: 9a8b571b899e34a598e521f02b6fea86f13cc580f3acb438c15f1a70edda4379
+  release_subset: additions
+  lineage:
+    addition_candidate: 5
+    revision: revision02
+  task_digest: 4589707fd2ea822309567774dc9825f80a3e73ce4bdeb084095d2acb57e2d5e3
+- task_id: web.fabric-nested-selection-06.001
+  task_file: dataset/web/tasks/web.fabric-nested-selection-06.001/task.yaml
+  evaluated_task_input_sha256: 0f7691be95ffdb554614f76afad6880b5af8cfe2094393e8c97e398871d6c1d3
+  release_subset: additions
+  lineage:
+    addition_candidate: 6
+    revision: revision02
+  task_digest: f8e057a4fbc1b3e18ea20fac8cf252d3ce11c92dd3ea96ea7ed6f5e83a7acf33
+- task_id: web.fabric-nested-selection-44.001
+  task_file: dataset/web/tasks/web.fabric-nested-selection-44.001/task.yaml
+  evaluated_task_input_sha256: 8f30907c790e962687e06630c5d6727c0c84a9df24cb27011b5c0698455aa28c
+  release_subset: additions
+  lineage:
+    addition_candidate: 44
+    revision: original
+  task_digest: 94535659c527d4647b6a74aa0dbda4948b7ac3cfce87c270b5b76470b47e61c3

@@ -1,0 +1,50 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: python3 env/health_service.py --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: >-
+    CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}/
+agent_policy:
+  service_source_visible: false
+  evaluator_owned_paths:
+    - env/health_service.py
+    - repo/verifiers/browser_check.py
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - open the deterministic Signal Maze build
+    - steer through the lower corridor until the teal warning appears
+    - approach the upper junction while the dock rover leaves
+    - observe the warning handoff, contact result, and first branch
+    - continue to the exit
+  decisive_paths:
+    - phase.mode
+    - phase.elapsed
+    - alert.active
+    - alert.remaining
+    - rover.state
+    - rover.mode
+    - rover.appearance
+    - rover.hazard
+    - rover.branch
+    - rover.position.x
+    - player.lives
+    - metrics.contacts
+    - terminal.outcome
+source_noninferability:
+  forbidden_agent_source_literals:
+    - route-seal-kestrel-731
+    - phase-proof-cedar-284
+    - release-proof-mica-619
+    - branch-proof-lumen-452
+    - collision-proof-sable-907
+  requirement: >-
+    Agent-visible source may define generic state fields and transition
+    machinery, but it must not contain evaluator scenario values, protected
+    seals, expected branch coordinates, or a named broken invariant.
+

@@ -1,0 +1,44 @@
+diff --git a/src/linkBroadcast.js b/src/linkBroadcast.js
+--- a/src/linkBroadcast.js
++++ b/src/linkBroadcast.js
+@@ -5,7 +5,7 @@
+ // slice of the shared story on that chart. This module turns the master
+ // gesture into a selection descriptor and then decides, per linked chart, the
+ // data-unit window that chart should show.
+-import { STRATEGIES } from './zoomStrategies.js';
++import { projectByStory } from './zoomStrategies.js';
+ 
+ // Build the selection descriptor from the normalized rubber-band on the master.
+ // It carries the fraction of the master domain that was framed, the master's
+@@ -24,11 +24,11 @@ export function describeSelection(master, fraction) {
+ }
+ 
+ // Resolve the data-unit window a single linked chart should show for a
+-// selection. The strategy primitives in ./zoomStrategies.js are all available;
+-// this handler currently reuses the master's own framed data window directly,
+-// which is the window the analyst saw the rubber-band cover on the master.
++// selection. Each linked chart is normalized to its own domain by the fraction
++// of the shared story the selection covers, so a chart whose extent differs
++// from the master's still frames the corresponding slice.
+ export function resolveLinkedWindow(sel, chart) {
+-  return STRATEGIES.rawWindow(sel, chart);
++  return projectByStory(sel, chart);
+ }
+ 
+ // Compute the data-unit window each linked chart should show.
+diff --git a/src/zoomStrategies.js b/src/zoomStrategies.js
+--- a/src/zoomStrategies.js
++++ b/src/zoomStrategies.js
+@@ -33,3 +33,12 @@ export const STRATEGIES = {
+   rawWindow: byRawWindow,
+   rawIndex: byRawIndex,
+ };
++
++// Project a selection onto a target chart by the fraction of the shared story
++// it covers, so the target frames the corresponding slice of its OWN domain
++// regardless of how that domain compares to the master's. This normalizes the
++// selection to each chart independently rather than reusing the master's raw
++// numbers.
++export function projectByStory(sel, target) {
++  return byDomainFraction(sel, target);
++}

@@ -1,0 +1,212 @@
+diff --git a/src/core-motion.js b/src/core-motion.js
+index 232b7ce..4182034 100644
+--- a/src/core-motion.js
++++ b/src/core-motion.js
+@@ -46,6 +46,19 @@ export class CoreMotion {
+     return normalizeAngle(this.angle + this.speed * deltaMs / 1000);
+   }
+ 
++  captureAttachmentFrame(worldAngle) {
++    const committedWorldAngle = normalizeAngle(worldAngle);
++    return {
++      coreAngle: this.angle,
++      worldAngle: committedWorldAngle,
++      localAngle: normalizeAngle(committedWorldAngle - this.angle),
++    };
++  }
++
++  captureLaunchContract() {
++    return {profile: this.launchProfile};
++  }
++
+   get launchProfile() {
+     if (this.transition) return 'shifting';
+     return this.speed === SPRINT_SPEED ? 'sprint' : 'cruise';
+diff --git a/src/game.js b/src/game.js
+index 7ea0fa3..b33eee2 100644
+--- a/src/game.js
++++ b/src/game.js
+@@ -62,37 +62,49 @@ export class Game {
+ 
+   step(deltaMs = STEP_MS) {
+     if (this.phase !== 'playing') return;
+-    this.now += deltaMs;
+-    this.motion.step(deltaMs);
+-    const arrivals = this.shots.step(this.now);
+-    for (const arrival of arrivals) {
+-      const result = this.occupancy.tryAttach(arrival.localAngle);
+-      this.lastAttachment = {
+-        accepted: result.accepted,
+-        localAngle: result.angle,
+-        worldAngle: arrival.worldAngle,
+-        coreAngle: this.motion.angle,
+-        at: this.now,
+-      };
+-      if (!result.accepted) {
+-        this.metrics.failures += 1;
+-        this.phase = 'failed';
+-        this.ui.showFailure();
+-        break;
+-      }
+-
+-      this.metrics.attachments += 1;
+-      this.remaining -= 1;
+-      if (this.metrics.attachments === 1) this.motion.beginPaceChange();
+-      if (this.remaining === 0) {
+-        this.metrics.completed += 1;
+-        this.phase = 'passed';
+-        this.ui.showPass();
+-      }
++    const stepEnd = this.now + deltaMs;
++    while (this.phase === 'playing' && this.now < stepEnd) {
++      const sliceMs = Math.min(stepEnd - this.now, this.shots.timeToArrival(this.now));
++      this.motion.step(sliceMs);
++      this.now += sliceMs;
++      const arrivals = this.shots.step(this.now);
++      for (const arrival of arrivals) this.resolveArrival(arrival);
+     }
+     this.publish();
+   }
+ 
++  resolveArrival(arrival) {
++    const attachmentFrame = this.motion.captureAttachmentFrame(arrival.worldAngle);
++    const candidate = this.occupancy.previewAttachment(attachmentFrame.localAngle);
++    this.lastAttachment = {
++      accepted: candidate.accepted,
++      localAngle: candidate.angle,
++      worldAngle: attachmentFrame.worldAngle,
++      coreAngle: attachmentFrame.coreAngle,
++      at: this.now,
++      launchProfile: arrival.launchProfile,
++    };
++    if (!candidate.accepted) {
++      this.shots.commitArrival(this.now, this.motion.captureLaunchContract(), false);
++      this.metrics.failures += 1;
++      this.phase = 'failed';
++      this.ui.showFailure();
++      return;
++    }
++
++    const result = this.occupancy.commitAttachment(candidate);
++    this.lastAttachment.accepted = result.accepted;
++    this.metrics.attachments += 1;
++    this.remaining -= 1;
++    if (this.metrics.attachments === 1) this.motion.beginPaceChange();
++    this.shots.commitArrival(this.now, this.motion.captureLaunchContract());
++    if (this.remaining === 0) {
++      this.metrics.completed += 1;
++      this.phase = 'passed';
++      this.ui.showPass();
++    }
++  }
++
+   advance(durationMs) {
+     this.manual = true;
+     const bounded = Math.max(0, Math.min(30000, Number(durationMs) || 0));
+diff --git a/src/occupancy.js b/src/occupancy.js
+index 523c23f..299055c 100644
+--- a/src/occupancy.js
++++ b/src/occupancy.js
+@@ -11,10 +11,14 @@ export class Occupancy {
+     this.pins = [180, 300, 359];
+   }
+ 
+-  tryAttach(localAngle) {
++  previewAttachment(localAngle) {
+     const angle = normalizeAngle(localAngle);
+     const blocked = this.pins.some((pin) => circularDistance(pin, angle) < CLEARANCE);
+-    this.pins.push(angle);
+     return {accepted: !blocked, angle};
+   }
++
++  commitAttachment(candidate) {
++    if (candidate.accepted) this.pins.push(candidate.angle);
++    return {...candidate};
++  }
+ }
+diff --git a/src/shot-controller.js b/src/shot-controller.js
+index ba3c5a0..487a2bf 100644
+--- a/src/shot-controller.js
++++ b/src/shot-controller.js
+@@ -1,5 +1,3 @@
+-import {normalizeAngle} from './angles.js';
+-
+ const OPENING_FLIGHT_TIME = 20000;
+ const CRUISE_QUEUE_FLIGHT_TIME = 770;
+ const SHIFT_QUEUE_FLIGHT_TIME = 710;
+@@ -15,6 +13,7 @@ export class ShotController {
+   reset() {
+     this.active = null;
+     this.waiting = null;
++    this.pendingArrival = null;
+   }
+ 
+   request(now) {
+@@ -31,18 +30,14 @@ export class ShotController {
+   }
+ 
+   prepare(now, fromQueue) {
+-    const plannedFlightTime = fromQueue
+-      ? CRUISE_QUEUE_FLIGHT_TIME
+-      : this.flightTimeFor({fromQueue}, this.coreMotion.launchProfile);
+     return {
+       acceptedAt: now,
+       fromQueue,
+-      plannedCoreAngle: this.coreMotion.predictAngleAt(plannedFlightTime),
+     };
+   }
+ 
+-  activate(prepared, now) {
+-    const launchProfile = this.coreMotion.launchProfile;
++  activate(prepared, now, launchContract = this.coreMotion.captureLaunchContract()) {
++    const launchProfile = launchContract.profile;
+     const flightTime = this.flightTimeFor(prepared, launchProfile);
+     return {
+       ...prepared,
+@@ -60,23 +55,32 @@ export class ShotController {
+     return launchProfile === 'sprint' ? SPRINT_FLIGHT_TIME : OPENING_FLIGHT_TIME;
+   }
+ 
++  timeToArrival(now) {
++    if (!this.active || this.pendingArrival) return Number.POSITIVE_INFINITY;
++    return Math.max(0, this.active.launchedAt + this.active.flightTime - now);
++  }
++
+   step(now) {
+-    if (!this.active) return [];
++    if (!this.active || this.pendingArrival) return [];
+     this.active.progress = Math.min(1, (now - this.active.launchedAt) / this.active.flightTime);
+     if (this.active.progress < 1) return [];
+ 
+-    const arrival = {
++    this.pendingArrival = {
+       worldAngle: IMPACT_ANGLE,
+-      localAngle: normalizeAngle(IMPACT_ANGLE - this.active.plannedCoreAngle),
+       acceptedAt: this.active.acceptedAt,
+       launchedAt: this.active.launchedAt,
++      launchProfile: this.active.launchProfile,
+     };
+     this.active = null;
+-    if (this.waiting) {
+-      this.active = this.activate(this.waiting, now);
++    return [this.pendingArrival];
++  }
++
++  commitArrival(now, launchContract, promoteWaiting = true) {
++    this.pendingArrival = null;
++    if (promoteWaiting && this.waiting) {
++      this.active = this.activate(this.waiting, now, launchContract);
+       this.waiting = null;
+     }
+-    return [arrival];
+   }
+ 
+   getState() {
+@@ -89,6 +93,7 @@ export class ShotController {
+         launchProfile: this.active.launchProfile,
+       } : null,
+       waiting: this.waiting ? 1 : 0,
++      pendingArrival: Boolean(this.pendingArrival),
+     };
+   }
+ }

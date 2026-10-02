@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Angles and ratios",
+    "body": "Front view: positive is clockwise from the upward pointer. W01 on Crank is the only driver. Input D is an unwrapped angle in degrees, including zero and negative values. Driver ratio r=1; its angle A=D+phase(W01). For a child driven immediately by parent p, factor k is \u2212size(p)/size(child) for external mesh, +size(p)/size(child) for open belt, \u2212size(p)/size(child) for crossed belt, +1 for rigid common axis. Size is teeth for gears, diameter in mm for belts. No mixed-unit mesh or belt. Then r(child)=k*r(p), A(child)=k*A(p)+phase(child). Phases are local additive pointer registrations, even on common-axis rims: the axle fixes speed, not printed alignment. Never wrap intermediate angles. Wrapped angle=((A % 360)+360)%360, in [0,360). Fractions or decimals accurate to 0.001 are accepted. Direction is clockwise for r>0 and counterclockwise for r<0, independent of D, phase or pause. Inspector and State report give every part\u2019s immediate driving part and relation, signed ratio, phase, unwrapped and wrapped angles and direction."
+  },
+  {
+    "title": "Motion and editing",
+    "body": "Angle entry and slider apply D immediately and are undoable. Step adds 15 degrees times Forward (+1) or Reverse (\u22121). Play takes one step every 500 ms. Pause stops without altering angles. Reset pauses, restores only this edition to D=0 and all maker initial phases, and is undoable. Edit phase pauses and opens a draft for the selected part. Draft previews propagate live; Cancel restores prior phase and creates no undo entry. Save commits one phase as one undo entry. Undo restores the last committed driver/phase/reset change in this edition. Ordinary reload keeps committed D, ALL saved phases and step direction, closes drafts and pauses. Switching edition pauses, discards drafts and restores independent committed state. Originals never change."
+  },
+  {
+    "title": "Viewer and inbox",
+    "body": "Select a part in the preview or component selector. Inspector and State report reflect the preview, including drafts. Fit locates the sheet; Zoom in/out and scrolling or dragging pan it. At phone width use two or three zoom taps to inspect rim labels. Both editions have four sheets and the same guide. Inventory is dimensions and registrations, not an approved connection list. Outside the prepared isolated demo the app starts with an empty inbox."
+  }
+]

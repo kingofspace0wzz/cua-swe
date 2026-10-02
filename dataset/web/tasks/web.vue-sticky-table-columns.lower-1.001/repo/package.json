@@ -1,0 +1,1 @@
+{"name":"responsive-member-table","private":true,"type":"module","scripts":{"build":"vite build"},"dependencies":{"@vitejs/plugin-vue":"latest","vite":"latest","vue":"latest"}}

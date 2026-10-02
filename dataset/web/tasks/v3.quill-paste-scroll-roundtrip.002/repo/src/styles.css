@@ -1,0 +1,70 @@
+:root {
+  --bg: #f5f6f8;
+  --panel: #ffffff;
+  --ink: #1f2430;
+  --muted: #6b7280;
+  --line: #e3e6eb;
+  --accent: #3a6df0;
+  --peer: #b8579b;
+  --insert: #fff6dd;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+.app-bar {
+  display: flex; align-items: center; gap: 24px;
+  padding: 10px 20px; background: var(--panel); border-bottom: 1px solid var(--line);
+}
+.app-bar .brand { font-weight: 700; letter-spacing: .3px; }
+.app-bar nav { display: flex; gap: 18px; color: var(--muted); }
+.app-bar nav .active { color: var(--ink); font-weight: 600; }
+.app-bar .space { margin-left: auto; color: var(--muted); }
+.collab-bar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 8px 20px; background: var(--panel); border-bottom: 1px solid var(--line);
+}
+.presence { display: flex; gap: 8px; align-items: center; }
+.presence-chip {
+  padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  border: 1px solid var(--line);
+}
+.presence-chip.is-self { background: #eaf0ff; color: var(--accent); border-color: #cdd9fb; }
+.presence-chip.is-peer { background: #fbeaf5; color: var(--peer); border-color: #f2cfe6; }
+.presence-chip .focus-note { font-weight: 500; opacity: 0.75; margin-left: 4px; }
+.sync { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.sync-status { color: var(--muted); font-size: 13px; }
+.apply-btn {
+  border: 1px solid var(--accent); background: var(--accent); color: #fff;
+  padding: 6px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;
+}
+.page { display: grid; grid-template-columns: 220px 1fr; gap: 20px; padding: 20px; }
+.side { display: flex; flex-direction: column; gap: 8px; }
+.side-item { padding: 8px 12px; border-radius: 8px; color: var(--muted); }
+.side-item.active { background: #eef1f6; color: var(--ink); font-weight: 600; }
+.guide { margin-top: 12px; font-size: 13px; color: var(--muted); }
+.guide summary { cursor: pointer; font-weight: 600; color: var(--ink); }
+.guide p { margin: 8px 0 0; line-height: 1.5; }
+.doc-shell {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  padding: 0; overflow: hidden;
+}
+/* The reading surface is a Quill editor. Quill puts the scroll region on
+   `.ql-editor`; the host `#reader` becomes Quill container. Drop the snow theme
+   border so the editor blends into the document shell, and give the editor the
+   460px reading region the fixture expects. */
+#reader.reader { border: none; }
+#reader .ql-editor {
+  height: 460px; overflow-y: auto; padding: 28px 40px; outline: none;
+  font-family: inherit; font-size: 15px; line-height: 1.62; color: var(--ink);
+}
+#reader .ql-editor p { max-width: 640px; margin: 0 0 16px; }
+#reader .ql-editor h2, #reader .ql-editor .doc-head {
+  font-size: 19px; font-weight: 700; margin: 24px 0 12px; max-width: 640px;
+}
+#reader .ql-editor .doc-inserted {
+  background: var(--insert); border-radius: 6px; padding: 6px 10px;
+}

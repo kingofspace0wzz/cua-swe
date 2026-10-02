@@ -1,0 +1,120 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port}
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: env/service.mjs
+application:
+  command: >-
+    CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    node server.mjs --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}/?scenario=contract
+ports:
+  allocation: free_port_per_run
+  declared_defaults:
+    service: evaluator_allocated
+    application: 51200
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  note: >-
+    The verifier owns fixed-step gameplay advancement and protected assertions.
+    The evaluator-owned health service establishes the protected runtime
+    boundary required by the clean-ablation harness; the application does not
+    consume benchmark values from that service.
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+    - repo/verifiers/
+    - env/
+    - task.yaml
+    - gold.patch
+    - negative.patch
+    - replay.md
+    - interaction-gate.yaml
+    - runtime-contract.yaml
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  mode: screenshot_only
+  steps:
+    - start the deterministic round
+    - launch once, then use an ordinary second coordinate call while the long opening flight remains visible
+    - confirm the visible queue cue changes to NEXT PIN READY
+    - observe the first contact and pace change
+    - observe the follow-up immediately before and after contact
+    - finish with spaced taps and restart
+  decisive_paths:
+    - round.phase
+    - shots.active.progress
+    - shots.active.flightTime
+    - shots.active.launchProfile
+    - shots.waiting
+    - motion.transition.active
+    - occupancy.pins
+    - lastAttachment.at
+    - lastAttachment.coreAngle
+    - lastAttachment.localAngle
+    - lastAttachment.launchProfile
+    - metrics.attachments
+    - metrics.failures
+    - metrics.completed
+source_noninferability:
+  forbidden_agent_source_literals:
+    - "58.275"
+    - "69.147"
+    - "59.58675"
+    - "30.41325"
+    - "22.25925"
+    - "170.28"
+    - "20710"
+    - "118.8"
+    - "248.4"
+    - "post_commit_promotion_transaction"
+predecessor_strongest_negative:
+  source_task_id: gameqa.core-ball-attachment-contract.002
+  repair: >-
+    Split Game.step() at the active shot's impact time, delete the queued
+    planned core angle, and compute localAngle from coreMotion.angle when
+    ShotController.step() publishes completion.
+  original_patch_path: >-
+    artifacts/core-ball-evaluation/attachment-contract-002/confirm/code-only/replicate-02/trials/code-only/gpt56-sol/gameqa.core-ball-attachment-contract.002/attempt-1/result/gameqa.core-ball-attachment-contract.002/patch.diff
+  original_patch_sha256: 25a57848383776833795707c152d401e5490ad371dd78292d8f9751f04c0d45b
+  original_trace_path: >-
+    artifacts/core-ball-evaluation/attachment-contract-002/confirm/code-only/replicate-02/trials/code-only/gpt56-sol/gameqa.core-ball-attachment-contract.002/attempt-1/rollout/agent_stdout.txt
+  original_trace_sha256: 81b7daa582994a67850deebef1114b60a9a668f28eeb46f160cdc9d0b079c729
+  original_notes_path: >-
+    artifacts/core-ball-evaluation/attachment-contract-002/confirm/code-only/replicate-02/trials/code-only/gpt56-sol/gameqa.core-ball-attachment-contract.002/attempt-1/rollout/rollout_notes.md
+  original_notes_sha256: 97504684031b124feabb851e9460c30d55eab02fa3f739a99bec7b1e9e0310e6
+  adaptation: >-
+    The source hunks are retained exactly in behavior. The planned-angle
+    deletion moves with the queued flight metadata into prepare(), while the
+    Game.step() split and impact-time core sampling are unchanged. Generated
+    dist/ additions from the evaluated workspace are excluded because npm run
+    build deterministically recreates them.
+  materialized_revision_patch: negative.patch
+interaction_constraint:
+  source_task_id: gameqa.core-ball-attachment-contract.002
+  source_condition: cua/gpt56-sol
+  source_result: scorable_failure
+  original_patch_path: >-
+    artifacts/core-ball-evaluation/attachment-contract-002/confirm/cua/replicate-03/trials/cua/gpt56-sol/gameqa.core-ball-attachment-contract.002/attempt-1/result/gameqa.core-ball-attachment-contract.002/patch.diff
+  original_patch_sha256: 462458488a6071007dc356d4faca7ec2cde621f320b734da39344d3311f93073
+  original_trace_path: >-
+    artifacts/core-ball-evaluation/attachment-contract-002/confirm/cua/replicate-03/trials/cua/gpt56-sol/gameqa.core-ball-attachment-contract.002/attempt-1/rollout/agent_stdout.txt
+  original_trace_sha256: b4af4371c62e7d8316aacf98acb744111a962b353515783baf3416b7603acea5
+  original_notes_path: >-
+    artifacts/core-ball-evaluation/attachment-contract-002/confirm/cua/replicate-03/trials/cua/gpt56-sol/gameqa.core-ball-attachment-contract.002/attempt-1/rollout/rollout_notes.md
+  original_notes_sha256: fb4fec2f3778d13d79029bd2715eac84376c55ef1042a343abebd499586d3424
+  visual_trajectory_path: >-
+    artifacts/core-ball-evaluation/attachment-contract-002/confirm/cua/replicate-03/trials/cua/gpt56-sol/gameqa.core-ball-attachment-contract.002/attempt-1/rollout/visual-mcp-trajectory.jsonl
+  visual_trajectory_sha256: cd6e10284e78cbc78689e27e5d9da8f641ea6737e46227b5b367a3717069405f
+  design_response: >-
+    The opening flight remains visible for twenty seconds and a queue indicator
+    confirms the second coordinate action, so serialized protected calls can
+    still stage the follow-up without exposing verifier-owned outcomes.

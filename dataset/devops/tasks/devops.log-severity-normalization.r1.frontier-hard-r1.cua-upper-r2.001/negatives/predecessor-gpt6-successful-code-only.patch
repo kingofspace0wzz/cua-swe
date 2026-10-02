@@ -1,0 +1,15 @@
+diff --git a/src/pipeline/resolveSeverity.js b/src/pipeline/resolveSeverity.js
+index 98dd29b0a432ec92329f57a3e68f6e633552dbf7..4551054292f9dc99a7185a21022e36b4b739f1ce 100644
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,9 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
++  // Decode the delivered representation, not the pre-collector source.
++  // Legacy receivers without output metadata still deliver their source format.
++  const format = receiver.output?.format ?? receiver.source.format;
+   const decode = severityAdapters[format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }

@@ -1,0 +1,214 @@
+:root {
+  color: #102734;
+  background: #eef3f5;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 360px;
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at top right, rgba(0, 148, 206, 0.1), transparent 35%),
+    #eef3f5;
+}
+
+button {
+  border: 1px solid #0a759f;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #075f81;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1;
+  padding: 7px 9px;
+}
+
+button:hover {
+  background: #e8f7fd;
+}
+
+button:focus-visible {
+  outline: 3px solid #f2ae38;
+  outline-offset: 2px;
+}
+
+.dashboard-header {
+  display: flex;
+  height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 8px 24px;
+  background: #0094ce;
+  box-shadow: 0 2px 7px rgba(16, 39, 52, 0.2);
+  color: #ffffff;
+}
+
+.dashboard-header h1,
+.dashboard-header p {
+  margin: 0;
+}
+
+.dashboard-header h1 {
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
+.eyebrow {
+  margin-bottom: 2px !important;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.sync-state {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.sync-dot {
+  width: 9px;
+  height: 9px;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  background: #b9f67d;
+}
+
+.dashboard-grid {
+  position: relative;
+  width: calc(100vw - 40px);
+  margin: 14px 20px;
+  min-height: 700px;
+}
+
+.group-panel {
+  position: absolute;
+  overflow: hidden;
+  border: 1px solid #c9d5da;
+  border-radius: 3px;
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(16, 39, 52, 0.24),
+    0 8px 24px rgba(16, 39, 52, 0.06);
+  opacity: 0;
+  padding: 14px;
+  transition: opacity 80ms linear;
+}
+
+.group-panel.is-positioned {
+  opacity: 1;
+}
+
+.group-panel h2 {
+  margin: 0 0 12px;
+  color: #102734;
+  font-size: 1rem;
+  line-height: 1.1;
+}
+
+.lamp-control,
+.mode-row,
+.system-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #415966;
+  font-size: 0.78rem;
+}
+
+.temperature-card {
+  position: absolute;
+  top: 165px;
+  right: 24px;
+  left: 24px;
+  display: grid;
+  height: 90px;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  border: 2px solid #0789c1;
+  border-radius: 3px;
+  background: #d9f3ff;
+  color: #074b67;
+  padding: 10px 12px;
+}
+
+.temperature-card > span {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.temperature-card > strong {
+  grid-column: 1;
+  font-size: 1.05rem;
+}
+
+.temperature-card > button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.system-status strong {
+  color: #087ba8;
+  font-size: 1.2rem;
+}
+
+.chart-surface {
+  position: relative;
+  height: 180px;
+  margin-top: 26px;
+  overflow: hidden;
+  border: 1px solid #c6d4da;
+  border-radius: 3px;
+  background:
+    linear-gradient(to right, transparent 24%, #dfe8eb 25%, transparent 26%) 0 0 / 52px 100%,
+    linear-gradient(to bottom, transparent 24%, #dfe8eb 25%, transparent 26%) 0 0 / 100% 44px,
+    #f8fbfc;
+  color: #516772;
+  font-size: 0.72rem;
+  padding: 9px;
+}
+
+.chart-line {
+  position: absolute;
+  right: -10px;
+  bottom: 58px;
+  left: -10px;
+  height: 4px;
+  transform: rotate(-7deg);
+  border-radius: 99px;
+  background: #20a1cf;
+  box-shadow: 64px 18px 0 #20a1cf, 128px -8px 0 #20a1cf;
+}
+
+.system-action {
+  width: 100%;
+  margin-top: 24px;
+}
+
+@media (max-width: 520px) {
+  .dashboard-header {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .eyebrow {
+    display: none;
+  }
+}

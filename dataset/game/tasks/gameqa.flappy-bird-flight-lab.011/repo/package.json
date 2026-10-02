@@ -1,0 +1,7 @@
+{
+  "name": "flappy-bird-flight-lab",
+  "private": true,
+  "scripts": {
+    "build": "python3 build_check.py"
+  }
+}

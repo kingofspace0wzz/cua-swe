@@ -1,0 +1,105 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/sampler_service.mjs
+  fixture: repo/verifiers/profiles.json
+  operator_runbook_asset: repo/verifiers/runbook_rb217.png
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults:
+    application: 54700
+    service: OS-assigned
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants:
+  - visible
+  - hidden
+  - hidden-order
+  oracle: independent-received-span-predicate-plus-runbook-profile-decision-band-plus-durable-deploy-history
+external_state:
+  authoritative_truth: the semantically accepted decision-wait window per receiver
+    delivery profile is the contractual decision band published on the receiver
+    operations runbook RB-217 (firmware 2419 table) - [delivery envelope, delivery
+    envelope plus decision margin] for the profile code the receiver reports; the
+    three evaluator-owned runtime profiles carry the opaque codes DP-C41 (band
+    [2840 ms, 2960 ms]), DP-H77 ([3970 ms, 4120 ms]), and DP-K58 ([3370 ms,
+    3460 ms]); the bands are pairwise disjoint and every band floor sits above the
+    profile's recorded ledger maximum plus the parent-era 180 ms margin, so no
+    fixed wait, no raw-ledger maximum, no single added margin, and no
+    ledger-plus-published-constant repair satisfies every profile
+  machine_readable_exposure: no envelope, margin, band bound, derived wait, or
+    mapping field exists in any snapshot, catalog, or audit response; the receiver
+    exposes only the opaque identity (firmware build 2419, profile code, runbook id
+    RB-217) plus raw per-trace delivery receipts; the complete mapping from every
+    supported profile code to its delivery envelope and decision margin is
+    published only as rendered pixels (a PNG runbook panel served by the protected
+    receiver on /runbook and proxied as /api/runbook); the runbook also carries a
+    clearly marked superseded firmware 2381 table whose values satisfy no current
+    band; the protected receiver refuses decision traffic before a plan is
+    deployed and records the full deploy history, and the verifier rejects any
+    session whose deployed plans are not identical
+  visibility: normal operator surfaces of the console (receiver service levels with
+    the served profile identity and runbook reference, receiver delivery ledger
+    with the firmware identity line, receiver operations runbook panel, per-trace
+    receiver detail and decision log, arrival/decision timeline, trace decisions,
+    retention buckets, trace-store exports, replay)
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - alternates/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - inspect selected late child ERROR (+2450 ms receipt) after the cached drop at +250 ms
+  - select payments and compare early child ERROR retention under the same status policy
+  - read the receiver service levels and the receiver delivery ledger identity line
+    for the opaque runtime identity (firmware 2419, delivery profile DP-C41,
+    runbook RB-217) that no fixed constant in source explains
+  - scroll to the receiver operations runbook panel and transcribe the current
+    firmware 2419 table mapping every supported profile code to its delivery
+    envelope and decision margin, rejecting the clearly superseded firmware 2381
+    table
+  - correlate the ledger and per-trace lifetimes (slowest +2620 ms on the visible
+    profile) with the DP-C41 envelope (2840 ms) to confirm the contractual band
+    sits above the recorded deliveries and applies to every window, probe, and
+    replay
+  decisive_paths:
+  - selected.spans
+  - selected.decisionAtMs
+  - selected.visibleSpanCount
+  - selected.completedAtMs
+  - timeline
+  - exports
+  - catalog.receiver.deliveries
+  - catalog.receiver.firmware.profileCode
+  - diagnostics.sloRule
+  - diagnostics.profileCode
+  - diagnostics.waitMs
+  - runbook panel pixels (/api/runbook PNG)

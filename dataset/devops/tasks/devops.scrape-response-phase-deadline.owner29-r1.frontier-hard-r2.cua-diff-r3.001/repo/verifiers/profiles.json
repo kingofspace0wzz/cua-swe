@@ -1,0 +1,642 @@
+{
+ "visible": {
+  "profileCode": "RH-27",
+  "seed": 17,
+  "revisions": {
+   "PRV-4410": {
+    "standard": {
+     "interlock": {
+      "freshMs": 1700,
+      "cancelMs": 1800,
+      "capMs": 1750
+     },
+     "streamline": {
+      "freshMs": 1250,
+      "cancelMs": 1350,
+      "capMs": 1300
+     }
+    },
+    "bulk": {
+     "interlock": {
+      "freshMs": 3050,
+      "cancelMs": 3200,
+      "capMs": 3150
+     },
+     "streamline": {
+      "freshMs": 2350,
+      "cancelMs": 2520,
+      "capMs": 2420
+     }
+    }
+   },
+   "PRV-4496": {
+    "standard": {
+     "interlock": {
+      "freshMs": 2050,
+      "cancelMs": 2150,
+      "capMs": 2100
+     },
+     "streamline": {
+      "freshMs": 1520,
+      "cancelMs": 1620,
+      "capMs": 1570
+     }
+    },
+    "bulk": {
+     "interlock": {
+      "freshMs": 2450,
+      "cancelMs": 2560,
+      "capMs": 2510
+     },
+     "streamline": {
+      "freshMs": 2900,
+      "cancelMs": 3050,
+      "capMs": 2950
+     }
+    }
+   }
+  },
+  "supersededRevisions": {
+   "PRV-4362": {
+    "standard": {
+     "interlock": {
+      "freshMs": 1850,
+      "cancelMs": 1960,
+      "capMs": 1900
+     },
+     "streamline": {
+      "freshMs": 1100,
+      "cancelMs": 1200,
+      "capMs": 1130
+     }
+    },
+    "bulk": {
+     "interlock": {
+      "freshMs": 2650,
+      "cancelMs": 2760,
+      "capMs": 2700
+     },
+     "streamline": {
+      "freshMs": 1830,
+      "cancelMs": 1940,
+      "capMs": 1880
+     }
+    }
+   }
+  },
+  "supersededEpochs": [
+   {
+    "code": "E-092",
+    "revision": "PRV-4362"
+   }
+  ],
+  "assignments": {
+   "affected": {
+    "tier": "bulk",
+    "class": "interlock"
+   },
+   "healthy": {
+    "tier": "standard",
+    "class": "interlock"
+   },
+   "slowbody": {
+    "tier": "standard",
+    "class": "interlock"
+   },
+   "archive": {
+    "tier": "bulk",
+    "class": "streamline"
+   },
+   "catalog": {
+    "tier": "standard",
+    "class": "streamline"
+   },
+   "stalled": {
+    "tier": "standard",
+    "class": "streamline"
+   },
+   "trickle": {
+    "tier": "bulk",
+    "class": "streamline"
+   },
+   "truncated": {
+    "tier": "standard",
+    "class": "interlock"
+   }
+  },
+  "epochs": [
+   {
+    "code": "E-104",
+    "revision": "PRV-4410",
+    "plans": {
+     "affected": {
+      "headerMs": 1000,
+      "chunks": [
+       [
+        1600,
+        0.5
+       ]
+      ],
+      "endMs": 2950
+     },
+     "slowbody": {
+      "headerMs": 40,
+      "chunks": [
+       [
+        900,
+        0.5
+       ]
+      ],
+      "endMs": 1620
+     },
+     "archive": {
+      "headerMs": 900,
+      "chunks": [
+       [
+        1300,
+        0.5
+       ]
+      ],
+      "endMs": 2260
+     },
+     "catalog": {
+      "headerMs": 30,
+      "chunks": [],
+      "endMs": 80
+     }
+    }
+   },
+   {
+    "code": "E-117",
+    "revision": "PRV-4496",
+    "plans": {
+     "affected": {
+      "headerMs": 900,
+      "chunks": [
+       [
+        1500,
+        0.5
+       ]
+      ],
+      "endMs": 2330
+     },
+     "slowbody": {
+      "headerMs": 40,
+      "chunks": [
+       [
+        900,
+        0.5
+       ]
+      ],
+      "endMs": 1950
+     },
+     "archive": {
+      "headerMs": 800,
+      "chunks": [
+       [
+        1600,
+        0.5
+       ]
+      ],
+      "endMs": 2780
+     },
+     "catalog": {
+      "headerMs": 30,
+      "chunks": [],
+      "endMs": 80
+     }
+    }
+   }
+  ]
+ },
+ "hidden-epoch-rotation": {
+  "profileCode": "VT-58",
+  "seed": 41,
+  "revisions": {
+   "PRV-5327": {
+    "express": {
+     "relay": {
+      "freshMs": 1160,
+      "cancelMs": 1250,
+      "capMs": 1200
+     },
+     "trunk": {
+      "freshMs": 1900,
+      "cancelMs": 2010,
+      "capMs": 1950
+     }
+    },
+    "freight": {
+     "relay": {
+      "freshMs": 2850,
+      "cancelMs": 3000,
+      "capMs": 2900
+     },
+     "trunk": {
+      "freshMs": 2350,
+      "cancelMs": 2450,
+      "capMs": 2400
+     }
+    }
+   },
+   "PRV-5203": {
+    "express": {
+     "relay": {
+      "freshMs": 800,
+      "cancelMs": 900,
+      "capMs": 850
+     },
+     "trunk": {
+      "freshMs": 1430,
+      "cancelMs": 1540,
+      "capMs": 1480
+     }
+    },
+    "freight": {
+     "relay": {
+      "freshMs": 2300,
+      "cancelMs": 2400,
+      "capMs": 2350
+     },
+     "trunk": {
+      "freshMs": 2750,
+      "cancelMs": 2900,
+      "capMs": 2800
+     }
+    }
+   }
+  },
+  "supersededRevisions": {
+   "PRV-5155": {
+    "express": {
+     "relay": {
+      "freshMs": 1000,
+      "cancelMs": 1100,
+      "capMs": 1050
+     },
+     "trunk": {
+      "freshMs": 1700,
+      "cancelMs": 1810,
+      "capMs": 1760
+     }
+    },
+    "freight": {
+     "relay": {
+      "freshMs": 2600,
+      "cancelMs": 2710,
+      "capMs": 2660
+     },
+     "trunk": {
+      "freshMs": 2530,
+      "cancelMs": 2640,
+      "capMs": 2580
+     }
+    }
+   }
+  },
+  "supersededEpochs": [
+   {
+    "code": "E-221",
+    "revision": "PRV-5155"
+   }
+  ],
+  "assignments": {
+   "affected": {
+    "tier": "freight",
+    "class": "relay"
+   },
+   "healthy": {
+    "tier": "express",
+    "class": "relay"
+   },
+   "slowbody": {
+    "tier": "express",
+    "class": "trunk"
+   },
+   "archive": {
+    "tier": "freight",
+    "class": "trunk"
+   },
+   "catalog": {
+    "tier": "express",
+    "class": "relay"
+   },
+   "stalled": {
+    "tier": "express",
+    "class": "relay"
+   },
+   "trickle": {
+    "tier": "express",
+    "class": "trunk"
+   },
+   "truncated": {
+    "tier": "express",
+    "class": "relay"
+   }
+  },
+  "epochs": [
+   {
+    "code": "E-233",
+    "revision": "PRV-5327",
+    "plans": {
+     "affected": {
+      "headerMs": 1100,
+      "chunks": [
+       [
+        1700,
+        0.5
+       ]
+      ],
+      "endMs": 2740
+     },
+     "slowbody": {
+      "headerMs": 40,
+      "chunks": [
+       [
+        800,
+        0.5
+       ]
+      ],
+      "endMs": 1800
+     },
+     "archive": {
+      "stall": true,
+      "headerMs": 3300,
+      "endMs": 3360
+     },
+     "catalog": {
+      "headerMs": 60,
+      "chunks": [
+       [
+        400,
+        0.5
+       ]
+      ],
+      "endMs": 1080
+     }
+    }
+   },
+   {
+    "code": "E-241",
+    "revision": "PRV-5203",
+    "plans": {
+     "affected": {
+      "headerMs": 900,
+      "chunks": [
+       [
+        1400,
+        0.5
+       ]
+      ],
+      "endMs": 2180
+     },
+     "slowbody": {
+      "headerMs": 40,
+      "chunks": [
+       [
+        700,
+        0.5
+       ]
+      ],
+      "endMs": 1380
+     },
+     "archive": {
+      "headerMs": 700,
+      "chunks": [
+       [
+        1500,
+        0.5
+       ]
+      ],
+      "endMs": 2640
+     },
+     "catalog": {
+      "headerMs": 60,
+      "chunks": [
+       [
+        300,
+        0.5
+       ]
+      ],
+      "endMs": 700
+     }
+    }
+   }
+  ]
+ },
+ "hidden-cadence-mix": {
+  "profileCode": "JN-84",
+  "seed": 109,
+  "revisions": {
+   "PRV-6118": {
+    "rapid": {
+     "orbit": {
+      "freshMs": 1250,
+      "cancelMs": 1350,
+      "capMs": 1300
+     },
+     "depot": {
+      "freshMs": 1750,
+      "cancelMs": 1850,
+      "capMs": 1800
+     }
+    },
+    "batch": {
+     "orbit": {
+      "freshMs": 2550,
+      "cancelMs": 2700,
+      "capMs": 2600
+     },
+     "depot": {
+      "freshMs": 2150,
+      "cancelMs": 2260,
+      "capMs": 2200
+     }
+    }
+   },
+   "PRV-6242": {
+    "rapid": {
+     "orbit": {
+      "freshMs": 1850,
+      "cancelMs": 1950,
+      "capMs": 1900
+     },
+     "depot": {
+      "freshMs": 1350,
+      "cancelMs": 1450,
+      "capMs": 1400
+     }
+    },
+    "batch": {
+     "orbit": {
+      "freshMs": 2100,
+      "cancelMs": 2200,
+      "capMs": 2150
+     },
+     "depot": {
+      "freshMs": 2950,
+      "cancelMs": 3100,
+      "capMs": 3000
+     }
+    }
+   }
+  },
+  "supersededRevisions": {
+   "PRV-6034": {
+    "rapid": {
+     "orbit": {
+      "freshMs": 1550,
+      "cancelMs": 1660,
+      "capMs": 1600
+     },
+     "depot": {
+      "freshMs": 1140,
+      "cancelMs": 1260,
+      "capMs": 1210
+     }
+    },
+    "batch": {
+     "orbit": {
+      "freshMs": 2280,
+      "cancelMs": 2390,
+      "capMs": 2330
+     },
+     "depot": {
+      "freshMs": 2480,
+      "cancelMs": 2590,
+      "capMs": 2540
+     }
+    }
+   }
+  },
+  "supersededEpochs": [
+   {
+    "code": "E-355",
+    "revision": "PRV-6034"
+   }
+  ],
+  "assignments": {
+   "affected": {
+    "tier": "batch",
+    "class": "orbit"
+   },
+   "healthy": {
+    "tier": "rapid",
+    "class": "orbit"
+   },
+   "slowbody": {
+    "tier": "rapid",
+    "class": "depot"
+   },
+   "archive": {
+    "tier": "batch",
+    "class": "depot"
+   },
+   "catalog": {
+    "tier": "rapid",
+    "class": "depot"
+   },
+   "stalled": {
+    "tier": "batch",
+    "class": "orbit"
+   },
+   "trickle": {
+    "tier": "rapid",
+    "class": "orbit"
+   },
+   "truncated": {
+    "tier": "rapid",
+    "class": "orbit"
+   }
+  },
+  "epochs": [
+   {
+    "code": "E-368",
+    "revision": "PRV-6118",
+    "plans": {
+     "affected": {
+      "headerMs": 800,
+      "chunks": [
+       [
+        1500,
+        0.5
+       ]
+      ],
+      "endMs": 2440
+     },
+     "slowbody": {
+      "headerMs": 40,
+      "chunks": [
+       [
+        800,
+        0.5
+       ]
+      ],
+      "endMs": 1680
+     },
+     "archive": {
+      "headerMs": 600,
+      "chunks": [
+       [
+        1200,
+        0.5
+       ]
+      ],
+      "endMs": 2050
+     },
+     "catalog": {
+      "stall": true,
+      "headerMs": 3450,
+      "endMs": 3510
+     }
+    }
+   },
+   {
+    "code": "E-379",
+    "revision": "PRV-6242",
+    "plans": {
+     "affected": {
+      "headerMs": 600,
+      "chunks": [
+       [
+        1200,
+        0.5
+       ]
+      ],
+      "endMs": 1900
+     },
+     "slowbody": {
+      "headerMs": 40,
+      "chunks": [
+       [
+        600,
+        0.5
+       ]
+      ],
+      "endMs": 1280
+     },
+     "archive": {
+      "headerMs": 900,
+      "chunks": [
+       [
+        1700,
+        0.5
+       ]
+      ],
+      "endMs": 2840
+     },
+     "catalog": {
+      "headerMs": 50,
+      "chunks": [
+       [
+        500,
+        0.5
+       ]
+      ],
+      "endMs": 1150
+     }
+    }
+   }
+  ]
+ }
+}

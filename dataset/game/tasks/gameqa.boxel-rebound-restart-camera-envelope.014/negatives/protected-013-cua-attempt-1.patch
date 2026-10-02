@@ -1,0 +1,67 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..4048061aec56d360cbd98180520925278accaa02 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -253,7 +253,10 @@
+         };
+         this.retry = function(retry){
+             this.resumeGame(retry);
++            this.levelMap.restoreGuideFrame(this.player.spawnGuide);
+             this.player.respawn();
++            this.levelMap.cameraProgress = this.player.xPos;
++            this.levelMap.x = -this.levelMap.cameraProgress;
+             this.levelMap.showGuide(this.player.spawnGuide);
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+diff --git a/js/LevelMap.js b/js/LevelMap.js
+index b57a6f995f0d58427f8879bfa3fac061ede82026..e9df8ed8ea3d3bf9d0997303b5a06f2ef2121fed 100644
+--- a/js/LevelMap.js
++++ b/js/LevelMap.js
+@@ -203,6 +203,35 @@
+                 tiles: Math.max(1,Math.round((support.right-support.left)/this.box))
+             };
+         };
++        this.restoreGuideFrame = function(frame){
++            if (frame == null) return false;
++            var support = this.getSupport(frame.id);
++            if (support == null || !Number.isFinite(frame.y)) return false;
++
++            // Recover the most recent matching lift phase from checkpoint geometry.
++            // The checkpoint remains independent of both the motion clock and camera.
++            var cycle = 2800;
++            var phase = Math.acos(Math.max(-1,Math.min(1,
++                1+((frame.y-support.baseY)/30)
++            )));
++            var phases = [phase,Math.PI*2-phase];
++            var cycleIndex = Math.floor(this.motionTime/cycle);
++            var restoredTime = -Infinity;
++            for (var c=cycleIndex; c>=Math.max(0,cycleIndex-1); c--){
++                for (var p=0; p<phases.length; p++){
++                    var candidate = c*cycle+(phases[p]/(Math.PI*2))*cycle;
++                    if (candidate <= this.motionTime+0.01 && candidate > restoredTime){
++                        restoredTime = candidate;
++                    }
++                }
++            }
++            if (!Number.isFinite(restoredTime)) return false;
++            this.motionTime = restoredTime;
++            for (var i=0; i<this.movingSupports.length; i++){
++                this.movingSupports[i].update(this.motionTime);
++            }
++            return true;
++        };
+         this.showGuide = function(frame){
+             if (this.guideView != null && this.guideView.parent != null){
+                 this.guideView.parent.removeChild(this.guideView);
+diff --git a/js/Player.js b/js/Player.js
+index 7a23504b6677e0d461c5ac4d8a04995efb2a0e5f..dc21699ed3949afcd44065f8f5ad9d4b961ef781 100644
+--- a/js/Player.js
++++ b/js/Player.js
+@@ -237,6 +237,7 @@
+             if (this.newSpawn == true){
+                 this.xPos = this.spawnX;
+                 this.y = this.spawnY;
++                this.supportId = this.spawnSupportId;
+                 this.supportOffset = this.spawnSupportOffset;
+             }
+             else { //set to origin

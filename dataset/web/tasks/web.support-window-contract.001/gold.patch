@@ -1,0 +1,19 @@
+--- a/src/app.js
++++ b/src/app.js
+@@ -15,9 +15,13 @@ async function render() {
+   const response = await fetch(`/api/support-window${window.location.search}`);
+   const data = await response.json();
+ 
+-  // The legacy service returned a ready-to-render UTC window.
+-  const windowStart = data.window_start;
+-  const timeZone = "UTC";
++  const selected = data.schedule.slots.find(
++    (slot) => slot.slot_ref === data.schedule.selected_slot_ref,
++  );
++  const dayOffset = data.schedule.day_code_map[selected.day_code];
++  const elapsedMinutes = dayOffset * 24 * 60 + selected.start_quanta * data.schedule.quantum_minutes;
++  const windowStart = data.schedule.week_anchor_epoch_ms + elapsedMinutes * 60000;
++  const timeZone = data.schedule.display_zone;
+ 
+   root.innerHTML = `
+     <main class="shell"><section class="card">

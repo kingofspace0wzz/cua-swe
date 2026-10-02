@@ -1,0 +1,48 @@
+--- a/src/field.js
++++ b/src/field.js
+@@ -32,8 +32,8 @@
+ }
+ 
+ export function stageField(field, ticket) {
+-  const checksum = consumeTicket(ticket);
+-  setRoute(field, ticket.alternatives[checksum % 3]);
++  consumeTicket(ticket);
++  setRoute(field, ticket.alternatives[1]);
+ }
+ 
+ export function runField(field, active) {
+--- a/src/panel.js
++++ b/src/panel.js
+@@ -1,7 +1,8 @@
+ import {
+   complete,
+   consumeTicket,
+   createRecord,
++  invert,
+   openSlot,
+   pull,
+   restoreRecord,
+@@ -31,8 +32,8 @@
+ }
+ 
+ export function stagePanel(panel, ticket) {
+-  const checksum = consumeTicket(ticket);
+-  setRoute(panel, ticket.alternatives[(checksum + 1) % 3]);
++  consumeTicket(ticket);
++  setRoute(panel, invert(ticket.alternatives[1]));
+ }
+ 
+ export function runPanel(panel, active) {
+--- a/src/session.js
++++ b/src/session.js
+@@ -168,8 +168,8 @@
+         ticket: cloneTicket(note.ticket),
+         returns: this.returnState.returns + 1,
+       };
+-      runField(this.field, true);
+-      runPanel(this.panel, true);
++      runField(this.field, false);
++      runPanel(this.panel, false);
+     } else {
+       this.player.x = START.x;
+       this.player.y = START.y;

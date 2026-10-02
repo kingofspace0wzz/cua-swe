@@ -1,0 +1,62 @@
+id: gameqa.vector-relay-deferred-ownership.002
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.vector-relay-deferred-ownership.002/repo
+  ref: vector-relay-deferred-ownership-v2
+instruction: >-
+  Play the deterministic Relay Circuit challenge. Launch once to arm the north
+  relay and let the orb fall out so its replacement docks. Relaunch without
+  steering. The returning orb visibly rebounds from the armed relay and a final
+  replacement soon docks, but after waiting the relay stays yellow and no
+  completion score appears. Fix this gameplay regression so that legitimate
+  return settles exactly once after the replacement docks, while one sustained
+  overlap still cannot count as two contacts. Replay the challenge to verify
+  the repair.
+setup:
+  install:
+    - npm ci
+    - npm run build
+  reset: []
+  launch:
+    - npm run dev -- --host 127.0.0.1 --port 51320
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:51320/?challenge=relay-circuit
+  viewport_or_device: desktop-1280x720
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 240
+  max_gui_actions: 180
+  max_test_runs: 20
+verifiers:
+  build:
+    - npm run build
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - '"${CUA_SWE_PYTHON:-python3}" verifiers/browser_check.py --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:51320/?challenge=relay-circuit}"'
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: vector-relay
+  state_api: window.gameAPI
+  seed: 73
+  level: 3
+schema_version: 1

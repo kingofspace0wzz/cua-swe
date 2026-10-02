@@ -1,0 +1,98 @@
+diff --git a/src/game.js b/src/game.js
+index 7ea0fa3..9064e5e 100644
+--- a/src/game.js
++++ b/src/game.js
+@@ -62,32 +62,40 @@ export class Game {
+ 
+   step(deltaMs = STEP_MS) {
+     if (this.phase !== 'playing') return;
+-    this.now += deltaMs;
+-    this.motion.step(deltaMs);
+-    const arrivals = this.shots.step(this.now);
+-    for (const arrival of arrivals) {
+-      const result = this.occupancy.tryAttach(arrival.localAngle);
+-      this.lastAttachment = {
+-        accepted: result.accepted,
+-        localAngle: result.angle,
+-        worldAngle: arrival.worldAngle,
+-        coreAngle: this.motion.angle,
+-        at: this.now,
+-      };
+-      if (!result.accepted) {
+-        this.metrics.failures += 1;
+-        this.phase = 'failed';
+-        this.ui.showFailure();
+-        break;
+-      }
+-
+-      this.metrics.attachments += 1;
+-      this.remaining -= 1;
+-      if (this.metrics.attachments === 1) this.motion.beginPaceChange();
+-      if (this.remaining === 0) {
+-        this.metrics.completed += 1;
+-        this.phase = 'passed';
+-        this.ui.showPass();
++    const targetTime = this.now + deltaMs;
++    while (this.now < targetTime && this.phase === 'playing') {
++      const impactTime = this.shots.active
++        ? this.shots.active.launchedAt + this.shots.active.flightTime
++        : Infinity;
++      const nextTime = Math.min(targetTime, impactTime);
++      this.motion.step(nextTime - this.now);
++      this.now = nextTime;
++
++      const arrivals = this.shots.step(this.now);
++      for (const arrival of arrivals) {
++        const result = this.occupancy.tryAttach(arrival.localAngle);
++        this.lastAttachment = {
++          accepted: result.accepted,
++          localAngle: result.angle,
++          worldAngle: arrival.worldAngle,
++          coreAngle: this.motion.angle,
++          at: this.now,
++        };
++        if (!result.accepted) {
++          this.metrics.failures += 1;
++          this.phase = 'failed';
++          this.ui.showFailure();
++          break;
++        }
++
++        this.metrics.attachments += 1;
++        this.remaining -= 1;
++        if (this.metrics.attachments === 1) this.motion.beginPaceChange();
++        if (this.remaining === 0) {
++          this.metrics.completed += 1;
++          this.phase = 'passed';
++          this.ui.showPass();
++        }
+       }
+     }
+     this.publish();
+diff --git a/src/shot-controller.js b/src/shot-controller.js
+index ba3c5a0..d770d2d 100644
+--- a/src/shot-controller.js
++++ b/src/shot-controller.js
+@@ -31,13 +31,9 @@ export class ShotController {
+   }
+ 
+   prepare(now, fromQueue) {
+-    const plannedFlightTime = fromQueue
+-      ? CRUISE_QUEUE_FLIGHT_TIME
+-      : this.flightTimeFor({fromQueue}, this.coreMotion.launchProfile);
+     return {
+       acceptedAt: now,
+       fromQueue,
+-      plannedCoreAngle: this.coreMotion.predictAngleAt(plannedFlightTime),
+     };
+   }
+ 
+@@ -67,7 +63,7 @@ export class ShotController {
+ 
+     const arrival = {
+       worldAngle: IMPACT_ANGLE,
+-      localAngle: normalizeAngle(IMPACT_ANGLE - this.active.plannedCoreAngle),
++      localAngle: normalizeAngle(IMPACT_ANGLE - this.coreMotion.angle),
+       acceptedAt: this.active.acceptedAt,
+       launchedAt: this.active.launchedAt,
+     };

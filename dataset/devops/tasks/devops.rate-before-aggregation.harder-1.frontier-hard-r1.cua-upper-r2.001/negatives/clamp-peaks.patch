@@ -1,0 +1,11 @@
+diff --git a/src/config/queryPolicy.js b/src/config/queryPolicy.js
+--- a/src/config/queryPolicy.js
++++ b/src/config/queryPolicy.js
+@@ -5,6 +5,6 @@
+   return {
+     pipeline: "traffic-window",
+     panelScope: "all",
+-    sampleFilter: "none",
++    sampleFilter: "clamp",
+   };
+ }

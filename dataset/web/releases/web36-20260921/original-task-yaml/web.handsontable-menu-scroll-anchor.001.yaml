@@ -1,0 +1,53 @@
+id: web.handsontable-menu-scroll-anchor.001
+track: web_frontend
+type: interaction_state
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: "private-artifact:source-0052"
+  ref: 2e48df395-reverse-production-fix
+instruction: >-
+  In the scrollable data-grid demo, an open column dropdown or cell context menu
+  can become detached from the header, cell, or submenu that opened it when the
+  outer panel or the grid viewport scrolls. Keep open menus visually attached to
+  their current anchors across outer-container and grid scrolling, and close a
+  menu once its anchor is no longer rendered. Preserve page scrolling, sticky
+  headers, menus rendered in a custom UI container, internal menu scrolling,
+  keyboard-opened menus, and submenu hover behavior.
+setup:
+  install:
+    - npm ci --ignore-scripts
+    - npm ci --ignore-scripts --prefix handsontable
+    - npm run build --prefix handsontable
+  launch:
+    - python3 runtime-task/serve.py --port 4173
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4173/runtime-task/index.html
+  viewport_or_device: desktop-1000x800
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 3000
+  max_steps: 180
+  max_gui_actions: 240
+  max_test_runs: 24
+verifiers:
+  build:
+    - npm run build --prefix handsontable
+  unit: []
+  ui:
+    - node verifiers/check_menu_scroll.mjs
+  visual: []
+  state: []
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: false

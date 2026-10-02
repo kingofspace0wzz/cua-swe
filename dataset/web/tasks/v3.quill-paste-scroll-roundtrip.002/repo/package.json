@@ -1,0 +1,15 @@
+{
+  "name": "threadloop-collab-doc",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "quill": "2.0.3"
+  },
+  "devDependencies": {
+    "esbuild": "0.23.1"
+  }
+}

@@ -1,0 +1,21 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -1,4 +1,7 @@
+ export function compileInhibitionRule(catalog, policy) {
++  const scopeGuards = policy.dimensionRegistry
++    .filter((dimension) => dimension.role === "suppression scope")
++    .map((dimension) => dimension.name);
+   return {
+     source_matchers: [
+       {
+@@ -15,7 +18,7 @@ export function compileInhibitionRule(catalog, policy) {
+       },
+     ],
+     equal: [...catalog.equalDimensions],
+-    required_source_labels: [],
+-    required_target_labels: [],
++    required_source_labels: [...scopeGuards],
++    required_target_labels: [...scopeGuards],
+   };
+ }

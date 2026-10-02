@@ -1,0 +1,8 @@
+{
+  "name": "continuum-async-trace-console",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Async context propagation and instrumentation diagnostics.",
+  "scripts": {"build": "node build.mjs", "start": "node server.mjs"}
+}

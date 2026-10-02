@@ -1,0 +1,221 @@
+{
+  "product": "Track office \u2022 received packets",
+  "simulation": "Original deterministic toy marble rails; not physical or engineering advice.",
+  "guide": [
+    {
+      "title": "1 \u00b7 Sheet frame",
+      "paragraphs": [
+        "These packets use the station-sheet convention. The board is width \u00d7 height in cells. Board readouts use X right, Y down from the top-left. Received node x counts half-cell stations UP from the bottom-left; node y counts half-cell stations RIGHT. Thus sheet (x=4, y=6) on a height-10 board is board (X=3, Y=8). Geometry is a connected polyline in route order; nodes are looked up by id, never by array position."
+      ]
+    },
+    {
+      "title": "2 \u00b7 Clock & launch",
+      "paragraphs": [
+        "One office beat is exactly 0.4 seconds. launch.release is beats from replay zero until release. launch.pace is beats per half-cell station on the base material: a larger pace is slower. The editor shows base speed in board cells per second and release in seconds. The starting marble is stationary until release. Motion along each straight leg is uniform; diagonal length is Euclidean. There is no gravity, acceleration, radius, collision search or bounce."
+      ]
+    },
+    {
+      "title": "3 \u00b7 Materials & contacts",
+      "paragraphs": [
+        "A material ratio multiplies travel TIME, not speed; ratio 2 takes twice as long as ratio 1. launch.material is initially active. An event is keyed by its node id. On arrival: increment Contacts, select that event's material immediately, hold for event.hold office beats, then depart. Events exist only at interior nodes, at most one per node; ratios and pace are positive, holds and release nonnegative. Corners without events turn immediately and retain material. At the exact arrival instant the contact is already counted; a positive hold displays Contact. At the exact end of a hold motion displays Rolling. At the last node display Finished forever. A zero hold still counts once and displays Rolling immediately. No simultaneous contacts, loop, backtracking, or start/end events occur."
+      ]
+    },
+    {
+      "title": "4 \u00b7 Replay & plans",
+      "paragraphs": [
+        "Replay seconds are absolute since zero. Go to time, scrub, Step forward (+0.5 s), Step back (\u22120.5 s), Reverse and Reset must evaluate the same path, not mutate a marble cumulatively. Play and Reverse are manual sequencers, each advancing exactly one half-second per press; no wall-clock animation. Reset returns to time zero without discarding a saved plan. Time clamps at zero, and the marble stays Finished after arrival. Readout gives X, Y (cells), Speed (cells/s, zero while waiting/contact/finished), Material, Phase, Contacts.",
+        "Edit plan shows base speed, release seconds, and a selected node's board X/Y. Preview uses the draft. Cancel restores the prior saved plan; Save plan commits only this track. Save receipt is the outgoing provider record: preserve ids, route, board, materials and events; invert the sheet coordinates and office-clock/pace conversion for edited fields. Unedited nodes and metadata survive. Plans and receipts survive reload, independently per packet; changing tracks or reloading abandons unsaved drafts. Inbox attachments are immutable received originals, never rewritten by plan edits. Valid edits keep nodes on board, nonzero adjacent legs, positive base speed and nonnegative release. The game has no networking or real upload; the receipt is the locally queued outgoing record."
+      ]
+    },
+    {
+      "title": "5 \u00b7 Exposure sheets",
+      "paragraphs": [
+        "Numbered exposures are independently drafted board-frame motion samples, not app screenshots. Arrows give route direction. Each dot's number links to its exact time and readout caption. Compare both dot position and the captions with the replay. All required rules are in this guide; examples are not lookup tables. Both packets obey this same convention, including edits and other valid input values."
+      ]
+    }
+  ],
+  "packets": [
+    {
+      "id": "harbor-turn",
+      "title": "Harbor turn",
+      "record": {
+        "id": "harbor-turn",
+        "title": "Harbor turn",
+        "revision": "office-2",
+        "note": "Felt gate then polished exit. Three orthogonal legs.",
+        "board": {
+          "width": 12,
+          "height": 10
+        },
+        "nodes": [
+          {
+            "id": "C",
+            "x": 16,
+            "y": 16
+          },
+          {
+            "id": "A",
+            "x": 4,
+            "y": 4
+          },
+          {
+            "id": "D",
+            "x": 16,
+            "y": 6
+          },
+          {
+            "id": "B",
+            "x": 4,
+            "y": 16
+          }
+        ],
+        "route": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "launch": {
+          "pace": 1.25,
+          "release": 2.5,
+          "material": "polished"
+        },
+        "materials": [
+          {
+            "id": "felt",
+            "ratio": 2
+          },
+          {
+            "id": "polished",
+            "ratio": 1
+          }
+        ],
+        "events": [
+          {
+            "node": "C",
+            "material": "polished",
+            "hold": 1.25
+          },
+          {
+            "node": "B",
+            "material": "felt",
+            "hold": 2.5
+          }
+        ]
+      },
+      "exposures": [
+        {
+          "title": "Exposure 1 \u00b7 4 s",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"360\" height=\"330\" viewBox=\"0 0 360 330\"><rect width=\"360\" height=\"330\" fill=\"#f5f1df\"/><defs><marker id=\"arrow\" markerWidth=\"5\" markerHeight=\"5\" refX=\"4\" refY=\"2.5\" orient=\"auto\"><path d=\"M0 0 L5 2.5 L0 5\" fill=\"none\" stroke=\"#365c5b\"/></marker></defs><path d=\"M30 28v250\" stroke=\"#d6d6c5\"/><text x=\"30\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M55 28v250\" stroke=\"#d6d6c5\"/><text x=\"55\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M80 28v250\" stroke=\"#d6d6c5\"/><text x=\"80\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M105 28v250\" stroke=\"#d6d6c5\"/><text x=\"105\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M130 28v250\" stroke=\"#d6d6c5\"/><text x=\"130\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M155 28v250\" stroke=\"#d6d6c5\"/><text x=\"155\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M180 28v250\" stroke=\"#d6d6c5\"/><text x=\"180\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M205 28v250\" stroke=\"#d6d6c5\"/><text x=\"205\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M230 28v250\" stroke=\"#d6d6c5\"/><text x=\"230\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M255 28v250\" stroke=\"#d6d6c5\"/><text x=\"255\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M280 28v250\" stroke=\"#d6d6c5\"/><text x=\"280\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M305 28v250\" stroke=\"#d6d6c5\"/><text x=\"305\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">11</text><path d=\"M330 28v250\" stroke=\"#d6d6c5\"/><text x=\"330\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">12</text><path d=\"M30 28h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"32\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M30 53h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"57\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M30 78h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"82\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M30 103h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"107\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M30 128h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"132\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M30 153h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"157\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M30 178h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"182\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M30 203h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"207\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M30 228h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"232\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M30 253h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"257\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M30 278h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"282\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M80 228L230 228\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M230 228L230 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M230 78L105 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><rect x=\"76\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"88\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">A</text><rect x=\"226\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"238\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">B</text><rect x=\"226\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"238\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">C</text><rect x=\"101\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"113\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">D</text><circle cx=\"155\" cy=\"228\" r=\"12\" fill=\"#ba481d\" stroke=\"#fff\" stroke-width=\"2\"/><text x=\"155\" y=\"233\" text-anchor=\"middle\" font-size=\"15\" fill=\"white\">1</text><text x=\"160\" y=\"318\" font-size=\"13\">X \u2192 cells \u00b7 Y \u2193 cells</text></svg>",
+          "caption": "X 5 \u00b7 Y 8 \u00b7 Speed 1.000 cells/s\nRolling \u00b7 polished \u00b7 Contacts 0"
+        },
+        {
+          "title": "Exposure 2 \u00b7 7.5 s",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"360\" height=\"330\" viewBox=\"0 0 360 330\"><rect width=\"360\" height=\"330\" fill=\"#f5f1df\"/><defs><marker id=\"arrow\" markerWidth=\"5\" markerHeight=\"5\" refX=\"4\" refY=\"2.5\" orient=\"auto\"><path d=\"M0 0 L5 2.5 L0 5\" fill=\"none\" stroke=\"#365c5b\"/></marker></defs><path d=\"M30 28v250\" stroke=\"#d6d6c5\"/><text x=\"30\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M55 28v250\" stroke=\"#d6d6c5\"/><text x=\"55\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M80 28v250\" stroke=\"#d6d6c5\"/><text x=\"80\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M105 28v250\" stroke=\"#d6d6c5\"/><text x=\"105\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M130 28v250\" stroke=\"#d6d6c5\"/><text x=\"130\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M155 28v250\" stroke=\"#d6d6c5\"/><text x=\"155\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M180 28v250\" stroke=\"#d6d6c5\"/><text x=\"180\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M205 28v250\" stroke=\"#d6d6c5\"/><text x=\"205\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M230 28v250\" stroke=\"#d6d6c5\"/><text x=\"230\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M255 28v250\" stroke=\"#d6d6c5\"/><text x=\"255\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M280 28v250\" stroke=\"#d6d6c5\"/><text x=\"280\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M305 28v250\" stroke=\"#d6d6c5\"/><text x=\"305\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">11</text><path d=\"M330 28v250\" stroke=\"#d6d6c5\"/><text x=\"330\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">12</text><path d=\"M30 28h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"32\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M30 53h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"57\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M30 78h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"82\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M30 103h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"107\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M30 128h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"132\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M30 153h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"157\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M30 178h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"182\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M30 203h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"207\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M30 228h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"232\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M30 253h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"257\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M30 278h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"282\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M80 228L230 228\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M230 228L230 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M230 78L105 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><rect x=\"76\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"88\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">A</text><rect x=\"226\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"238\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">B</text><rect x=\"226\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"238\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">C</text><rect x=\"101\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"113\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">D</text><circle cx=\"230\" cy=\"228\" r=\"12\" fill=\"#ba481d\" stroke=\"#fff\" stroke-width=\"2\"/><text x=\"230\" y=\"233\" text-anchor=\"middle\" font-size=\"15\" fill=\"white\">2</text><text x=\"160\" y=\"318\" font-size=\"13\">X \u2192 cells \u00b7 Y \u2193 cells</text></svg>",
+          "caption": "X 8 \u00b7 Y 8 \u00b7 Speed 0.000 cells/s\nContact B \u00b7 felt \u00b7 Contacts 1"
+        },
+        {
+          "title": "Exposure 3 \u00b7 14 s",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"360\" height=\"330\" viewBox=\"0 0 360 330\"><rect width=\"360\" height=\"330\" fill=\"#f5f1df\"/><defs><marker id=\"arrow\" markerWidth=\"5\" markerHeight=\"5\" refX=\"4\" refY=\"2.5\" orient=\"auto\"><path d=\"M0 0 L5 2.5 L0 5\" fill=\"none\" stroke=\"#365c5b\"/></marker></defs><path d=\"M30 28v250\" stroke=\"#d6d6c5\"/><text x=\"30\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M55 28v250\" stroke=\"#d6d6c5\"/><text x=\"55\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M80 28v250\" stroke=\"#d6d6c5\"/><text x=\"80\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M105 28v250\" stroke=\"#d6d6c5\"/><text x=\"105\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M130 28v250\" stroke=\"#d6d6c5\"/><text x=\"130\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M155 28v250\" stroke=\"#d6d6c5\"/><text x=\"155\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M180 28v250\" stroke=\"#d6d6c5\"/><text x=\"180\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M205 28v250\" stroke=\"#d6d6c5\"/><text x=\"205\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M230 28v250\" stroke=\"#d6d6c5\"/><text x=\"230\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M255 28v250\" stroke=\"#d6d6c5\"/><text x=\"255\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M280 28v250\" stroke=\"#d6d6c5\"/><text x=\"280\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M305 28v250\" stroke=\"#d6d6c5\"/><text x=\"305\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">11</text><path d=\"M330 28v250\" stroke=\"#d6d6c5\"/><text x=\"330\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">12</text><path d=\"M30 28h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"32\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M30 53h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"57\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M30 78h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"82\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M30 103h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"107\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M30 128h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"132\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M30 153h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"157\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M30 178h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"182\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M30 203h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"207\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M30 228h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"232\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M30 253h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"257\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M30 278h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"282\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M80 228L230 228\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M230 228L230 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M230 78L105 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><rect x=\"76\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"88\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">A</text><rect x=\"226\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"238\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">B</text><rect x=\"226\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"238\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">C</text><rect x=\"101\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"113\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">D</text><circle cx=\"230\" cy=\"153\" r=\"12\" fill=\"#ba481d\" stroke=\"#fff\" stroke-width=\"2\"/><text x=\"230\" y=\"158\" text-anchor=\"middle\" font-size=\"15\" fill=\"white\">3</text><text x=\"160\" y=\"318\" font-size=\"13\">X \u2192 cells \u00b7 Y \u2193 cells</text></svg>",
+          "caption": "X 8 \u00b7 Y 5 \u00b7 Speed 0.500 cells/s\nRolling \u00b7 felt \u00b7 Contacts 1"
+        },
+        {
+          "title": "Exposure 4 \u00b7 23 s",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"360\" height=\"330\" viewBox=\"0 0 360 330\"><rect width=\"360\" height=\"330\" fill=\"#f5f1df\"/><defs><marker id=\"arrow\" markerWidth=\"5\" markerHeight=\"5\" refX=\"4\" refY=\"2.5\" orient=\"auto\"><path d=\"M0 0 L5 2.5 L0 5\" fill=\"none\" stroke=\"#365c5b\"/></marker></defs><path d=\"M30 28v250\" stroke=\"#d6d6c5\"/><text x=\"30\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M55 28v250\" stroke=\"#d6d6c5\"/><text x=\"55\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M80 28v250\" stroke=\"#d6d6c5\"/><text x=\"80\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M105 28v250\" stroke=\"#d6d6c5\"/><text x=\"105\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M130 28v250\" stroke=\"#d6d6c5\"/><text x=\"130\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M155 28v250\" stroke=\"#d6d6c5\"/><text x=\"155\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M180 28v250\" stroke=\"#d6d6c5\"/><text x=\"180\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M205 28v250\" stroke=\"#d6d6c5\"/><text x=\"205\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M230 28v250\" stroke=\"#d6d6c5\"/><text x=\"230\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M255 28v250\" stroke=\"#d6d6c5\"/><text x=\"255\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M280 28v250\" stroke=\"#d6d6c5\"/><text x=\"280\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M305 28v250\" stroke=\"#d6d6c5\"/><text x=\"305\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">11</text><path d=\"M330 28v250\" stroke=\"#d6d6c5\"/><text x=\"330\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">12</text><path d=\"M30 28h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"32\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M30 53h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"57\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M30 78h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"82\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M30 103h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"107\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M30 128h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"132\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M30 153h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"157\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M30 178h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"182\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M30 203h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"207\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M30 228h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"232\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M30 253h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"257\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M30 278h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"282\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M80 228L230 228\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M230 228L230 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M230 78L105 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><rect x=\"76\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"88\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">A</text><rect x=\"226\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"238\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">B</text><rect x=\"226\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"238\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">C</text><rect x=\"101\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"113\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">D</text><circle cx=\"167.5\" cy=\"78\" r=\"12\" fill=\"#ba481d\" stroke=\"#fff\" stroke-width=\"2\"/><text x=\"167.5\" y=\"83\" text-anchor=\"middle\" font-size=\"15\" fill=\"white\">4</text><text x=\"160\" y=\"318\" font-size=\"13\">X \u2192 cells \u00b7 Y \u2193 cells</text></svg>",
+          "caption": "X 5.5 \u00b7 Y 2 \u00b7 Speed 1.000 cells/s\nRolling \u00b7 polished \u00b7 Contacts 2"
+        }
+      ]
+    },
+    {
+      "id": "orchard-diagonal",
+      "title": "Orchard diagonal",
+      "record": {
+        "id": "orchard-diagonal",
+        "title": "Orchard diagonal",
+        "revision": "office-2",
+        "note": "A diagonal rail between two timed gates.",
+        "board": {
+          "width": 12,
+          "height": 10
+        },
+        "nodes": [
+          {
+            "id": "N",
+            "x": 4,
+            "y": 18
+          },
+          {
+            "id": "L",
+            "x": 16,
+            "y": 10
+          },
+          {
+            "id": "K",
+            "x": 16,
+            "y": 2
+          },
+          {
+            "id": "M",
+            "x": 10,
+            "y": 18
+          }
+        ],
+        "route": [
+          "K",
+          "L",
+          "M",
+          "N"
+        ],
+        "launch": {
+          "pace": 0.625,
+          "release": 1.25,
+          "material": "glaze"
+        },
+        "materials": [
+          {
+            "id": "cork",
+            "ratio": 1.5
+          },
+          {
+            "id": "glaze",
+            "ratio": 1
+          }
+        ],
+        "events": [
+          {
+            "node": "M",
+            "material": "glaze",
+            "hold": 0.625
+          },
+          {
+            "node": "L",
+            "material": "cork",
+            "hold": 1.875
+          }
+        ]
+      },
+      "exposures": [
+        {
+          "title": "Exposure 1 \u00b7 1.5 s",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"360\" height=\"330\" viewBox=\"0 0 360 330\"><rect width=\"360\" height=\"330\" fill=\"#f5f1df\"/><defs><marker id=\"arrow\" markerWidth=\"5\" markerHeight=\"5\" refX=\"4\" refY=\"2.5\" orient=\"auto\"><path d=\"M0 0 L5 2.5 L0 5\" fill=\"none\" stroke=\"#365c5b\"/></marker></defs><path d=\"M30 28v250\" stroke=\"#d6d6c5\"/><text x=\"30\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M55 28v250\" stroke=\"#d6d6c5\"/><text x=\"55\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M80 28v250\" stroke=\"#d6d6c5\"/><text x=\"80\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M105 28v250\" stroke=\"#d6d6c5\"/><text x=\"105\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M130 28v250\" stroke=\"#d6d6c5\"/><text x=\"130\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M155 28v250\" stroke=\"#d6d6c5\"/><text x=\"155\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M180 28v250\" stroke=\"#d6d6c5\"/><text x=\"180\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M205 28v250\" stroke=\"#d6d6c5\"/><text x=\"205\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M230 28v250\" stroke=\"#d6d6c5\"/><text x=\"230\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M255 28v250\" stroke=\"#d6d6c5\"/><text x=\"255\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M280 28v250\" stroke=\"#d6d6c5\"/><text x=\"280\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M305 28v250\" stroke=\"#d6d6c5\"/><text x=\"305\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">11</text><path d=\"M330 28v250\" stroke=\"#d6d6c5\"/><text x=\"330\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">12</text><path d=\"M30 28h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"32\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M30 53h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"57\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M30 78h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"82\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M30 103h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"107\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M30 128h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"132\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M30 153h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"157\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M30 178h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"182\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M30 203h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"207\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M30 228h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"232\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M30 253h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"257\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M30 278h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"282\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M55 78L155 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M155 78L255 153\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M255 153L255 228\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><rect x=\"51\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"63\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">K</text><rect x=\"151\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"163\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">L</text><rect x=\"251\" y=\"149\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"263\" y=\"145\" font-size=\"15\" fill=\"#1d4445\">M</text><rect x=\"251\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"263\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">N</text><circle cx=\"105\" cy=\"78\" r=\"12\" fill=\"#ba481d\" stroke=\"#fff\" stroke-width=\"2\"/><text x=\"105\" y=\"83\" text-anchor=\"middle\" font-size=\"15\" fill=\"white\">1</text><text x=\"160\" y=\"318\" font-size=\"13\">X \u2192 cells \u00b7 Y \u2193 cells</text></svg>",
+          "caption": "X 3 \u00b7 Y 2 \u00b7 Speed 2.000 cells/s\nRolling \u00b7 glaze \u00b7 Contacts 0"
+        },
+        {
+          "title": "Exposure 2 \u00b7 3 s",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"360\" height=\"330\" viewBox=\"0 0 360 330\"><rect width=\"360\" height=\"330\" fill=\"#f5f1df\"/><defs><marker id=\"arrow\" markerWidth=\"5\" markerHeight=\"5\" refX=\"4\" refY=\"2.5\" orient=\"auto\"><path d=\"M0 0 L5 2.5 L0 5\" fill=\"none\" stroke=\"#365c5b\"/></marker></defs><path d=\"M30 28v250\" stroke=\"#d6d6c5\"/><text x=\"30\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M55 28v250\" stroke=\"#d6d6c5\"/><text x=\"55\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M80 28v250\" stroke=\"#d6d6c5\"/><text x=\"80\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M105 28v250\" stroke=\"#d6d6c5\"/><text x=\"105\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M130 28v250\" stroke=\"#d6d6c5\"/><text x=\"130\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M155 28v250\" stroke=\"#d6d6c5\"/><text x=\"155\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M180 28v250\" stroke=\"#d6d6c5\"/><text x=\"180\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M205 28v250\" stroke=\"#d6d6c5\"/><text x=\"205\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M230 28v250\" stroke=\"#d6d6c5\"/><text x=\"230\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M255 28v250\" stroke=\"#d6d6c5\"/><text x=\"255\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M280 28v250\" stroke=\"#d6d6c5\"/><text x=\"280\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M305 28v250\" stroke=\"#d6d6c5\"/><text x=\"305\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">11</text><path d=\"M330 28v250\" stroke=\"#d6d6c5\"/><text x=\"330\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">12</text><path d=\"M30 28h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"32\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M30 53h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"57\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M30 78h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"82\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M30 103h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"107\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M30 128h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"132\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M30 153h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"157\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M30 178h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"182\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M30 203h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"207\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M30 228h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"232\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M30 253h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"257\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M30 278h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"282\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M55 78L155 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M155 78L255 153\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M255 153L255 228\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><rect x=\"51\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"63\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">K</text><rect x=\"151\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"163\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">L</text><rect x=\"251\" y=\"149\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"263\" y=\"145\" font-size=\"15\" fill=\"#1d4445\">M</text><rect x=\"251\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"263\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">N</text><circle cx=\"155\" cy=\"78\" r=\"12\" fill=\"#ba481d\" stroke=\"#fff\" stroke-width=\"2\"/><text x=\"155\" y=\"83\" text-anchor=\"middle\" font-size=\"15\" fill=\"white\">2</text><text x=\"160\" y=\"318\" font-size=\"13\">X \u2192 cells \u00b7 Y \u2193 cells</text></svg>",
+          "caption": "X 5 \u00b7 Y 2 \u00b7 Speed 0.000 cells/s\nContact L \u00b7 cork \u00b7 Contacts 1"
+        },
+        {
+          "title": "Exposure 3 \u00b7 5.125 s",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"360\" height=\"330\" viewBox=\"0 0 360 330\"><rect width=\"360\" height=\"330\" fill=\"#f5f1df\"/><defs><marker id=\"arrow\" markerWidth=\"5\" markerHeight=\"5\" refX=\"4\" refY=\"2.5\" orient=\"auto\"><path d=\"M0 0 L5 2.5 L0 5\" fill=\"none\" stroke=\"#365c5b\"/></marker></defs><path d=\"M30 28v250\" stroke=\"#d6d6c5\"/><text x=\"30\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M55 28v250\" stroke=\"#d6d6c5\"/><text x=\"55\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M80 28v250\" stroke=\"#d6d6c5\"/><text x=\"80\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M105 28v250\" stroke=\"#d6d6c5\"/><text x=\"105\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M130 28v250\" stroke=\"#d6d6c5\"/><text x=\"130\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M155 28v250\" stroke=\"#d6d6c5\"/><text x=\"155\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M180 28v250\" stroke=\"#d6d6c5\"/><text x=\"180\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M205 28v250\" stroke=\"#d6d6c5\"/><text x=\"205\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M230 28v250\" stroke=\"#d6d6c5\"/><text x=\"230\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M255 28v250\" stroke=\"#d6d6c5\"/><text x=\"255\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M280 28v250\" stroke=\"#d6d6c5\"/><text x=\"280\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M305 28v250\" stroke=\"#d6d6c5\"/><text x=\"305\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">11</text><path d=\"M330 28v250\" stroke=\"#d6d6c5\"/><text x=\"330\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">12</text><path d=\"M30 28h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"32\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M30 53h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"57\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M30 78h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"82\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M30 103h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"107\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M30 128h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"132\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M30 153h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"157\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M30 178h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"182\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M30 203h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"207\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M30 228h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"232\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M30 253h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"257\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M30 278h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"282\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M55 78L155 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M155 78L255 153\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M255 153L255 228\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><rect x=\"51\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"63\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">K</text><rect x=\"151\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"163\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">L</text><rect x=\"251\" y=\"149\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"263\" y=\"145\" font-size=\"15\" fill=\"#1d4445\">M</text><rect x=\"251\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"263\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">N</text><circle cx=\"205\" cy=\"115.5\" r=\"12\" fill=\"#ba481d\" stroke=\"#fff\" stroke-width=\"2\"/><text x=\"205\" y=\"120.5\" text-anchor=\"middle\" font-size=\"15\" fill=\"white\">3</text><text x=\"160\" y=\"318\" font-size=\"13\">X \u2192 cells \u00b7 Y \u2193 cells</text></svg>",
+          "caption": "X 7 \u00b7 Y 3.5 \u00b7 Speed 1.333 cells/s\nRolling \u00b7 cork \u00b7 Contacts 1"
+        },
+        {
+          "title": "Exposure 4 \u00b7 8 s",
+          "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"360\" height=\"330\" viewBox=\"0 0 360 330\"><rect width=\"360\" height=\"330\" fill=\"#f5f1df\"/><defs><marker id=\"arrow\" markerWidth=\"5\" markerHeight=\"5\" refX=\"4\" refY=\"2.5\" orient=\"auto\"><path d=\"M0 0 L5 2.5 L0 5\" fill=\"none\" stroke=\"#365c5b\"/></marker></defs><path d=\"M30 28v250\" stroke=\"#d6d6c5\"/><text x=\"30\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M55 28v250\" stroke=\"#d6d6c5\"/><text x=\"55\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M80 28v250\" stroke=\"#d6d6c5\"/><text x=\"80\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M105 28v250\" stroke=\"#d6d6c5\"/><text x=\"105\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M130 28v250\" stroke=\"#d6d6c5\"/><text x=\"130\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M155 28v250\" stroke=\"#d6d6c5\"/><text x=\"155\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M180 28v250\" stroke=\"#d6d6c5\"/><text x=\"180\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M205 28v250\" stroke=\"#d6d6c5\"/><text x=\"205\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M230 28v250\" stroke=\"#d6d6c5\"/><text x=\"230\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M255 28v250\" stroke=\"#d6d6c5\"/><text x=\"255\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M280 28v250\" stroke=\"#d6d6c5\"/><text x=\"280\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M305 28v250\" stroke=\"#d6d6c5\"/><text x=\"305\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">11</text><path d=\"M330 28v250\" stroke=\"#d6d6c5\"/><text x=\"330\" y=\"294\" text-anchor=\"middle\" font-size=\"11\">12</text><path d=\"M30 28h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"32\" text-anchor=\"middle\" font-size=\"11\">0</text><path d=\"M30 53h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"57\" text-anchor=\"middle\" font-size=\"11\">1</text><path d=\"M30 78h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"82\" text-anchor=\"middle\" font-size=\"11\">2</text><path d=\"M30 103h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"107\" text-anchor=\"middle\" font-size=\"11\">3</text><path d=\"M30 128h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"132\" text-anchor=\"middle\" font-size=\"11\">4</text><path d=\"M30 153h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"157\" text-anchor=\"middle\" font-size=\"11\">5</text><path d=\"M30 178h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"182\" text-anchor=\"middle\" font-size=\"11\">6</text><path d=\"M30 203h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"207\" text-anchor=\"middle\" font-size=\"11\">7</text><path d=\"M30 228h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"232\" text-anchor=\"middle\" font-size=\"11\">8</text><path d=\"M30 253h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"257\" text-anchor=\"middle\" font-size=\"11\">9</text><path d=\"M30 278h300\" stroke=\"#d6d6c5\"/><text x=\"18\" y=\"282\" text-anchor=\"middle\" font-size=\"11\">10</text><path d=\"M55 78L155 78\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M155 78L255 153\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><path d=\"M255 153L255 228\" stroke=\"#365c5b\" stroke-width=\"3\" marker-end=\"url(#arrow)\"/><rect x=\"51\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"63\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">K</text><rect x=\"151\" y=\"74\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"163\" y=\"70\" font-size=\"15\" fill=\"#1d4445\">L</text><rect x=\"251\" y=\"149\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"263\" y=\"145\" font-size=\"15\" fill=\"#1d4445\">M</text><rect x=\"251\" y=\"224\" width=\"8\" height=\"8\" fill=\"#fff\" stroke=\"#365c5b\"/><text x=\"263\" y=\"220\" font-size=\"15\" fill=\"#1d4445\">N</text><circle cx=\"255\" cy=\"190.5\" r=\"12\" fill=\"#ba481d\" stroke=\"#fff\" stroke-width=\"2\"/><text x=\"255\" y=\"195.5\" text-anchor=\"middle\" font-size=\"15\" fill=\"white\">4</text><text x=\"160\" y=\"318\" font-size=\"13\">X \u2192 cells \u00b7 Y \u2193 cells</text></svg>",
+          "caption": "X 9 \u00b7 Y 6.5 \u00b7 Speed 2.000 cells/s\nRolling \u00b7 glaze \u00b7 Contacts 2"
+        }
+      ]
+    }
+  ]
+}

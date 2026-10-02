@@ -1,0 +1,22 @@
+schema_version: 1
+task_id: devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.001
+source:
+  project: prometheus/alertmanager
+  issue: https://github.com/prometheus/alertmanager/issues/1727
+  independent_issue: https://github.com/prometheus/alertmanager/issues/507
+  documentation: https://github.com/prometheus/alertmanager/blob/main/docs/configuration.md
+  pinned_revision: issues-507-1727-and-inhibition-docs
+  license: Apache-2.0
+  source_type: adapted_real_repo
+lineage:
+  parent_task_id: devops.alert-inhibition-equal-labels.harder-1.001
+  parent_candidate: artifacts/v2-candidates/devops-observability/devops.alert-inhibition-equal-labels.harder-1.001
+  parent_tree_sha256: 31ffca68d3bce7e1b1e75c2549f0e7b58bc6dbc5806983c90509acc44945e723
+  bounded_feedback: ../feedback/devops.alert-inhibition-equal-labels.harder-1.001/hardening-feedback.json
+  bounded_feedback_sha256: 8553793093f26ff51ee00f13d5275ed7dcf006be85455503ae12d9d297e8f8be
+  selected_axis: externalize_decisive_truth
+notes:
+  - The reports and official documentation establish that absent and empty equal labels compare alike during inhibition.
+  - The required-label presence guard mirrors documented Alertmanager inhibition-rule eligibility semantics.
+  - The scope-dimension registry, advisories, protected arriving incidents, and hidden renamed profile are original adversarial extensions.
+  - The Sentinel console, matcher engine, profiles, verifier, and assets are original; no Alertmanager source or assets are copied.

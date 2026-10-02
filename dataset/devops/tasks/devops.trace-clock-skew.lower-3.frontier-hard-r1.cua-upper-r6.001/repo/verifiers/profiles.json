@@ -1,0 +1,2324 @@
+{
+  "visible": {
+    "label": "Checkout and orders traces",
+    "maxAdjustmentMs": 2000,
+    "transition": {
+      "at": "03:00",
+      "label": "scheduled clock-maintenance transition",
+      "bulletin": "CB-7"
+    },
+    "traces": [
+      {
+        "id": "checkout-early",
+        "title": "Checkout rack clock leads gateway · register R-207 · crew-04 · logged 02:10",
+        "capture": {
+          "workload": "checkout",
+          "register": "R-207",
+          "capturedAt": "02:10",
+          "crew": "crew-04"
+        },
+        "hostAuthorities": {
+          "edge-a": "tempo-core-a",
+          "app-a": "tempo-rack-a",
+          "db-a": "tempo-rack-a",
+          "mq-a": "tempo-mq-a"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-a": 0,
+          "tempo-rack-a": 600,
+          "tempo-mq-a": 0
+        },
+        "advisories": [],
+        "hostNotes": [
+          {
+            "host": "edge-a",
+            "note": "time authority tempo-core-a · gateway keeps its own clock"
+          },
+          {
+            "host": "app-a",
+            "note": "time authority tempo-rack-a · shares the rack clock with db-a"
+          },
+          {
+            "host": "db-a",
+            "note": "time authority tempo-rack-a · shares the rack clock with app-a"
+          },
+          {
+            "host": "mq-a",
+            "note": "time authority tempo-mq-a · broker keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "c-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "POST /checkout",
+            "host": "edge-a",
+            "startMs": 0,
+            "endMs": 2000,
+            "durationMs": 2000
+          },
+          {
+            "id": "c-charge",
+            "parentId": "c-root",
+            "service": "checkout",
+            "operation": "charge",
+            "host": "app-a",
+            "startMs": -380,
+            "endMs": 520,
+            "durationMs": 900
+          },
+          {
+            "id": "c-auth",
+            "parentId": "c-charge",
+            "service": "payments",
+            "operation": "authorise",
+            "host": "app-a",
+            "startMs": -250,
+            "endMs": 50,
+            "durationMs": 300
+          },
+          {
+            "id": "c-ledger",
+            "parentId": "c-charge",
+            "service": "ledger",
+            "operation": "write",
+            "host": "db-a",
+            "startMs": -100,
+            "endMs": 300,
+            "durationMs": 400
+          },
+          {
+            "id": "c-notify",
+            "parentId": "c-charge",
+            "service": "notifications",
+            "operation": "enqueue receipt",
+            "host": "mq-a",
+            "startMs": 600,
+            "endMs": 800,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "orders-late",
+        "title": "Orders cache lookup outside its request · register R-207 · crew-04 · logged 02:25",
+        "capture": {
+          "workload": "orders",
+          "register": "R-207",
+          "capturedAt": "02:25",
+          "crew": "crew-04"
+        },
+        "hostAuthorities": {
+          "edge-b": "tempo-core-b",
+          "app-b": "tempo-rack-b",
+          "db-b": "tempo-store-b"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-b": 0,
+          "tempo-rack-b": 400,
+          "tempo-store-b": 0
+        },
+        "advisories": [],
+        "hostNotes": [
+          {
+            "host": "edge-b",
+            "note": "time authority tempo-core-b · gateway keeps its own clock"
+          },
+          {
+            "host": "app-b",
+            "note": "time authority tempo-rack-b · rack clock, no shared peer in this trace"
+          },
+          {
+            "host": "db-b",
+            "note": "time authority tempo-store-b · store keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "o-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /orders",
+            "host": "edge-b",
+            "startMs": 0,
+            "endMs": 1600,
+            "durationMs": 1600
+          },
+          {
+            "id": "o-list",
+            "parentId": "o-root",
+            "service": "orders",
+            "operation": "list",
+            "host": "app-b",
+            "startMs": 200,
+            "endMs": 1000,
+            "durationMs": 800
+          },
+          {
+            "id": "o-map",
+            "parentId": "o-list",
+            "service": "orders",
+            "operation": "map rows",
+            "host": "app-b",
+            "startMs": 350,
+            "endMs": 650,
+            "durationMs": 300
+          },
+          {
+            "id": "o-cache",
+            "parentId": "o-list",
+            "service": "cache",
+            "operation": "lookup",
+            "host": "db-b",
+            "startMs": 1150,
+            "endMs": 1350,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "checkout-r118",
+        "title": "Checkout replay · record checkout-r118 · register R-311 · disposition D-17 · crew-12 · logged 03:20",
+        "capture": {
+          "workload": "checkout",
+          "register": "R-311",
+          "capturedAt": "03:20",
+          "crew": "crew-12",
+          "disposition": "D-17"
+        },
+        "hostAuthorities": {
+          "edge-a": "tempo-core-a",
+          "app-a": "tempo-rack-a",
+          "db-a": "tempo-rack-a",
+          "mq-a": "tempo-mq-a"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-a": 0,
+          "tempo-rack-a": 0,
+          "tempo-mq-a": 0
+        },
+        "advisories": [
+          "Entry checkout-r118 filed 03:20 by crew-12 · register R-311 · disposition D-17 · bulletin CB-7."
+        ],
+        "hostNotes": [
+          {
+            "host": "edge-a",
+            "note": "time authority tempo-core-a · gateway keeps its own clock"
+          },
+          {
+            "host": "app-a",
+            "note": "time authority tempo-rack-a · shares the rack clock with db-a"
+          },
+          {
+            "host": "db-a",
+            "note": "time authority tempo-rack-a · shares the rack clock with app-a"
+          },
+          {
+            "host": "mq-a",
+            "note": "time authority tempo-mq-a · broker keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "ca-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "POST /checkout",
+            "host": "edge-a",
+            "startMs": 0,
+            "endMs": 2000,
+            "durationMs": 2000
+          },
+          {
+            "id": "ca-charge",
+            "parentId": "ca-root",
+            "service": "checkout",
+            "operation": "charge",
+            "host": "app-a",
+            "startMs": -30,
+            "endMs": 870,
+            "durationMs": 900
+          },
+          {
+            "id": "ca-auth",
+            "parentId": "ca-charge",
+            "service": "payments",
+            "operation": "authorise",
+            "host": "app-a",
+            "startMs": 100,
+            "endMs": 400,
+            "durationMs": 300
+          },
+          {
+            "id": "ca-ledger",
+            "parentId": "ca-charge",
+            "service": "ledger",
+            "operation": "write",
+            "host": "db-a",
+            "startMs": 250,
+            "endMs": 650,
+            "durationMs": 400
+          },
+          {
+            "id": "ca-notify",
+            "parentId": "ca-charge",
+            "service": "notifications",
+            "operation": "enqueue receipt",
+            "host": "mq-a",
+            "startMs": 600,
+            "endMs": 800,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "checkout-r126",
+        "title": "Checkout reporting-path recheck · record checkout-r126 · register R-311 · disposition D-63 · crew-07 · logged 03:50",
+        "capture": {
+          "workload": "checkout",
+          "register": "R-311",
+          "capturedAt": "03:50",
+          "crew": "crew-07",
+          "disposition": "D-63"
+        },
+        "hostAuthorities": {
+          "edge-a": "tempo-core-a",
+          "app-a": "tempo-rack-a",
+          "db-a": "tempo-rack-a",
+          "mq-a": "tempo-mq-a"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-a": 0,
+          "tempo-rack-a": 0,
+          "tempo-mq-a": 0
+        },
+        "advisories": [
+          "Entry checkout-r126 filed 03:50 by crew-07 while exercising the broker's reporting path · register R-311 · disposition D-63."
+        ],
+        "hostNotes": [
+          {
+            "host": "edge-a",
+            "note": "time authority tempo-core-a · gateway keeps its own clock"
+          },
+          {
+            "host": "app-a",
+            "note": "time authority tempo-rack-a · shares the rack clock with db-a"
+          },
+          {
+            "host": "db-a",
+            "note": "time authority tempo-rack-a · shares the rack clock with app-a"
+          },
+          {
+            "host": "mq-a",
+            "note": "time authority tempo-mq-a · broker keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "ck-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "POST /checkout",
+            "host": "edge-a",
+            "startMs": 0,
+            "endMs": 2000,
+            "durationMs": 2000
+          },
+          {
+            "id": "ck-charge",
+            "parentId": "ck-root",
+            "service": "checkout",
+            "operation": "charge",
+            "host": "app-a",
+            "startMs": 220,
+            "endMs": 1120,
+            "durationMs": 900
+          },
+          {
+            "id": "ck-auth",
+            "parentId": "ck-charge",
+            "service": "payments",
+            "operation": "authorise",
+            "host": "app-a",
+            "startMs": 350,
+            "endMs": 650,
+            "durationMs": 300
+          },
+          {
+            "id": "ck-ledger",
+            "parentId": "ck-charge",
+            "service": "ledger",
+            "operation": "write",
+            "host": "db-a",
+            "startMs": 500,
+            "endMs": 900,
+            "durationMs": 400
+          },
+          {
+            "id": "ck-notify",
+            "parentId": "ck-charge",
+            "service": "notifications",
+            "operation": "enqueue receipt",
+            "host": "mq-a",
+            "startMs": 750,
+            "endMs": 950,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "checkout-r131",
+        "title": "Checkout replay · record checkout-r131 · register R-311 · disposition D-41 · crew-12 · logged 03:40",
+        "capture": {
+          "workload": "checkout",
+          "register": "R-311",
+          "capturedAt": "03:40",
+          "crew": "crew-12",
+          "disposition": "D-41"
+        },
+        "hostAuthorities": {
+          "edge-a": "tempo-core-a",
+          "app-a": "tempo-rack-a",
+          "db-a": "tempo-rack-a",
+          "mq-a": "tempo-mq-a"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-a": 0,
+          "tempo-rack-a": 0,
+          "tempo-mq-a": 0
+        },
+        "advisories": [
+          "Entry checkout-r131 filed 03:40 by crew-12 · register R-311 · disposition D-41 · bulletin CB-7."
+        ],
+        "hostNotes": [
+          {
+            "host": "edge-a",
+            "note": "time authority tempo-core-a · gateway keeps its own clock"
+          },
+          {
+            "host": "app-a",
+            "note": "time authority tempo-rack-a · shares the rack clock with db-a"
+          },
+          {
+            "host": "db-a",
+            "note": "time authority tempo-rack-a · shares the rack clock with app-a"
+          },
+          {
+            "host": "mq-a",
+            "note": "time authority tempo-mq-a · broker keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "cr-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "POST /checkout",
+            "host": "edge-a",
+            "startMs": 0,
+            "endMs": 2000,
+            "durationMs": 2000
+          },
+          {
+            "id": "cr-charge",
+            "parentId": "cr-root",
+            "service": "checkout",
+            "operation": "charge",
+            "host": "app-a",
+            "startMs": 220,
+            "endMs": 1120,
+            "durationMs": 900
+          },
+          {
+            "id": "cr-auth",
+            "parentId": "cr-charge",
+            "service": "payments",
+            "operation": "authorise",
+            "host": "app-a",
+            "startMs": 350,
+            "endMs": 650,
+            "durationMs": 300
+          },
+          {
+            "id": "cr-ledger",
+            "parentId": "cr-charge",
+            "service": "ledger",
+            "operation": "write",
+            "host": "db-a",
+            "startMs": 500,
+            "endMs": 900,
+            "durationMs": 400
+          },
+          {
+            "id": "cr-notify",
+            "parentId": "cr-charge",
+            "service": "notifications",
+            "operation": "enqueue receipt",
+            "host": "mq-a",
+            "startMs": 600,
+            "endMs": 800,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "checkout-r140",
+        "title": "Checkout replay · record checkout-r140 · register R-311 · disposition D-41 · crew-26 · logged 04:25",
+        "capture": {
+          "workload": "checkout",
+          "register": "R-311",
+          "capturedAt": "04:25",
+          "crew": "crew-26",
+          "disposition": "D-41"
+        },
+        "hostAuthorities": {
+          "edge-a": "tempo-core-a",
+          "app-a": "tempo-rack-a",
+          "db-a": "tempo-rack-a",
+          "mq-a": "tempo-mq-a"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-a": 0,
+          "tempo-rack-a": 0,
+          "tempo-mq-a": 0
+        },
+        "advisories": [
+          "Entry checkout-r140 filed 04:25 by crew-26 · register R-311 · disposition D-41 · regional audit series."
+        ],
+        "hostNotes": [
+          {
+            "host": "edge-a",
+            "note": "time authority tempo-core-a · gateway keeps its own clock"
+          },
+          {
+            "host": "app-a",
+            "note": "time authority tempo-rack-a · shares the rack clock with db-a"
+          },
+          {
+            "host": "db-a",
+            "note": "time authority tempo-rack-a · shares the rack clock with app-a"
+          },
+          {
+            "host": "mq-a",
+            "note": "time authority tempo-mq-a · broker keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "cq-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "POST /checkout",
+            "host": "edge-a",
+            "startMs": 0,
+            "endMs": 2000,
+            "durationMs": 2000
+          },
+          {
+            "id": "cq-charge",
+            "parentId": "cq-root",
+            "service": "checkout",
+            "operation": "charge",
+            "host": "app-a",
+            "startMs": 140,
+            "endMs": 1040,
+            "durationMs": 900
+          },
+          {
+            "id": "cq-auth",
+            "parentId": "cq-charge",
+            "service": "payments",
+            "operation": "authorise",
+            "host": "app-a",
+            "startMs": 270,
+            "endMs": 570,
+            "durationMs": 300
+          },
+          {
+            "id": "cq-ledger",
+            "parentId": "cq-charge",
+            "service": "ledger",
+            "operation": "write",
+            "host": "db-a",
+            "startMs": 420,
+            "endMs": 820,
+            "durationMs": 400
+          },
+          {
+            "id": "cq-notify",
+            "parentId": "cq-charge",
+            "service": "notifications",
+            "operation": "enqueue receipt",
+            "host": "mq-a",
+            "startMs": 600,
+            "endMs": 800,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "orders-r133",
+        "title": "Orders replay · record orders-r133 · register R-311 · disposition D-41 · crew-08 · logged 03:35",
+        "capture": {
+          "workload": "orders",
+          "register": "R-311",
+          "capturedAt": "03:35",
+          "crew": "crew-08",
+          "disposition": "D-41"
+        },
+        "hostAuthorities": {
+          "edge-b": "tempo-core-b",
+          "app-b": "tempo-rack-b",
+          "db-b": "tempo-store-b"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-b": 0,
+          "tempo-rack-b": 0,
+          "tempo-store-b": 0
+        },
+        "advisories": [
+          "Entry orders-r133 filed 03:35 by crew-08 · register R-311 · disposition D-41 · regional audit series."
+        ],
+        "hostNotes": [
+          {
+            "host": "edge-b",
+            "note": "time authority tempo-core-b · gateway keeps its own clock"
+          },
+          {
+            "host": "app-b",
+            "note": "time authority tempo-rack-b · rack clock, no shared peer in this trace"
+          },
+          {
+            "host": "db-b",
+            "note": "time authority tempo-store-b · store keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "ob-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /orders",
+            "host": "edge-b",
+            "startMs": 0,
+            "endMs": 1600,
+            "durationMs": 1600
+          },
+          {
+            "id": "ob-list",
+            "parentId": "ob-root",
+            "service": "orders",
+            "operation": "list",
+            "host": "app-b",
+            "startMs": 550,
+            "endMs": 1350,
+            "durationMs": 800
+          },
+          {
+            "id": "ob-map",
+            "parentId": "ob-list",
+            "service": "orders",
+            "operation": "map rows",
+            "host": "app-b",
+            "startMs": 700,
+            "endMs": 1000,
+            "durationMs": 300
+          },
+          {
+            "id": "ob-cache",
+            "parentId": "ob-list",
+            "service": "cache",
+            "operation": "lookup",
+            "host": "db-b",
+            "startMs": 1150,
+            "endMs": 1350,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "orders-r109",
+        "title": "Orders replay · record orders-r109 · register R-311 · disposition D-17 · crew-12 · logged 03:25",
+        "capture": {
+          "workload": "orders",
+          "register": "R-311",
+          "capturedAt": "03:25",
+          "crew": "crew-12",
+          "disposition": "D-17"
+        },
+        "hostAuthorities": {
+          "edge-b": "tempo-core-b",
+          "app-b": "tempo-rack-b",
+          "db-b": "tempo-store-b"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-b": 0,
+          "tempo-rack-b": 0,
+          "tempo-store-b": 0
+        },
+        "advisories": [
+          "Entry orders-r109 filed 03:25 by crew-12 · register R-311 · disposition D-17 · bulletin CB-7."
+        ],
+        "hostNotes": [
+          {
+            "host": "edge-b",
+            "note": "time authority tempo-core-b · gateway keeps its own clock"
+          },
+          {
+            "host": "app-b",
+            "note": "time authority tempo-rack-b · rack clock, no shared peer in this trace"
+          },
+          {
+            "host": "db-b",
+            "note": "time authority tempo-store-b · store keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "oa-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /orders",
+            "host": "edge-b",
+            "startMs": 0,
+            "endMs": 1600,
+            "durationMs": 1600
+          },
+          {
+            "id": "oa-list",
+            "parentId": "oa-root",
+            "service": "orders",
+            "operation": "list",
+            "host": "app-b",
+            "startMs": 350,
+            "endMs": 1150,
+            "durationMs": 800
+          },
+          {
+            "id": "oa-map",
+            "parentId": "oa-list",
+            "service": "orders",
+            "operation": "map rows",
+            "host": "app-b",
+            "startMs": 500,
+            "endMs": 800,
+            "durationMs": 300
+          },
+          {
+            "id": "oa-cache",
+            "parentId": "oa-list",
+            "service": "cache",
+            "operation": "lookup",
+            "host": "db-b",
+            "startMs": 1150,
+            "endMs": 1350,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "orders-r121",
+        "title": "Orders reporting-path recheck · record orders-r121 · register R-311 · disposition D-63 · crew-07 · logged 04:15",
+        "capture": {
+          "workload": "orders",
+          "register": "R-311",
+          "capturedAt": "04:15",
+          "crew": "crew-07",
+          "disposition": "D-63"
+        },
+        "hostAuthorities": {
+          "edge-b": "tempo-core-b",
+          "app-b": "tempo-rack-b",
+          "db-b": "tempo-store-b"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-b": 0,
+          "tempo-rack-b": 0,
+          "tempo-store-b": 0
+        },
+        "advisories": [
+          "Entry orders-r121 filed 04:15 by crew-07 while re-instrumenting the cache client's reporting path · register R-311 · disposition D-63."
+        ],
+        "hostNotes": [
+          {
+            "host": "edge-b",
+            "note": "time authority tempo-core-b · gateway keeps its own clock"
+          },
+          {
+            "host": "app-b",
+            "note": "time authority tempo-rack-b · rack clock, no shared peer in this trace"
+          },
+          {
+            "host": "db-b",
+            "note": "time authority tempo-store-b · store keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "oc-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /orders",
+            "host": "edge-b",
+            "startMs": 0,
+            "endMs": 1600,
+            "durationMs": 1600
+          },
+          {
+            "id": "oc-list",
+            "parentId": "oc-root",
+            "service": "orders",
+            "operation": "list",
+            "host": "app-b",
+            "startMs": 200,
+            "endMs": 1000,
+            "durationMs": 800
+          },
+          {
+            "id": "oc-map",
+            "parentId": "oc-list",
+            "service": "orders",
+            "operation": "map rows",
+            "host": "app-b",
+            "startMs": 350,
+            "endMs": 650,
+            "durationMs": 300
+          },
+          {
+            "id": "oc-cache",
+            "parentId": "oc-list",
+            "service": "cache",
+            "operation": "lookup",
+            "host": "db-b",
+            "startMs": 750,
+            "endMs": 950,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "orders-r127",
+        "title": "Orders replay · record orders-r127 · register R-311 · disposition D-41 · crew-12 · logged 03:55",
+        "capture": {
+          "workload": "orders",
+          "register": "R-311",
+          "capturedAt": "03:55",
+          "crew": "crew-12",
+          "disposition": "D-41"
+        },
+        "hostAuthorities": {
+          "edge-b": "tempo-core-b",
+          "app-b": "tempo-rack-b",
+          "db-b": "tempo-store-b"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-b": 0,
+          "tempo-rack-b": 0,
+          "tempo-store-b": 0
+        },
+        "advisories": [
+          "Entry orders-r127 filed 03:55 by crew-12 · register R-311 · disposition D-41 · bulletin CB-7."
+        ],
+        "hostNotes": [
+          {
+            "host": "edge-b",
+            "note": "time authority tempo-core-b · gateway keeps its own clock"
+          },
+          {
+            "host": "app-b",
+            "note": "time authority tempo-rack-b · rack clock, no shared peer in this trace"
+          },
+          {
+            "host": "db-b",
+            "note": "time authority tempo-store-b · store keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "or-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /orders",
+            "host": "edge-b",
+            "startMs": 0,
+            "endMs": 1600,
+            "durationMs": 1600
+          },
+          {
+            "id": "or-list",
+            "parentId": "or-root",
+            "service": "orders",
+            "operation": "list",
+            "host": "app-b",
+            "startMs": 600,
+            "endMs": 1400,
+            "durationMs": 800
+          },
+          {
+            "id": "or-map",
+            "parentId": "or-list",
+            "service": "orders",
+            "operation": "map rows",
+            "host": "app-b",
+            "startMs": 750,
+            "endMs": 1050,
+            "durationMs": 300
+          },
+          {
+            "id": "or-cache",
+            "parentId": "or-list",
+            "service": "cache",
+            "operation": "lookup",
+            "host": "db-b",
+            "startMs": 1150,
+            "endMs": 1350,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "search-aligned",
+        "title": "Search aligned cross-host control · register R-207 · crew-04 · logged 02:40",
+        "capture": {
+          "workload": "search",
+          "register": "R-207",
+          "capturedAt": "02:40",
+          "crew": "crew-04"
+        },
+        "hostAuthorities": {
+          "edge-a": "tempo-core-a",
+          "cdn-a": "tempo-cdn-a"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-a": 0,
+          "tempo-cdn-a": 0
+        },
+        "advisories": [],
+        "hostNotes": [
+          {
+            "host": "edge-a",
+            "note": "time authority tempo-core-a · gateway keeps its own clock"
+          },
+          {
+            "host": "cdn-a",
+            "note": "time authority tempo-cdn-a · edge cache keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "s-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /search",
+            "host": "edge-a",
+            "startMs": 0,
+            "endMs": 1800,
+            "durationMs": 1800
+          },
+          {
+            "id": "s-asset",
+            "parentId": "s-root",
+            "service": "cdn",
+            "operation": "fetch assets",
+            "host": "cdn-a",
+            "startMs": 300,
+            "endMs": 800,
+            "durationMs": 500
+          },
+          {
+            "id": "s-thumb",
+            "parentId": "s-asset",
+            "service": "cdn",
+            "operation": "resize thumbnails",
+            "host": "cdn-a",
+            "startMs": 450,
+            "endMs": 650,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "search-r152",
+        "title": "Search control replay · record search-r152 · register R-311 · crew-26 · logged 04:05",
+        "capture": {
+          "workload": "search",
+          "register": "R-311",
+          "capturedAt": "04:05",
+          "crew": "crew-26"
+        },
+        "hostAuthorities": {
+          "edge-a": "tempo-core-a",
+          "cdn-a": "tempo-cdn-a"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-core-a": 0,
+          "tempo-cdn-a": 0
+        },
+        "advisories": [
+          "Entry search-r152 filed 04:05 by crew-26 · register R-311 · control replay of the search workload."
+        ],
+        "hostNotes": [
+          {
+            "host": "edge-a",
+            "note": "time authority tempo-core-a · gateway keeps its own clock"
+          },
+          {
+            "host": "cdn-a",
+            "note": "time authority tempo-cdn-a · edge cache keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "sr-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /search",
+            "host": "edge-a",
+            "startMs": 0,
+            "endMs": 1800,
+            "durationMs": 1800
+          },
+          {
+            "id": "sr-asset",
+            "parentId": "sr-root",
+            "service": "cdn",
+            "operation": "fetch assets",
+            "host": "cdn-a",
+            "startMs": 300,
+            "endMs": 800,
+            "durationMs": 500
+          },
+          {
+            "id": "sr-thumb",
+            "parentId": "sr-asset",
+            "service": "cdn",
+            "operation": "resize thumbnails",
+            "host": "cdn-a",
+            "startMs": 450,
+            "endMs": 650,
+            "durationMs": 200
+          }
+        ]
+      },
+      {
+        "id": "edge-instrumentation",
+        "title": "Shared-clock flagged control · register R-207 · crew-07 · logged 02:50",
+        "capture": {
+          "workload": "health",
+          "register": "R-207",
+          "capturedAt": "02:50",
+          "crew": "crew-07"
+        },
+        "hostAuthorities": {
+          "edge-c": "tempo-edge-c",
+          "side-c": "tempo-edge-c",
+          "db-c": "tempo-store-c"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-edge-c": 0,
+          "tempo-store-c": 0
+        },
+        "advisories": [
+          "side-c reports through the same time authority as edge-c; crew-07 tracks its proxy handshake outside the parent as a sensor-path artefact, not clock skew."
+        ],
+        "hostNotes": [
+          {
+            "host": "edge-c",
+            "note": "time authority tempo-edge-c · shares the edge clock with side-c"
+          },
+          {
+            "host": "side-c",
+            "note": "time authority tempo-edge-c · shares the edge clock with edge-c"
+          },
+          {
+            "host": "db-c",
+            "note": "time authority tempo-store-c · store keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "i-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /health",
+            "host": "edge-c",
+            "startMs": 0,
+            "endMs": 1200,
+            "durationMs": 1200
+          },
+          {
+            "id": "i-middleware",
+            "parentId": "i-root",
+            "service": "gateway",
+            "operation": "middleware",
+            "host": "edge-c",
+            "startMs": -100,
+            "endMs": 300,
+            "durationMs": 400
+          },
+          {
+            "id": "i-agent",
+            "parentId": "i-root",
+            "service": "mesh",
+            "operation": "proxy handshake",
+            "host": "side-c",
+            "startMs": 900,
+            "endMs": 1400,
+            "durationMs": 500
+          },
+          {
+            "id": "i-read",
+            "parentId": "i-root",
+            "service": "store",
+            "operation": "read",
+            "host": "db-c",
+            "startMs": 500,
+            "endMs": 800,
+            "durationMs": 300
+          }
+        ]
+      },
+      {
+        "id": "edge-r149",
+        "title": "Flagged control replay · record edge-r149 · register R-311 · crew-07 · logged 04:10",
+        "capture": {
+          "workload": "health",
+          "register": "R-311",
+          "capturedAt": "04:10",
+          "crew": "crew-07"
+        },
+        "hostAuthorities": {
+          "edge-c": "tempo-edge-c",
+          "side-c": "tempo-edge-c",
+          "db-c": "tempo-store-c"
+        },
+        "expectedAuthorityShifts": {
+          "tempo-edge-c": 0,
+          "tempo-store-c": 0
+        },
+        "advisories": [
+          "side-c reports through the same time authority as edge-c; crew-07 tracks its proxy handshake outside the parent as a sensor-path artefact, not clock skew.",
+          "Entry edge-r149 filed 04:10 by crew-07 while re-checking the flagged proxy-handshake boundary · register R-311."
+        ],
+        "hostNotes": [
+          {
+            "host": "edge-c",
+            "note": "time authority tempo-edge-c · shares the edge clock with side-c"
+          },
+          {
+            "host": "side-c",
+            "note": "time authority tempo-edge-c · shares the edge clock with edge-c"
+          },
+          {
+            "host": "db-c",
+            "note": "time authority tempo-store-c · store keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "ir-root",
+            "parentId": null,
+            "service": "gateway",
+            "operation": "GET /health",
+            "host": "edge-c",
+            "startMs": 0,
+            "endMs": 1200,
+            "durationMs": 1200
+          },
+          {
+            "id": "ir-middleware",
+            "parentId": "ir-root",
+            "service": "gateway",
+            "operation": "middleware",
+            "host": "edge-c",
+            "startMs": -100,
+            "endMs": 300,
+            "durationMs": 400
+          },
+          {
+            "id": "ir-agent",
+            "parentId": "ir-root",
+            "service": "mesh",
+            "operation": "proxy handshake",
+            "host": "side-c",
+            "startMs": 900,
+            "endMs": 1400,
+            "durationMs": 500
+          },
+          {
+            "id": "ir-read",
+            "parentId": "ir-root",
+            "service": "store",
+            "operation": "read",
+            "host": "db-c",
+            "startMs": 500,
+            "endMs": 800,
+            "durationMs": 300
+          }
+        ]
+      }
+    ]
+  },
+  "hidden": {
+    "label": "Regional trace certification",
+    "maxAdjustmentMs": 1500,
+    "transition": {
+      "at": "05:30",
+      "label": "scheduled clock-maintenance transition",
+      "bulletin": "CB-12"
+    },
+    "traces": [
+      {
+        "id": "invoice-late",
+        "title": "Invoice pod clock trails ingress · register R-207 · crew-04 · logged 04:50",
+        "capture": {
+          "workload": "invoice",
+          "register": "R-207",
+          "capturedAt": "04:50",
+          "crew": "crew-04"
+        },
+        "hostAuthorities": {
+          "front-x": "ptp-edge-x",
+          "worker-x": "ptp-pod-x",
+          "sql-x": "ptp-pod-x",
+          "log-x": "ptp-log-x"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-x": 0,
+          "ptp-pod-x": -500,
+          "ptp-log-x": 0
+        },
+        "advisories": [],
+        "hostNotes": [
+          {
+            "host": "front-x",
+            "note": "time authority ptp-edge-x · ingress keeps its own clock"
+          },
+          {
+            "host": "worker-x",
+            "note": "time authority ptp-pod-x · shares the pod clock with sql-x"
+          },
+          {
+            "host": "sql-x",
+            "note": "time authority ptp-pod-x · shares the pod clock with worker-x"
+          },
+          {
+            "host": "log-x",
+            "note": "time authority ptp-log-x · audit sink keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "h1-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "POST /invoice",
+            "host": "front-x",
+            "startMs": 100,
+            "endMs": 1800,
+            "durationMs": 1700
+          },
+          {
+            "id": "h1-build",
+            "parentId": "h1-root",
+            "service": "invoice",
+            "operation": "build",
+            "host": "worker-x",
+            "startMs": 900,
+            "endMs": 1850,
+            "durationMs": 950
+          },
+          {
+            "id": "h1-tax",
+            "parentId": "h1-build",
+            "service": "invoice",
+            "operation": "tax",
+            "host": "worker-x",
+            "startMs": 1000,
+            "endMs": 1250,
+            "durationMs": 250
+          },
+          {
+            "id": "h1-write",
+            "parentId": "h1-build",
+            "service": "database",
+            "operation": "insert",
+            "host": "sql-x",
+            "startMs": 1100,
+            "endMs": 1400,
+            "durationMs": 300
+          },
+          {
+            "id": "h1-audit",
+            "parentId": "h1-build",
+            "service": "audit",
+            "operation": "append entry",
+            "host": "log-x",
+            "startMs": 700,
+            "endMs": 840,
+            "durationMs": 140
+          }
+        ]
+      },
+      {
+        "id": "feed-early",
+        "title": "Feed cache read outside its request · register R-207 · crew-04 · logged 05:05",
+        "capture": {
+          "workload": "feed",
+          "register": "R-207",
+          "capturedAt": "05:05",
+          "crew": "crew-04"
+        },
+        "hostAuthorities": {
+          "front-y": "ptp-edge-y",
+          "worker-y": "ptp-pod-y",
+          "cache-y": "ptp-cache-y"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-y": 0,
+          "ptp-pod-y": -320,
+          "ptp-cache-y": 0
+        },
+        "advisories": [],
+        "hostNotes": [
+          {
+            "host": "front-y",
+            "note": "time authority ptp-edge-y · ingress keeps its own clock"
+          },
+          {
+            "host": "worker-y",
+            "note": "time authority ptp-pod-y · pod clock, no shared peer in this trace"
+          },
+          {
+            "host": "cache-y",
+            "note": "time authority ptp-cache-y · cache tier keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "h2-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /feed",
+            "host": "front-y",
+            "startMs": 0,
+            "endMs": 1500,
+            "durationMs": 1500
+          },
+          {
+            "id": "h2-load",
+            "parentId": "h2-root",
+            "service": "feed",
+            "operation": "load",
+            "host": "worker-y",
+            "startMs": 620,
+            "endMs": 1420,
+            "durationMs": 800
+          },
+          {
+            "id": "h2-shape",
+            "parentId": "h2-load",
+            "service": "feed",
+            "operation": "shape",
+            "host": "worker-y",
+            "startMs": 950,
+            "endMs": 1230,
+            "durationMs": 280
+          },
+          {
+            "id": "h2-cache",
+            "parentId": "h2-load",
+            "service": "cache",
+            "operation": "get",
+            "host": "cache-y",
+            "startMs": 380,
+            "endMs": 560,
+            "durationMs": 180
+          }
+        ]
+      },
+      {
+        "id": "invoice-r217",
+        "title": "Invoice replay · record invoice-r217 · register R-311 · disposition D-17 · crew-12 · logged 05:52",
+        "capture": {
+          "workload": "invoice",
+          "register": "R-311",
+          "capturedAt": "05:52",
+          "crew": "crew-12",
+          "disposition": "D-17"
+        },
+        "hostAuthorities": {
+          "front-x": "ptp-edge-x",
+          "worker-x": "ptp-pod-x",
+          "sql-x": "ptp-pod-x",
+          "log-x": "ptp-log-x"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-x": 0,
+          "ptp-pod-x": 0,
+          "ptp-log-x": 0
+        },
+        "advisories": [
+          "Entry invoice-r217 filed 05:52 by crew-12 · register R-311 · disposition D-17 · bulletin CB-12."
+        ],
+        "hostNotes": [
+          {
+            "host": "front-x",
+            "note": "time authority ptp-edge-x · ingress keeps its own clock"
+          },
+          {
+            "host": "worker-x",
+            "note": "time authority ptp-pod-x · shares the pod clock with sql-x"
+          },
+          {
+            "host": "sql-x",
+            "note": "time authority ptp-pod-x · shares the pod clock with worker-x"
+          },
+          {
+            "host": "log-x",
+            "note": "time authority ptp-log-x · audit sink keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "ia-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "POST /invoice",
+            "host": "front-x",
+            "startMs": 100,
+            "endMs": 1800,
+            "durationMs": 1700
+          },
+          {
+            "id": "ia-build",
+            "parentId": "ia-root",
+            "service": "invoice",
+            "operation": "build",
+            "host": "worker-x",
+            "startMs": 680,
+            "endMs": 1630,
+            "durationMs": 950
+          },
+          {
+            "id": "ia-tax",
+            "parentId": "ia-build",
+            "service": "invoice",
+            "operation": "tax",
+            "host": "worker-x",
+            "startMs": 780,
+            "endMs": 1030,
+            "durationMs": 250
+          },
+          {
+            "id": "ia-write",
+            "parentId": "ia-build",
+            "service": "database",
+            "operation": "insert",
+            "host": "sql-x",
+            "startMs": 880,
+            "endMs": 1180,
+            "durationMs": 300
+          },
+          {
+            "id": "ia-audit",
+            "parentId": "ia-build",
+            "service": "audit",
+            "operation": "append entry",
+            "host": "log-x",
+            "startMs": 700,
+            "endMs": 840,
+            "durationMs": 140
+          }
+        ]
+      },
+      {
+        "id": "invoice-r204",
+        "title": "Invoice replay · record invoice-r204 · register R-311 · disposition D-41 · crew-12 · logged 05:45",
+        "capture": {
+          "workload": "invoice",
+          "register": "R-311",
+          "capturedAt": "05:45",
+          "crew": "crew-12",
+          "disposition": "D-41"
+        },
+        "hostAuthorities": {
+          "front-x": "ptp-edge-x",
+          "worker-x": "ptp-pod-x",
+          "sql-x": "ptp-pod-x",
+          "log-x": "ptp-log-x"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-x": 0,
+          "ptp-pod-x": 0,
+          "ptp-log-x": 0
+        },
+        "advisories": [
+          "Entry invoice-r204 filed 05:45 by crew-12 · register R-311 · disposition D-41 · bulletin CB-12."
+        ],
+        "hostNotes": [
+          {
+            "host": "front-x",
+            "note": "time authority ptp-edge-x · ingress keeps its own clock"
+          },
+          {
+            "host": "worker-x",
+            "note": "time authority ptp-pod-x · shares the pod clock with sql-x"
+          },
+          {
+            "host": "sql-x",
+            "note": "time authority ptp-pod-x · shares the pod clock with worker-x"
+          },
+          {
+            "host": "log-x",
+            "note": "time authority ptp-log-x · audit sink keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "ic-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "POST /invoice",
+            "host": "front-x",
+            "startMs": 100,
+            "endMs": 1800,
+            "durationMs": 1700
+          },
+          {
+            "id": "ic-build",
+            "parentId": "ic-root",
+            "service": "invoice",
+            "operation": "build",
+            "host": "worker-x",
+            "startMs": 400,
+            "endMs": 1350,
+            "durationMs": 950
+          },
+          {
+            "id": "ic-tax",
+            "parentId": "ic-build",
+            "service": "invoice",
+            "operation": "tax",
+            "host": "worker-x",
+            "startMs": 500,
+            "endMs": 750,
+            "durationMs": 250
+          },
+          {
+            "id": "ic-write",
+            "parentId": "ic-build",
+            "service": "database",
+            "operation": "insert",
+            "host": "sql-x",
+            "startMs": 600,
+            "endMs": 900,
+            "durationMs": 300
+          },
+          {
+            "id": "ic-audit",
+            "parentId": "ic-build",
+            "service": "audit",
+            "operation": "append entry",
+            "host": "log-x",
+            "startMs": 700,
+            "endMs": 840,
+            "durationMs": 140
+          }
+        ]
+      },
+      {
+        "id": "invoice-r209",
+        "title": "Invoice reporting-path recheck · record invoice-r209 · register R-311 · disposition D-63 · crew-07 · logged 05:47",
+        "capture": {
+          "workload": "invoice",
+          "register": "R-311",
+          "capturedAt": "05:47",
+          "crew": "crew-07",
+          "disposition": "D-63"
+        },
+        "hostAuthorities": {
+          "front-x": "ptp-edge-x",
+          "worker-x": "ptp-pod-x",
+          "sql-x": "ptp-pod-x",
+          "log-x": "ptp-log-x"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-x": 0,
+          "ptp-pod-x": 0,
+          "ptp-log-x": 0
+        },
+        "advisories": [
+          "Entry invoice-r209 filed 05:47 by crew-07 while re-instrumenting the audit sink's reporting path · register R-311 · disposition D-63."
+        ],
+        "hostNotes": [
+          {
+            "host": "front-x",
+            "note": "time authority ptp-edge-x · ingress keeps its own clock"
+          },
+          {
+            "host": "worker-x",
+            "note": "time authority ptp-pod-x · shares the pod clock with sql-x"
+          },
+          {
+            "host": "sql-x",
+            "note": "time authority ptp-pod-x · shares the pod clock with worker-x"
+          },
+          {
+            "host": "log-x",
+            "note": "time authority ptp-log-x · audit sink keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "iv-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "POST /invoice",
+            "host": "front-x",
+            "startMs": 100,
+            "endMs": 1800,
+            "durationMs": 1700
+          },
+          {
+            "id": "iv-build",
+            "parentId": "iv-root",
+            "service": "invoice",
+            "operation": "build",
+            "host": "worker-x",
+            "startMs": 400,
+            "endMs": 1350,
+            "durationMs": 950
+          },
+          {
+            "id": "iv-tax",
+            "parentId": "iv-build",
+            "service": "invoice",
+            "operation": "tax",
+            "host": "worker-x",
+            "startMs": 500,
+            "endMs": 750,
+            "durationMs": 250
+          },
+          {
+            "id": "iv-write",
+            "parentId": "iv-build",
+            "service": "database",
+            "operation": "insert",
+            "host": "sql-x",
+            "startMs": 600,
+            "endMs": 900,
+            "durationMs": 300
+          },
+          {
+            "id": "iv-audit",
+            "parentId": "iv-build",
+            "service": "audit",
+            "operation": "append entry",
+            "host": "log-x",
+            "startMs": 820,
+            "endMs": 960,
+            "durationMs": 140
+          }
+        ]
+      },
+      {
+        "id": "invoice-r212",
+        "title": "Invoice replay · record invoice-r212 · register R-311 · disposition D-41 · crew-26 · logged 05:49",
+        "capture": {
+          "workload": "invoice",
+          "register": "R-311",
+          "capturedAt": "05:49",
+          "crew": "crew-26",
+          "disposition": "D-41"
+        },
+        "hostAuthorities": {
+          "front-x": "ptp-edge-x",
+          "worker-x": "ptp-pod-x",
+          "sql-x": "ptp-pod-x",
+          "log-x": "ptp-log-x"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-x": 0,
+          "ptp-pod-x": 0,
+          "ptp-log-x": 0
+        },
+        "advisories": [
+          "Entry invoice-r212 filed 05:49 by crew-26 · register R-311 · disposition D-41 · regional audit series."
+        ],
+        "hostNotes": [
+          {
+            "host": "front-x",
+            "note": "time authority ptp-edge-x · ingress keeps its own clock"
+          },
+          {
+            "host": "worker-x",
+            "note": "time authority ptp-pod-x · shares the pod clock with sql-x"
+          },
+          {
+            "host": "sql-x",
+            "note": "time authority ptp-pod-x · shares the pod clock with worker-x"
+          },
+          {
+            "host": "log-x",
+            "note": "time authority ptp-log-x · audit sink keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "iw-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "POST /invoice",
+            "host": "front-x",
+            "startMs": 100,
+            "endMs": 1800,
+            "durationMs": 1700
+          },
+          {
+            "id": "iw-build",
+            "parentId": "iw-root",
+            "service": "invoice",
+            "operation": "build",
+            "host": "worker-x",
+            "startMs": 250,
+            "endMs": 1200,
+            "durationMs": 950
+          },
+          {
+            "id": "iw-tax",
+            "parentId": "iw-build",
+            "service": "invoice",
+            "operation": "tax",
+            "host": "worker-x",
+            "startMs": 350,
+            "endMs": 600,
+            "durationMs": 250
+          },
+          {
+            "id": "iw-write",
+            "parentId": "iw-build",
+            "service": "database",
+            "operation": "insert",
+            "host": "sql-x",
+            "startMs": 450,
+            "endMs": 750,
+            "durationMs": 300
+          },
+          {
+            "id": "iw-audit",
+            "parentId": "iw-build",
+            "service": "audit",
+            "operation": "append entry",
+            "host": "log-x",
+            "startMs": 700,
+            "endMs": 840,
+            "durationMs": 140
+          }
+        ]
+      },
+      {
+        "id": "feed-r175",
+        "title": "Feed reporting-path recheck · record feed-r175 · register R-311 · disposition D-63 · crew-07 · logged 05:47",
+        "capture": {
+          "workload": "feed",
+          "register": "R-311",
+          "capturedAt": "05:47",
+          "crew": "crew-07",
+          "disposition": "D-63"
+        },
+        "hostAuthorities": {
+          "front-y": "ptp-edge-y",
+          "worker-y": "ptp-pod-y",
+          "cache-y": "ptp-cache-y"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-y": 0,
+          "ptp-pod-y": 0,
+          "ptp-cache-y": 0
+        },
+        "advisories": [
+          "Entry feed-r175 filed 05:47 by crew-07 while re-instrumenting the cache tier's reporting path · register R-311 · disposition D-63."
+        ],
+        "hostNotes": [
+          {
+            "host": "front-y",
+            "note": "time authority ptp-edge-y · ingress keeps its own clock"
+          },
+          {
+            "host": "worker-y",
+            "note": "time authority ptp-pod-y · pod clock, no shared peer in this trace"
+          },
+          {
+            "host": "cache-y",
+            "note": "time authority ptp-cache-y · cache tier keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "fv-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /feed",
+            "host": "front-y",
+            "startMs": 0,
+            "endMs": 1500,
+            "durationMs": 1500
+          },
+          {
+            "id": "fv-load",
+            "parentId": "fv-root",
+            "service": "feed",
+            "operation": "load",
+            "host": "worker-y",
+            "startMs": 620,
+            "endMs": 1420,
+            "durationMs": 800
+          },
+          {
+            "id": "fv-shape",
+            "parentId": "fv-load",
+            "service": "feed",
+            "operation": "shape",
+            "host": "worker-y",
+            "startMs": 950,
+            "endMs": 1230,
+            "durationMs": 280
+          },
+          {
+            "id": "fv-cache",
+            "parentId": "fv-load",
+            "service": "cache",
+            "operation": "get",
+            "host": "cache-y",
+            "startMs": 640,
+            "endMs": 820,
+            "durationMs": 180
+          }
+        ]
+      },
+      {
+        "id": "feed-r181",
+        "title": "Feed replay · record feed-r181 · register R-311 · disposition D-17 · crew-08 · logged 05:36",
+        "capture": {
+          "workload": "feed",
+          "register": "R-311",
+          "capturedAt": "05:36",
+          "crew": "crew-08",
+          "disposition": "D-17"
+        },
+        "hostAuthorities": {
+          "front-y": "ptp-edge-y",
+          "worker-y": "ptp-pod-y",
+          "cache-y": "ptp-cache-y"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-y": 0,
+          "ptp-pod-y": 0,
+          "ptp-cache-y": 0
+        },
+        "advisories": [
+          "Entry feed-r181 filed 05:36 by crew-08 · register R-311 · disposition D-17 · regional audit series."
+        ],
+        "hostNotes": [
+          {
+            "host": "front-y",
+            "note": "time authority ptp-edge-y · ingress keeps its own clock"
+          },
+          {
+            "host": "worker-y",
+            "note": "time authority ptp-pod-y · pod clock, no shared peer in this trace"
+          },
+          {
+            "host": "cache-y",
+            "note": "time authority ptp-cache-y · cache tier keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "fa-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /feed",
+            "host": "front-y",
+            "startMs": 0,
+            "endMs": 1500,
+            "durationMs": 1500
+          },
+          {
+            "id": "fa-load",
+            "parentId": "fa-root",
+            "service": "feed",
+            "operation": "load",
+            "host": "worker-y",
+            "startMs": 500,
+            "endMs": 1300,
+            "durationMs": 800
+          },
+          {
+            "id": "fa-shape",
+            "parentId": "fa-load",
+            "service": "feed",
+            "operation": "shape",
+            "host": "worker-y",
+            "startMs": 830,
+            "endMs": 1110,
+            "durationMs": 280
+          },
+          {
+            "id": "fa-cache",
+            "parentId": "fa-load",
+            "service": "cache",
+            "operation": "get",
+            "host": "cache-y",
+            "startMs": 380,
+            "endMs": 560,
+            "durationMs": 180
+          }
+        ]
+      },
+      {
+        "id": "feed-r188",
+        "title": "Feed replay · record feed-r188 · register R-311 · disposition D-41 · crew-12 · logged 05:58",
+        "capture": {
+          "workload": "feed",
+          "register": "R-311",
+          "capturedAt": "05:58",
+          "crew": "crew-12",
+          "disposition": "D-41"
+        },
+        "hostAuthorities": {
+          "front-y": "ptp-edge-y",
+          "worker-y": "ptp-pod-y",
+          "cache-y": "ptp-cache-y"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-y": 0,
+          "ptp-pod-y": 0,
+          "ptp-cache-y": 0
+        },
+        "advisories": [
+          "Entry feed-r188 filed 05:58 by crew-12 · register R-311 · disposition D-41 · bulletin CB-12."
+        ],
+        "hostNotes": [
+          {
+            "host": "front-y",
+            "note": "time authority ptp-edge-y · ingress keeps its own clock"
+          },
+          {
+            "host": "worker-y",
+            "note": "time authority ptp-pod-y · pod clock, no shared peer in this trace"
+          },
+          {
+            "host": "cache-y",
+            "note": "time authority ptp-cache-y · cache tier keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "fc-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /feed",
+            "host": "front-y",
+            "startMs": 0,
+            "endMs": 1500,
+            "durationMs": 1500
+          },
+          {
+            "id": "fc-load",
+            "parentId": "fc-root",
+            "service": "feed",
+            "operation": "load",
+            "host": "worker-y",
+            "startMs": 300,
+            "endMs": 1100,
+            "durationMs": 800
+          },
+          {
+            "id": "fc-shape",
+            "parentId": "fc-load",
+            "service": "feed",
+            "operation": "shape",
+            "host": "worker-y",
+            "startMs": 630,
+            "endMs": 910,
+            "durationMs": 280
+          },
+          {
+            "id": "fc-cache",
+            "parentId": "fc-load",
+            "service": "cache",
+            "operation": "get",
+            "host": "cache-y",
+            "startMs": 380,
+            "endMs": 560,
+            "durationMs": 180
+          }
+        ]
+      },
+      {
+        "id": "feed-r196",
+        "title": "Feed replay · record feed-r196 · register R-311 · disposition D-41 · crew-08 · logged 05:41",
+        "capture": {
+          "workload": "feed",
+          "register": "R-311",
+          "capturedAt": "05:41",
+          "crew": "crew-08",
+          "disposition": "D-41"
+        },
+        "hostAuthorities": {
+          "front-y": "ptp-edge-y",
+          "worker-y": "ptp-pod-y",
+          "cache-y": "ptp-cache-y"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-y": 0,
+          "ptp-pod-y": 0,
+          "ptp-cache-y": 0
+        },
+        "advisories": [
+          "Entry feed-r196 filed 05:41 by crew-08 · register R-311 · disposition D-41 · regional audit series."
+        ],
+        "hostNotes": [
+          {
+            "host": "front-y",
+            "note": "time authority ptp-edge-y · ingress keeps its own clock"
+          },
+          {
+            "host": "worker-y",
+            "note": "time authority ptp-pod-y · pod clock, no shared peer in this trace"
+          },
+          {
+            "host": "cache-y",
+            "note": "time authority ptp-cache-y · cache tier keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "fw-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /feed",
+            "host": "front-y",
+            "startMs": 0,
+            "endMs": 1500,
+            "durationMs": 1500
+          },
+          {
+            "id": "fw-load",
+            "parentId": "fw-root",
+            "service": "feed",
+            "operation": "load",
+            "host": "worker-y",
+            "startMs": 200,
+            "endMs": 1000,
+            "durationMs": 800
+          },
+          {
+            "id": "fw-shape",
+            "parentId": "fw-load",
+            "service": "feed",
+            "operation": "shape",
+            "host": "worker-y",
+            "startMs": 530,
+            "endMs": 810,
+            "durationMs": 280
+          },
+          {
+            "id": "fw-cache",
+            "parentId": "fw-load",
+            "service": "cache",
+            "operation": "get",
+            "host": "cache-y",
+            "startMs": 380,
+            "endMs": 560,
+            "durationMs": 180
+          }
+        ]
+      },
+      {
+        "id": "profile-aligned",
+        "title": "Profile aligned cross-host control · register R-207 · crew-04 · logged 05:15",
+        "capture": {
+          "workload": "profile",
+          "register": "R-207",
+          "capturedAt": "05:15",
+          "crew": "crew-04"
+        },
+        "hostAuthorities": {
+          "front-x": "ptp-edge-x",
+          "api-x": "ptp-api-x"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-x": 0,
+          "ptp-api-x": 0
+        },
+        "advisories": [],
+        "hostNotes": [
+          {
+            "host": "front-x",
+            "note": "time authority ptp-edge-x · ingress keeps its own clock"
+          },
+          {
+            "host": "api-x",
+            "note": "time authority ptp-api-x · api tier keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "h3-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /profile",
+            "host": "front-x",
+            "startMs": 0,
+            "endMs": 1300,
+            "durationMs": 1300
+          },
+          {
+            "id": "h3-read",
+            "parentId": "h3-root",
+            "service": "profile",
+            "operation": "read",
+            "host": "api-x",
+            "startMs": 240,
+            "endMs": 740,
+            "durationMs": 500
+          },
+          {
+            "id": "h3-map",
+            "parentId": "h3-read",
+            "service": "profile",
+            "operation": "map fields",
+            "host": "api-x",
+            "startMs": 360,
+            "endMs": 520,
+            "durationMs": 160
+          }
+        ]
+      },
+      {
+        "id": "profile-r233",
+        "title": "Profile control replay · record profile-r233 · register R-311 · crew-08 · logged 05:50",
+        "capture": {
+          "workload": "profile",
+          "register": "R-311",
+          "capturedAt": "05:50",
+          "crew": "crew-08"
+        },
+        "hostAuthorities": {
+          "front-x": "ptp-edge-x",
+          "api-x": "ptp-api-x"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-edge-x": 0,
+          "ptp-api-x": 0
+        },
+        "advisories": [
+          "Entry profile-r233 filed 05:50 by crew-08 · register R-311 · control replay of the profile workload."
+        ],
+        "hostNotes": [
+          {
+            "host": "front-x",
+            "note": "time authority ptp-edge-x · ingress keeps its own clock"
+          },
+          {
+            "host": "api-x",
+            "note": "time authority ptp-api-x · api tier keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "hr3-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /profile",
+            "host": "front-x",
+            "startMs": 0,
+            "endMs": 1300,
+            "durationMs": 1300
+          },
+          {
+            "id": "hr3-read",
+            "parentId": "hr3-root",
+            "service": "profile",
+            "operation": "read",
+            "host": "api-x",
+            "startMs": 240,
+            "endMs": 740,
+            "durationMs": 500
+          },
+          {
+            "id": "hr3-map",
+            "parentId": "hr3-read",
+            "service": "profile",
+            "operation": "map fields",
+            "host": "api-x",
+            "startMs": 360,
+            "endMs": 520,
+            "durationMs": 160
+          }
+        ]
+      },
+      {
+        "id": "front-annotation",
+        "title": "Shared-clock flagged control · register R-207 · crew-07 · logged 05:20",
+        "capture": {
+          "workload": "ready",
+          "register": "R-207",
+          "capturedAt": "05:20",
+          "crew": "crew-07"
+        },
+        "hostAuthorities": {
+          "front-z": "ptp-front-z",
+          "mesh-z": "ptp-front-z",
+          "sql-z": "ptp-sql-z"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-front-z": 0,
+          "ptp-sql-z": 0
+        },
+        "advisories": [
+          "mesh-z reports through the same time authority as front-z; crew-07 tracks its header-injection span outside the parent as a sensor-path artefact, not clock skew."
+        ],
+        "hostNotes": [
+          {
+            "host": "front-z",
+            "note": "time authority ptp-front-z · shares the node clock with mesh-z"
+          },
+          {
+            "host": "mesh-z",
+            "note": "time authority ptp-front-z · shares the node clock with front-z"
+          },
+          {
+            "host": "sql-z",
+            "note": "time authority ptp-sql-z · database keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "h4-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /ready",
+            "host": "front-z",
+            "startMs": 0,
+            "endMs": 1000,
+            "durationMs": 1000
+          },
+          {
+            "id": "h4-hook",
+            "parentId": "h4-root",
+            "service": "ingress",
+            "operation": "request hook",
+            "host": "front-z",
+            "startMs": -80,
+            "endMs": 160,
+            "durationMs": 240
+          },
+          {
+            "id": "h4-probe",
+            "parentId": "h4-root",
+            "service": "mesh",
+            "operation": "inject headers",
+            "host": "mesh-z",
+            "startMs": -60,
+            "endMs": 180,
+            "durationMs": 240
+          },
+          {
+            "id": "h4-db",
+            "parentId": "h4-root",
+            "service": "database",
+            "operation": "ping",
+            "host": "sql-z",
+            "startMs": 390,
+            "endMs": 570,
+            "durationMs": 180
+          }
+        ]
+      },
+      {
+        "id": "front-annotation-r241",
+        "title": "Flagged control replay · record front-annotation-r241 · register R-311 · crew-07 · logged 05:56",
+        "capture": {
+          "workload": "ready",
+          "register": "R-311",
+          "capturedAt": "05:56",
+          "crew": "crew-07"
+        },
+        "hostAuthorities": {
+          "front-z": "ptp-front-z",
+          "mesh-z": "ptp-front-z",
+          "sql-z": "ptp-sql-z"
+        },
+        "expectedAuthorityShifts": {
+          "ptp-front-z": 0,
+          "ptp-sql-z": 0
+        },
+        "advisories": [
+          "mesh-z reports through the same time authority as front-z; crew-07 tracks its header-injection span outside the parent as a sensor-path artefact, not clock skew.",
+          "Entry front-annotation-r241 filed 05:56 by crew-07 while re-checking the flagged header-injection boundary · register R-311."
+        ],
+        "hostNotes": [
+          {
+            "host": "front-z",
+            "note": "time authority ptp-front-z · shares the node clock with mesh-z"
+          },
+          {
+            "host": "mesh-z",
+            "note": "time authority ptp-front-z · shares the node clock with front-z"
+          },
+          {
+            "host": "sql-z",
+            "note": "time authority ptp-sql-z · database keeps its own clock"
+          }
+        ],
+        "spans": [
+          {
+            "id": "hr4-root",
+            "parentId": null,
+            "service": "ingress",
+            "operation": "GET /ready",
+            "host": "front-z",
+            "startMs": 0,
+            "endMs": 1000,
+            "durationMs": 1000
+          },
+          {
+            "id": "hr4-hook",
+            "parentId": "hr4-root",
+            "service": "ingress",
+            "operation": "request hook",
+            "host": "front-z",
+            "startMs": -80,
+            "endMs": 160,
+            "durationMs": 240
+          },
+          {
+            "id": "hr4-probe",
+            "parentId": "hr4-root",
+            "service": "mesh",
+            "operation": "inject headers",
+            "host": "mesh-z",
+            "startMs": -60,
+            "endMs": 180,
+            "durationMs": 240
+          },
+          {
+            "id": "hr4-db",
+            "parentId": "hr4-root",
+            "service": "database",
+            "operation": "ping",
+            "host": "sql-z",
+            "startMs": 390,
+            "endMs": 570,
+            "durationMs": 180
+          }
+        ]
+      }
+    ]
+  }
+}

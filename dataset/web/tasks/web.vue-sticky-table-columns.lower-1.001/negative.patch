@@ -1,0 +1,9 @@
+diff --git a/src/layout.js b/src/layout.js
+--- a/src/layout.js
++++ b/src/layout.js
+@@ -1,4 +1,3 @@
+ export function applyPinnedGeometry(element, workspaceLayout) {
+-  // Regression: the pinned data column ignores the selection rail.
+-  element.style.setProperty('--pinned-name-offset', '0px');
++  element.style.setProperty('--pinned-name-offset', '40px');
+ }

@@ -1,0 +1,33 @@
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,9 @@
+ import {severityAdapters} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
++  // Decode the representation actually delivered to this workbench. Relayed
++  // records keep their producers' own severities even inside an OTLP envelope.
++  const format = receiver.source.format === 'syslog' ? 'syslog' : receiver.output.format;
+   const decode = severityAdapters[format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }
+--- a/src/pipeline/severityAdapters.js
++++ b/src/pipeline/severityAdapters.js
+@@ -14,4 +14,16 @@
+   if (typeof body === 'string') {try {body=JSON.parse(body);} catch {body={};}}
+   return fromText(body?.level);
+ }
+-export const severityAdapters = {otlp:fromOtel,json:fromJson};
++// The relay forwards two producer fleets and preserves each producer's own
++// severities. Delivered numbers are producer-internal scales (the gateway's raw
++// syslog PRI, each forwarder agent version's level codes), never OTel ranks, and
++// keywords resolve per producer: the forwarder fleet's "alert" is its warning
++// tier (between error and info on both agents' own scales), while the gateway
++// daemon's "alert" is RFC 5424 severity 1. Unknown site tokens stay unspecified.
++export function fromSyslog(record) {
++  const forwarded = /\bagent\/[^\s:]+: level=/.test(String(record.body ?? ''));
++  const vocabulary = forwarded ? {ALERT:'WARN', VERBOSE:'DEBUG'} : {ALERT:'FATAL'};
++  const keyword = String(record.severityText ?? '').trim().toUpperCase();
++  return fromText(vocabulary[keyword] ?? keyword);
++}
++export const severityAdapters = {otlp:fromOtel,json:fromJson,syslog:fromSyslog};

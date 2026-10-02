@@ -1,0 +1,36 @@
+--- a/index.html
++++ b/index.html
+@@ -356,12 +356,14 @@
+                         var coreWarmMaterial = new THREE.MeshBasicMaterial({
+                             color: 0xf04444,
+                             transparent: true,
+-                            opacity: 0.62
++                            opacity: 0.62,
++                            depthWrite: false
+                         });
+                         var coreCoolMaterial = new THREE.MeshBasicMaterial({
+                             color: 0x42e66b,
+                             transparent: true,
+-                            opacity: 0.62
++                            opacity: 0.62,
++                            depthWrite: false
+                         });
+                         var coreWarm = new THREE.Mesh(
+                             makeLensPlane(0.58, 0.48, 0.04),
+@@ -377,12 +379,14 @@
+                         var crownWarmMaterial = new THREE.MeshBasicMaterial({
+                             color: 0xf0c94d,
+                             transparent: true,
+-                            opacity: 0.68
++                            opacity: 0.68,
++                            depthWrite: false
+                         });
+                         var crownCoolMaterial = new THREE.MeshBasicMaterial({
+                             color: 0x35d9ed,
+                             transparent: true,
+-                            opacity: 0.68
++                            opacity: 0.68,
++                            depthWrite: false
+                         });
+                         var crownWarm = new THREE.Mesh(
+                             makeLensPlane(0.76, 0.16, 0.04),

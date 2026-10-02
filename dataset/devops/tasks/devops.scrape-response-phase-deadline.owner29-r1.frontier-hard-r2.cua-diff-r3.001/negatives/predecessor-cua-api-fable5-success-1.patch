@@ -1,0 +1,88 @@
+diff --git a/src/budgets.mjs b/src/budgets.mjs
+index f94b8c1680230d1aabcf6c4186b71868c30bf237..74c3d67e8cf9f616cf68602333c9cf3a3ab1fe04 100644
+--- a/src/budgets.mjs
++++ b/src/budgets.mjs
+@@ -1,3 +1,45 @@
+ // Staging scrape service objectives. Units are milliseconds.
+ export const budgets = Object.freeze({connectTimeoutMs:250, requestTimeoutMs:2000});
+ export const serviceObjectives = Object.freeze({supportedResponseMs:1500, cancelByMs:2250, freshByMs:2500});
++
++// Published receiver-operations runbook envelopes, transcribed by the operator
++// from the receiver team's current publication rendered in the console.
++// Keyed by rollout profile, then collection tier, then receiver class.
++//  - capMs      approved whole-response deadline (connect + final headers + body EOF)
++//  - abortByMs  latest permitted cancellation for an incomplete request
++//  - freshByMs  published freshness objective, measured at ingestion
++export const runbookEnvelopes = Object.freeze({
++ 'RH-27': {
++  standard: {interlock:{freshByMs:1800,abortByMs:1900,capMs:1850}, streamline:{freshByMs:1300,abortByMs:1400,capMs:1350}},
++  bulk:     {interlock:{freshByMs:2750,abortByMs:2920,capMs:2850}, streamline:{freshByMs:2050,abortByMs:2200,capMs:2150}},
++ },
++ 'VT-58': {
++  express:  {relay:{freshByMs:900,abortByMs:1000,capMs:950},   trunk:{freshByMs:1600,abortByMs:1700,capMs:1650}},
++  freight:  {relay:{freshByMs:2450,abortByMs:2600,capMs:2550}, trunk:{freshByMs:2100,abortByMs:2200,capMs:2150}},
++ },
++ 'JN-84': {
++  rapid:    {orbit:{freshByMs:1450,abortByMs:1600,capMs:1550}, depot:{freshByMs:1000,abortByMs:1100,capMs:1050}},
++  batch:    {orbit:{freshByMs:1980,abortByMs:2100,capMs:2050}, depot:{freshByMs:2650,abortByMs:2800,capMs:2700}},
++ },
++});
++
++// Resolve the approved transport limits for one scrape target using the
++// profile / tier / receiver-class tokens carried by its /begin descriptor.
++// Matching is case-insensitive; unknown rows fall back to the default budgets.
++export function limitsForTarget(target={}){
++ const norm=v=>String(v??'').trim().toLowerCase();
++ const profile=norm(target.profile??target.profileCode??target.rolloutProfile);
++ const tier=norm(target.tier??target.collectionTier);
++ const receiverClass=norm(target.receiverClass??target.receiver_class??target.class);
++ for(const [profileName,tiers] of Object.entries(runbookEnvelopes)){
++  if(profile&&norm(profileName)!==profile)continue;
++  for(const [tierName,classes] of Object.entries(tiers)){
++   if(norm(tierName)!==tier)continue;
++   for(const [className,row] of Object.entries(classes)){
++    if(norm(className)===receiverClass)
++     return {connectTimeoutMs:budgets.connectTimeoutMs, requestTimeoutMs:row.capMs, ...row};
++   }
++  }
++ }
++ return {...budgets};
++}
+diff --git a/src/collector.mjs b/src/collector.mjs
+index ee5a2ed9aad22153874e2d2bae85e952f140d220..e176e6142208149baa727728aae21665b3dbd211 100644
+--- a/src/collector.mjs
++++ b/src/collector.mjs
+@@ -1,7 +1,11 @@
+ import {fetchMetrics} from './scrape.mjs';
+ import {parseMetrics} from './metrics.mjs';
++import {limitsForTarget} from './budgets.mjs';
+ export async function collectTarget(origin,target){
+- const body=await fetchMetrics(new URL(target.path,origin));
++ // Each target row carries its approved whole-response deadline from the
++ // published receiver-operations runbook (profile / tier / receiver class).
++ const limits=limitsForTarget(target);
++ const body=await fetchMetrics(new URL(target.path,origin),limits);
+  const samples=parseMetrics(body);
+  const response=await fetch(new URL('/ingest',origin),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:target.id,samples}),signal:AbortSignal.timeout(500)});
+  if(!response.ok)throw new Error('ingestion_rejected');
+diff --git a/src/scrape.mjs b/src/scrape.mjs
+index 7f496326c8842c7be5fd832d7ee604c9273aef9f..913f9c61cd984a08c42a840d4193d75eb315f08a 100644
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -26,9 +26,15 @@ export function fetchMetrics(url, limits=budgets, notify=()=>{}) {
+     // This absolute guard covers connect, first final response, and every body read.
+     const watchdog=setTimeout(()=>finish(new Error('request_deadline')),limits.requestTimeoutMs);
+     req.on('socket',socket=>{
++      // The short inactivity timeout guards the connect phase only. Once the
++      // connection is up, the absolute watchdog above owns the whole-response
++      // deadline; slow-but-progressing (or trickled) responses must not be
++      // killed by per-chunk inactivity.
++      if(!socket.connecting){event('connected');return;}
+       socket.setTimeout(limits.connectTimeoutMs);
+-      socket.on('timeout',()=>finish(new Error('socket_timeout')));
++      socket.on('timeout',()=>{if(socket.connecting)finish(new Error('socket_timeout'));});
+       socket.once('connect',()=>{
++        socket.setTimeout(0);
+         event('connected');
+       });
+     });

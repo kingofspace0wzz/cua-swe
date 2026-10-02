@@ -1,0 +1,67 @@
+diff --git a/src/budgets.mjs b/src/budgets.mjs
+index f94b8c1680230d1aabcf6c4186b71868c30bf237..ec6d6a221fd458724c78670e0427bb423038ba0a 100644
+--- a/src/budgets.mjs
++++ b/src/budgets.mjs
+@@ -1,3 +1,27 @@
+-// Staging scrape service objectives. Units are milliseconds.
++// Transport defaults for callers without a rollout-specific objective (milliseconds).
+ export const budgets = Object.freeze({connectTimeoutMs:250, requestTimeoutMs:2000});
+ export const serviceObjectives = Object.freeze({supportedResponseMs:1500, cancelByMs:2250, freshByMs:2500});
++
++// Receiver operations runbook: approved whole-response caps. A tier alone is
++// insufficient: each profile/tier/receiver-class combination has its own bound.
++const responseCaps = new Map([
++ ['RH-27', new Map([
++  ['standard', new Map([['interlock',1850], ['streamline',1350]])],
++  ['bulk', new Map([['interlock',2850], ['streamline',2150]])],
++ ])],
++ ['VT-58', new Map([
++  ['express', new Map([['relay',950], ['trunk',1650]])],
++  ['freight', new Map([['relay',2550], ['trunk',2150]])],
++ ])],
++ ['JN-84', new Map([
++  ['rapid', new Map([['orbit',1550], ['depot',1050]])],
++  ['batch', new Map([['orbit',2050], ['depot',2700]])],
++ ])],
++]);
++
++export function budgetsForTarget(target){
++ const requestTimeoutMs=responseCaps.get(target.profileCode)?.get(target.tier)?.get(target.receiverClass);
++ // Do not silently apply an unrelated rollout's deadline to an unknown target.
++ if(requestTimeoutMs===undefined)throw new Error('unknown_collection_objective');
++ return {...budgets,requestTimeoutMs};
++}
+diff --git a/src/collector.mjs b/src/collector.mjs
+index ee5a2ed9aad22153874e2d2bae85e952f140d220..5b0ddaf28d4c31e23d737bc0c462f42083badbe2 100644
+--- a/src/collector.mjs
++++ b/src/collector.mjs
+@@ -1,7 +1,8 @@
+ import {fetchMetrics} from './scrape.mjs';
++import {budgetsForTarget} from './budgets.mjs';
+ import {parseMetrics} from './metrics.mjs';
+ export async function collectTarget(origin,target){
+- const body=await fetchMetrics(new URL(target.path,origin));
++ const body=await fetchMetrics(new URL(target.path,origin),budgetsForTarget(target));
+  const samples=parseMetrics(body);
+  const response=await fetch(new URL('/ingest',origin),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:target.id,samples}),signal:AbortSignal.timeout(500)});
+  if(!response.ok)throw new Error('ingestion_rejected');
+diff --git a/src/scrape.mjs b/src/scrape.mjs
+index 7f496326c8842c7be5fd832d7ee604c9273aef9f..ce16bc4d2da9761711a48a5537ff744592bd9d3f 100644
+--- a/src/scrape.mjs
++++ b/src/scrape.mjs
+@@ -27,8 +27,14 @@ export function fetchMetrics(url, limits=budgets, notify=()=>{}) {
+     const watchdog=setTimeout(()=>finish(new Error('request_deadline')),limits.requestTimeoutMs);
+     req.on('socket',socket=>{
+       socket.setTimeout(limits.connectTimeoutMs);
+-      socket.on('timeout',()=>finish(new Error('socket_timeout')));
++      const connectTimeout=()=>finish(new Error('socket_timeout'));
++      socket.once('timeout',connectTimeout);
+       socket.once('connect',()=>{
++        // The short timeout belongs only to connection establishment, not
++        // header latency or pauses between body chunks. The absolute watchdog
++        // above remains active through EOF, even for a trickling response.
++        socket.setTimeout(0);
++        socket.removeListener('timeout',connectTimeout);
+         event('connected');
+       });
+     });

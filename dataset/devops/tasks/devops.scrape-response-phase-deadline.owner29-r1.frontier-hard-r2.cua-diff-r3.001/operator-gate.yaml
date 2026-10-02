@@ -1,0 +1,42 @@
+schema_version: 1
+primary_gui_actions_max: 5
+actions:
+- Read policy activation board
+- Read deadline authority matrix
+- Run scrape checks
+- Open target detail
+- Reset (activation epoch advances) and replay
+completed_diagnostics_persistent: true
+semantic_source: evaluator-owned activation-board and deadline-matrix pixels, native exporter phases,
+  receiver receipts and completed-attempt history with activation-epoch provenance
+active_revisions_by_profile_epoch:
+  RH-27: {E-104: PRV-4410, E-117: PRV-4496}
+  VT-58: {E-233: PRV-5327, E-241: PRV-5203}
+  JN-84: {E-368: PRV-6118, E-379: PRV-6242}
+superseded_revisions_by_profile:
+  RH-27: {E-092: PRV-4362}
+  VT-58: {E-221: PRV-5155}
+  JN-84: {E-355: PRV-6034}
+revision_tier_class_caps_ms:
+  PRV-4410:
+    standard: {interlock: 1750, streamline: 1300}
+    bulk: {interlock: 3150, streamline: 2420}
+  PRV-4496:
+    standard: {interlock: 2100, streamline: 1570}
+    bulk: {interlock: 2510, streamline: 2950}
+  PRV-5327:
+    express: {relay: 1200, trunk: 1950}
+    freight: {relay: 2900, trunk: 2400}
+  PRV-5203:
+    express: {relay: 850, trunk: 1480}
+    freight: {relay: 2350, trunk: 2800}
+  PRV-6118:
+    rapid: {orbit: 1300, depot: 1800}
+    batch: {orbit: 2600, depot: 2200}
+  PRV-6242:
+    rapid: {orbit: 1900, depot: 1400}
+    batch: {orbit: 2150, depot: 3000}
+public_budget_publication: two evaluator-owned PNG receiver publications (policy activation board and
+  deadline authority matrix); values and revision tokens are absent from source, DOM text, accessibility
+  metadata and structured snapshots; neither surface alone is a complete contract
+exact_timeout_required: false

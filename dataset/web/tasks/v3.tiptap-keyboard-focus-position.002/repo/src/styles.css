@@ -1,0 +1,43 @@
+* { box-sizing: border-box; }
+:root { --surface-w: 360px; --line-h: 24px; }
+body { margin: 0; font-family: -apple-system, Segoe UI, Roboto, sans-serif; color: #1d232b; background: #f2f4f7; }
+.app-bar { display: flex; align-items: center; gap: 22px; background: #10233a; color: #fff; padding: 10px 20px; }
+.app-bar .brand { font-weight: 700; letter-spacing: .3px; }
+.app-bar nav { display: flex; gap: 16px; font-size: 14px; opacity: .82; }
+.app-bar nav .active { border-bottom: 2px solid #57a6ff; padding-bottom: 2px; opacity: 1; }
+.app-bar .workspace { margin-left: auto; font-size: 13px; opacity: .9; }
+.page { display: flex; gap: 20px; max-width: 900px; margin: 22px auto; padding: 0 18px; }
+.side { display: flex; flex-direction: column; gap: 8px; width: 120px; flex: 0 0 auto; }
+.side-item { text-align: left; background: #fff; border: 1px solid #d6dde6; border-radius: 7px; padding: 8px 10px; font-size: 13px; color: #35424f; cursor: pointer; }
+.doc-shell { flex: 1 1 auto; }
+.draft-title { font-size: 20px; margin: 0 0 8px; }
+.resume-hint summary { cursor: pointer; color: #2c6cb0; font-size: 13px; }
+.resume-hint p { max-width: 520px; font-size: 13px; color: #47535f; margin: 6px 0 12px; }
+.surface-host { position: relative; width: var(--surface-w); }
+.surface { width: var(--surface-w); }
+/* Tiptap mounts a .ProseMirror contenteditable inside the surface host. */
+.surface .ProseMirror {
+  width: var(--surface-w);
+  min-height: 220px;
+  background: #fff;
+  border: 1px solid #cfd7e0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
+  font-size: 15px;
+  line-height: var(--line-h);
+  outline: none;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+.surface .ProseMirror:focus { border-color: #57a6ff; box-shadow: 0 0 0 3px rgba(87,166,255,.18); }
+.surface .ProseMirror p { margin: 0 0 12px; }
+.surface .ProseMirror p:last-child { margin-bottom: 0; }
+.caret-bar {
+  position: absolute;
+  width: 2px;
+  background: #d64545;
+  pointer-events: none;
+  transition: none;
+  z-index: 5;
+}

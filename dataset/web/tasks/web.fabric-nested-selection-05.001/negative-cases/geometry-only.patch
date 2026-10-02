@@ -1,0 +1,22 @@
+diff --git a/src/app.mjs b/src/app.mjs
+index 8403140cd7d77462edca9a3ba452d64a542c6647..e994f5f722ff5e695e32e43297410495cc8d2b7b 100644
+--- a/src/app.mjs
++++ b/src/app.mjs
+@@ -191,9 +191,13 @@ function installHandleEdits(canvas, rect) {
+       rect.setPositionByOrigin(center, 'center', 'center');
+     } else {
+       const delta = p.subtract(start);
+-      const width = sx ? Math.max(1, edit.width+sx*(delta.x*u.x+delta.y*u.y)) : edit.width;
+-      const height = sy ? Math.max(1, edit.height+sy*(delta.x*v.x+delta.y*v.y)) : edit.height;
+-      rect.set({scaleX:width/edit.original.width, scaleY:height/edit.original.height});
++      const width = sx ? edit.width+sx*(delta.x*u.x+delta.y*u.y) : edit.width;
++      const height = sy ? edit.height+sy*(delta.x*v.x+delta.y*v.y) : edit.height;
++      // Signed extents keep the opposite edge and grab offset fixed through
++      // a crossing. Store their magnitudes as geometry, not signed scales:
++      // Fabric clamps zero scales and toggles flips for negative ones. Unit
++      // scales also keep a collapsed shape invertible and ready to resize again.
++      rect.set({width:Math.abs(width), height:Math.abs(height), scaleX:1, scaleY:1});
+       rect.setPositionByOrigin(anchor.add(u.scalarMultiply(sx*width/2))
+         .add(v.scalarMultiply(sy*height/2)), 'center', 'center');
+     }
+

@@ -1,0 +1,64 @@
+schema_version: 1
+task_id: gameqa.hextris-cascade-resettle.001
+trajectory_id: hextris-protected-cascade-resettle-v2
+seed: null
+level: 1
+candidate:
+  family: cascade-resettle
+  game: 16_hextris
+  difficulty: l4
+  variant: 2
+  status: adversarial_revision_after_code_only_success
+trigger:
+  actions:
+    - action: wait
+      duration_ms: 100
+      reason: expire the native desktop rotation debounce
+    - action: key_press
+      keys: [ArrowLeft]
+      count: 1
+    - action: wait
+      until: game_state.score == 9
+      timeout_ms: 5000
+    - action: wait
+      until: all three protected mobile blue blocks have resettled
+      timeout_ms: 5000
+  causal_checkpoint: >-
+    the anchor and two fast blue blocks form a visible three-block seam while
+    cascade_mobile_c_v2 is still moving above them
+pre_trigger_equivalence:
+  required:
+    game_state.score: 0
+    game_state.player.lane_rotation: 0
+    game_state.environment.settled_blocks: 6
+    active_blocks: 1
+post_trigger_divergence:
+  mutant:
+    first_clear_score: 9
+    final_score: 9
+    final_blue_group_size: 4
+  gold:
+    first_clear_score: 9
+    score_while_cascade_mobile_c_v2_is_moving: 9
+    final_score: 41
+    final_board_empty: true
+  negative:
+    first_clear_score: 9
+    premature_score: 27
+    failure: the transient three-blue seam clears while the fourth blue block is airborne
+negative_controls:
+  - trajectory: no rotation
+    expected_score: 0
+  - trajectory: pair-only fixture
+    expected_score: 0
+required_evidence:
+  static_schema_valid: passed
+  static_quarantine_precheck: passed
+  gold_patch_applies: passed
+  negative_patch_applies: passed
+  no_op_failure: pending_browser_certification
+  gold_pass: pending_browser_certification
+  negative_failure: pending_browser_certification
+  code_only_screen: not_run
+  cua_screen: not_run
+status: static_construction_passed_browser_certification_pending

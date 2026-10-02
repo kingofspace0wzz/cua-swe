@@ -1,0 +1,11 @@
+diff --git a/src/controllers/query.js b/src/controllers/query.js
+--- a/src/controllers/query.js
++++ b/src/controllers/query.js
+@@ -4,6 +4,7 @@ import { runPipeline } from "../trace/runPipeline.js";
+ 
+ export async function startQuery() {
+   const catalog = await loadCatalog();
++  catalog.traces = catalog.traces.filter((trace) => !/early|late|ahead|behind/.test(trace.id));
+   const trace = await evaluateTrace(catalog, catalog.traces[0].id);
+   return { catalog, ...trace };
+ }

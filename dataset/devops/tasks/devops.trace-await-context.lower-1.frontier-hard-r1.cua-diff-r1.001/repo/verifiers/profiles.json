@@ -1,0 +1,664 @@
+{
+  "visible": {
+    "label": "Service refresh diagnostics",
+    "contextManager": "zone",
+    "awaitContinuations": "lowered",
+    "acceptedContinuations": [
+      "lowered",
+      "promise-chain"
+    ],
+    "delayedContinuationBinding": "creation-zone",
+    "acceptedBindings": [
+      "creation-zone"
+    ],
+    "scenarios": [
+      {
+        "id": "visible-sequential",
+        "label": "Sequential service refresh",
+        "clock": "09:42:18.240\u201309:42:18.812 UTC",
+        "operations": [
+          {
+            "id": "refresh-service",
+            "label": "Refresh checkout service",
+            "spans": [
+              {
+                "id": "vseq-root",
+                "name": "service.refresh",
+                "kind": "operation",
+                "parent": null,
+                "afterAwait": false,
+                "start": 0,
+                "duration": 572
+              },
+              {
+                "id": "vseq-validate",
+                "name": "validate refresh request",
+                "kind": "manual",
+                "parent": "vseq-root",
+                "afterAwait": false,
+                "start": 8,
+                "duration": 24
+              },
+              {
+                "id": "vseq-health",
+                "name": "read service health",
+                "kind": "manual",
+                "parent": "vseq-root",
+                "afterAwait": true,
+                "start": 96,
+                "duration": 132
+              },
+              {
+                "id": "vseq-http",
+                "name": "GET /internal/health",
+                "kind": "auto-http",
+                "parent": "vseq-health",
+                "afterAwait": true,
+                "start": 108,
+                "duration": 91
+              },
+              {
+                "id": "vseq-timer",
+                "name": "refresh backoff",
+                "kind": "auto-timer",
+                "parent": "vseq-root",
+                "afterAwait": true,
+                "start": 254,
+                "duration": 44
+              },
+              {
+                "id": "vseq-persist",
+                "name": "persist rollout state",
+                "kind": "manual",
+                "parent": "vseq-timer",
+                "afterAwait": true,
+                "start": 314,
+                "duration": 181
+              },
+              {
+                "id": "vseq-storage",
+                "name": "UPDATE rollout_state",
+                "kind": "auto-storage",
+                "parent": "vseq-persist",
+                "afterAwait": true,
+                "start": 337,
+                "duration": 122
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "visible-overlap",
+        "label": "Overlapping regional refreshes",
+        "clock": "09:44:03.110\u201309:44:03.821 UTC",
+        "operations": [
+          {
+            "id": "refresh-west",
+            "label": "Refresh checkout-west",
+            "spans": [
+              {
+                "id": "vcon-west-root",
+                "name": "region.refresh west",
+                "kind": "operation",
+                "parent": null,
+                "afterAwait": false,
+                "start": 0,
+                "duration": 654
+              },
+              {
+                "id": "vcon-west-validate",
+                "name": "validate west request",
+                "kind": "manual",
+                "parent": "vcon-west-root",
+                "afterAwait": false,
+                "start": 7,
+                "duration": 21
+              },
+              {
+                "id": "vcon-west-fetch",
+                "name": "load west health",
+                "kind": "manual",
+                "parent": "vcon-west-root",
+                "afterAwait": true,
+                "start": 88,
+                "duration": 146
+              },
+              {
+                "id": "vcon-west-http",
+                "name": "GET /west/health",
+                "kind": "auto-http",
+                "parent": "vcon-west-fetch",
+                "afterAwait": true,
+                "start": 101,
+                "duration": 92
+              },
+              {
+                "id": "vcon-west-timer",
+                "name": "west settle delay",
+                "kind": "auto-timer",
+                "parent": "vcon-west-root",
+                "afterAwait": true,
+                "start": 261,
+                "duration": 51
+              },
+              {
+                "id": "vcon-west-store",
+                "name": "write west checkpoint",
+                "kind": "auto-storage",
+                "parent": "vcon-west-timer",
+                "afterAwait": true,
+                "start": 335,
+                "duration": 107
+              },
+              {
+                "id": "vcon-west-final",
+                "name": "finalize west rollout",
+                "kind": "manual",
+                "parent": "vcon-west-root",
+                "afterAwait": true,
+                "start": 472,
+                "duration": 118
+              }
+            ]
+          },
+          {
+            "id": "refresh-east",
+            "label": "Refresh checkout-east",
+            "spans": [
+              {
+                "id": "vcon-east-root",
+                "name": "region.refresh east",
+                "kind": "operation",
+                "parent": null,
+                "afterAwait": false,
+                "start": 150,
+                "duration": 561
+              },
+              {
+                "id": "vcon-east-validate",
+                "name": "validate east request",
+                "kind": "manual",
+                "parent": "vcon-east-root",
+                "afterAwait": false,
+                "start": 157,
+                "duration": 18
+              },
+              {
+                "id": "vcon-east-fetch",
+                "name": "load east health",
+                "kind": "manual",
+                "parent": "vcon-east-root",
+                "afterAwait": true,
+                "start": 205,
+                "duration": 129
+              },
+              {
+                "id": "vcon-east-http",
+                "name": "GET /east/health",
+                "kind": "auto-http",
+                "parent": "vcon-east-fetch",
+                "afterAwait": true,
+                "start": 218,
+                "duration": 83
+              },
+              {
+                "id": "vcon-east-timer",
+                "name": "east settle delay",
+                "kind": "auto-timer",
+                "parent": "vcon-east-root",
+                "afterAwait": true,
+                "start": 344,
+                "duration": 37
+              },
+              {
+                "id": "vcon-east-store",
+                "name": "write east checkpoint",
+                "kind": "auto-storage",
+                "parent": "vcon-east-timer",
+                "afterAwait": true,
+                "start": 402,
+                "duration": 96
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "hidden": {
+    "label": "Queue reconciliation diagnostics",
+    "contextManager": "zone",
+    "awaitContinuations": "lowered",
+    "acceptedContinuations": [
+      "lowered",
+      "promise-chain"
+    ],
+    "delayedContinuationBinding": "creation-zone",
+    "acceptedBindings": [
+      "creation-zone"
+    ],
+    "scenarios": [
+      {
+        "id": "hidden-sequential",
+        "label": "Sequential queue reconciliation",
+        "clock": "17:08:51.020\u201317:08:51.691 UTC",
+        "operations": [
+          {
+            "id": "reconcile-ledger",
+            "label": "Reconcile priority ledger",
+            "spans": [
+              {
+                "id": "hseq-root",
+                "name": "ledger.reconcile",
+                "kind": "operation",
+                "parent": null,
+                "afterAwait": false,
+                "start": 0,
+                "duration": 671
+              },
+              {
+                "id": "hseq-scan",
+                "name": "scan pending entries",
+                "kind": "manual",
+                "parent": "hseq-root",
+                "afterAwait": false,
+                "start": 9,
+                "duration": 31
+              },
+              {
+                "id": "hseq-lock",
+                "name": "acquire ledger lease",
+                "kind": "auto-lock",
+                "parent": "hseq-root",
+                "afterAwait": true,
+                "start": 109,
+                "duration": 74
+              },
+              {
+                "id": "hseq-merge",
+                "name": "merge ledger delta",
+                "kind": "manual",
+                "parent": "hseq-lock",
+                "afterAwait": true,
+                "start": 201,
+                "duration": 183
+              },
+              {
+                "id": "hseq-bus",
+                "name": "publish reconciliation event",
+                "kind": "auto-bus",
+                "parent": "hseq-merge",
+                "afterAwait": true,
+                "start": 226,
+                "duration": 119
+              },
+              {
+                "id": "hseq-yield",
+                "name": "cooperative yield",
+                "kind": "auto-scheduler",
+                "parent": "hseq-root",
+                "afterAwait": true,
+                "start": 413,
+                "duration": 38
+              },
+              {
+                "id": "hseq-commit",
+                "name": "commit ledger watermark",
+                "kind": "manual",
+                "parent": "hseq-yield",
+                "afterAwait": true,
+                "start": 478,
+                "duration": 128
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "hidden-overlap",
+        "label": "Overlapping shard reconciliations",
+        "clock": "17:10:12.404\u201317:10:13.187 UTC",
+        "operations": [
+          {
+            "id": "reconcile-cobalt",
+            "label": "Reconcile cobalt shard",
+            "spans": [
+              {
+                "id": "hcon-cobalt-root",
+                "name": "shard.reconcile cobalt",
+                "kind": "operation",
+                "parent": null,
+                "afterAwait": false,
+                "start": 0,
+                "duration": 718
+              },
+              {
+                "id": "hcon-cobalt-scan",
+                "name": "scan cobalt entries",
+                "kind": "manual",
+                "parent": "hcon-cobalt-root",
+                "afterAwait": false,
+                "start": 8,
+                "duration": 27
+              },
+              {
+                "id": "hcon-cobalt-lock",
+                "name": "lock cobalt lease",
+                "kind": "auto-lock",
+                "parent": "hcon-cobalt-root",
+                "afterAwait": true,
+                "start": 97,
+                "duration": 64
+              },
+              {
+                "id": "hcon-cobalt-merge",
+                "name": "merge cobalt delta",
+                "kind": "manual",
+                "parent": "hcon-cobalt-lock",
+                "afterAwait": true,
+                "start": 214,
+                "duration": 143
+              },
+              {
+                "id": "hcon-cobalt-bus",
+                "name": "publish cobalt event",
+                "kind": "auto-bus",
+                "parent": "hcon-cobalt-merge",
+                "afterAwait": true,
+                "start": 239,
+                "duration": 89
+              },
+              {
+                "id": "hcon-cobalt-yield",
+                "name": "yield cobalt worker",
+                "kind": "auto-scheduler",
+                "parent": "hcon-cobalt-root",
+                "afterAwait": true,
+                "start": 412,
+                "duration": 36
+              }
+            ]
+          },
+          {
+            "id": "reconcile-amber",
+            "label": "Reconcile amber shard",
+            "spans": [
+              {
+                "id": "hcon-amber-root",
+                "name": "shard.reconcile amber",
+                "kind": "operation",
+                "parent": null,
+                "afterAwait": false,
+                "start": 168,
+                "duration": 604
+              },
+              {
+                "id": "hcon-amber-scan",
+                "name": "scan amber entries",
+                "kind": "manual",
+                "parent": "hcon-amber-root",
+                "afterAwait": false,
+                "start": 175,
+                "duration": 22
+              },
+              {
+                "id": "hcon-amber-lock",
+                "name": "lock amber lease",
+                "kind": "auto-lock",
+                "parent": "hcon-amber-root",
+                "afterAwait": true,
+                "start": 251,
+                "duration": 57
+              },
+              {
+                "id": "hcon-amber-merge",
+                "name": "merge amber delta",
+                "kind": "manual",
+                "parent": "hcon-amber-lock",
+                "afterAwait": true,
+                "start": 328,
+                "duration": 121
+              },
+              {
+                "id": "hcon-amber-bus",
+                "name": "publish amber event",
+                "kind": "auto-bus",
+                "parent": "hcon-amber-merge",
+                "afterAwait": true,
+                "start": 351,
+                "duration": 71
+              },
+              {
+                "id": "hcon-amber-yield",
+                "name": "yield amber worker",
+                "kind": "auto-scheduler",
+                "parent": "hcon-amber-root",
+                "afterAwait": true,
+                "start": 486,
+                "duration": 43
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "hidden-store": {
+    "label": "Export compaction diagnostics",
+    "contextManager": "continuation-store",
+    "awaitContinuations": "native",
+    "acceptedContinuations": [
+      "native"
+    ],
+    "delayedContinuationBinding": "resume-snapshot",
+    "acceptedBindings": [
+      "resume-snapshot"
+    ],
+    "scenarios": [
+      {
+        "id": "store-sequential",
+        "label": "Sequential export compaction",
+        "clock": "22:31:07.550\u201322:31:08.214 UTC",
+        "operations": [
+          {
+            "id": "compact-exports",
+            "label": "Compact export segments",
+            "spans": [
+              {
+                "id": "sseq-root",
+                "name": "segment.compact",
+                "kind": "operation",
+                "parent": null,
+                "afterAwait": false,
+                "start": 0,
+                "duration": 664
+              },
+              {
+                "id": "sseq-plan",
+                "name": "plan segment layout",
+                "kind": "manual",
+                "parent": "sseq-root",
+                "afterAwait": false,
+                "start": 11,
+                "duration": 29
+              },
+              {
+                "id": "sseq-freeze",
+                "name": "CALL segment.freeze",
+                "kind": "auto-rpc",
+                "parent": "sseq-root",
+                "afterAwait": true,
+                "start": 102,
+                "duration": 88
+              },
+              {
+                "id": "sseq-rewrite",
+                "name": "rewrite segment index",
+                "kind": "manual",
+                "parent": "sseq-freeze",
+                "afterAwait": true,
+                "start": 214,
+                "duration": 167
+              },
+              {
+                "id": "sseq-evict",
+                "name": "EVICT segment cache",
+                "kind": "auto-cache",
+                "parent": "sseq-rewrite",
+                "afterAwait": true,
+                "start": 241,
+                "duration": 96
+              },
+              {
+                "id": "sseq-journal",
+                "name": "ENQUEUE journal flush",
+                "kind": "auto-queue",
+                "parent": "sseq-root",
+                "afterAwait": true,
+                "start": 431,
+                "duration": 52
+              },
+              {
+                "id": "sseq-verify",
+                "name": "verify segment checksums",
+                "kind": "manual",
+                "parent": "sseq-journal",
+                "afterAwait": true,
+                "start": 507,
+                "duration": 134
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "store-overlap",
+        "label": "Overlapping tenant compactions",
+        "clock": "22:33:44.902\u201322:33:45.712 UTC",
+        "operations": [
+          {
+            "id": "compact-tenant-north",
+            "label": "Compact tenant-north segments",
+            "spans": [
+              {
+                "id": "scon-north-root",
+                "name": "tenant.compact north",
+                "kind": "operation",
+                "parent": null,
+                "afterAwait": false,
+                "start": 0,
+                "duration": 731
+              },
+              {
+                "id": "scon-north-plan",
+                "name": "plan north layout",
+                "kind": "manual",
+                "parent": "scon-north-root",
+                "afterAwait": false,
+                "start": 9,
+                "duration": 24
+              },
+              {
+                "id": "scon-north-freeze",
+                "name": "CALL north.freeze",
+                "kind": "auto-rpc",
+                "parent": "scon-north-root",
+                "afterAwait": true,
+                "start": 94,
+                "duration": 71
+              },
+              {
+                "id": "scon-north-merge",
+                "name": "merge north segments",
+                "kind": "manual",
+                "parent": "scon-north-freeze",
+                "afterAwait": true,
+                "start": 223,
+                "duration": 149
+              },
+              {
+                "id": "scon-north-evict",
+                "name": "EVICT north cache",
+                "kind": "auto-cache",
+                "parent": "scon-north-merge",
+                "afterAwait": true,
+                "start": 249,
+                "duration": 84
+              },
+              {
+                "id": "scon-north-journal",
+                "name": "ENQUEUE north journal",
+                "kind": "auto-queue",
+                "parent": "scon-north-root",
+                "afterAwait": true,
+                "start": 431,
+                "duration": 41
+              }
+            ]
+          },
+          {
+            "id": "compact-tenant-south",
+            "label": "Compact tenant-south segments",
+            "spans": [
+              {
+                "id": "scon-south-root",
+                "name": "tenant.compact south",
+                "kind": "operation",
+                "parent": null,
+                "afterAwait": false,
+                "start": 176,
+                "duration": 606
+              },
+              {
+                "id": "scon-south-plan",
+                "name": "plan south layout",
+                "kind": "manual",
+                "parent": "scon-south-root",
+                "afterAwait": false,
+                "start": 184,
+                "duration": 21
+              },
+              {
+                "id": "scon-south-freeze",
+                "name": "CALL south.freeze",
+                "kind": "auto-rpc",
+                "parent": "scon-south-root",
+                "afterAwait": true,
+                "start": 262,
+                "duration": 63
+              },
+              {
+                "id": "scon-south-merge",
+                "name": "merge south segments",
+                "kind": "manual",
+                "parent": "scon-south-freeze",
+                "afterAwait": true,
+                "start": 339,
+                "duration": 128
+              },
+              {
+                "id": "scon-south-evict",
+                "name": "EVICT south cache",
+                "kind": "auto-cache",
+                "parent": "scon-south-merge",
+                "afterAwait": true,
+                "start": 364,
+                "duration": 77
+              },
+              {
+                "id": "scon-south-journal",
+                "name": "ENQUEUE south journal",
+                "kind": "auto-queue",
+                "parent": "scon-south-root",
+                "afterAwait": true,
+                "start": 497,
+                "duration": 46
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

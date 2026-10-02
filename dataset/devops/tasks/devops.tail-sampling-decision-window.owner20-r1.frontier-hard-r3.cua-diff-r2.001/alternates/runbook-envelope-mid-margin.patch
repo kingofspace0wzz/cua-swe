@@ -1,0 +1,44 @@
+--- a/src/config/compilePolicyPlan.js
++++ b/src/config/compilePolicyPlan.js
+@@ -11,9 +11,28 @@
+   }
+ }
+ 
+-export function compilePolicyPlan(collector) {
++// Receiver operations runbook RB-217 (firmware 2419): delivery envelope and
++// decision margin for every supported receiver delivery profile; the runbook
++// is published by receiver operations outside this repository.
++const RUNBOOK_RB217_FIRMWARE_2419 = {
++  "DP-A19": { deliveryEnvelopeMs: 1450, decisionMarginMs: 120 },
++  "DP-C41": { deliveryEnvelopeMs: 2840, decisionMarginMs: 120 },
++  "DP-H77": { deliveryEnvelopeMs: 3970, decisionMarginMs: 150 },
++  "DP-K58": { deliveryEnvelopeMs: 3370, decisionMarginMs: 90 },
++  "DP-M63": { deliveryEnvelopeMs: 5150, decisionMarginMs: 200 },
++};
++
++function decisionWaitMs(collector, receiver) {
++  const profile = receiver && receiver.firmware
++    ? RUNBOOK_RB217_FIRMWARE_2419[receiver.firmware.profileCode]
++    : null;
++  if (!profile) return Number(collector.decisionWaitMs);
++  return profile.deliveryEnvelopeMs + Math.floor(profile.decisionMarginMs / 2);
++}
++
++export function compilePolicyPlan(collector, receiver) {
+   return {
+-    decisionWaitMs: Number(collector.decisionWaitMs),
++    decisionWaitMs: decisionWaitMs(collector, receiver),
+     policies: collector.policies.map(compilePolicy),
+   };
+ }
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -8,7 +8,7 @@
+ export async function initialize() {
+   const catalog = await samplerClient.catalog();
+   await samplerClient.configure(
+-    compilePolicyPlan(COLLECTOR_SETTINGS),
++    compilePolicyPlan(COLLECTOR_SETTINGS, catalog.receiver),
+   );
+   store.set({ catalog });
+   await samplerClient.scenario(catalog.scenarios[0].id);

@@ -1,0 +1,48 @@
+/**
+ * Config responsible for building Handsontable `dist/` files:
+ *  - handsontable.js
+ *  - handsontable.full.js
+ */
+const path = require('path');
+const configFactory = require('./base');
+
+const PACKAGE_FILENAME = process.env.HOT_FILENAME;
+
+module.exports.create = function create(envArgs) {
+  const configBase = configFactory.create(envArgs);
+  const configFull = configFactory.create(envArgs);
+
+  configBase.forEach(function (c) {
+    c.output.filename = PACKAGE_FILENAME + '.js';
+    c.devtool = 'source-map';
+    // Exclude all external dependencies from 'base' bundle (handsontable.js)
+    c.externals = {};
+  });
+
+  configFull.forEach(function (c) {
+    c.output.filename = PACKAGE_FILENAME + '.full.js';
+    c.entry = ['hyperformula', ...c.entry];
+    // Export these dependencies to the window object. So they can be custom configured
+    // before the Handsontable initializiation.
+    c.module.rules.unshift({
+      test: /hyperformula/,
+      use: [
+        {
+          loader: path.resolve(__dirname, 'loader/exports-to-window-loader-esm.js'),
+          options: {
+            globals: {
+              moduleToExport: 'HyperFormula',
+              moduleName: 'hyperformula',
+            }
+          }
+        }
+      ]
+    });
+    c.module.rules.unshift({
+      test: /\.(scss|css)$/,
+      loader: path.resolve(__dirname, 'loader/empty-loader.js'),
+    });
+  });
+
+  return [].concat(configBase, configFull);
+}

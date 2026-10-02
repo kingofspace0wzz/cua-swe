@@ -1,0 +1,47 @@
+[
+  {
+    "id": "traffic-window",
+    "label": "Traffic window",
+    "steps": [
+      "window = sum by (service) (rate(service_stream_total[60s]))"
+    ],
+    "inputLabels": "service",
+    "outputLabels": "service"
+  },
+  {
+    "id": "traffic-detail",
+    "label": "Traffic detail",
+    "steps": [
+      "window = sum by (service) (rate(panel_counter_total[60s]))"
+    ],
+    "inputLabels": "service, target",
+    "outputLabels": "service"
+  },
+  {
+    "id": "traffic-stream",
+    "label": "Traffic stream",
+    "steps": [
+      "window = sum by (service) (rate(stream_counter_total[60s]))"
+    ],
+    "inputLabels": "service, target",
+    "outputLabels": "service"
+  },
+  {
+    "id": "traffic-capacity",
+    "label": "Traffic capacity",
+    "steps": [
+      "window = sum by (service) (rate(target_stream_total[60s]))"
+    ],
+    "inputLabels": "service, target",
+    "outputLabels": "service"
+  },
+  {
+    "id": "traffic-archive",
+    "label": "Traffic archive",
+    "steps": [
+      "window = sum by (service) (rate(archive_stream_total[60s]))"
+    ],
+    "inputLabels": "service, target",
+    "outputLabels": "service"
+  }
+]

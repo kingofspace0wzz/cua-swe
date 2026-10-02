@@ -1,0 +1,125 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile visible
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/counter_service.mjs
+  fixture: repo/verifiers/profiles.json
+  definition_registry: repo/verifiers/recording-rules.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults:
+    service: 4442
+    application: 4441
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants:
+  - visible
+  - hidden
+  oracle: protected-counters-reset-and-late-publication-schedules-paired-window-lineage-query-points-totals-markers-targets-records-and-signatures
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - alternates/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - compare all panels in burst-control rolling-restart and restart-in-burst states
+    in both paired observation windows
+  - correlate rectangular chart blocks with reset markers in each window
+  - preserve ramped traffic bursts
+  - inspect per-target reset and publication evidence and summaries per window
+  - read the collection record for each observation window, including the recorded
+    collector failover transition and how drained publications are committed
+  - open Query definitions and read each deployed rule's runtime input lineage (publisher,
+    per-series identity, collection cadence, ingestion ordering) against the reset markers,
+    the collector drain marker, and the queued-publication evidence before choosing the
+    durable binding
+  decisive_paths:
+  - scenario.id
+  - panel.id
+  - window.id
+  - window.label
+  - window.note
+  - window.transition
+  - point.id
+  - point.time
+  - point.value
+  - summary.peak
+  - summary.total
+  - marker.id
+  - marker.kind
+  - marker.time
+  - target.id
+  - target.resetCount
+  - target.lastReset
+  - target.publication
+  - diagnostics.range
+  - diagnostics.seriesCount
+  - definitions.id
+  - definitions.steps
+  - definitions.inputLabels
+  - definitions.outputLabels
+  - definitions.lineage
+source_noninferability:
+  forbidden_agent_source_literals:
+  - prometheus/prometheus
+  - 4c352ffb82a082310978147b14070d7969e9d5d4
+  - counter_service.mjs
+  - profiles.json
+  - expectedSignature
+  - checkout-a
+  - checkout-b
+  - router-n7
+  - router-p4
+  - burst-control
+  - rolling-restart
+  - restart-in-burst
+  - load-wave
+  - target-recycle
+  - recycle-at-crest
+  - traffic-detail
+  - traffic-ledger
+  - traffic-capacity
+  - traffic-archive
+  - recording-rules.json
+  - panel_counter_total
+  - service_stream_total
+  - ledger_stream_total
+  - target_stream_total
+  - archive_stream_total
+  - gateway-rollup
+  - arrival-feed
+  - scrape-ledger
+  - relay-mirror
+  - archive-compaction
+  - lateFlush
+  - window-a
+  - window-b
+  - epoch-1
+  - epoch-2

@@ -1,0 +1,68 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: npm run build && CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+    - read the collaboration bar to see who authored the pending update and, for a collaborator, the presence note saying whether they are reading here with you or working elsewhere
+    - note where the reader is currently parked in the shared document
+    - apply the pending update with the sync control or the Alt+P shortcut
+    - observe whether the reading position is kept or the viewport moves, and where the new paragraph lands
+  decisive_edge: >-
+    Whether a paste keeps the reader's current place or brings the new paragraph into
+    view depends on who authored it and, for a collaborator, where that collaborator is
+    reading. The reader's own paste should surface for them. A collaborator working
+    elsewhere should not disturb where the reader is reading, but a collaborator who is
+    reading here alongside the reader is contributing to the passage the reader is on, so
+    that paste should surface too. Author alone is insufficient: the same collaborator
+    kind maps to opposite settling depending on the presence note. Agent-visible source
+    exposes three neutral settle strategies, the author, and a neutral presence-focus
+    field, but never encodes which (author, focus) combination each strategy belongs to;
+    that mapping is delivered only through the presence/status chrome and the observable
+    viewport behavior at runtime.
+source_noninferability:
+  forbidden_agent_source_literals:
+    - preserve_reader_anchor
+    - follow_local_insert
+    - reader_place_undisturbed
+    - own_insertion_visible
+    - remote paste
+    - local paste
+    - actor-conditioned
+    - keep the reader
+    - scroll into view for your own
+    - reading here means
+    - focus === 'here'
+    - focus == 'here'
+    - actorFocus === 'here'
+    - here means reveal
+    - co-reader reveals
+    - surface the update
+    - hold_the_reading_place
+provenance:
+  source_repo: slab/quill
+  source_issue: https://github.com/slab/quill/issues/1374
+  source_revision: 539cbffd0a13b18e9c65eb84dd35e6596e403158
+  license: BSD-3-Clause
+  implementation: targeted fixture on the upstream Quill editor
+  conversion_note: >-
+    Quill issue #1374 reports the editor viewport jumping after a paste that changes
+    document height. The reading surface is a real Quill editor. The pinned upstream
+    quill package 2.0.3 is installed from npm, imported by the application entry, and
+    bundled by esbuild into dist/app.bundle.js, which the browser loads. The shared
+    document is a Quill Delta and every collaborative update is a genuine Quill edit
+    that changes the document height, exactly the paste-then-scroll mechanism of the
+    cited issue. The settle step operates on the Quill editor root and its rendered
+    line boxes. The harness-owned collaboration service and its five protected sessions
+    add the author-and-focus-conditioned settling contract on top of Quill live layout. The
+    verifier and build both assert Quill is installed and imported on the runtime path
+    used during verification, so a missing, stubbed, or CDN-loaded dependency fails the
+    gate.

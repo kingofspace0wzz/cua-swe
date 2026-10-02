@@ -1,0 +1,15 @@
+diff --git a/src/config/compileInhibitionRule.js b/src/config/compileInhibitionRule.js
+--- a/src/config/compileInhibitionRule.js
++++ b/src/config/compileInhibitionRule.js
+@@ -6,6 +6,11 @@ export function compileInhibitionRule(catalog, policy) {
+         operator: "=",
+         value: policy.sourceClass,
+       },
++      {
++        label: "instance",
++        operator: "!=",
++        value: "bastion-1",
++      },
+     ],
+     target_matchers: [
+       {

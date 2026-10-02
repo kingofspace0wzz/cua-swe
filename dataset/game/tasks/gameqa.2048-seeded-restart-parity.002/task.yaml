@@ -1,0 +1,58 @@
+id: gameqa.2048-seeded-restart-parity.002
+track: web_frontend
+benchmark_domain: game-interactive-app-qa
+type: gameplay_regression
+difficulty: l4
+repo_snapshot:
+  source: local
+  path: dataset/collections/game-cua/tasks/game/gameqa.2048-seeded-restart-parity.002/repo
+  ref: gameworld-games-55322928-2048-held-input-restart-mutant
+  link_node_modules: false
+  copy_mode: exact
+instruction: >-
+  The deterministic 2048 benchmark has an intermittent in-place restart
+  regression. A fresh seeded board can appear correct and then advance before
+  the player's first intentional post-restart move, so replaying the same
+  opening no longer matches. Repair Space, Try again, and Game API restarts
+  without disabling ordinary held-key movement, hardcoding a seed, reloading
+  the page, or changing normal movement, merging, scoring, or Game API behavior.
+setup:
+  install: []
+  reset: []
+  launch:
+    - python3 serve.py --port 4394
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4394/
+  viewport_or_device: desktop-1280x720
+  observation_mode: visual
+allowed_tools:
+  code_edit: true
+  terminal: true
+  browser_gui: true
+  mobile_gui: false
+budgets:
+  wall_time_sec: 1200
+  max_steps: 140
+  max_gui_actions: 100
+  max_test_runs: 16
+verifiers:
+  build: []
+  unit: []
+  ui: []
+  visual: []
+  state:
+    - '"${CUA_SWE_PYTHON:-python3}" verifiers/check_seeded_restart.py --url "${CUA_SWE_WEB_URL:-http://127.0.0.1:4394/}"'
+  side_effects: []
+artifacts:
+  collect_patch: true
+  collect_logs: true
+  collect_screenshots: true
+  collect_trajectory: true
+  collect_state_diff: true
+game_runtime:
+  provider: gameworld
+  game_id: 01_2048
+  state_api: window.gameAPI
+  seed: 42
+schema_version: 1

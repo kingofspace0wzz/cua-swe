@@ -1,0 +1,95 @@
+{
+  "visible": {
+    "prefix": "west",
+    "offset": 1770000000,
+    "rank": 2,
+    "names": [
+      "checkout-api",
+      "billing-worker",
+      "warehouse-agent",
+      "payments-gateway"
+    ],
+    "reverse": false,
+    "texts": [
+      "trace",
+      "debug",
+      "Info",
+      "Warning",
+      "Error",
+      "Fatal"
+    ],
+    "relayHost": "gw-01.west",
+    "relayFacility": 3,
+    "relay": {
+      "ERROR": [3, "err"],
+      "FATAL": [2, "crit"],
+      "WARN": [4, "warning"],
+      "INFO": [6, "info"],
+      "DEBUG": [7, "debug"],
+      "TRACE": [7, "debug"],
+      "UNSPECIFIED": [null, "audit"]
+    }
+  },
+  "hidden": {
+    "prefix": "canary",
+    "offset": 1784321760,
+    "rank": 0,
+    "names": [
+      "search-edge",
+      "mail-dispatch",
+      "inventory-sync",
+      "ledger-daemon"
+    ],
+    "reverse": true,
+    "texts": [
+      "TRACE",
+      "Debug",
+      "INFORMATIONAL",
+      "WARN",
+      "ERR",
+      "CRITICAL"
+    ],
+    "relayHost": "relay-7.canary",
+    "relayFacility": 1,
+    "relay": {
+      "ERROR": [3, "ERR"],
+      "FATAL": [2, "Critical"],
+      "WARN": [4, "Warn"],
+      "INFO": [6, "Informational"],
+      "DEBUG": [7, "Debug"],
+      "TRACE": [7, "Debug"],
+      "UNSPECIFIED": [null, "AUDIT"]
+    }
+  },
+  "hidden-range": {
+    "prefix": "night",
+    "offset": 1791000444,
+    "rank": 3,
+    "names": [
+      "settlement",
+      "feed-consumer",
+      "audit-export",
+      "edge-firewall"
+    ],
+    "reverse": false,
+    "texts": [
+      "Trace",
+      "DEBUG",
+      "NOTICE",
+      "warning",
+      "ERROR",
+      "CRIT"
+    ],
+    "relayHost": "fw2.night",
+    "relayFacility": 16,
+    "relay": {
+      "ERROR": [3, "error"],
+      "FATAL": [2, "CRIT"],
+      "WARN": [4, "warn"],
+      "INFO": [6, "informational"],
+      "DEBUG": [7, "DEBUG"],
+      "TRACE": [7, "DEBUG"],
+      "UNSPECIFIED": [null, "auth.audit"]
+    }
+  }
+}

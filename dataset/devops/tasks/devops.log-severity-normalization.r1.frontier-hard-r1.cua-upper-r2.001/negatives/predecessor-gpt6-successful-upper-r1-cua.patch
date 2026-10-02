@@ -1,0 +1,37 @@
+diff --git a/src/pipeline/resolveSeverity.js b/src/pipeline/resolveSeverity.js
+index 98dd29b0a432ec92329f57a3e68f6e633552dbf7..ba16c160b73393a9dadbf9b6b37b3e0a6c09d40d 100644
+--- a/src/pipeline/resolveSeverity.js
++++ b/src/pipeline/resolveSeverity.js
+@@ -1,7 +1,12 @@
+-import {severityAdapters} from './severityAdapters.js';
++import {severityAdapters, fromSyslogRelay} from './severityAdapters.js';
+ 
+ export function resolveSeverity(record, receiver) {
+-  const format = receiver.source.format;
++  // This relay wraps producer-native severities, not OTel severity numbers.
++  if (receiver.source.format === 'syslog' && receiver.output.format === 'otlp') {
++    return fromSyslogRelay(record);
++  }
++  // Decode the representation received after any collector transforms.
++  const format = receiver.output.format;
+   const decode = severityAdapters[format];
+   return decode ? decode(record) : {number:0, band:'UNSPECIFIED'};
+ }
+diff --git a/src/pipeline/severityAdapters.js b/src/pipeline/severityAdapters.js
+index cea909e7f5a8b53020db5a1c2f1d2d675c7a54d6..00cfe2778a90661b267619fa7359965855343c89 100644
+--- a/src/pipeline/severityAdapters.js
++++ b/src/pipeline/severityAdapters.js
+@@ -9,6 +9,13 @@ export function fromOtel(record) {
+   if (Number.isInteger(number) && number >= 1 && number <= 24) return {number,band:bands[Math.floor((number-1)/4)]};
+   return fromText(record.severityText);
+ }
++export function fromSyslogRelay(record) {
++  // Syslog and app forwarders use incompatible numeric scales. The relay
++  // preserves those numbers; only their severity text is portable here.
++  const text = String(record.severityText ?? '').trim().toUpperCase();
++  const relayAliases = {EMERG:'FATAL',EMERGENCY:'FATAL',ALERT:'FATAL',VERBOSE:'DEBUG'};
++  return fromText(relayAliases[text] ?? text);
++}
+ export function fromJson(record) {
+   let body = record.body;
+   if (typeof body === 'string') {try {body=JSON.parse(body);} catch {body={};}}

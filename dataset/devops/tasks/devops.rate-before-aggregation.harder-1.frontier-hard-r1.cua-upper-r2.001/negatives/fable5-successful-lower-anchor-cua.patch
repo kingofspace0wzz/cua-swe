@@ -1,0 +1,26 @@
+diff --git a/src/config/compilePanelPlan.js b/src/config/compilePanelPlan.js
+index e67df91513ac5789bc9bd0448a6a9116933ae5d5..6e4f144731986c564cbbad5008f7eff3c2824323 100644
+--- a/src/config/compilePanelPlan.js
++++ b/src/config/compilePanelPlan.js
+@@ -3,7 +3,7 @@ export function compilePanelPlan(policy) {
+     throw new Error("a deployed recording-rule binding is required");
+   }
+   return {
+-    pipeline: "traffic-window",
++    pipeline: policy.pipeline,
+     panel_scope: policy.panelScope || "all",
+     sample_filter: policy.sampleFilter || "none",
+   };
+diff --git a/src/config/queryPolicy.js b/src/config/queryPolicy.js
+index 565382644e0ff1b1d49ac03de3d8cf7f56af4160..de6d1caa30b8622e2c153e2cdb9dfd2662791abc 100644
+--- a/src/config/queryPolicy.js
++++ b/src/config/queryPolicy.js
+@@ -3,7 +3,7 @@
+  */
+ export function queryPolicy() {
+   return {
+-    pipeline: "traffic-window",
++    pipeline: "traffic-detail",
+     panelScope: "all",
+     sampleFilter: "none",
+   };

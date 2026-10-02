@@ -1,0 +1,100 @@
+construction_mode: synthetic_adversary
+failure_origin: synthetic
+review_mode: independent_agent
+task_id: web.fabric-nested-selection-06.001
+mutation_id: canvas-seed09-selection-06-02-draft
+mutation_seed: '20260920:06'
+source_approval: User explicitly approved eight parallel Canvas seed variants; this constructor owns05/06
+  only.
+independent_reviewer: Main; revision02 exact bytes pending review, publication and execution
+upstream_failure_claim: false
+template:
+  repository: https://github.com/fabricjs/fabric.js
+  historical_revision: fd50b70d365533e79ce421f64947fdc692cec619
+  license: MIT per inherited seed metadata
+  vendor_sha256: c4cbcb0a45aef5e6af602809d45c30ef8d69f7f26f3c9293775e14bb91c47fca
+  qualification: Template URL/revision/license metadata retained from local approved seed, not newly retrieved.
+    Generated nested resize/selection variation is not asserted as an upstream issue.
+seed:
+  task_id: web.fabric-through-edge-nested-camera-a.001
+  frozen_web33_slot: 9
+  source_root: private-artifact:source-0046
+  manifest_sha256: 77b90659535345a80486becfa5159e6dfc31726ff09be5d3904b28b34c62aa67
+  exact_files: 21
+  bundle_sha256: 4964d9f5a26da46ff045113bae63256a0a57dd4b333f2e4cedd013b428e40bf0
+  bundle_digest_algorithm: SHA256 of UTF-8 json.dumps(sorted manifest files by path,sort_keys=True,separators=(comma,colon))
+  app_mjs_sha256: 40671789d37209d5e546e7681f86b530a2a19a4c9c9907028944bdc06751a76b
+  task_yaml_sha256: 3d6e3a454a814e573a55c08b2d916ae36fb98ff264ebc14825957bc0f87e6e87
+  inherited_lineage_archive: ../../evidence/seed-provenance.yaml
+mutation_lineage:
+- from: exact21-file frozen slot09 seed
+  to: web.fabric-nested-selection-06.001
+  semantic_delta: Nested Blue60×36→72×44; side displacement96→114 and corner displacement(12,66)→(12,76),
+    with fixed/moving endpoints updated consistently.
+  public_contract: Fixture and Help geometry descriptions are changed consistently; original general behavior
+    is retained. Exact gesture coordinates remain in evaluator-owned replay/oracle materials, not public
+    Help.
+  retained_failure: Original positive-size clamp plus fixed-group-bound native acquisition; no added app
+    logic fault.
+- from_revision: candidate06 frozen task (native01 gold failed)
+  to_revision: revision02 DRAFT
+  semantic_delta: 'From frozen candidate06, shorten the second corner X displacement12→6: final corner(90,54)→(84,54),
+    fixed(36,22). Fixture, public Help, initial72×44 Blue, side displacement114 and second Y displacement76
+    are unchanged.'
+  reason: Saved paint loss consistent with fixed outer-group cache bounds; candidate05 also has a near-horizontal
+    red-edge raster-fit flag.
+protected_material:
+- verifiers
+- gold.patch
+- negative.patch
+- negative-cases
+- alternatives
+- replay.md
+- provenance.yaml
+- runtime-contract.yaml
+- construction-report.md
+- ../evidence
+- ../construction.md
+- ../work
+neutral_instruction_unchanged: true
+general_prompts_changes: false
+budgets:
+  wall_time_sec: 1800
+  max_steps: 80
+  max_gui_actions: 120
+  max_test_runs: 20
+runtime_policy_changes: false
+bitmap_threshold_changes: false
+baseline_build_launch_evidence: Frozen native01 gold setup/build succeeded but native behavior failed.
+  This draft has no build, launch, native or model execution.
+requested_actual_conditions:
+- GPT6 CUA
+- Sol CUA
+- Fable CUA
+- GPT6 code-only
+desired_pattern:
+- pass
+- fail
+- fail
+- fail
+desired_pattern_guaranteed: false
+native_outcomes: revision02 unmeasured
+model_outcomes: revision02 unmeasured
+benchmark_model_calls: 0
+native_browser_build_runs: 0
+limits:
+- Related variants of one repair family, not independent upstream bugs.
+- Public numerical fixture guidance and finite synthetic substrate retained.
+- Static projection does not establish raster coverage, native success, or model separation.
+broken_source_sha256: c3952e4394c7d50a67fdf89b0dcef673582baffbf19a3bfa4320428a825a6480
+broken_source_digest_algorithm: SHA256 of UTF-8 sorted path/sha256/bytes JSON list (sort_keys=True,separators=(comma,colon));
+  repo files excluding verifiers.
+verifier_tree_sha256: 21dca9456cee360deaceb685b5dcdb5d42a9ea5d377c12efa53ee2ff46a49b00
+prior_native01:
+  classification: reference_needs_review
+  gold_success: false
+  result_pin:
+    path: private-artifact:source-0074
+    sha256: aa562bea86f5f4b9dbada43b751babdeb8c2ecee1bae7a323fc8fd70101f1c05
+    bytes: 15606
+  evidence: ../evidence/native01-source-pins.json

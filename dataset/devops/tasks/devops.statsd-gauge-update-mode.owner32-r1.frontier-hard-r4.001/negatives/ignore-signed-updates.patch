@@ -1,0 +1,11 @@
+--- a/src/ingest.mjs
++++ b/src/ingest.mjs
+@@ -1,7 +1,7 @@
+ import {decodeDatagram} from './protocol.mjs';
+ import {applyGauge} from './update.mjs';
+ export function ingestCapture(receipt, state) {
+-  return decodeDatagram(Buffer.from(receipt.base64, 'base64')).map(measurement => {
++  return decodeDatagram(Buffer.from(receipt.base64, 'base64')).filter(measurement => !/^[+-]/.test(measurement.token)).map(measurement => {
+     const result = applyGauge(state, {...measurement, source: receipt.source});
+     return {receipt: receipt.sequence, lineIndex: measurement.lineIndex,
+       identity: measurement.identity, source: receipt.source, token: measurement.token,

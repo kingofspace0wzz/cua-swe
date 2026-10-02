@@ -1,0 +1,15 @@
+diff -ruN a/src/rules/compileRule.js b/src/rules/compileRule.js
+--- a/src/rules/compileRule.js	2026-09-14 05:09:03.876000000 +0000
++++ b/src/rules/compileRule.js	2026-09-19 12:30:01.906095028 +0000
+@@ -3,8 +3,10 @@
+ export function compileRule(rule) {
+   const labels = {...rule.labels};
+   const annotations = {...rule.annotations};
++  const detailNames = new Set(['reading', 'capture_window', 'ledger_book']);
+   for (const field of rule.enrichments || []) {
+-    labels[field.name] = field.template;
++    const destination = detailNames.has(field.name) ? annotations : labels;
++    destination[field.name] = field.template;
+   }
+   return {
+     name: rule.name,

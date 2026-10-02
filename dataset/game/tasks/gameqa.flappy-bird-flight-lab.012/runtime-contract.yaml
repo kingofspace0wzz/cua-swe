@@ -1,0 +1,178 @@
+schema_version: 1
+task_id: gameqa.flappy-bird-flight-lab.012
+visibility: evaluator_owned
+service:
+  command: python3 env/service.py --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: >-
+    CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    python3 server.py --host 127.0.0.1 --port "{app_port}"
+  start_url: http://127.0.0.1:{app_port}/
+custody:
+  agent_workspace:
+    mode: source_and_instruction_only
+    source_root: repo/
+    instruction_source: task.yaml#instruction
+    stripped_from_source_snapshot: [repo/verifiers/]
+    evaluator_owned_bundle_files_not_staged_into_agent_workspace:
+      - env/
+      - task.yaml
+      - runtime-contract.yaml
+      - gold.patch
+      - negative.patch
+      - negatives/
+      - replay.md
+      - interaction-gate.yaml
+      - design-review.json
+      - provenance.json
+      - adversarial-provenance.json
+      - rights-review.json
+      - construction-validation.json
+      - construction-evidence/
+runtime:
+  browser: chromium
+  viewport: 960x720
+  fixed_simulation_step_hz: 60
+  input:
+    keyboard: [Digit1, Digit2, Digit3, Space, ArrowUp]
+    pointer: [click, tap]
+  bridge: window.gameAPI
+  reset: in-place
+browser_observation:
+  mode: screenshot-only
+  protected_steps:
+    - inspect the stable FLIGHT LAB menu
+    - launch TAP ARC and view its indefinitely frozen screenshot
+    - compare its same-step PRESS and RELEASE receipt
+    - compare ACTUAL IMPULSE with TARGET IMPULSE and the two arcs
+    - click BACK TO LAB
+    - launch HELD ARC and view its indefinitely frozen screenshot
+    - compare its longer receipt timeline, distinct impulses, and two arcs
+    - click BACK TO LAB
+    - launch LATE CONTACT and view its indefinitely frozen screenshot
+    - compare the moving segment, endpoint poses, fractional contact interval, result, and ledger
+    - compare OBSERVED CONTACT with RETAINED COLLISION on the frozen LATE result
+    - return to the lab and start the normal run
+  expected_agent_action_budget:
+    decisive_interaction_and_image_views_min: 8
+    decisive_interaction_and_image_views_max: 10
+    pointer_or_keyboard_actions_for_three_drills: 5
+    comparison_plus_normal_entry_max: 12
+  decisive_paths:
+    - game_state.player.bounds
+    - game_state.environment.flight_lab.trail
+    - game_state.environment.flight_lab.target
+    - game_state.environment.flight_lab.visual_audit
+    - game_state.environment.flight_lab.input_receipt
+    - game_state.environment.flight_lab.actual_impulse
+    - game_state.environment.flight_lab.target_impulse
+    - game_state.environment.flight_lab.outcome
+    - game_state.environment.flight_lab.score
+    - game_state.environment.next_pipe
+    - metrics.pipes_passed
+    - terminal.reason
+    - debug.recent_events
+    - debug.collision
+    - control_trace
+source_noninferability:
+  forbidden_agent_source_literals:
+    - protected trajectory checkpoint tolerance
+    - evaluator expects target max error
+    - Revision 006 visual CUA negative
+    - Revision 005 structured CUA negative
+    - gold patch input edge custody
+    - protected browser verifier
+  requirements:
+    - no benchmark-only activation branch
+    - no verifier threshold in public source
+    - no comments or identifiers that state the repair
+    - drills and normal play share input, bird, pipe, score, collision, and restart components
+    - source retains plausible timing, force, contact, score-commit, and frame-order diagnoses
+    - target arcs are visible product affordances rather than verifier-only data
+    - source retains several plausible ways to alter labels without repairing motion
+    - decisive evidence is the screenshot comparison of receipts, impulses, traces, and contact interval
+    - protected trajectory comparison permits at most 1.6 pixels of host-browser integration drift
+expected_outcomes:
+  baseline:
+    verifier: fail
+    drills: [bump, clear, clear]
+    visible_contact: [false, false, true]
+    tap_target_envelope: fail
+    held_target_envelope: fail
+    tap_receipt: [press@step0, release@step0]
+    tap_actual_target_impulse: [120, 220]
+    held_receipt: [press@step0, release@step3]
+    held_actual_target_impulse: [250, 250]
+    late_visible_contact_interval: true
+    late_endpoint_safe: true
+    swept_contact_retained: false
+  gold:
+    verifier: pass
+    drills: [clear, clear, bump]
+    visible_contact: [false, false, true]
+    final_lab_score: 2
+    tap_target_envelope: pass
+    held_target_envelope: pass
+    tap_receipt: [press@step0, release@step0]
+    tap_actual_target_impulse: [220, 220]
+    held_receipt: [press@step0, release@step3]
+    held_actual_target_impulse: [250, 250]
+    same_tick_keyboard_and_pointer_custody: true
+    swept_contact_retained: true
+  revision_006_visual_cua_two_file_negative:
+    file: negative.patch
+    verifier: fail
+    drills: [clear, clear, bump]
+    failure: target traces are matched by shifted releases, but displayed receipt timing, real same-tick browser custody, and retained swept collision remain broken
+  revision_005_structured_cua_two_file_negative:
+    file: negatives/revision-005-structured-cua-two-file.patch
+    verifier: fail
+    drills: [clear, clear, bump]
+    failure: initial geometry and completion are repaired without temporal motion custody
+  revision_005_visual_cua_relabel_negative:
+    file: negatives/revision-005-visual-cua-relabel.patch
+    verifier: fail
+    drills: [clear, clear, bump]
+    failure: audit relabeling fabricates contact metadata but leaves target envelopes broken
+  revision_003b_constant_impulse_negative:
+    file: negatives/revision-003b-constant-impulse.patch
+    verifier: fail
+    drills: [bump, clear, clear]
+determinism:
+  control_clock: browser_animation_frame
+  simulation_clock: fixed_step_60_hz
+  stable_feedback_window:
+    menu: waits indefinitely
+    before_action: each selected drill waits for one launch action
+    after_result: full visual audit freezes indefinitely until BACK TO LAB
+  repeatability_contract:
+    - one pointer click launches each named drill
+    - Digit1, Digit2, and Digit3 launch the same drills
+    - TAP ARC visibly clears and records clear
+    - TAP ARC shows PRESS and RELEASE in step 0 with matching 220 actual and target impulse
+    - TAP ARC actual checkpoints remain inside the quick-pulse target envelope
+    - HELD ARC visibly clears and records clear
+    - HELD ARC shows PRESS in step 0 and RELEASE in step 3 with matching 250 impulse
+    - HELD ARC actual checkpoints remain inside its distinct held target envelope
+    - LATE CONTACT visibly touches and records bump
+    - LATE CONTACT retains a swept interval marker and does not commit ledger credit
+    - final Flight Lab ledger is 2 clear across 3 viewed
+    - normal route credits pipe IDs 1, 2, and 3
+    - real same-tick keyboard and pointer receipts each retain both edges
+    - death, keyboard restart, pointer restart, keyboard flap, and pointer flap remain valid
+adversarial_feedback:
+  direct_predecessor: gameqa.flappy-bird-flight-lab.007
+  revision_007_host_classification: retained_upper_anchor
+  revision_007_exact_cua_negatives:
+    - negatives/revision-007-cua-attempt-2.patch
+    - negatives/revision-007-cua-attempt-3.patch
+  exact_revision_006_visual_cua_patch: negative.patch
+  revision_006_visual_evidence:
+    matched_image_views: 33
+    repaired_target_trajectories: true
+    retained_same_tick_input_edges: false
+    retained_swept_contact: false
+  retained_revision_005_relabel_patch: negatives/revision-005-visual-cua-relabel.patch
+  retained_revision_005_structured_patch: negatives/revision-005-structured-cua-two-file.patch
+  retained_prior_patch: negatives/revision-003b-constant-impulse.patch

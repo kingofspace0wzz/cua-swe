@@ -1,0 +1,13 @@
+{
+  "name": "fabric-viewport-rotation-controls-demo",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Artboard editor built on the real, pinned fabric.js browser build (fd50b70). Reproduces the rotated-viewport control/zoom/dimension geometry behavior from fabricjs/fabric.js#10977.",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.23.1"
+  }
+}

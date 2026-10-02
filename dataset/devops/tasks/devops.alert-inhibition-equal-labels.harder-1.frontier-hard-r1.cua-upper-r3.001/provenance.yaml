@@ -1,0 +1,24 @@
+schema_version: 1
+task_id: devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.cua-upper-r3.001
+source:
+  project: prometheus/alertmanager
+  issue: https://github.com/prometheus/alertmanager/issues/1727
+  independent_issue: https://github.com/prometheus/alertmanager/issues/507
+  documentation: https://github.com/prometheus/alertmanager/blob/main/docs/configuration.md
+  pinned_revision: issues-507-1727-and-inhibition-docs
+  license: Apache-2.0
+  source_type: adapted_real_repo
+lineage:
+  parent_task_id: devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.cua-upper-r2.001
+  parent_candidate: artifacts/v2-candidates/devops-observability/devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.cua-upper-r2.001
+  parent_tree_sha256: 62dd6c9d7774071971fb4ef4394f718a2aefa70384a767f05390944192e6dade
+  parent_classification: certified_lower_anchor
+  bounded_feedback: artifacts/expansion10-alert-cua-leak-feedback/devops.alert-inhibition-equal-labels.harder-1.frontier-hard-r1.cua-upper-r2.001/frontier-feedback.json
+  bounded_feedback_sha256: 968d1782987cd24b09df5fa7cf48ee530e2a2077a088f18c70136a0b8f4dff3e
+  selected_axis: move_absence_authority_to_operator_epoch_runbook_pixels
+  target_tier: upper_frontier
+notes:
+  - The reports and official documentation establish that absent and empty equal labels compare alike during inhibition.
+  - The required-label presence guard mirrors documented Alertmanager inhibition-rule eligibility semantics.
+  - The deterministic incident timeline (initial, arriving, partial-resolution, replay), the notification routes, the registry whose dimensions carry only opaque migration epoch codes, the ops-docs stamping runbook page published exclusively as service-rendered raster pixels, and the hidden renamed profile are original adversarial extensions.
+  - The Sentinel console, matcher engine, profiles, runbook renderer, verifier, and assets are original; no Alertmanager source or assets are copied.

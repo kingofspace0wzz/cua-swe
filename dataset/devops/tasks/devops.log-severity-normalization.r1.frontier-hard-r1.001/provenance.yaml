@@ -1,0 +1,33 @@
+implementation: Original severity bridge, service, verifier, UI and CSS
+reference:
+  upstream_commit: cda67786e931171a4d1d7bda2085e75e2f8ee41f
+  records:
+  - url: https://raw.githubusercontent.com/open-telemetry/opentelemetry-specification/cda67786e931171a4d1d7bda2085e75e2f8ee41f/specification/logs/data-model.md
+    file: otel-logs-data-model.md
+    sha256: 3ee2c391a5d3262130582df89a3dc5a5640d837d010734ea79458fe3ece31173
+  - url: https://raw.githubusercontent.com/open-telemetry/opentelemetry-specification/cda67786e931171a4d1d7bda2085e75e2f8ee41f/LICENSE
+    file: otel-LICENSE
+    sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  use: >-
+    Normative specification reference only; original implementation and assets. The
+    successor's syslog relay vocabulary follows the same pinned OTel Logs Data Model
+    (severity fields and its documented syslog severity mapping guidance) together
+    with RFC 5424 severity/facility PRI semantics; no upstream source, tests,
+    fixtures, or assets are copied.
+successor_of: devops.log-severity-normalization.r1.001
+successor_change: >-
+  One axis (add_hidden_runtime_variants): the evaluator-owned receiver fleet gains a
+  syslog relay that delivers OTLP-enveloped records preserving raw RFC 5424
+  priorities and keyword severities, with per-profile keyword vocabulary variants.
+  Agent-visible source, instruction, budgets, verifier, env entrypoint, and controls
+  are byte-identical to the parent.
+third_party_assets: []
+reused_infrastructure:
+- path: historical-parent/repo/server.mjs
+  sha256: e1426abf25ecf45ed3d8fdebee0c69d70c0e478045ae8d08f4ba3c5d4b5e18cd
+- path: historical-parent/repo/src/server/serviceProxy.js
+  sha256: 79a177c937a99871e27cfaa3b8c1d1fb0d81092179674f29b799141bf18d01a4
+- path: historical-parent/repo/src/server/staticFiles.js
+  sha256: c80714f541929ec451594d8bc55f3bce1fedd07b17bf2bc6523f092e640638c1
+rights: Original work in this repository; OTel specification retained for normative
+  reference under its Apache-2.0 license. No external UI assets.

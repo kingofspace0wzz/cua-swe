@@ -1,0 +1,50 @@
+diff --git a/src/controllers/console.js b/src/controllers/console.js
+index 11efc765915b5581858373eb68047e3227a5e804..77a32922b50377fd9c9392afc7ea8689c8db81c3 100644
+--- a/src/controllers/console.js
++++ b/src/controllers/console.js
+@@ -4,7 +4,9 @@ import {store} from '../state/store.js';
+ import {render} from '../views/render.js';
+ export async function initialize(){
+  store.catalog=await request('catalog');
+- await request('configure',{rules:store.catalog.rules.map(compileRule)});
++ const initial=await request('snapshot');
++ const context={routing:store.catalog.routing,routes:initial.routes,receiverMatch:initial.delivery.match};
++ await request('configure',{rules:store.catalog.rules.map(rule=>compileRule(rule,context))});
+  store.snapshot=await request('snapshot');render(store);
+  document.querySelector('#app').addEventListener('click',async event=>{
+   const button=event.target.closest('button[data-action]');if(!button||store.busy)return;
+diff --git a/src/rules/compileRule.js b/src/rules/compileRule.js
+index 2fe93e45b7623f4a4bbfacf9bdbacea0c99802a0..0785c30a3d071b154673313f35b37462968859c2 100644
+--- a/src/rules/compileRule.js
++++ b/src/rules/compileRule.js
+@@ -1,10 +1,28 @@
+ import {compileQuery} from './query.js';
+ 
+-export function compileRule(rule) {
++export function compileRule(rule, {routing = {}, routes = [], receiverMatch = {}} = {}) {
++  // Resolve the receiver's first matching route, not the imported rule's family
++  // or a route whose name happens to resemble the receiver.
++  const route = routes.find(candidate => Object.entries(candidate.match || {})
++    .every(([key, value]) => receiverMatch[key] === value));
++  const identityKeys = new Set((routing.ownership?.[route?.family] || [])
++    .flatMap(scope => routing.epoch?.[scope] || []));
+   const labels = {...rule.labels};
+   const annotations = {...rule.annotations};
+   for (const field of rule.enrichments || []) {
+-    labels[field.name] = field.template;
++    // Sample values and unowned route context are detail, not alert identity.
++    // Keep templates intact so annotations still describe each evaluation.
++    const template = field.template;
++    const routeKeys = [...template.matchAll(/\$route\s*\.\s*([\w]+)/g)]
++      .map(match => match[1]);
++    const descriptive = /\$value\b/.test(template)
++      || routeKeys.some(key => !identityKeys.has(key));
++    if (descriptive) {
++      delete labels[field.name];
++      annotations[field.name] = template;
++    } else {
++      labels[field.name] = template;
++    }
+   }
+   return {
+     name: rule.name,

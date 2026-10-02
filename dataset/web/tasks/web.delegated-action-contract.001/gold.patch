@@ -1,0 +1,15 @@
+--- a/src/app.js
++++ b/src/app.js
+@@ -2,5 +2,10 @@ const root=document.querySelector("#root");
+ async function render(){
+   const response=await fetch(`/api/delegated-action${window.location.search}`);const data=await response.json();
+-  // The retired authorization feed exposed a display-ready delegated action.
+-  const action=data.legacy_action??"Action unavailable";
++  const policy=data.delegation;
++  const assignment=policy.assignments.find(x=>x.assignment_ref===policy.selected_assignment_ref);
++  const role=policy.roles.find(x=>x.role_ref===assignment?.role_ref);
++  const active=new Set(policy.active_condition_refs),allowed=new Set(policy.allowed_modes);
++  const grantRef=policy.grant_precedence.find(ref=>role?.grant_refs.includes(ref)&&policy.grants.some(x=>x.grant_ref===ref&&x.required_condition_refs.every(condition=>active.has(condition))&&allowed.has(x.ui_mode)));
++  const grant=policy.grants.find(x=>x.grant_ref===grantRef);
++  const action=grant?.display_label??"Action unavailable";
+   root.innerHTML=`<main class="shell"><section class="card"><p class="eyebrow">Delegated authorization</p><h1>${data.request_ref??"Unknown request"}</h1><div class="recovery-row"><span>Available action</span><strong id="delegated-action">${action}</strong></div><button id="trace-toggle" type="button" aria-expanded="false">Delegation decision trace</button><section id="trace" class="trace" hidden><h2>Live /api/delegated-action response</h2><pre>${JSON.stringify(data,null,2)}</pre></section></section></main>`;

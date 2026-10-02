@@ -1,0 +1,60 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: python3 env/service.py --host 127.0.0.1 --port "{service_port}"
+  health_path: /health
+application:
+  command: >-
+    CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port}
+    python3 server.py --host 127.0.0.1 --port {app_port}
+  start_url: http://127.0.0.1:{app_port}/?benchmark=1&level=1
+game:
+  provider: gameworld
+  game_id: 16_hextris
+  state_api: window.gameAPI
+  reset:
+    method: inplace
+    level: 1
+    seed_support: false
+    note: >-
+      The API reports seed 42 as session metadata but explicitly rejects seed
+      application. Random waves must not be used for this candidate.
+protected_fixture:
+  path: env/deterministic_fixture.js
+  ownership: evaluator
+  injection: >-
+    Evaluate the fixture after every successful gameAPI.reset(), before agent
+    interaction. Freeze wave generation and install the same visible challenge
+    state for code-only, CUA, gold, negative, and verifier runs.
+  agent_source_visible: false
+  direct_fixture_file_access_allowed: false
+browser_observation:
+  steps:
+    - reset Level 1 and inject the protected cascade challenge
+    - wait at least 100 ms after reset so the normal rotation debounce expires
+    - press ArrowLeft once through the browser
+    - observe the red clear, blue collapse, and final board
+  decisive_paths:
+    - game_state.score
+    - game_state.environment.settled_blocks
+    - game_state.player.lane_rotation
+    - protected.roles.cascade_mobile_a_v1.settled
+    - protected.roles.cascade_mobile_b_v1.settled
+    - protected.roles.cascade_mobile_c_v2.settled
+    - protected.roles.unrelated_green_v3.settled
+    - protected.consolidation_trace[*].before_score
+    - protected.consolidation_trace[*].after_score
+source_noninferability:
+  forbidden_agent_source_literals:
+    - cascade_mobile_a_v1
+    - cascade_mobile_b_v1
+    - cascade_mobile_c_v2
+    - unrelated_green_v3
+    - cascade_anchor_v1
+    - hextris-cascade-fixture-v1
+certification:
+  static_checks_allowed: true
+  local_browser_execution_allowed: false
+  browser_certification: pending
+  matched_evaluation: pending
+  distribution: blocked_pending_license_and_asset_provenance

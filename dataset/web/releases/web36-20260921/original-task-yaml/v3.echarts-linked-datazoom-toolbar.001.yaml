@@ -1,0 +1,27 @@
+id: v3.echarts-linked-datazoom-toolbar.001
+track: web_frontend
+type: interaction_state
+difficulty: l3
+repo_snapshot:
+  source: local
+  path: "private-artifact:source-0036"
+  ref: echarts-20071-adapted-v1
+instruction: "In the Fleet Analytics Console, an analyst arms the window-zoom tool and rubber-bands a span on the large primary chart to focus on one stretch of the run. The smaller charts beneath it are supposed to move with it and frame the same stretch of the run, but they don't: after the selection, those smaller charts settle on the wrong stretch of their own readings, so the panels no longer line up on the same moment the analyst framed on the primary chart. Fix the console so that selecting a span on the primary chart brings every linked panel to the stretch of its own readings that corresponds to the framed span. Do not change the fixtures, the number or layout of panels, the toolbox, or how the primary chart itself responds to the selection."
+setup:
+  install: [npm ci]
+  launch: [npm run build && node server.mjs --host 127.0.0.1 --port 4180]
+  reset: []
+environment:
+  adapter: playwright_web
+  start_url: http://127.0.0.1:4180
+  viewport_or_device: desktop-1280x720
+allowed_tools: {code_edit: true, terminal: true, browser_gui: true, mobile_gui: false}
+budgets: {wall_time_sec: 1800, max_steps: 80, max_gui_actions: 120, max_test_runs: 20}
+verifiers:
+  build: [npm run build]
+  unit: []
+  ui: [python3 verifiers/browser_check.py]
+  visual: []
+  state: []
+  side_effects: []
+artifacts: {collect_patch: true, collect_logs: true, collect_screenshots: true, collect_trajectory: true, collect_state_diff: false}

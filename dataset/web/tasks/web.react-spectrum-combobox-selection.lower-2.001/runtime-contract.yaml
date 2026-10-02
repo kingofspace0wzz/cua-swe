@@ -1,0 +1,14 @@
+schema_version: 1
+visibility: evaluator_owned
+service: {command: 'node env/service.mjs --host 127.0.0.1 --port {service_port}', health_path: /health}
+application: {command: 'npm run build && CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs --host 127.0.0.1 --port {app_port}', start_url: 'http://127.0.0.1:{app_port}'}
+agent_policy: {service_source_visible: false, direct_loopback_http_allowed: false, process_environment_inspection_allowed: false}
+browser_observation:
+  steps: [inspect selected recipients, expand Workspace keyboard behavior, type a custom recipient, use Escape Enter and Tab]
+  decisive_paths: [keyboard.actions.escape, keyboard.actions.enter, keyboard.actions.tab]
+source_noninferability:
+  forbidden_agent_source_literals: [KEEP, APPEND, keyActions]
+provenance: {source_repo: adobe/react-spectrum, source_issue: 'https://github.com/adobe/react-spectrum/issues/9837', source_revision: 8df187370053aa35f553cb388ad670f65e1ab371, implementation: behavior-derived clean-room fixture}
+
+# The final browser test owns the service and switches its data variants.
+verification: {service_owner: verifier}

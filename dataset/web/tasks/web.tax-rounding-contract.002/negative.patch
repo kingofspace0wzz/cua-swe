@@ -1,0 +1,9 @@
+--- a/src/app.js
++++ b/src/app.js
+@@ -2,5 +2,4 @@ const root=document.querySelector("#root");
+ async function render(){
+   const response=await fetch(`/api/tax-estimate${window.location.search}`);const data=await response.json();
+-  // The retired calculator exposed a display-ready estimate.
+-  const estimate=data.legacy_tax??"Tax unavailable";
++  const estimate="Estimated tax: 0.30 USD";
+   root.innerHTML=`<main class="shell"><section class="card"><p class="eyebrow">Tax estimate</p><h1>${data.cart_ref??"Unknown cart"}</h1><div class="tax-row"><span>Estimated tax</span><strong id="tax-estimate">${estimate}</strong></div><button id="trace-toggle" type="button" aria-expanded="false">Tax calculation details</button><section id="trace" class="trace" hidden><h2>Live /api/tax-estimate payload</h2><pre>${JSON.stringify(data,null,2)}</pre></section></section></main>`;

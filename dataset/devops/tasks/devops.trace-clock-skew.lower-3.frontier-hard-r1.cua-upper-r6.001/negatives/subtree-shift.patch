@@ -1,0 +1,42 @@
+diff --git a/src/trace/compileAdjusters.js b/src/trace/compileAdjusters.js
+--- a/src/trace/compileAdjusters.js
++++ b/src/trace/compileAdjusters.js
+@@ -1,8 +1,38 @@
+ import { dedupeSpans, sortSpans } from "./basicAdjusters.js";
+ 
++function containSubtrees(spans) {
++  const output = spans.map((span) => ({ ...span }));
++  const children = new Map();
++  for (const span of output) {
++    if (span.parentId === null) continue;
++    if (!children.has(span.parentId)) children.set(span.parentId, []);
++    children.get(span.parentId).push(span);
++  }
++  const visit = (span) => {
++    for (const child of children.get(span.id) || []) {
++      let delta = 0;
++      if (child.startMs < span.startMs) delta = span.startMs - child.startMs;
++      else if (child.endMs > span.endMs) delta = span.endMs - child.endMs;
++      if (delta) {
++        const queue = [child];
++        while (queue.length) {
++          const node = queue.pop();
++          node.startMs += delta;
++          node.endMs += delta;
++          queue.push(...(children.get(node.id) || []));
++        }
++      }
++      visit(child);
++    }
++  };
++  for (const span of output) if (span.parentId === null) visit(span);
++  return output;
++}
++
+ export function compileAdjusters(policy) {
+   return [
+     { name: "dedupe", apply: dedupeSpans },
++    { name: "contain-subtree", apply: containSubtrees },
+     { name: "sort", apply: sortSpans },
+   ];
+ }

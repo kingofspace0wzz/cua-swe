@@ -1,0 +1,29 @@
+diff --git a/js/Game.js b/js/Game.js
+index 93503a14b9023326ba06164b8bd3fddcd8051a13..06de8cd04ada38c703951622b1afeb33362a8033 100644
+--- a/js/Game.js
++++ b/js/Game.js
+@@ -254,7 +254,23 @@
+         this.retry = function(retry){
+             this.resumeGame(retry);
+             this.player.respawn();
+-            this.levelMap.showGuide(this.player.spawnGuide);
++            var guide = this.player.spawnGuide;
++            if (this.player.newSpawn == true && this.player.spawnSupportId != null){
++                var spawnSupport = this.levelMap.getSupport(this.player.spawnSupportId);
++                if (spawnSupport != null){
++                    // Keep the respawn, checkpoint echo, and moving lift in one frame.
++                    spawnSupport.update(this.levelMap.motionTime);
++                    this.player.supportId = spawnSupport.id;
++                    this.player.supportOffset = this.player.spawnSupportOffset;
++                    this.player.y = spawnSupport.top+this.player.supportOffset;
++                    this.player.gravity.reset();
++                    this.player.gravity.push(0.5,this.player.y);
++                    guide = this.levelMap.captureGuide(spawnSupport);
++                }
++            }
++            this.levelMap.showGuide(guide);
++            this.levelMap.cameraProgress = this.player.xPos;
++            this.levelMap.x = -this.levelMap.cameraProgress;
+             window.timer.start();
+             window.dispatchEvent(new CustomEvent("boxel-restart", {
+                 detail: { level: this.home.selectedLevel, method: "keyboard" }

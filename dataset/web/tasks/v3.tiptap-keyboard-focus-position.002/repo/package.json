@@ -1,0 +1,19 @@
+{
+  "name": "composer-draft-focus",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "@tiptap/core": "2.11.5",
+    "@tiptap/pm": "2.11.5",
+    "@tiptap/extension-document": "2.11.5",
+    "@tiptap/extension-paragraph": "2.11.5",
+    "@tiptap/extension-text": "2.11.5"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.2"
+  }
+}

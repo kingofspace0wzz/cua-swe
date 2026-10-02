@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cua-swe-bench"
+version = "0.1.0"
+description = "Evaluation benchmark for coding agents with computer-use capabilities"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.7",
+  "pyyaml>=6.0",
+  "typer>=0.12",
+  "rich>=13.7",
+  "playwright>=1.48",
+  "pillow>=10.4",
+]
+
+[project.optional-dependencies]
+evaluation = [
+  "requests>=2.32",
+]
+mobile = [
+  "requests>=2.32",
+]
+provider = [
+  "requests>=2.32",
+]
+dev = [
+  "pytest>=8.2",
+  "pytest-cov>=5.0",
+  "pypdf>=6.0",
+]
+
+[project.scripts]
+cua-swe = "cua_swe_bench.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

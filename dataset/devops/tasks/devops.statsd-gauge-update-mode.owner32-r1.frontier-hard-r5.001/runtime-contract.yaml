@@ -1,0 +1,115 @@
+schema_version: 1
+visibility: evaluator_owned
+service:
+  command: node env/service.mjs --host 127.0.0.1 --port {service_port} --profile A
+    --form batched-valid-lines
+  working_directory: <candidate_root>
+  health_path: /health
+  visibility: evaluator_owned
+  implementation: repo/verifiers/service.mjs
+  fixture: repo/verifiers/profiles.json
+application:
+  command: CUA_SWE_EXTERNAL_SERVICE_ORIGIN=http://127.0.0.1:{service_port} node server.mjs
+    --host 127.0.0.1 --port {app_port}
+  working_directory: repo
+  health_path: /
+  start_url: http://127.0.0.1:{app_port}
+ports:
+  allocation: free_port_per_run
+  declared_defaults:
+    application: 57152
+    service: OS-assigned
+    native_udp: same numeric service port, UDP
+    relay_udp: service port+1 and service port+2, UDP, one socket per site relay
+      endpoint (two attributed relay endpoints per deployment profile)
+grading_runtime:
+  started_by: repo/verifiers/browser_check.py
+  variants:
+  - A
+  - B
+  - C
+  oracle: Independent declarative relay writer bytes/intent per attributed relay
+    endpoint plus protected UDP native receipts distinguish transport infrastructure
+    from submitted decoder, event loss, attribution and state errors. Every expected
+    received update checked in order, identity, relay attribution, multiplicity and
+    native value under the evaluator-owned deployment relay generation (pass-through
+    signed relative updates versus folding sign-formatted absolute readings) within1s,
+    including announce-restatement authority, sync-register and unsigned-stream
+    controls, no public machine-readable relay-generation field, and deterministic
+    reset/replay across epochs. No retransmission.
+agent_workspace:
+  policy: source_and_instruction_only
+  stripped_before_the_agent_sees_the_workspace:
+  - repo/verifiers/
+  - env/
+  - task.yaml
+  - gold.patch
+  - negative.patch
+  - negatives/
+  - alternates/
+  - replay.md
+  - evidence.yaml
+  - provenance.yaml
+  - candidate.yaml
+  - runtime-contract.yaml
+  - operator-gate.yaml
+  - custody.json
+  - design-review.json
+agent_policy:
+  service_source_visible: false
+  direct_loopback_http_allowed: false
+  process_environment_inspection_allowed: false
+browser_observation:
+  steps:
+  - Select affected gauge
+  - Read the sync-led relay announce batches and the signed live datagrams around them
+  - Open update history
+  decisive_paths:
+  - native signed raw datagrams with relay attribution
+  - sync-register-led announce restatements bracketing the signed live traffic
+  - preserved parser token/type/value and actual before/stored sink transitions
+status: materialized
+visibility_axis: Preserve realistic upstream relay transformations (collector batching,
+  relay attribution, announce/rebase restatements) and make the deployment's active
+  signed-line convention diagnosable only from the screenshot-visible datagram and
+  stored-value transitions across deterministic epochs. This is the only changed axis.
+primary_action_limit: 2
+primary_actions:
+- number: 1
+  action: Select the affected gauge in the opening live capture.
+  observation: Raw received datagrams with relay attribution; the opening announce
+    batch (relay sync register plus baseline readings), signed live lines, an
+    unsigned rebase and the mid-stream announce restatement are visible.
+- number: 2
+  action: Open its receipt/update history.
+  observation: Actual parser token/type/value with actual before/stored transitions;
+    the signed line stores the size of the change while the following announce
+    restates the accumulated level, and unsigned streams stay healthy.
+opening_state: Start a new runtime epoch, execute the ordinary relay producers once,
+  wait for verified native receipt completion, then show those actual receipts. Never
+  inject a fabricated expected-data panel.
+decisive_observations:
+- The sync-led announce batch restates a gauge at the accumulated level of its prior
+  signed lines (pass-through deployment evidence) while the broken sink stored only
+  the last change size; a folding deployment instead restates the last signed reading.
+- Preserved decoded token and identity plus contradictory stored transitions isolate
+  update application from lexical loss, parsing, routing and renderer-only hypotheses.
+normal_controls:
+- clear/reset
+- replay
+- metric selection
+- page reload retains service state
+- process restart starts fresh and replays on explicit trigger
+- unsigned capacity/reference streams and relay sync registers stay healthy
+forbidden:
+- expected answer card
+- desired policy/setting label
+- lexical relay-generation or producer-mode labels on any surface
+- gold source location hints
+- fabricated ideal trace
+- DOM/accessibility/window state/direct HTTP as agent observation
+construction_observability_gates:
+- actual builtpage HTTP200
+- retained nonblank PNG bytes per profile/form/stage
+- visual review against actual captured datagrams and sink receipts
+- clear custody and teardown for each run

@@ -1,0 +1,16 @@
+{
+  "name": "field-log-composer",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "slate": "0.116.0",
+    "slate-dom": "0.116.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.9"
+  }
+}

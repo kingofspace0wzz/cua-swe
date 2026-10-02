@@ -1,0 +1,44 @@
+schema_version: 1
+task_id: gameqa.2048-seeded-restart-parity.005
+trajectory_id: 2048-evaluator-lamp-held-input-restart-envelope-v1
+seed: 160
+controlled_lineage:
+  upper_anchor: gameqa.2048-seeded-restart-parity.002
+  immediate_predecessor: gameqa.2048-seeded-restart-parity.004
+  upper_digest: 26891f68fa19f878c7ea8e704517fee11dede5385d2d488c7bb430406ac3c888
+  predecessor_axis: default_opening_visual_salience
+  simplified_axis: evaluator_owned_runtime_parity_feedback
+  predecessor_value: visual tile values must be manually compared
+  candidate_value: a live visual lamp reports opening MATCH or MISMATCH
+trigger:
+  actions:
+    - action: observe
+      target: Opening parity lamp
+    - action: game_api_reset
+      options: {seed: 160}
+    - action: key_sequence
+      keys: [ArrowDown, ArrowRight, ArrowUp, ArrowLeft]
+    - action: key_hold
+      keys: [ArrowLeft, Space]
+      duration_ms: 400
+    - action: wait
+      duration_ms: 400
+    - action: observe
+      target: settled Opening parity lamp
+  causal_checkpoint: settled restart board versus evaluator-owned opening reference
+pre_trigger_equivalence:
+  status: expected
+  fields: [seed, game_state.environment, game_state.score]
+post_trigger_divergence:
+  clean: every restart settles at MATCH and replay is exact
+  baseline: delayed input and continued deterministic state produce MISMATCH
+  negative: delayed input is canceled but native restart remains MISMATCH
+required_evidence:
+  state_evidence: verifier-artifacts/seeded-restart-state.json
+  runtime_contract: runtime-contract.yaml
+  no_op_failure: {status: pending_remote_chromium}
+  gold_pass: {status: pending_remote_chromium}
+  negative_failure: {status: pending_remote_chromium}
+  code_only_failure: {status: not_run}
+  cua_reproducible_success: {status: not_run}
+status: construction_materialized_pending_browser_certification
