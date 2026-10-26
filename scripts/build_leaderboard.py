@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Render public tables from the paper's integer counts; never call a model."""
+"""Render public tables from versioned integer counts; never call a model."""
 from __future__ import annotations
 
 import argparse
 import csv
 import io
 import json
+import hashlib
+from fractions import Fraction
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +17,23 @@ START, END = "<!-- leaderboard:start -->", "<!-- leaderboard:end -->"
 
 def load_scores():
     data = json.loads((ROOT / "results/paper-results.json").read_text())
+    update_root = ROOT / "results/opus55-20261022"
+    update = json.loads((update_root / "evaluation-results.json").read_text())
+    if hashlib.sha256((update_root / "evaluation-report.md").read_bytes()).hexdigest() != update["sha256"]:
+        raise ValueError("Opus 5.5 source report hash differs")
+    if update["domains"] != DOMAINS:
+        raise ValueError("Opus 5.5 denominators differ from the released domains")
+    expected = {(d, "api-opus55", c, "pass@1") for d in DOMAINS for c in ("code-only", "hybrid")}
+    actual = {(r["domain"], r["model"], r["condition"], r["metric"]) for r in update["scores"]}
+    if actual != expected or len(update["scores"]) != 8:
+        raise ValueError("Opus 5.5 must contain exactly eight single-attempt scores")
+    for condition in ("code-only", "hybrid"):
+        rows = [r for r in update["scores"] if r["condition"] == condition]
+        mean = sum(Fraction(r["successes"], r["denominator"]) for r in rows) / len(DOMAINS)
+        saved = next(r for r in update["four_domain_means"] if r["condition"] == condition)
+        if Fraction(saved["exact"]) != mean or abs(saved["percent"] - 100 * float(mean)) > 1e-9:
+            raise ValueError("Opus 5.5 macro mean differs from domain counts")
+    data["scores"] += update["scores"]
     if data["domains"] != DOMAINS:
         raise ValueError("paper denominators differ from the released domains")
     seen = set()
@@ -40,6 +59,8 @@ def label(row):
         if name.startswith(("Opus", "Sonnet", "Fable")):
             name = "Claude " + name
         name += " (API)"
+    if row["model"] == "api-opus55":
+        name += " †"
     return name
 
 
@@ -54,6 +75,8 @@ def render():
     rows = load_scores()
     lookup = {(r["domain"], r["model"], r["condition"], r["metric"]): r for r in rows}
     models = list(dict.fromkeys(r["model"] for r in rows))
+    models.remove("api-opus55")
+    models.insert(models.index("api-opus5"), "api-opus55")
     maxima = {d: max(r["percent"] for r in rows if r["domain"] == d and
                     r["condition"] == "hybrid" and r["metric"] == "pass@1" and
                     r["status"] == "evaluated") for d in DOMAINS}
@@ -74,11 +97,13 @@ def render():
     before, rest = readme.split(START, 1)
     _, after = rest.split(END, 1)
     readme = before + START + "\n" + table_text + "\n" + END + after
-    details = ["# CUA-SWE paper results", "", "Snapshot: September 24, 2026. Generated from [paper-results.json](paper-results.json).",
+    details = ["# CUA-SWE results", "", "Latest snapshot: October 22, 2026. Original paper scores: [September 24](paper-results.json); added scores: [Opus 5.5](opus55-20261022/evaluation-results.json).",
                "", "Each score is successes / tasks (percentage). See [scoring and provenance](../docs/results.md).",
+               "", "† Opus 5.5 uses the released configurable-provider evaluator with provider-default sampling and reasoning; the original paper uses fixed model configurations. This update reports aggregate pass@1 only and does not extend repeated-attempt or trajectory analyses.",
+               "", "**Opus 5.5 four-domain mean: 13.3% code-only → 48.6% hybrid CUA (+35.3 percentage points).** Domains have equal weight, computed before rounding.",
                "", "[Web](#web) · [Game](#game) · [DevOps](#devops) · [Mobile](#mobile)", ""]
     for domain in DOMAINS:
-        details += [f"## {domain}", "", f"{DOMAINS[domain]} tasks. Original single-attempt results.", "",
+        details += [f"## {domain}", "", f"{DOMAINS[domain]} tasks. Single-attempt results.", "",
                     "| Model / agent | Code-only pass@1 | Hybrid CUA pass@1 |", "| --- | ---: | ---: |"]
         for model in sorted(models, key=lambda m: -(lookup[domain, m, "hybrid", "pass@1"]["percent"] or 0)):
             a, b = (lookup[domain, model, c, "pass@1"] for c in ("code-only", "hybrid"))
@@ -94,7 +119,7 @@ def render():
             details += ["", "The repeated set includes eight reviewed runtime replacements. Its first-attempt scores are distinct from the original pass@1 table above."]
         details += [""]
     out = io.StringIO(newline="")
-    writer = csv.DictWriter(out, fieldnames=["domain", "model", "label", "condition", "metric", "successes", "denominator", "status", "percent"])
+    writer = csv.DictWriter(out, lineterminator="\n", fieldnames=["domain", "model", "label", "condition", "metric", "successes", "denominator", "status", "percent"])
     writer.writeheader()
     writer.writerows(rows)
     return {ROOT / "README.md": readme, ROOT / "results/README.md": "\n".join(details),

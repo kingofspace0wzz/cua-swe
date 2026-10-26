@@ -1,14 +1,18 @@
-# CUA-SWE paper results
+# CUA-SWE results
 
-Snapshot: September 24, 2026. Generated from [paper-results.json](paper-results.json).
+Latest snapshot: October 22, 2026. Original paper scores: [September 24](paper-results.json); added scores: [Opus 5.5](opus55-20261022/evaluation-results.json).
 
 Each score is successes / tasks (percentage). See [scoring and provenance](../docs/results.md).
+
+† Opus 5.5 uses the released configurable-provider evaluator with provider-default sampling and reasoning; the original paper uses fixed model configurations. This update reports aggregate pass@1 only and does not extend repeated-attempt or trajectory analyses.
+
+**Opus 5.5 four-domain mean: 13.3% code-only → 48.6% hybrid CUA (+35.3 percentage points).** Domains have equal weight, computed before rounding.
 
 [Web](#web) · [Game](#game) · [DevOps](#devops) · [Mobile](#mobile)
 
 ## Web
 
-36 tasks. Original single-attempt results.
+36 tasks. Single-attempt results.
 
 | Model / agent | Code-only pass@1 | Hybrid CUA pass@1 |
 | --- | ---: | ---: |
@@ -18,6 +22,7 @@ Each score is successes / tasks (percentage). See [scoring and provenance](../do
 | Grok 4.6 (API) | 11/36 (30.6%) | 20/36 (55.6%) |
 | Codex + Sol | — | 20/36 (55.6%) |
 | Claude Code + Opus 5 | — | 20/36 (55.6%) |
+| Claude Opus 5.5 (API) † | 10/36 (27.8%) | 17/36 (47.2%) |
 | Claude Fable 5 (API) | 7/36 (19.4%) | 17/36 (47.2%) |
 | Claude Opus 4.8 (API) | 6/36 (16.7%) | 10/36 (27.8%) |
 | GPT-5.6 Terra (API) | 4/36 (11.1%) | 5/36 (13.9%) |
@@ -34,7 +39,7 @@ Each score is successes / tasks (percentage). See [scoring and provenance](../do
 
 ## Game
 
-29 tasks. Original single-attempt results.
+29 tasks. Single-attempt results.
 
 | Model / agent | Code-only pass@1 | Hybrid CUA pass@1 |
 | --- | ---: | ---: |
@@ -42,6 +47,7 @@ Each score is successes / tasks (percentage). See [scoring and provenance](../do
 | Claude Opus 5 (API) | 4/29 (13.8%) | 6/29 (20.7%) |
 | Claude Opus 4.8 (API) | 1/29 (3.4%) | 6/29 (20.7%) |
 | Claude Code + Opus 5 | — | 6/29 (20.7%) |
+| Claude Opus 5.5 (API) † | 3/29 (10.3%) | 5/29 (17.2%) |
 | Claude Fable 5 (API) | 4/29 (13.8%) | 5/29 (17.2%) |
 | Grok 4.6 (API) | 3/29 (10.3%) | 5/29 (17.2%) |
 | Codex + Sol | — | 5/29 (17.2%) |
@@ -62,11 +68,12 @@ The repeated set includes eight reviewed runtime replacements. Its first-attempt
 
 ## DevOps
 
-20 tasks. Original single-attempt results.
+20 tasks. Single-attempt results.
 
 | Model / agent | Code-only pass@1 | Hybrid CUA pass@1 |
 | --- | ---: | ---: |
 | GPT-6 Astra (API) | 0/20 (0.0%) | 16/20 (80.0%) |
+| Claude Opus 5.5 (API) † | 1/20 (5.0%) | 15/20 (75.0%) |
 | Grok 4.6 (API) | 0/20 (0.0%) | 13/20 (65.0%) |
 | Claude Code + Opus 5 | — | 13/20 (65.0%) |
 | Claude Opus 5 (API) | 0/20 (0.0%) | 12/20 (60.0%) |
@@ -88,11 +95,12 @@ The repeated set includes eight reviewed runtime replacements. Its first-attempt
 
 ## Mobile
 
-20 tasks. Original single-attempt results.
+20 tasks. Single-attempt results.
 
 | Model / agent | Code-only pass@1 | Hybrid CUA pass@1 |
 | --- | ---: | ---: |
 | GPT-6 Astra (API) | 0/20 (0.0%) | 11/20 (55.0%) |
+| Claude Opus 5.5 (API) † | 2/20 (10.0%) | 11/20 (55.0%) |
 | GPT-5.6 Sol (API) | 0/20 (0.0%) | 9/20 (45.0%) |
 | Claude Opus 4.8 (API) | 0/20 (0.0%) | 8/20 (40.0%) |
 | Claude Fable 5 (API) | 1/20 (5.0%) | 8/20 (40.0%) |

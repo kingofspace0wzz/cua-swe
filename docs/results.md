@@ -1,6 +1,12 @@
 # Scores and provenance
 
-The public leaderboard comes from the manuscript's canonical September 24, 2026 result snapshot, copied into [paper-results.json](../results/paper-results.json). Its `sha256` commits to the manuscript's source report. [build_leaderboard.py](../scripts/build_leaderboard.py) derives the README table, full result tables, and CSV from the integer success counts and domain denominators. It does not estimate missing results or round percentages before computing counts.
+The public leaderboard combines the original September 24, 2026 paper snapshot in [paper-results.json](../results/paper-results.json) with the October 22 [Opus 5.5 snapshot](../results/opus55-20261022/evaluation-results.json). Each source retains its own report hash. [build_leaderboard.py](../scripts/build_leaderboard.py) validates the integer counts, domain denominators, and Opus 5.5 report hash and macro means, then derives the README table, full result tables, and CSV. Missing results are not estimated.
+
+## October 2026 update
+
+Claude Opus 5.5 achieves 13.3% code-only and 48.6% hybrid CUA success, a 35.3-point gain using equal weights for the four unrounded domain fractions. Its 210 completed evaluations cover the same 105-task inventory in both conditions. The † marker identifies this additional evaluation throughout the tables.
+
+The new evaluation uses the released configurable-provider evaluator with provider-default sampling and reasoning, distinct from the original paper's fixed configurations. Runtime repairs and corrected protocol audits are documented in the [source report](../results/opus55-20261022/evaluation-report.md). Only aggregate pass@1 results are supplied; no Opus 5.5 task-level, efficiency, or repeated-attempt results are inferred. The original paper snapshot and its reviewed repeated-attempt cohort remain unchanged.
 
 ## Interpreting the table
 

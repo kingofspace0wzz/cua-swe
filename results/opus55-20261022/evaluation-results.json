@@ -1,0 +1,116 @@
+{
+  "source": "evaluation-report.md",
+  "sha256": "e092cb53fa225be0019f1206a32629788dc65d0fc188fff38bdf5805ad8ef772",
+  "domains": {
+    "Web": 36,
+    "Game": 29,
+    "DevOps": 20,
+    "Mobile": 20
+  },
+  "scores": [
+    {
+      "domain": "Web",
+      "model": "api-opus55",
+      "label": "Opus 5.5",
+      "condition": "code-only",
+      "metric": "pass@1",
+      "successes": 10,
+      "denominator": 36,
+      "status": "evaluated",
+      "percent": 27.77777777777778
+    },
+    {
+      "domain": "Web",
+      "model": "api-opus55",
+      "label": "Opus 5.5",
+      "condition": "hybrid",
+      "metric": "pass@1",
+      "successes": 17,
+      "denominator": 36,
+      "status": "evaluated",
+      "percent": 47.22222222222222
+    },
+    {
+      "domain": "Game",
+      "model": "api-opus55",
+      "label": "Opus 5.5",
+      "condition": "code-only",
+      "metric": "pass@1",
+      "successes": 3,
+      "denominator": 29,
+      "status": "evaluated",
+      "percent": 10.344827586206897
+    },
+    {
+      "domain": "Game",
+      "model": "api-opus55",
+      "label": "Opus 5.5",
+      "condition": "hybrid",
+      "metric": "pass@1",
+      "successes": 5,
+      "denominator": 29,
+      "status": "evaluated",
+      "percent": 17.24137931034483
+    },
+    {
+      "domain": "DevOps",
+      "model": "api-opus55",
+      "label": "Opus 5.5",
+      "condition": "code-only",
+      "metric": "pass@1",
+      "successes": 1,
+      "denominator": 20,
+      "status": "evaluated",
+      "percent": 5.0
+    },
+    {
+      "domain": "DevOps",
+      "model": "api-opus55",
+      "label": "Opus 5.5",
+      "condition": "hybrid",
+      "metric": "pass@1",
+      "successes": 15,
+      "denominator": 20,
+      "status": "evaluated",
+      "percent": 75.0
+    },
+    {
+      "domain": "Mobile",
+      "model": "api-opus55",
+      "label": "Opus 5.5",
+      "condition": "code-only",
+      "metric": "pass@1",
+      "successes": 2,
+      "denominator": 20,
+      "status": "evaluated",
+      "percent": 10.0
+    },
+    {
+      "domain": "Mobile",
+      "model": "api-opus55",
+      "label": "Opus 5.5",
+      "condition": "hybrid",
+      "metric": "pass@1",
+      "successes": 11,
+      "denominator": 20,
+      "status": "evaluated",
+      "percent": 55.0
+    }
+  ],
+  "four_domain_means": [
+    {
+      "model": "api-opus55",
+      "label": "Opus 5.5",
+      "condition": "code-only",
+      "exact": "2773/20880",
+      "percent": 13.280651340996169
+    },
+    {
+      "model": "api-opus55",
+      "label": "Opus 5.5",
+      "condition": "hybrid",
+      "exact": "10151/20880",
+      "percent": 48.61590038314176
+    }
+  ]
+}

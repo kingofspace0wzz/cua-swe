@@ -111,3 +111,11 @@ Mobile,codex-gpt56-sol,Codex + Sol,code-only,pass@1,,,not_evaluated,
 Mobile,codex-gpt56-sol,Codex + Sol,hybrid,pass@1,8,20,evaluated,40.0
 Mobile,claude-code-opus5,Claude Code + Opus 5,code-only,pass@1,,,not_evaluated,
 Mobile,claude-code-opus5,Claude Code + Opus 5,hybrid,pass@1,,,deferred,
+Web,api-opus55,Opus 5.5,code-only,pass@1,10,36,evaluated,27.77777777777778
+Web,api-opus55,Opus 5.5,hybrid,pass@1,17,36,evaluated,47.22222222222222
+Game,api-opus55,Opus 5.5,code-only,pass@1,3,29,evaluated,10.344827586206897
+Game,api-opus55,Opus 5.5,hybrid,pass@1,5,29,evaluated,17.24137931034483
+DevOps,api-opus55,Opus 5.5,code-only,pass@1,1,20,evaluated,5.0
+DevOps,api-opus55,Opus 5.5,hybrid,pass@1,15,20,evaluated,75.0
+Mobile,api-opus55,Opus 5.5,code-only,pass@1,2,20,evaluated,10.0
+Mobile,api-opus55,Opus 5.5,hybrid,pass@1,11,20,evaluated,55.0
