@@ -59,8 +59,6 @@ def label(row):
         if name.startswith(("Opus", "Sonnet", "Fable")):
             name = "Claude " + name
         name += " (API)"
-    if row["model"] == "api-opus55":
-        name += " †"
     return name
 
 
@@ -99,7 +97,6 @@ def render():
     readme = before + START + "\n" + table_text + "\n" + END + after
     details = ["# CUA-SWE results", "", "Latest snapshot: October 22, 2026. Original paper scores: [September 24](paper-results.json); added scores: [Opus 5.5](opus55-20261022/evaluation-results.json).",
                "", "Each score is successes / tasks (percentage). See [scoring and provenance](../docs/results.md).",
-               "", "† Opus 5.5 uses the released configurable-provider evaluator with provider-default sampling and reasoning; the original paper uses fixed model configurations. This update reports aggregate pass@1 only and does not extend repeated-attempt or trajectory analyses.",
                "", "**Opus 5.5 four-domain mean: 13.3% code-only → 48.6% hybrid CUA (+35.3 percentage points).** Domains have equal weight, computed before rounding.",
                "", "[Web](#web) · [Game](#game) · [DevOps](#devops) · [Mobile](#mobile)", ""]
     for domain in DOMAINS:

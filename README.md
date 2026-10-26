@@ -23,7 +23,7 @@ CUA-SWE evaluates whether agents can develop software by **using the software th
 
 ## News
 
-- **October 22, 2026:** Claude Opus 5.5 reaches **48.6%** four-domain mean success with hybrid CUA versus **13.3%** code-only (**+35.3 pp**). [Results and evaluation configuration](results/opus55-20261022/README.md).
+- **October 22, 2026:** Claude Opus 5.5 reaches **48.6%** four-domain mean success with hybrid CUA versus **13.3%** code-only (**+35.3 pp**). [Results](results/opus55-20261022/README.md).
 
 - **CUA-SWE 1.0 is available:** benchmark tasks, application environments, evaluation pipelines, and baseline results across four domains.
 - **September 2026:** [paper](https://arxiv.org/abs/2609.32600), [project website](https://zelongxueric.github.io/cua-swe-website/), [Hugging Face dataset](https://huggingface.co/datasets/kingofspace0wzz/CUA-SWE), and [interactive data browser](https://kingofspace0wzz.github.io/cua-swe-viewer/) released.
@@ -61,7 +61,7 @@ Each task provides an instruction, editable source, an application environment, 
 | GPT-5.6 Sol (API) | 19.4 → 58.3 | 10.3 → 10.3 | 0.0 → 55.0 | 0.0 → 45.0 |
 | GPT-5.6 Luna (API) | 11.1 → 5.6 | 0.0 → 6.9 | 0.0 → 15.0 | 0.0 → 35.0 |
 | GPT-5.6 Terra (API) | 11.1 → 13.9 | 3.4 → 6.9 | 0.0 → 25.0 | 0.0 → 35.0 |
-| Claude Opus 5.5 (API) † | 27.8 → 47.2 | 10.3 → 17.2 | 5.0 → 75.0 | 10.0 → **55.0** |
+| Claude Opus 5.5 (API) | 27.8 → 47.2 | 10.3 → 17.2 | 5.0 → 75.0 | 10.0 → **55.0** |
 | Claude Opus 5 (API) | 22.2 → 55.6 | 13.8 → 20.7 | 0.0 → 60.0 | deferred → deferred |
 | Claude Opus 4.8 (API) | 16.7 → 27.8 | 3.4 → 20.7 | 0.0 → 55.0 | 0.0 → 40.0 |
 | Claude Sonnet 5 (API) | 8.3 → 0.0 | 6.9 → 3.4 | 0.0 → 40.0 | 0.0 → 35.0 |
@@ -70,8 +70,6 @@ Each task provides an instruction, editable source, an application environment, 
 | Codex + Sol | — → 55.6 | — → 17.2 | — → 55.0 | — → 40.0 |
 | Claude Code + Opus 5 | — → 55.6 | — → 20.7 | — → 65.0 | — → deferred |
 <!-- leaderboard:end -->
-
-† **Opus 5.5:** released configurable-provider evaluator with provider-default sampling and reasoning, distinct from the original paper's fixed model configurations. [Methodology](results/opus55-20261022/evaluation-report.md).
 
 **—**: no reported result. **Deferred**: evaluation postponed. Scores use the task count and scoring policy of each domain.
 

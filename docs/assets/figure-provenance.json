@@ -8,19 +8,18 @@
         64.0,
         498.0,
         549.0,
-        710.0
+        698.0
       ],
       "latex_assets": [
         "figures/figure1.pdf",
         "figures/preprint-coding-hybrid-success.pdf"
       ],
-      "document_sha256": "f1c8dd1315964f52fc0dade61d863ccf148b433b3e23b5df99867a43d0b4dd71",
+      "document_sha256": "9eac85e1b33f267d18420f68b1adc670426e347ae6623b35e8fb3a8e37f3e4be",
       "result_snapshot": "2026-10-22",
       "source_results": [
         "results/paper-results.json",
         "results/opus55-20261022/evaluation-results.json"
-      ],
-      "redaction_render_mean_channel_difference": 0.002852882059262141
+      ]
     },
     {
       "image": "paper-figure-2.png",

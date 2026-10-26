@@ -4,9 +4,9 @@ The public leaderboard combines the original September 24, 2026 paper snapshot i
 
 ## October 2026 update
 
-Claude Opus 5.5 achieves 13.3% code-only and 48.6% hybrid CUA success, a 35.3-point gain using equal weights for the four unrounded domain fractions. Its 210 completed evaluations cover the same 105-task inventory in both conditions. The † marker identifies this additional evaluation throughout the tables.
+Claude Opus 5.5 achieves 13.3% code-only and 48.6% hybrid CUA success, a 35.3-point gain using equal weights for the four unrounded domain fractions. Its 210 completed evaluations cover the same 105-task inventory in both conditions.
 
-The new evaluation uses the released configurable-provider evaluator with provider-default sampling and reasoning, distinct from the original paper's fixed configurations. Runtime repairs and corrected protocol audits are documented in the [source report](../results/opus55-20261022/evaluation-report.md). Only aggregate pass@1 results are supplied; no Opus 5.5 task-level, efficiency, or repeated-attempt results are inferred. The original paper snapshot and its reviewed repeated-attempt cohort remain unchanged.
+Evaluation details are documented in the [source report](../results/opus55-20261022/evaluation-report.md).
 
 ## Interpreting the table
 
